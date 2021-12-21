@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/kmlbdh/anjadSys/issues"
   },
-  "homepage": "https://github.com/kmlbdh/anjadSys#readme"
+  "homepage": "https://github.com/kmlbdh/anjadSys#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.2"
+  },
+  "devDependencies": {
+    "nodeman": "^1.1.2"
+  }
 }
