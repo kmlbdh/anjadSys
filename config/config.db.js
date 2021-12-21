@@ -12,7 +12,6 @@ const MONGO_URI = `mongodb://${DB_CONFIG.USER}:${DB_CONFIG.PASS}@${DB_CONFIG.HOS
 
 
 module.exports.connect = async () => {
-  console.log(MONGO_URI);
   try{
     await mongoose.connect(MONGO_URI);
     console.log("Successfully connected to database");
