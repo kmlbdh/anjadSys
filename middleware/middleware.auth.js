@@ -41,10 +41,10 @@ const checkRole = async(role, req, res, next) => {
     if(role && role.name === roleString)
       return next();
 
-    res.status(403).send({message: `Require ${roleString} Role!`});
+    res.status(403).json({message: `Require ${roleString} Role!`});
   } catch(error){
-    res.status(500).end({ message: error});
+    res.status(500).json({ message: error});
   }
 }
 
-module.exports.auth = {verifyToken, isAdmin, isAgent, isCustomer};
+module.exports = {verifyToken, isAdmin, isAgent, isCustomer};
