@@ -1,7 +1,7 @@
 const { model, Schema} = require("mongoose");
 
 const User = new Schema({
-  refId:{type: Number, require: true},
+  refId:{type: String, require: true, unique: true},
   username: {type: String, require: true},
   nickname:{type: String, default: null},
   password: {type: String, require: true},
