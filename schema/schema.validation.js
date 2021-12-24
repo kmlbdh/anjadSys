@@ -23,4 +23,9 @@ module.exports.schema = {
       .options({messages: {"string.pattern.base": "username is wrong!"}}),
     password: Joi.string().required()
   }),
+  listUsersByRole: Joi.object().keys({
+    role: Joi.string().min(5),
+    limit: Joi.number(),
+    skip: Joi.number().min(0),
+  }),
 };
