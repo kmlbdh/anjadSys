@@ -39,7 +39,7 @@ const checkRole = async(role, req, res, next) => {
     const user = await User.findById(req.userId);
     const role = await Role.find({_id: {$eq: user.role}});
     if(role && role.name === roleString)
-      return next();
+      next();
 
     res.status(403).json({message: `Require ${roleString} Role!`});
   } catch(error){
