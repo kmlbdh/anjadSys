@@ -18,8 +18,9 @@ module.exports.schema = {
   }),
   singin: Joi.object().keys({
     username: Joi.string()
-      .pattern(new RegExp('^[AD(-)\d{3})|(AG(-)\d{6})|(C(-)\d{8})]$'))
-      .required(),
-    passowrd: Joi.string().required()
+      .pattern(/^(AD-\d{3})$|^(AG-\d{6})$|^(C-\d{8})$/)
+      .required()
+      .options({messages: {"string.pattern.base": "username is wrong!"}}),
+    password: Joi.string().required()
   }),
 };
