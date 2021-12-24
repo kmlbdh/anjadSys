@@ -36,8 +36,8 @@ const isCustomer = async (req, res, next) => {
 const checkRole = async(role, req, res, next) => {
   const roleString = StaticRoles[role];
   try{
-    const user = await User.findById(req.userId);
-    const role = await Role.find({_id: {$eq: user.role}});
+    const user = await User.findById(req.userId).exec();
+    const role = await Role.find({_id: {$eq: user.role}}).exec();
     if(role && role.name === roleString)
       next();
 
