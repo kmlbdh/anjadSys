@@ -78,7 +78,7 @@ const signin = async(req, res) => {
     });
   } catch(error){
     signinLog(error);
-    let messageOfSignin = error.code === INTERR ? error.message : "Failed! can/'t singIn";
+    let messageOfSignin = error.code === INTERR ? error.message : "Failed! can/'t sign in";
     res.status(500).json({message: messageOfSignin});
   }
 };
