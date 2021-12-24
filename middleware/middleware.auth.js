@@ -1,24 +1,41 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config.auth");
 const db = require("../model");
+const util = require("util");
+const customError = require("../classes/customError");
+const validation = require("./middleware.validation");
+const { schema } = require("../schema/schema.validation");
 
 const User = db.userModel;
 const Role = db.roleModel;
 const StaticRoles = db.ROLES;
+const INTERR = "INT_ERR";
+
+//debugging NOT FOR PRODUCTION
+const verifyTokenLog = util.debuglog("middleware.auth-VerifyToken");
+const isAdminLog = util.debuglog("middleware.auth-isAdmin");
 
 const verifyToken = (req, res, next) => {
-  let token = req.headers['x-access-token'];
+  try{
+    let token = req.headers['x-access-token'];
+    verifyTokenLog(token);
 
-  if(!token)
-    return res.status(400).send({message: "No token provided!"});
+    if(!token)
+      throw new customError("No token provided!", INTERR);
+    
+    jwt.verify(token, config.secret, (error, decoded) => {
+      if(error)
+        throw new customError("Unauthorized!", INTERR);
   
-  jwt.verify(token, config.secret, (error, decoded) => {
-    if(error)
-      res.status(400).send({message: "Unauthorized!"});
+        req.refId = decoded.refId;
+        next();
+    });
+  } catch(error){
+    verifyTokenLog(error);
+    const customErrorVerify = error.code === INTERR ? error.message : "Failed! can't get token!";
+    res.status(500).json({message: customErrorVerify});
+  }
 
-      req.userId = decoded.id;
-      next();
-  });
 };
 
 const isAdmin = async (req, res, next) => {
@@ -36,15 +53,28 @@ const isCustomer = async (req, res, next) => {
 const checkRole = async(role, req, res, next) => {
   const roleString = StaticRoles[role];
   try{
-    const user = await User.findById(req.userId).exec();
-    const role = await Role.find({_id: {$eq: user.role}}).exec();
-    if(role && role.name === roleString)
-      next();
+    isAdminLog(roleString);
+    isAdminLog(req.refId);
 
-    res.status(403).json({message: `Require ${roleString} Role!`});
+    const user = await User.findOne({refId:req.refId}).populate({
+      path: "role",
+      model: "Role",
+      select: {name: 1, _id: 0}
+    }).exec();
+
+    isAdminLog(user);
+
+    if(!user || !user.role || !user.role.name || user.role.name !== roleString)
+      throw new customError(`Require ${roleString} Role!`, INTERR);
+    
+    next();
   } catch(error){
-    res.status(500).json({ message: error});
+    isAdminLog(error);
+    const customErrorCheckRole = error.code === INTERR ? error.message : "Failed! can't get role!";
+    res.status(500).json({message: customErrorCheckRole});
   }
 }
 
-module.exports = {verifyToken, isAdmin, isAgent, isCustomer};
+const validateListUsersByRole = validation(schema.listUsersByRole,'body');
+
+module.exports = {verifyToken, isAdmin, isAgent, isCustomer, validateListUsersByRole};
