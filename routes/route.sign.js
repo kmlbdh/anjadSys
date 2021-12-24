@@ -1,5 +1,5 @@
 const { verifySingUp, verifySingIn } = require("../middleware");
-const controller = require("../controller/controller.auth");
+const controller = require("../controller/controller.sign");
 
 module.exports = function(app){
   app.use((req, res, next) => {
