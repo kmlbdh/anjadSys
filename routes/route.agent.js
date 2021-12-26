@@ -1,4 +1,8 @@
-const { validateListUsers, validateListServices } = require("../middleware/middleware.agent");
+const { 
+  validateListUsers,
+  validateListServices,
+  validateAddServiceToCustomer,
+} = require("../middleware/middleware.agent");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.agent");
 
@@ -29,4 +33,10 @@ module.exports = function(app){
     auth.isAgent,
     validateListServices,
   ], controller.listServices);
+
+  app.post("/api/agent/add-customer-service",[
+    auth.verifyToken,
+    auth.isAgent,
+    validateAddServiceToCustomer,
+  ], controller.addServiceToCustomer);
 };

@@ -31,8 +31,8 @@ module.exports.schema = {
     role: Joi.string().trim().min(5).optional(),
     limit: Joi.number().optional(),
     skip: Joi.number().min(0).optional(),
-    agentID: Joi.string().trim().min(6).optional(),
-    userID: Joi.string().trim().min(6).optional(),
+    agentID: Joi.string().trim().min(9).max(9).optional(),
+    userID: Joi.string().trim().min(10).max(10).optional(),
     nickname: Joi.string().trim().optional(),
   }),
   addServiceForAdmin: Joi.object().keys({
@@ -54,7 +54,16 @@ module.exports.schema = {
   listUsersForAgent: Joi.object().keys({
     limit: Joi.number().optional(),
     skip: Joi.number().min(0).optional(),
-    userID: Joi.string().min(6).optional(),
-    nickname: Joi.string().optional(),
+    userID: Joi.string().trim().min(10).max(10).optional(),
+    nickname: Joi.string().trim().optional(),
+  }),
+  addServiceToCustomerOfAgent: Joi.object().keys({
+    userID: Joi.string().min(10).max(10).required(),
+    serviceName: Joi.string().trim().required(),
+    serviceID: Joi.string().trim().required(),
+    price: Joi.number().min(1).required(),
+    period: Joi.number().min(1).required(),
+    startDate: Joi.date().required(),
+    endDate: Joi.date().required(),
   }),
 };
