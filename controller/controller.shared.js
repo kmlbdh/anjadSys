@@ -13,9 +13,11 @@ const getUserLastRefIdLog = util.debuglog("controller.shared-getLastId");
 const loginLog = util.debuglog("controller.shared-login");
 const listUsersLog = util.debuglog("controller.shared-listUsers");
 const listServicesLog = util.debuglog("controller.shared-listServices");
+const listAgentLimitsLog = util.debuglog("controller.shared-listAgentLimits");
 
 const User = db.userModel;
 const Service = db.serviceModel;
+const AgentLimits = db.agentLimitsModel;
 // const Role = db.roleModel;
 const INTERR = 'INT_ERR';
 
@@ -77,6 +79,22 @@ const shared = {
     } catch(error){
       listServicesLog(error);
       let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get services!";
+      res.status(500).json({message: messageOfCustomError});
+    }
+  },
+  listAgentLimits: async(res, query, skip, limit) => {
+    try{
+      const agentLimits = await AgentLimits.find(query)
+      .select({__v: 0})
+      .skip(skip)
+      .limit(limit)
+      .exec();
+  
+      listAgentLimitsLog(agentLimits);
+      res.status(200).json({agentLimits: agentLimits});
+    } catch(error){
+      listAgentLimitsLog(error);
+      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get agent limits!";
       res.status(500).json({message: messageOfCustomError});
     }
   },
@@ -144,7 +162,7 @@ const createUniqueRefId = async (roleName) => {
     
   let ID = alphaNumericID.generateID(lastUserId?._id);
   createUniqueRefIdLog(ID);
-  return new Promise(resolve => resolve(ID));
+  return new Promise(resolve => resolve(ID)); //TODO remove promise
 };
 
 const getUserLastRefId = async (roleName) => {
@@ -153,7 +171,7 @@ const getUserLastRefId = async (roleName) => {
     const user = await User.findOne({role: roleName}, {}, {sort: {'created_at': -1}})
       .exec();
       getUserLastRefIdLog(user);
-      return new Promise(resolve => resolve(user));
+      return new Promise(resolve => resolve(user)); //TODO remove promise, wrong way, by default return promise
   } catch(error){
     getUserLastRefIdLog(error);
     let messageOfLastID = error.code === INTERR ? error.message : "Failed! no id found!";

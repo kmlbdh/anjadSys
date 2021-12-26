@@ -2,7 +2,8 @@ const {
   validateListUsers,
   validateAddService,
   validateListServices,
-  validateAddAgentLimits
+  validateAddAgentLimits,
+  validateListMainAgentLimits
  } = require("../middleware/middleware.admin");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.admin");
@@ -46,4 +47,10 @@ module.exports = function(app){
     auth.isAdmin,
     validateAddAgentLimits,
   ], controller.addAgentLimits);
+
+  app.post("/api/admin/list-main-agent-limits",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateListMainAgentLimits,
+  ], controller.listMainAgentLimits);
 };

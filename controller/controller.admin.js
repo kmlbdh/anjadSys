@@ -5,6 +5,7 @@ const {
   createUser: sharedCreateUser,
   listUsers: sharedListUsers,
   listServices: sharedlistServices,
+  listAgentLimits: sharedListAgentLimits,
   } = require("./controller.shared");
 
 const User = db.userModel;
@@ -19,6 +20,7 @@ const createUserLog = util.debuglog("controller.admin-CreateUser");
 const addServiceLog = util.debuglog("controller.admin-AddService");
 const listServicesLog = util.debuglog("controller.admin-ListServices");
 const addAgentLimitsLog = util.debuglog("controller.admin-AddAgentLimits");
+const listMainAgentLimitsLog = util.debuglog("controller.admin-listMainAgentLimits");
 
 const listUsers = async(req, res) => {
   try {
@@ -113,4 +115,28 @@ const addAgentLimits = async(req, res) => {
   }
 };
 
-module.exports = {listUsers, createUser, addService, listServices, addAgentLimits};
+const listMainAgentLimits = async(req, res) => {
+  try {
+    listMainAgentLimitsLog(req.body);
+    let query = {};
+    const limit = req.body.limit ? req.body.limit : 20;
+    const skip = req.body.skip ? req.body.skip : 0;
+    if (req.body.agentID) query.agentID = req.body.agentID;
+    query.services = { $exists: false };
+
+    await sharedListAgentLimits(res, query, skip, limit);
+  } catch(error) {
+    listMainAgentLimitsLog(error);
+    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! can't list agent limits!";
+    res.json({message: messageOfCustomError });
+  }
+};
+
+module.exports = {
+  listUsers,
+  createUser,
+  addService,
+  listServices,
+  addAgentLimits,
+  listMainAgentLimits
+};

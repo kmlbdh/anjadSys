@@ -124,11 +124,7 @@ const checkRole = async(roleIndex, req, res) => {
     }
     isAdminLog(req.admin, req.agent);
 
-    return new Promise((resolve, reject) => {
-      if(req.admin || req.agent)
-        resolve(true);
-      reject(false);
-    });
+    return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
   } catch(error){
     isAdminLog(error);
     const customErrorCheckRole = error.code === INTERR ? error.message : "Failed! can't get role!";

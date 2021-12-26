@@ -46,7 +46,10 @@ module.exports.schema = {
   }),
   addAgentLimitsForAdmin: Joi.object().keys({
     limitAmount: Joi.number().min(1).required(),
-    agentID: Joi.string().trim().min(9).required()
+    agentID: Joi.string().trim().min(9).max(9).required()
+  }),
+  listMainAgentLimitsForAdmin: Joi.object().keys({
+    agentID: Joi.string().trim().min(9).max(9).optional()
   }),
   listUsersForAgent: Joi.object().keys({
     limit: Joi.number().optional(),
