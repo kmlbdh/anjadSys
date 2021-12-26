@@ -1,58 +1,55 @@
 const db = require("../model");
 const util = require("util");
-// const customError = require("../classes/customError");
+const customError = require("../classes/customError");
+const { createUser: sharedCreateUser, listUsers: sharedListUsers } = require("./controller.shared");
 
 const User = db.userModel;
-// const Role = db.roleModel;
-// const mongoose = db.mongoose;
+const Role = db.roleModel;
 const INTERR = 'INT_ERR';
 
 //debugging NOT FOR PRODUCTION
 const listUsersLog = util.debuglog("controller.admin-ListUsers");
+const createUserLog = util.debuglog("controller.admin-CreateUser");
 
 const listUsers = async(req, res) => {
-  const role = req.body.role ? req.body.role : {$ne: ""};
+  listUsersLog(req.body.agentID);
+  let query = {};
   const limit = req.body.limit ? req.body.limit : 20;
   const skip = req.body.skip ? req.body.skip : 0;
+  if (req.body.role) query.role = req.body.role;
+  if (req.body.agentID){
+    const agId = String(req.body.agentID);
+    query = {...query, 'agent.agentID': agId};
+  }
+  if (req.body.nickname) query = {...query, 'agent.agentNickname': req.body.nickname};
+  if (req.body.userID) query._id = req.body.userID;
 
-  listUsersLog(role);
-  try{
-    const users = await User.aggregate([
-      {
-        $lookup: {
-          from: "roles",
-          localField: "role",
-          foreignField: "_id",
-          as: "role",
-        }
-      },
-      {
-        $match: {"role.name": role}
-      },
-      { 
-        $unwind: "$role" 
-      },
-      {
-        $project: {"_id": 1, "refId": 1, "username": 1, "nickname": 1, "phone": 1, "tel":1, "note": 1,
-        "role": "$role.name", "created_at": 1}
-      },
-      {
-        $sort: {"created_at": -1}
-      },
-      {
-        $skip: skip
-      },
-      {
-        $limit: limit
-      }
-  ]).exec();
-    listUsersLog(users);
-    res.status(200).json({users: users});
-  } catch(error){
-    listUsersLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get users!";
-    res.status(500).json({message: messageOfCustomError});
+  listUsersLog(query);
+  await sharedListUsers(res, query, skip, limit);
+};
+
+const createUser = async (req, res) => {
+  try {
+    let {username, nickname, password, phone, tel, note, role, agent:{agentID, agentNickname} = {}} = req.body;
+
+    const agent = (!agentID || !agentNickname) ? undefined : {agentID, agentNickname};
+    const roleDB = await Role.findOne({name: {$eq: role}}).exec();
+    if(!roleDB)
+      throw new customError("Failed! Role not exist!", INTERR);
+
+    await sharedCreateUser(res, {username, nickname, password, phone, tel, note, role: roleDB.name, agent});
+  } catch(error) {
+    createUserLog(error);
+    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! User wasn't registered!";
+    res.json({message: messageOfCustomError });
   }
 };
 
-module.exports = {listUsers};
+const addService = async(req, res) => {
+  // name: {type: String, required: true, unique: true},
+  // coverDays: {type: Number, required:true},
+  // cost: {type: Number, required: true},
+  // note: String,
+};
+
+module.exports = {listUsers, createUser, addService};

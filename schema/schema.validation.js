@@ -1,10 +1,10 @@
 const Joi = require("joi");
 
 module.exports.schema = {
-  signup: Joi.object().keys({
-    username: Joi.string().required().min(3),
-    nickname: Joi.string().min(3).optional(),
-    password: Joi.string().required().label('password'),
+  createUser: Joi.object().keys({
+    username: Joi.string().trim().required().min(3),
+    nickname: Joi.string().trim().min(3).optional(),
+    password: Joi.string().trim().required().label('password'),
     confirmPassword: Joi.any()
       .equal(Joi.ref('password'))
       .required()
@@ -13,19 +13,38 @@ module.exports.schema = {
       .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } }),
     phone: Joi.number().required().min(9),
     tel: Joi.number().min(7).optional(),
-    note: Joi.string().min(10).optional(),
-    role: Joi.string().required().min(5),
+    note: Joi.string().trim().min(10).optional(),
+    role: Joi.string().trim().required().min(5).optional(),
+    agent: Joi.object().keys({
+      agentID: Joi.string().trim().optional(),
+      agentNickname: Joi.string().trim().optional(),
+    }).optional(),
   }),
-  singin: Joi.object().keys({
-    username: Joi.string()
+  login: Joi.object().keys({
+    username: Joi.string().trim()
       .pattern(/^(AD-\d{3})$|^(AG-\d{6})$|^(C-\d{8})$/)
       .required()
       .options({messages: {"string.pattern.base": "username is wrong!"}}),
-    password: Joi.string().required()
+    password: Joi.string().trim().required()
   }),
-  listUsersByRole: Joi.object().keys({
-    role: Joi.string().min(5),
-    limit: Joi.number(),
-    skip: Joi.number().min(0),
+  listUsersForAdmin: Joi.object().keys({
+    role: Joi.string().trim().min(5).optional(),
+    limit: Joi.number().optional(),
+    skip: Joi.number().min(0).optional(),
+    agentID: Joi.string().trim().min(6).optional(),
+    userID: Joi.string().trim().min(6).optional(),
+    nickname: Joi.string().trim().optional(),
+  }),
+  addServiceForAdmin: Joi.object().keys({
+    name: Joi.string().trim().min(5),
+    coverDays: Joi.number().min(1),
+    cost: Joi.number().min(1),
+    note: Joi.string().trim().optional(),
+  }),
+  listUsersForAgent: Joi.object().keys({
+    limit: Joi.number().optional(),
+    skip: Joi.number().min(0).optional(),
+    userID: Joi.string().min(6).optional(),
+    nickname: Joi.string().optional(),
   }),
 };
