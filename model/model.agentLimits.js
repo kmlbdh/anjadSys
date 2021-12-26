@@ -1,7 +1,7 @@
 const { model, Schema } = require("mongoose");
 
 const agentLimits = new Schema({
-  totalMoney: {type: String, required: true},
+  totalMoney: {type: Number, required: true},
   agentID: {
     type: String,
     ref: "User",
