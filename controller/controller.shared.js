@@ -12,8 +12,10 @@ const createUniqueRefIdLog = util.debuglog("controller.shared-createUniqueRefId"
 const getUserLastRefIdLog = util.debuglog("controller.shared-getLastId");
 const loginLog = util.debuglog("controller.shared-login");
 const listUsersLog = util.debuglog("controller.shared-listUsers");
+const listServicesLog = util.debuglog("controller.shared-listServices");
 
 const User = db.userModel;
+const Service = db.serviceModel;
 // const Role = db.roleModel;
 const INTERR = 'INT_ERR';
 
@@ -59,6 +61,22 @@ const shared = {
     } catch(error){
       listUsersLog(error);
       let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get users!";
+      res.status(500).json({message: messageOfCustomError});
+    }
+  },
+  listServices: async(res, query, skip, limit) => {
+    try{
+      const services = await Service.find(query)
+      .select({__v: 0})
+      .skip(skip)
+      .limit(limit)
+      .exec();
+  
+      listServicesLog(services);
+      res.status(200).json({services: services});
+    } catch(error){
+      listServicesLog(error);
+      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get services!";
       res.status(500).json({message: messageOfCustomError});
     }
   },

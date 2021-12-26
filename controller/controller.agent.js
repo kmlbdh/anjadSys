@@ -44,4 +44,23 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = {listUsers, createUser};
+//TODO same function in admin, if haven't more requirements in both need to move to shared controller
+const listServices = async(req, res) => {
+  try{
+    listServicesLog(req.body.agentID);
+    let query = {};
+    const limit = req.body.limit ? req.body.limit : 20;
+    const skip = req.body.skip ? req.body.skip : 0;
+    if (req.body.serviceName) query.name = req.body.serviceName;
+
+    listServicesLog(query);
+    await sharedlistServices(res, query, skip, limit);
+
+  } catch(error) {
+    listServicesLog(error);
+    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! can't get services!";
+    res.json({message: messageOfCustomError });
+  }
+};
+
+module.exports = {listUsers, createUser, listServices};

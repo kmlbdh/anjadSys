@@ -1,4 +1,9 @@
-const { validateListUsers, validateAddService } = require("../middleware/middleware.admin");
+const { 
+  validateListUsers,
+  validateAddService,
+  validateListServices,
+  validateAddAgentLimits
+ } = require("../middleware/middleware.admin");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.admin");
 
@@ -29,4 +34,16 @@ module.exports = function(app){
     auth.isAdmin,
     validateAddService,
   ], controller.addService);
+
+  app.post("/api/admin/list-services",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateListServices,
+  ], controller.listServices);
+
+  app.post("/api/admin/add-agent-limits",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateAddAgentLimits,
+  ], controller.addAgentLimits);
 };

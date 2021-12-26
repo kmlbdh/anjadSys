@@ -36,10 +36,17 @@ module.exports.schema = {
     nickname: Joi.string().trim().optional(),
   }),
   addServiceForAdmin: Joi.object().keys({
-    name: Joi.string().trim().min(5),
-    coverDays: Joi.number().min(1),
+    serviceName: Joi.string().trim().min(5),
+    coverageDays: Joi.number().min(1),
     cost: Joi.number().min(1),
     note: Joi.string().trim().optional(),
+  }),
+  listServicesForAdmin: Joi.object().keys({
+    serviceName: Joi.string().trim().min(1).optional()
+  }),
+  addAgentLimitsForAdmin: Joi.object().keys({
+    limitAmount: Joi.number().min(1).required(),
+    agentID: Joi.string().trim().min(9).required()
   }),
   listUsersForAgent: Joi.object().keys({
     limit: Joi.number().optional(),
