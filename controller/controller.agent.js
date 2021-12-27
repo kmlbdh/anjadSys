@@ -35,11 +35,11 @@ const createUser = async (req, res) => {
   try {
     let {username, nickname, password, phone, tel, note} = req.body;
     const agent = {
-      agentId: req.agent._id,
+      agentID: req.agent._id,
       agentNickname: req.agent.nickname
     };
     const roleDB = await Role.findOne({name: {$eq: 'customer'}}).exec();
-
+    createUserLog(agent);
     await sharedCreateUser(res, {username, nickname, password, phone, tel, note, role: roleDB.name, agent});
   } catch(error) {
     createUserLog(error);
