@@ -64,12 +64,13 @@ const createUser = async (req, res) => {
 
 const addService = async(req, res) => {
   try {
-    let {serviceName, coverageDays, cost, note} = req.body;
+    let {serviceName, coverageDays, cost, note, dailyCost} = req.body;
     const service = new Service({
       name: serviceName,
       coverDays: coverageDays,
       cost,
-      note
+      note,
+      dailyCost
     });
     await service.save();
     res.json({message: "Service was added successfully!"});

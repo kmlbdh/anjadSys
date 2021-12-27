@@ -40,6 +40,7 @@ module.exports.schema = {
     coverageDays: Joi.number().min(1),
     cost: Joi.number().min(1),
     note: Joi.string().trim().optional(),
+    dailyCost: Joi.number().optional(),
   }),
   listServicesForAdmin: Joi.object().keys({
     serviceName: Joi.string().trim().min(1).optional()
