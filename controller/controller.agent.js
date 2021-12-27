@@ -35,8 +35,8 @@ const createUser = async (req, res) => {
   try {
     let {username, nickname, password, phone, tel, note} = req.body;
     const agent = {
-      agentId: req.agent.agentID,
-      agentNickname: req.agent.agentNickname
+      agentId: req.agent._id,
+      agentNickname: req.agent.nickname
     };
     const roleDB = await Role.findOne({name: {$eq: 'customer'}}).exec();
 
