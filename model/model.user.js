@@ -26,13 +26,14 @@ const userServices = new Schema({
 const User = new Schema({
   _id: String,
   username: {type: String, required: true},
-  nickname:{type: String},
-  password: {type: String, required: true},
-  phone: {type: String, required: true},
-  tel: {type: String, required: true},
+  nickname:{type: String, required: false, default: undefined},
+  password: {type: String, required: false, default: undefined},
+  address: {type: String, required: false, default: undefined},
+  phone: {type: String, required: false, default: undefined},
+  tel: {type: String, required: false, default: undefined},
   note: {type: String, required: false, default: undefined},
   role: { type: String, required: true},
-  agent: userAgent,
+  agent: {type: userAgent,required: false, default: undefined},
   services: {type: [userServices], required: false, default: undefined}
 }, {timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
 

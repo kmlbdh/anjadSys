@@ -36,14 +36,14 @@ const listUsers = async(req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    let {username, nickname, password, phone, tel, note} = req.body;
+    let {username, nickname, address, password, phone, tel, note} = req.body;
     const agent = {
       agentID: req.agent._id,
       agentNickname: req.agent.nickname
     };
-    const roleDB = await Role.findOne({name: {$eq: 'customer'}}).exec();
+    const roleDB = await Role.findOne({name: 'customer'}).exec();
     createUserLog(agent);
-    await sharedCreateUser(res, {username, nickname, password, phone, tel, note, role: roleDB.name, agent});
+    await sharedCreateUser(res, {username, nickname, address, password, phone, tel, note, role: roleDB.name, agent});
   } catch(error) {
     createUserLog(error);
     let messageOfCustomError = error.code === INTERR ? error.message : "Failed! User wasn't registered!";

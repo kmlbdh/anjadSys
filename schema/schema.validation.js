@@ -11,10 +11,10 @@ module.exports.schema = {
       .strip() //remove it from body after validation
       .label("Confirm password")
       .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } }),
-    phone: Joi.number().required().min(9),
+    phone: Joi.number().min(9).optional(),
     tel: Joi.number().min(7).optional(),
     note: Joi.string().trim().min(10).optional(),
-    role: Joi.string().trim().required().min(5).optional(),
+    role: Joi.string().trim().required().min(5),
     agent: Joi.object().keys({
       agentID: Joi.string().trim().optional(),
       agentNickname: Joi.string().trim().optional(),
@@ -27,6 +27,14 @@ module.exports.schema = {
       .options({messages: {"string.pattern.base": "username is wrong!"}}),
     password: Joi.string().trim().required()
   }),
+  createSupplierForAdmin: Joi.object().keys({
+    username: Joi.string().trim().required().min(3),
+    nickname: Joi.string().trim().min(3).optional(),
+    address: Joi.string().trim().min(3).optional(),
+    phone: Joi.number().min(9).optional(),
+    tel: Joi.number().min(7).optional(),
+    note: Joi.string().trim().min(10).optional(),
+  }),
   listUsersForAdmin: Joi.object().keys({
     role: Joi.string().trim().min(5).optional(),
     limit: Joi.number().optional(),
@@ -36,11 +44,18 @@ module.exports.schema = {
     nickname: Joi.string().trim().optional(),
   }),
   addServiceForAdmin: Joi.object().keys({
-    serviceName: Joi.string().trim().min(5),
-    coverageDays: Joi.number().min(1),
-    cost: Joi.number().min(1),
+    serviceName: Joi.string().trim().min(5).required(),
+    coverageDays: Joi.number().min(1).required(),
+    cost: Joi.number().min(1).required(),
     note: Joi.string().trim().optional(),
     dailyCost: Joi.number().optional(),
+  }),
+  addSupplierPartsForAdmin: Joi.object().keys({
+    partNo: Joi.number().optional(),
+    partName: Joi.string().trim().required(),
+    quantity: Joi.number().min(1).required(),
+    cost: Joi.number().min(1).required(),
+    supplierID: Joi.string().min(9).max(9).required(),
   }),
   listServicesForAdmin: Joi.object().keys({
     serviceName: Joi.string().trim().min(1).optional()

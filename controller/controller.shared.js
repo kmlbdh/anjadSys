@@ -23,11 +23,11 @@ const INTERR = 'INT_ERR';
 
 const shared = {
   createUser: async(res, data) => {
-    let {username, nickname, password, phone, tel, note, role, agent} = data;
+    let {username, nickname, address, password, phone, tel, note, role, agent} = data;
     
     const _id = await createUniqueRefId(role);
     createUserLog(_id);
-    password = bcrypt.hashSync(password);
+    password = password ? bcrypt.hashSync(password): undefined;
   
     try{
       const user = new User({
@@ -35,6 +35,7 @@ const shared = {
         username,
         nickname,
         password,
+        address,
         phone,
         tel,
         note,
@@ -150,6 +151,11 @@ const createUniqueRefId = async (roleName) => {
     case 'customer':
       shortPrefix = 'C';
       length = 8;
+      break;
+
+    case 'supplier':
+      shortPrefix = 'SUP';
+      length = 5;
       break;
   }
   const lastUserId = await getUserLastRefId(roleName);

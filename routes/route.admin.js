@@ -3,7 +3,9 @@ const {
   validateAddService,
   validateListServices,
   validateAddAgentLimits,
-  validateListMainAgentLimits
+  validateListMainAgentLimits,
+  validateAddSupplier,
+  validateAddSupplierParts,
  } = require("../middleware/middleware.admin");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.admin");
@@ -17,18 +19,31 @@ module.exports = function(app){
     next();
   });
 
-  app.post("/api/admin/list-users",[
-    auth.verifyToken,
-    auth.isAdmin,
-    validateListUsers
-  ], controller.listUsers);
-
   app.post("/api/admin/create-user",[
     auth.verifyToken,
     auth.isAdmin,
     verifyCreateUser.validateCreateUser,
     verifyCreateUser.checkDuplicateUsernameOrNickname
   ], controller.createUser);
+
+  app.post("/api/admin/create-supplier",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateAddSupplier,
+    verifyCreateUser.checkDuplicateUsernameOrNickname
+  ], controller.createSupplier);
+
+  app.post("/api/admin/add-supplier-part",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateAddSupplierParts,
+  ], controller.addSupplierParts);
+
+  app.post("/api/admin/list-users",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateListUsers
+  ], controller.listUsers);
 
   app.post("/api/admin/add-service",[
     auth.verifyToken,
