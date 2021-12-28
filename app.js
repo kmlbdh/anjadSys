@@ -21,13 +21,17 @@ async function initial(){
       if(!customer) console.log("error");
       console.log("added 'customer' to roles collections");
 
-      const agent = new Role({name: "agent"}).save();
+      const agent = await new Role({name: "agent"}).save();
       if(!agent) console.log("error");
       console.log("added 'agent' to roles collections");
 
-      const admin = await  new Role({name: "admin"}).save();
+      const admin = await new Role({name: "admin"}).save();
       if(!admin) console.log("error");
       console.log("added 'admin' to roles collections");
+
+      const supplier = await new Role({name: "supplier"}).save();
+      if(!supplier) console.log("error");
+      console.log("added 'supplier' to roles collections");
     }
 
     const adminCount = await User.estimatedDocumentCount();
