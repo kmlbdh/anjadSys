@@ -1,15 +1,17 @@
 const { model, Schema } = require("mongoose");
 const service = new Schema({
-   type: {
-    serviceID: {
-      type: Schema.Types.ObjectId,
-      ref: "Service"
-    },
-    userID: {
-      type: String,
-      ref: "User"
-    },
-    cost: Number
+  serviceID: {
+    type: Schema.Types.ObjectId,
+    ref: "Service"
+  },
+  userID: {
+    type: String,
+    ref: "User"
+  },
+  cost: Number,
+  customerServiceID: {
+    type: Schema.Types.ObjectId,
+    ref: "User.services"
   }
 }, {_id: false});
 

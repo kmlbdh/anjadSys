@@ -64,6 +64,8 @@ module.exports.schema = {
     serviceID: Joi.string().trim().required(),
     price: Joi.number().min(1).required(),
     period: Joi.number().min(1).required(),
+    additionalDays: Joi.number().optional(),
+    dailyCost: Joi.number().optional(),
     startDate: Joi.date().required(),
     endDate: Joi.date().required(),
   }),

@@ -5,6 +5,7 @@ const { createUser: sharedCreateUser, listUsers: sharedListUsers } = require("./
 
 const User = db.userModel;
 const Role = db.roleModel;
+const mongoose = db.mongoose;
 // const Service = db.serviceModel;
 const agentLimits = db.agentLimitsModel;
 const INTERR = 'INT_ERR';
@@ -14,6 +15,8 @@ const listUsersLog = util.debuglog("controller.agent-ListUsers");
 const createUserLog = util.debuglog("controller.agent-CreateUser");
 const listServicesLog = util.debuglog("controller.agent-ListServices");
 const addServiceToCustomerLog = util.debuglog("controller.agent-addServiceToCustomer");
+const checkAgentLimitsLog = util.debuglog("controller.agent-checkAgentLimits");
+const addServiceToCustDocLog = util.debuglog("controller.agent-addServiceToCustDocs");
 
 const listUsers = async(req, res) => {
   const role = await Role.findOne({name: 'customer'}).exec();
@@ -68,56 +71,94 @@ const listServices = async(req, res) => {
 };
 
 const addServiceToCustomer = async(req, res) => {
-  try{
-    const { userID, serviceName, serviceID, price, period, startDate, endDate} = req.body;
-  
-    let objAgentLimits = (await agentLimits.findOne({agentID: req.agent._id}, {}, {sort: {'created_at': -1}}))
-      .toObject();
-    addServiceToCustomerLog(objAgentLimits);
+  // Using Mongoose's default connection
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    const limit = parseInt(objAgentLimits.totalMoney) - parseInt(price);
-    addServiceToCustomerLog(limit);
-    if(limit < 0)
-      throw new customError("you don't have enough money", INTERR);
-    
-    objAgentLimits.totalMoney = limit;
-    objAgentLimits._id = undefined;
-    objAgentLimits.service = {
-      serviceID,
-      userID,
-      cost: price
-    };
-    let newAgentLimits = new agentLimits(objAgentLimits)
-    newAgentLimits.isNew = true;
-  
+  try{
+    const { userID, serviceID, price: reqPrice, dailyCost, additionalDays, period} = req.body;
+    //Equation
+    const finalPrice = (dailyCost && additionalDays) ? (reqPrice + (dailyCost * additionalDays)) : reqPrice;
+    const finalPeriod = (dailyCost && additionalDays) ? (period + additionalDays) : period;
+    const agentID = req.agent._id;
+
+    const newLimit = await checkAgentLimits(agentID, session, finalPrice);
+
+    const newCustomerServiceID = await addServiceToCustDoc(req, finalPrice, finalPeriod, session);
+
+    let newAgentLimits = new agentLimits({
+      totalMoney: newLimit,
+      agentID,
+      service: {
+        serviceID,
+        userID,
+        cost: finalPrice,
+        customerServiceID: newCustomerServiceID
+      }
+    });
+
+    addServiceToCustomerLog(newAgentLimits);
     const saveAgentLimit = await newAgentLimits.save();
     if(!saveAgentLimit) throw new customError("Failed! can't add service to the customer", INTERR);
 
-    const query = {_id: userID, 'agent.agentID': req.agent._id};
-    const serviceUpdate = {
-      serviceID,
-      serviceName,
-      price,
-      period,
-      startDate,
-      endDate
-    };
-    addServiceToCustomerLog(query);
-    const {lastErrorObject:{ updatedExisting }} = await User.findOneAndUpdate(query, 
-      {
-        $addToSet: {"services": serviceUpdate}
-      }, {rawResult: true });
-    addServiceToCustomerLog(updatedExisting);
-
-    if(!updatedExisting)
-      throw new customError("Failed! service is not add!", INTERR);
-
+    await session.commitTransaction();
     res.status(200).json({message: "service is added to the customer!"});
   } catch(error) {
+    await session.abortTransaction();
     addServiceToCustomerLog(error);
     let messageOfCustomError = error.code === INTERR ? error.message : "Failed! service is not add!";
     res.json({message: messageOfCustomError });
   }
+};
+
+//Part of addServiceToCustomer function
+const checkAgentLimits = async(agentId, session, finalPrice) => {
+
+  let objAgentLimits = await agentLimits.findOne({agentID: agentId}, null, {sort: {'created_at': -1}})
+    .session(session).exec();
+  checkAgentLimitsLog(objAgentLimits);
+  if(!objAgentLimits)
+    throw new customError("you don't money in your limits, please ask adminitrator to add money limits for you", INTERR);
+  
+  objAgentLimits = objAgentLimits.toObject();
+  const limit = parseInt(objAgentLimits.totalMoney) - parseInt(finalPrice);
+  checkAgentLimitsLog(limit);
+  if(limit < 0)
+    throw new customError("you don't have enough money", INTERR);
+
+  return limit;
+};
+
+//Part of addServiceToCustomer function
+const addServiceToCustDoc = async(req, finalPrice, finalPeriod, session) => {
+  const { userID, serviceName, serviceID, dailyCost, additionalDays, startDate, endDate} = req.body;
+
+  const query = {_id: userID, 'agent.agentID': req.agent._id};
+  const serviceUpdate = {
+    serviceID,
+    serviceName,
+    price: finalPrice,
+    period: finalPeriod,
+    startDate,
+    endDate,
+    additionalDays,
+    dailyCost
+  };
+  addServiceToCustDocLog(query);
+
+  const {value: {services}, lastErrorObject} = await User.findOneAndUpdate(query, 
+    {
+      $addToSet: {"services": serviceUpdate}
+    }, {
+      new: true,
+      rawResult: true,
+      session: session
+      });
+
+  if(!lastErrorObject.updatedExisting || lastErrorObject.n !== 1) 
+    throw new customError("Failed! service is not add to user!", INTERR);
+  
+  return services[services.length - 1]._id;
 };
 
 module.exports = {

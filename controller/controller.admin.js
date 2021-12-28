@@ -102,7 +102,7 @@ const listServices = async(req, res) => {
 const addAgentLimits = async(req, res) => {
   try {
     let {limitAmount, agentID} = req.body;
-    addAgentLimitsLog('here',req.body);
+    addAgentLimitsLog(req.body);
     const agentLimits = new AgentLimits({
       totalMoney: limitAmount,
       agentID
@@ -111,7 +111,7 @@ const addAgentLimits = async(req, res) => {
     res.json({message: "agent money limits was added successfully!"});
   } catch(error) {
     addServiceLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! agent money limits wasn't added!";
+    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! agent limits wasn't added!";
     res.json({message: messageOfCustomError });
   }
 };

@@ -17,9 +17,11 @@ const userServices = new Schema({
     serviceName: String,
     price: {type: Number, required: true},
     period: {type: Number, required: true},
-    startDate: {type: Date, required: true},
-    endDate: {type: Date, required: true}
-}, {_id: false});
+    startDate: {type: Date, required: true, default: Date.now()},
+    endDate: {type: Date, required: true},
+    additionalDays: {type: Number, required: false, default: undefined},
+    dailyCost: {type: Number, required: false, default: undefined}
+}, {timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
 
 const User = new Schema({
   _id: String,
