@@ -21,10 +21,13 @@ const INTERR = 'INT_ERR';
 const listUsersLog = util.debuglog("controller.admin-ListUsers");
 const createUserLog = util.debuglog("controller.admin-CreateUser");
 const addServiceLog = util.debuglog("controller.admin-AddService");
+const deleteServiceLog = util.debuglog("controller.admin-DeleteService");
 const listServicesLog = util.debuglog("controller.admin-ListServices");
 const addAgentLimitsLog = util.debuglog("controller.admin-AddAgentLimits");
+const deleteAgentLimitsLog = util.debuglog("controller.admin-DeleteAgentLimits");
 const listMainAgentLimitsLog = util.debuglog("controller.admin-listMainAgentLimits");
 const addSupplierPartsLog = util.debuglog("controller.admin-addSupplierParts");
+const deleteSupplierPartsLog = util.debuglog("controller.admin-deleteSupplierParts");
 
 const createUser = async (req, res) => {
   try {
@@ -82,6 +85,20 @@ const addSupplierParts = async(req, res) => {
   }
 };
 
+const deleteSupplierParts = async(req, res) => {
+  try{
+    let {supplierPartsID} = req.body;
+    const supplierParts = await SupplierParts.findOneAndDelete({_id: supplierPartsID}).exec();
+    if(!supplierParts)
+      throw new customError("Failed! part of the supplier wasn't deleted!", INTERR);
+
+    res.status(200).json({message: "supplier part was deleted successfully!"});
+  } catch(error){
+    deleteSupplierPartsLog(error);
+    errorHandler(res, error, "Failed! part of the supplier wasn't deleted!");
+  }
+};
+
 const listUsers = async(req, res) => {
   try {
     listUsersLog(req.body.agentID);
@@ -131,7 +148,7 @@ const deleteService = async(req, res) => {
 
     res.status(200).json({message: "Service was added successfully!"});
   } catch(error) {
-    addServiceLog(error);
+    deleteServiceLog(error);
     errorHandler(res, error, "Failed! service isn't deleted!");
   }
 };
@@ -172,7 +189,7 @@ const addAgentLimits = async(req, res) => {
 const deleteAgentLimits = async(req, res) => {
   try {
     let {agentLimitID} = req.body;
-    addAgentLimitsLog(req.body);
+    deleteAgentLimitsLog(req.body);
     const agentLimits = await AgentLimits.findOneAndDelete({_id: agentLimitID, 
       $or: [{services: {$exists: false}}, {service: {$size: 0}}]}).exec();
 
@@ -181,7 +198,7 @@ const deleteAgentLimits = async(req, res) => {
 
     res.status(200).json({message: "agent limits was deleted successfully!"});
   } catch(error) {
-    addServiceLog(error);
+    deleteAgentLimitsLog(error);
     errorHandler(res, error, "Failed! agent limits wasn't added!");
   }
 };
@@ -211,6 +228,7 @@ module.exports = {
   listServices,
   createSupplier,
   addSupplierParts,
+  deleteSupplierParts,
   addAgentLimits,
   deleteAgentLimits,
   listMainAgentLimits

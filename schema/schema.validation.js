@@ -47,6 +47,9 @@ module.exports.schema = {
     tel: Joi.number().min(7).optional(),
     note: Joi.string().trim().min(10).optional(),
   }),
+  deleteSupplierPartsForAdmin: Joi.object().keys({
+    supplierPartsID: Joi.string().trim().required()
+  }),
   listUsersForAdmin: Joi.object().keys({
     role: Joi.string().trim().min(5).optional(),
     limit: Joi.number().optional(),

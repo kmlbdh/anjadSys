@@ -9,6 +9,7 @@ const {
   validateListMainAgentLimits,
   validateAddSupplier,
   validateAddSupplierParts,
+  validateDeleteSupplierPart,
  } = require("../middleware/middleware.admin");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.admin");
@@ -47,6 +48,12 @@ module.exports = function(app){
     auth.isAdmin,
     validateAddSupplierParts,
   ], controller.addSupplierParts);
+
+  app.post("/api/admin/delete-supplier-part",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateDeleteSupplierPart,
+  ], controller.deleteSupplierParts);
 
   app.post("/api/admin/list-users",[
     auth.verifyToken,
