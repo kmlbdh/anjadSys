@@ -75,7 +75,7 @@ const addSupplierParts = async(req, res) => {
       supplierID
     });
     await supplier.save();
-    res.json({message: "supplier part was added successfully!"});
+    res.status(200).json({message: "supplier part was added successfully!"});
   } catch(error) {
     addSupplierPartsLog(error);
     errorHandler(res, error, "Failed! supplier part wasn't added!");
@@ -127,7 +127,7 @@ const deleteService = async(req, res) => {
     let {serviceID} = req.body;
     const service = await Service.findOneAndDelete({_id: serviceID}).exec();
     if(!service)
-      throw new customError("Failed! Service isn't deleted!");
+      throw new customError("Failed! Service isn't deleted!", INTERR);
 
     res.status(200).json({message: "Service was added successfully!"});
   } catch(error) {
@@ -162,7 +162,24 @@ const addAgentLimits = async(req, res) => {
       agentID
     });
     await agentLimits.save();
-    res.json({message: "agent money limits was added successfully!"});
+    res.status(200).json({message: "agent limits was added successfully!"});
+  } catch(error) {
+    addServiceLog(error);
+    errorHandler(res, error, "Failed! agent limits wasn't added!");
+  }
+};
+
+const deleteAgentLimits = async(req, res) => {
+  try {
+    let {agentLimitID} = req.body;
+    addAgentLimitsLog(req.body);
+    const agentLimits = await AgentLimits.findOneAndDelete({_id: agentLimitID, 
+      $or: [{services: {$exists: false}}, {service: {$size: 0}}]}).exec();
+
+    if(!agentLimits)
+      throw new customError("Failed! agent limits wasn't deleted!", INTERR);
+
+    res.status(200).json({message: "agent limits was deleted successfully!"});
   } catch(error) {
     addServiceLog(error);
     errorHandler(res, error, "Failed! agent limits wasn't added!");
@@ -195,5 +212,6 @@ module.exports = {
   createSupplier,
   addSupplierParts,
   addAgentLimits,
+  deleteAgentLimits,
   listMainAgentLimits
 };

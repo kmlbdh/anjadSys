@@ -5,6 +5,7 @@ const {
   validateDeleteService,
   validateListServices,
   validateAddAgentLimits,
+  validateDeleteAgentLimits,
   validateListMainAgentLimits,
   validateAddSupplier,
   validateAddSupplierParts,
@@ -76,6 +77,12 @@ module.exports = function(app){
     auth.isAdmin,
     validateAddAgentLimits,
   ], controller.addAgentLimits);
+
+  app.post("/api/admin/delete-agent-limits",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateDeleteAgentLimits,
+  ], controller.deleteAgentLimits);
 
   app.post("/api/admin/list-main-agent-limits",[
     auth.verifyToken,

@@ -73,7 +73,6 @@ const listServices = async(req, res) => {
 
     listServicesLog(query);
     await sharedlistServices(res, query, skip, limit);
-
   } catch(error) {
     listServicesLog(error);
     let messageOfCustomError = error.code === INTERR ? error.message : "Failed! can't get services!";
