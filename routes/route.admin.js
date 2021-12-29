@@ -10,6 +10,7 @@ const {
   validateAddSupplier,
   validateAddSupplierParts,
   validateDeleteSupplierPart,
+  validateListSupplierPart,
  } = require("../middleware/middleware.admin");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.admin");
@@ -54,6 +55,12 @@ module.exports = function(app){
     auth.isAdmin,
     validateDeleteSupplierPart,
   ], controller.deleteSupplierParts);
+
+  app.post("/api/admin/list-supplier-parts",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateListSupplierPart,
+  ], controller.listSupplierParts);
 
   app.post("/api/admin/list-users",[
     auth.verifyToken,

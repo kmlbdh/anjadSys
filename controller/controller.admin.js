@@ -28,6 +28,7 @@ const deleteAgentLimitsLog = util.debuglog("controller.admin-DeleteAgentLimits")
 const listMainAgentLimitsLog = util.debuglog("controller.admin-listMainAgentLimits");
 const addSupplierPartsLog = util.debuglog("controller.admin-addSupplierParts");
 const deleteSupplierPartsLog = util.debuglog("controller.admin-deleteSupplierParts");
+const listSupplierPartsLog = util.debuglog("controller.admin-ListSupplierParts");
 
 const createUser = async (req, res) => {
   try {
@@ -96,6 +97,32 @@ const deleteSupplierParts = async(req, res) => {
   } catch(error){
     deleteSupplierPartsLog(error);
     errorHandler(res, error, "Failed! part of the supplier wasn't deleted!");
+  }
+};
+
+const listSupplierParts = async(req, res) => {
+  try {
+    listSupplierPartsLog(req.body);
+    let query = {};
+    const limit = req.body.limit ? req.body.limit : 20;
+    const skip = req.body.skip ? req.body.skip : 0;
+    if (req.body.partNo) query.partNo = req.body.partNo;
+    if (req.body.partName) query.partName = req.body.partName;
+    if (req.body.SupplierID) query.SupplierID = SupplierID;
+
+    listSupplierPartsLog(query);
+    const supplierParts = await SupplierParts.find(query)
+    .skip(skip)
+    .limit(limit)
+    .exec();
+    
+    if(!supplierParts || supplierParts.length === 0)
+      throw new customError("Failed! there is no parts found!", INTERR);
+
+    res.status(200).json({supplierParts: supplierParts})
+  } catch(error) {
+    listSupplierPartsLog(error);
+    errorHandler(res, error, "Failed! cant get parts!");
   }
 };
 
@@ -229,6 +256,7 @@ module.exports = {
   createSupplier,
   addSupplierParts,
   deleteSupplierParts,
+  listSupplierParts,
   addAgentLimits,
   deleteAgentLimits,
   listMainAgentLimits

@@ -10,6 +10,7 @@ const validateListMainAgentLimits = validation(schema.listMainAgentLimitsForAdmi
 const validateAddSupplier = validation(schema.createSupplierForAdmin, 'body');
 const validateAddSupplierParts = validation(schema.addSupplierPartsForAdmin, 'body');
 const validateDeleteSupplierPart = validation(schema.deleteSupplierPartsForAdmin, 'body');
+const validateListSupplierPart = validation(schema.listSupplierPartsForAdmin, 'body');
 const validateDeleteUser = validation(schema.deleteUserForAdmin, 'body');
 const validateDeleteService = validation(schema.deleteServiceForAdmin, 'body');
 
@@ -21,6 +22,7 @@ module.exports = {
   validateAddSupplier,
   validateAddSupplierParts,
   validateDeleteSupplierPart,
+  validateListSupplierPart,
   validateListServices,
   validateAddAgentLimits,
   validateDeleteAgentLimits,

@@ -50,10 +50,17 @@ module.exports.schema = {
   deleteSupplierPartsForAdmin: Joi.object().keys({
     supplierPartsID: Joi.string().trim().required()
   }),
+  listSupplierPartsForAdmin: Joi.object().keys({
+    supplierID: Joi.string().trim().optional(),
+    partNo: Joi.number().optional(),
+    partName: Joi.string().trim().optional(),
+    limit: Joi.number().optional(),
+    skip: Joi.number().optional()
+  }),
   listUsersForAdmin: Joi.object().keys({
     role: Joi.string().trim().min(5).optional(),
     limit: Joi.number().optional(),
-    skip: Joi.number().min(0).optional(),
+    skip: Joi.number().optional(),
     agentID: Joi.string().trim().min(9).max(9).optional(),
     userID: Joi.string().trim().min(10).max(10).optional(),
     nickname: Joi.string().trim().optional(),
@@ -68,15 +75,17 @@ module.exports.schema = {
   deleteServiceForAdmin: Joi.object().keys({
     serviceID: Joi.string().trim().required()
   }),
+  listServicesForAdmin: Joi.object().keys({
+    serviceName: Joi.string().trim().min(1).optional(),
+    limit: Joi.number().optional(),
+    skip: Joi.number().optional()
+  }),
   addSupplierPartsForAdmin: Joi.object().keys({
     partNo: Joi.number().optional(),
     partName: Joi.string().trim().required(),
     quantity: Joi.number().min(1).required(),
     cost: Joi.number().min(1).required(),
     supplierID: Joi.string().min(9).max(9).required(),
-  }),
-  listServicesForAdmin: Joi.object().keys({
-    serviceName: Joi.string().trim().min(1).optional()
   }),
   addAgentLimitsForAdmin: Joi.object().keys({
     limitAmount: Joi.number().min(1).required(),
@@ -90,7 +99,7 @@ module.exports.schema = {
   }),
   listUsersForAgent: Joi.object().keys({
     limit: Joi.number().optional(),
-    skip: Joi.number().min(0).optional(),
+    skip: Joi.number().optional(),
     userID: Joi.string().trim().min(10).max(10).optional(),
     nickname: Joi.string().trim().optional(),
   }),
