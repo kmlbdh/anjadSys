@@ -1,5 +1,6 @@
 const { 
   validateListUsers,
+  validateDeleteUser,
   validateListServices,
   validateAddServiceToCustomer,
 } = require("../middleware/middleware.agent");
@@ -26,6 +27,12 @@ module.exports = function(app){
     auth.isAgent,
     verifyCreateUser.validateCreateUser,
     verifyCreateUser.checkDuplicateUsernameOrNickname
+  ], controller.createUser);
+
+  app.post("/api/agent/delete-user",[
+    auth.verifyToken,
+    auth.isAgent,
+    validateDeleteUser
   ], controller.createUser);
 
   app.post("/api/agent/list-services",[

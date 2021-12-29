@@ -7,6 +7,7 @@ const {
   listUsers: sharedListUsers,
   listServices: sharedlistServices,
   listAgentLimits: sharedListAgentLimits,
+  deleteUser: sharedDeleteUser,
   } = require("./controller.shared");
 
 const User = db.userModel;
@@ -54,6 +55,13 @@ const createSupplier = async (req, res) => {
     createUserLog(error);
     errorHandler(res, error, "Failed! Supplier wasn't registered!");
   }
+};
+
+const deleteUser = async(req, res) => {
+  let {username} = req.body;
+  query = {_id: username};
+
+  await sharedDeleteUser(res, query);
 };
 
 const addSupplierParts = async(req, res) => {
@@ -166,6 +174,7 @@ const listMainAgentLimits = async(req, res) => {
 module.exports = {
   listUsers,
   createUser,
+  deleteUser,
   addService,
   listServices,
   createSupplier,

@@ -8,9 +8,11 @@ const validateAddAgentLimits = validation(schema.addAgentLimitsForAdmin, 'body')
 const validateListMainAgentLimits = validation(schema.listMainAgentLimitsForAdmin, 'body');
 const validateAddSupplier = validation(schema.createSupplierForAdmin, 'body');
 const validateAddSupplierParts = validation(schema.addSupplierPartsForAdmin, 'body');
+const validateDeleteUser = validation(schema.deleteUserForAdmin, 'body');
 
 module.exports = { 
   validateListUsers,
+  validateDeleteUser,
   validateAddService,
   validateAddSupplier,
   validateAddSupplierParts,

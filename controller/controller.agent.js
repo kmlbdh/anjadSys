@@ -2,7 +2,11 @@ const db = require("../model");
 const util = require("util");
 const customError = require("../classes/customError");
 const errorHandler = require("../classes/errorhandler");
-const { createUser: sharedCreateUser, listUsers: sharedListUsers } = require("./controller.shared");
+const { 
+  createUser: sharedCreateUser,
+  listUsers: sharedListUsers,
+  deleteUser: sharedDeleteUser,
+} = require("./controller.shared");
 
 const User = db.userModel;
 const Role = db.roleModel;
@@ -49,6 +53,13 @@ const createUser = async (req, res) => {
     createUserLog(error);
     errorHandler(res, error, "Failed! User wasn't registered!");
   }
+};
+
+const deleteUser = async(req, res) => {
+  let {username} = req.body;
+  query = {_id: username, agentID: req.agent._id};
+
+  await sharedDeleteUser(res, query);
 };
 
 //TODO same function in admin, if haven't more requirements in both need to move to shared controller
@@ -163,6 +174,7 @@ const addServiceToCustDoc = async(req, finalPrice, finalPeriod, session) => {
 module.exports = {
   listUsers,
   createUser,
+  deleteUser,
   listServices,
   addServiceToCustomer
 };

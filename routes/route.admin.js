@@ -1,5 +1,6 @@
 const { 
   validateListUsers,
+  validateDeleteUser,
   validateAddService,
   validateListServices,
   validateAddAgentLimits,
@@ -25,6 +26,12 @@ module.exports = function(app){
     verifyCreateUser.validateCreateUser,
     verifyCreateUser.checkDuplicateUsernameOrNickname
   ], controller.createUser);
+
+  app.post("/api/admin/delete-user",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateDeleteUser,
+  ], controller.deleteUser);
 
   app.post("/api/admin/create-supplier",[
     auth.verifyToken,

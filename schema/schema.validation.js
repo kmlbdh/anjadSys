@@ -27,6 +27,18 @@ module.exports.schema = {
       .options({messages: {"string.pattern.base": "username is wrong!"}}),
     password: Joi.string().trim().required()
   }),
+  deleteUserForAdmin: Joi.object().keys({
+    username: Joi.string().trim()
+    .pattern(/^(AG-\d{6})$|^(C-\d{8})$/)
+    .required()
+    .options({messages: {"string.pattern.base": "username is wrong!"}})
+  }),
+  deleteUserForAgent: Joi.object().keys({
+    username: Joi.string().trim()
+    .pattern(/^(C-\d{8})$/)
+    .required()
+    .options({messages: {"string.pattern.base": "username is wrong!"}})
+  }),
   createSupplierForAdmin: Joi.object().keys({
     username: Joi.string().trim().required().min(3),
     nickname: Joi.string().trim().min(3).optional(),

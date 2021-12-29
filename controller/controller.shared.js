@@ -15,6 +15,7 @@ const loginLog = util.debuglog("controller.shared-login");
 const listUsersLog = util.debuglog("controller.shared-listUsers");
 const listServicesLog = util.debuglog("controller.shared-listServices");
 const listAgentLimitsLog = util.debuglog("controller.shared-listAgentLimits");
+const deleteUserLog = util.debuglog("controller.shared-deleteUser");
 
 const User = db.userModel;
 const Service = db.serviceModel;
@@ -51,16 +52,15 @@ const shared = {
       errorHandler(res, error, "Failed! User wasn't registered!");
     }
   },
-  deleteUser: async(res, data) => {
+  deleteUser: async(res, query) => {
     try{
-      let {username, agentID} = data;
-      agent = agnet ? {agentID: agentID}  : {}
-      const done = await User.findOneAndRemove({_id: username, ...agent}).exec();
+      const done = await User.findOneAndRemove(query).exec();
       if(!done)
         throw new customError("Failed! User isn't removed!", INTERR);
+
       res.status(200).json({message: "User was removed successfully!"});
     } catch(error) {
-      createUserLog(error);
+      deleteUserLog(error);
       errorHandler(res, error, "Failed! User isn't removed!");
     }
   },
