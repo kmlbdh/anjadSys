@@ -122,6 +122,20 @@ const addService = async(req, res) => {
   }
 };
 
+const deleteService = async(req, res) => {
+  try {
+    let {serviceID} = req.body;
+    const service = await Service.findOneAndDelete({_id: serviceID}).exec();
+    if(!service)
+      throw new customError("Failed! Service isn't deleted!");
+
+    res.status(200).json({message: "Service was added successfully!"});
+  } catch(error) {
+    addServiceLog(error);
+    errorHandler(res, error, "Failed! service isn't deleted!");
+  }
+};
+
 const listServices = async(req, res) => {
   try{
     listServicesLog(req.body.agentID);
@@ -176,6 +190,7 @@ module.exports = {
   createUser,
   deleteUser,
   addService,
+  deleteService,
   listServices,
   createSupplier,
   addSupplierParts,

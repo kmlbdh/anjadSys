@@ -62,6 +62,9 @@ module.exports.schema = {
     note: Joi.string().trim().optional(),
     dailyCost: Joi.number().optional(),
   }),
+  deleteServiceForAdmin: Joi.object().keys({
+    serviceID: Joi.string().trim().required()
+  }),
   addSupplierPartsForAdmin: Joi.object().keys({
     partNo: Joi.number().optional(),
     partName: Joi.string().trim().required(),
