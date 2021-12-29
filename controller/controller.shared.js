@@ -54,7 +54,7 @@ const shared = {
   },
   deleteUser: async(res, query) => {
     try{
-      const done = await User.findOneAndRemove(query).exec();
+      const done = await User.findOneAndDelete(query).exec();
       if(!done)
         throw new customError("Failed! User isn't removed!", INTERR);
 
