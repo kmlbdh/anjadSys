@@ -1,6 +1,7 @@
 const db = require("../model");
 const util = require("util");
 const customError = require("../classes/customError");
+const errorHandler = require("../classes/errorhandler");
 const { 
   createUser: sharedCreateUser,
   listUsers: sharedListUsers,
@@ -36,8 +37,7 @@ const createUser = async (req, res) => {
     await sharedCreateUser(res, {username, nickname, address, password, phone, tel, note, role: roleDB.name, agent});
   } catch(error) {
     createUserLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! User wasn't registered!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! User wasn't registered!")
   }
 };
 
@@ -52,8 +52,7 @@ const createSupplier = async (req, res) => {
     await sharedCreateUser(res, {username, nickname, address, undefined, phone, tel, note, role: roleDB.name, undefined});
   } catch(error) {
     createUserLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Supplier wasn't registered!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! Supplier wasn't registered!");
   }
 };
 
@@ -71,8 +70,7 @@ const addSupplierParts = async(req, res) => {
     res.json({message: "supplier part was added successfully!"});
   } catch(error) {
     addSupplierPartsLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! supplier part wasn't added!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! supplier part wasn't added!");
   }
 };
 
@@ -94,8 +92,7 @@ const listUsers = async(req, res) => {
     await sharedListUsers(res, query, skip, limit);
   } catch(error) {
     listUsersLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! cant get Users!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! cant get Users!");
   }
 };
 
@@ -110,11 +107,10 @@ const addService = async(req, res) => {
       dailyCost
     });
     await service.save();
-    res.json({message: "Service was added successfully!"});
+    res.status(200).json({message: "Service was added successfully!"});
   } catch(error) {
     addServiceLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! service wasn't added!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! service wasn't added!");
   }
 };
 
@@ -131,8 +127,7 @@ const listServices = async(req, res) => {
 
   } catch(error) {
     listServicesLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! can't get services!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! can't get services!");
   }
 };
 
@@ -148,8 +143,7 @@ const addAgentLimits = async(req, res) => {
     res.json({message: "agent money limits was added successfully!"});
   } catch(error) {
     addServiceLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! agent limits wasn't added!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! agent limits wasn't added!");
   }
 };
 
@@ -165,8 +159,7 @@ const listMainAgentLimits = async(req, res) => {
     await sharedListAgentLimits(res, query, skip, limit);
   } catch(error) {
     listMainAgentLimitsLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! can't list agent limits!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! can't list agent limits!");
   }
 };
 

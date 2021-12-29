@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const AutoID = require("auto-id-builder");
 const util = require("util");
 const customError = require("../classes/customError");
+const errorHandler = require("../classes/errorhandler");
 
 //debugging NOT FOR PRODUCTION 
 const createUserLog = util.debuglog("controller.shared-createUser");
@@ -44,11 +45,23 @@ const shared = {
       });
       
       await user.save();
-      res.json({message: "User was registered successfully!"});
+      res.status(200).json({message: "User was registered successfully!"});
     } catch(error) {
       createUserLog(error);
-      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! User wasn't registered!";
-      res.json({message: messageOfCustomError });
+      errorHandler(res, error, "Failed! User wasn't registered!");
+    }
+  },
+  deleteUser: async(res, data) => {
+    try{
+      let {username, agentID} = data;
+      agent = agnet ? {agentID: agentID}  : {}
+      const done = await User.findOneAndRemove({_id: username, ...agent}).exec();
+      if(!done)
+        throw new customError("Failed! User isn't removed!", INTERR);
+      res.status(200).json({message: "User was removed successfully!"});
+    } catch(error) {
+      createUserLog(error);
+      errorHandler(res, error, "Failed! User isn't removed!");
     }
   },
   listUsers: async(res, query, skip, limit) => {
@@ -63,8 +76,7 @@ const shared = {
       res.status(200).json({users: users});
     } catch(error){
       listUsersLog(error);
-      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get users!";
-      res.status(500).json({message: messageOfCustomError});
+      errorHandler(res, error, "Failed! Can't get users!");
     }
   },
   listServices: async(res, query, skip, limit) => {
@@ -79,8 +91,7 @@ const shared = {
       res.status(200).json({services: services});
     } catch(error){
       listServicesLog(error);
-      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get services!";
-      res.status(500).json({message: messageOfCustomError});
+      errorHandler(res, error, "Failed! Can't get services!");
     }
   },
   listAgentLimits: async(res, query, skip, limit) => {
@@ -95,8 +106,7 @@ const shared = {
       res.status(200).json({agentLimits: agentLimits});
     } catch(error){
       listAgentLimitsLog(error);
-      let messageOfCustomError = error.code === INTERR ? error.message : "Failed! Can/'t get agent limits!";
-      res.status(500).json({message: messageOfCustomError});
+      errorHandler(res, error, "Failed! Can't get agent limits!");
     }
   },
   login: async(req, res) => {
@@ -128,8 +138,7 @@ const shared = {
       });
     } catch(error){
       loginLog(error);
-      let messageOfSignin = error.code === INTERR ? error.message : "Failed! can/'t sign in";
-      res.status(500).json({message: messageOfSignin});
+      errorHandler(res, error, "Failed! Can/'t sign in");
     }
   }
 };
@@ -180,8 +189,7 @@ const getUserLastRefId = async (roleName) => {
       return new Promise(resolve => resolve(user)); //TODO remove promise, wrong way, by default return promise
   } catch(error){
     getUserLastRefIdLog(error);
-    let messageOfLastID = error.code === INTERR ? error.message : "Failed! no id found!";
-    res.status(500).json({message: messageOfLastID});
+    errorHandler(res, error, "Failed! No id found!");
   }
 };
 

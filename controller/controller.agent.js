@@ -1,6 +1,7 @@
 const db = require("../model");
 const util = require("util");
 const customError = require("../classes/customError");
+const errorHandler = require("../classes/errorhandler");
 const { createUser: sharedCreateUser, listUsers: sharedListUsers } = require("./controller.shared");
 
 const User = db.userModel;
@@ -46,8 +47,7 @@ const createUser = async (req, res) => {
     await sharedCreateUser(res, {username, nickname, address, password, phone, tel, note, role: roleDB.name, agent});
   } catch(error) {
     createUserLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! User wasn't registered!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! User wasn't registered!");
   }
 };
 
@@ -106,8 +106,7 @@ const addServiceToCustomer = async(req, res) => {
   } catch(error) {
     await session.abortTransaction();
     addServiceToCustomerLog(error);
-    let messageOfCustomError = error.code === INTERR ? error.message : "Failed! service is not add!";
-    res.json({message: messageOfCustomError });
+    errorHandler(res, error, "Failed! service is not add!");
   }
 };
 

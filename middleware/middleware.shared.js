@@ -3,6 +3,7 @@ const config = require("../config/config.auth");
 const db = require("../model");
 const util = require("util");
 const customError = require("../classes/customError");
+const errorHandler = require("../classes/errorhandler");
 const validation = require("./middleware.validation");
 const { schema } = require("../schema/schema.validation");
 
@@ -24,8 +25,7 @@ const auth = {
       else throw new customError("Unauthorized!", INTERR);
     } catch(error){
       console.log(error);
-      const customErrorVerify = error.code === INTERR ? error.message : "Failed! can't get admin privilege!";
-      res.status(500).json({message: customErrorVerify});
+      errorHandler(res, error, "Failed! can't get admin privilege!");
     }
   },
   isAgent: async (req, res, next) => {
@@ -35,8 +35,7 @@ const auth = {
       else throw new customError("Unauthorized!", INTERR);
     } catch(error){
       console.log(error);
-      const customErrorVerify = error.code === INTERR ? error.message : "Failed! can't get agent privilege!";
-      res.status(500).json({message: customErrorVerify});
+      errorHandler(res, error, "Failed! can't get agent privilege!");
     }
   },
   isCustomer: async (req, res, next) => {
@@ -46,8 +45,7 @@ const auth = {
       else throw new customError("Unauthorized!", INTERR);
     } catch(error){
       console.log(error);
-      const customErrorVerify = error.code === INTERR ? error.message : "Failed! can't get customer privilege!";
-      res.status(500).json({message: customErrorVerify});
+      errorHandler(res, error, "Failed! can't get customer privilege!");
     }
   },
   verifyToken: (req, res, next) => {
@@ -67,8 +65,7 @@ const auth = {
       });
     } catch(error){
       verifyTokenLog(error);
-      const customErrorVerify = error.code === INTERR ? error.message : "Failed! can't get token!";
-      res.status(500).json({message: customErrorVerify});
+      errorHandler(res, error, "Failed! can't get token!");
     }
   }
 };
@@ -89,7 +86,7 @@ const verifyCreateUser = {
   
       next();
     } catch(error){
-      return res.status(500).json({message: error});
+      errorHandler(res, error, "Failed! can't verify user existance", 400);
     }
   },
   validateCreateUser: validation(schema.createUser, 'body')
@@ -127,8 +124,7 @@ const checkRole = async(roleIndex, req, res) => {
     return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
   } catch(error){
     isAdminLog(error);
-    const customErrorCheckRole = error.code === INTERR ? error.message : "Failed! can't get role!";
-    res.status(500).json({message: customErrorCheckRole});
+    errorHandler(res, error, "Failed! can't get role!");
   }
 };
 

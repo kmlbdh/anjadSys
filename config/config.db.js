@@ -14,9 +14,11 @@ const DB_CONFIG = Object.seal({
   const MONGO_URI = `mongodb://${DB_CONFIG.USER}:${DB_CONFIG.PASS}@${DB_CONFIG.HOST.join(',')}/${DB_CONFIG.DB}?replicaSet=rs&authSource=admin`;
 
 module.exports.connect = async () => {
+  let con;
   try{
-    await mongoose.connect(MONGO_URI);
+    con =  await mongoose.connect(MONGO_URI);
     console.log("Successfully connected to database");
+    return con;
   } catch(error) {
     console.log("database connection failed. exiting now ...");
     console.log(error);
