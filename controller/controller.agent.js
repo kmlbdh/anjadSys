@@ -109,7 +109,8 @@ const addServiceToCustomer = async(req, res) => {
 
     addServiceToCustomerLog(newAgentLimits);
     const saveAgentLimit = await newAgentLimits.save();
-    if(!saveAgentLimit) throw new customError("Failed! can't add service to the customer", INTERR);
+    if(!saveAgentLimit) 
+      throw new customError("Failed! can't add service to the customer", INTERR);
 
     await session.commitTransaction();
     res.status(200).json({message: "service is added to the customer!"});
@@ -125,6 +126,7 @@ const checkAgentLimits = async(agentId, session, finalPrice) => {
 
   let objAgentLimits = await agentLimits.findOne({agentID: agentId}, null, {sort: {'created_at': -1}})
     .session(session).exec();
+  
   checkAgentLimitsLog(objAgentLimits);
   if(!objAgentLimits)
     throw new customError("you don't money in your limits, please ask adminitrator to add money limits for you", INTERR);
@@ -132,6 +134,7 @@ const checkAgentLimits = async(agentId, session, finalPrice) => {
   objAgentLimits = objAgentLimits.toObject();
   const limit = parseInt(objAgentLimits.totalMoney) - parseInt(finalPrice);
   checkAgentLimitsLog(limit);
+
   if(limit < 0)
     throw new customError("you don't have enough money", INTERR);
 
@@ -140,7 +143,7 @@ const checkAgentLimits = async(agentId, session, finalPrice) => {
 
 //Part of addServiceToCustomer function
 const addServiceToCustDoc = async(req, finalPrice, finalPeriod, session) => {
-  const { userID, serviceName, serviceID, dailyCost, additionalDays, startDate, endDate} = req.body;
+  const { userID, serviceName, serviceID, dailyCost, additionalDays, startDate, endDate } = req.body;
 
   const query = {_id: userID, 'agent.agentID': req.agent._id};
   const serviceUpdate = {
