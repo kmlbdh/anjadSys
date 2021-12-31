@@ -71,15 +71,18 @@ const deleteUser = async(req, res) => {
 const addSupplierParts = async(req, res) => {
   try {
     let {partNo, partName, quantity, cost, supplierID} = req.body;
-    const supplier = new SupplierParts({
+    const supplierParts = new SupplierParts({
       partNo,
       partName,
       quantity,
       cost,
       supplierID
     });
-    await supplier.save();
-    res.status(200).json({message: "supplier part was added successfully!"});
+    const savedSupplierParts = await supplierParts.save();
+    if(!savedSupplierParts)
+      throw new customError("Failed! supplier part wasn't added!", INTERR);
+
+    res.status(200).json({message: "supplier part was added successfully!", data: savedSupplierParts});
   } catch(error) {
     addSupplierPartsLog(error);
     errorHandler(res, error, "Failed! supplier part wasn't added!");
@@ -93,7 +96,7 @@ const deleteSupplierParts = async(req, res) => {
     if(!supplierParts)
       throw new customError("Failed! part of the supplier wasn't deleted!", INTERR);
 
-    res.status(200).json({message: "supplier part was deleted successfully!"});
+    res.status(200).json({message: "supplier part was deleted successfully!", data: supplierParts});
   } catch(error){
     deleteSupplierPartsLog(error);
     errorHandler(res, error, "Failed! part of the supplier wasn't deleted!");
@@ -119,7 +122,7 @@ const listSupplierParts = async(req, res) => {
     if(!supplierParts || supplierParts.length === 0)
       throw new customError("Failed! there is no parts found!", INTERR);
 
-    res.status(200).json({supplierParts: supplierParts})
+    res.status(200).json({data: supplierParts})
   } catch(error) {
     listSupplierPartsLog(error);
     errorHandler(res, error, "Failed! cant get parts!");
@@ -158,8 +161,11 @@ const addService = async(req, res) => {
       note,
       dailyCost
     });
-    await service.save();
-    res.status(200).json({message: "Service was added successfully!"});
+    const savedService = await service.save();
+    if(!savedService)
+      throw new customError("Failed! service wasn't added!", INTERR);
+
+    res.status(200).json({message: "Service was added successfully!", data: savedService});
   } catch(error) {
     addServiceLog(error);
     errorHandler(res, error, "Failed! service wasn't added!");
@@ -169,11 +175,11 @@ const addService = async(req, res) => {
 const deleteService = async(req, res) => {
   try {
     let {serviceID} = req.body;
-    const service = await Service.findOneAndDelete({_id: serviceID}).exec();
-    if(!service)
+    const deletedService = await Service.findOneAndDelete({_id: serviceID}).exec();
+    if(!deletedService)
       throw new customError("Failed! Service isn't deleted!", INTERR);
 
-    res.status(200).json({message: "Service was added successfully!"});
+    res.status(200).json({message: "Service was added successfully!", data: deletedService});
   } catch(error) {
     deleteServiceLog(error);
     errorHandler(res, error, "Failed! service isn't deleted!");
@@ -205,8 +211,11 @@ const addAgentLimits = async(req, res) => {
       totalMoney: limitAmount,
       agentID
     });
-    await agentLimits.save();
-    res.status(200).json({message: "agent limits was added successfully!"});
+    const savedAgentLimits = await agentLimits.save();
+    if(!savedAgentLimits)
+      throw new customError("Failed! supplier part wasn't added!", INTERR);
+
+    res.status(200).json({message: "agent limits was added successfully!", data: savedAgentLimits});
   } catch(error) {
     addServiceLog(error);
     errorHandler(res, error, "Failed! agent limits wasn't added!");
@@ -217,16 +226,24 @@ const deleteAgentLimits = async(req, res) => {
   try {
     let {agentLimitID} = req.body;
     deleteAgentLimitsLog(req.body);
-    const agentLimits = await AgentLimits.findOneAndDelete({_id: agentLimitID, 
-      $or: [{services: {$exists: false}}, {service: {$size: 0}}]}).exec();
+    const agentLimits = await AgentLimits.findOneAndDelete( 
+      {$and: [
+        {_id: agentLimitID},
+        {$or: 
+          [
+            {services: {$exists: false}},
+            {services: {$size: 0}}
+          ]
+        }
+      ]}).exec();
 
     if(!agentLimits)
       throw new customError("Failed! agent limits wasn't deleted!", INTERR);
 
-    res.status(200).json({message: "agent limits was deleted successfully!"});
+    res.status(200).json({message: "agent limits was deleted successfully!", data: agentLimits});
   } catch(error) {
     deleteAgentLimitsLog(error);
-    errorHandler(res, error, "Failed! agent limits wasn't added!");
+    errorHandler(res, error, "Failed! agent limits wasn't deleted!");
   }
 };
 

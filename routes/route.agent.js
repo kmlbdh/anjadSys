@@ -1,8 +1,10 @@
-const { 
+const {
+  validateCreateUser,
   validateListUsers,
   validateDeleteUser,
   validateListServices,
   validateAddServiceToCustomer,
+  validateDeleteServiceToCustomer,
 } = require("../middleware/middleware.agent");
 const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.agent");
@@ -25,7 +27,7 @@ module.exports = function(app){
   app.post("/api/agent/create-user",[
     auth.verifyToken,
     auth.isAgent,
-    verifyCreateUser.validateCreateUser,
+    validateCreateUser,
     verifyCreateUser.checkDuplicateUsernameOrNickname
   ], controller.createUser);
 
@@ -33,7 +35,7 @@ module.exports = function(app){
     auth.verifyToken,
     auth.isAgent,
     validateDeleteUser
-  ], controller.createUser);
+  ], controller.deleteUser);
 
   app.post("/api/agent/list-services",[
     auth.verifyToken,
@@ -46,4 +48,10 @@ module.exports = function(app){
     auth.isAgent,
     validateAddServiceToCustomer,
   ], controller.addServiceToCustomer);
+
+  app.post("/api/agent/delete-customer-service",[
+    auth.verifyToken,
+    auth.isAgent,
+    validateDeleteServiceToCustomer,
+  ], controller.deleteServiceFromCustomer);
 };

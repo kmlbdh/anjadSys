@@ -45,8 +45,11 @@ const shared = {
         agent
       });
       
-      await user.save();
-      res.status(200).json({message: "User was registered successfully!"});
+      const savedUser = await user.save();
+      if(!savedUser)
+        throw new customError("Failed! User wasn't registered!", INTERR);
+
+      res.status(200).json({message: "User was registered successfully!", data: savedUser});
     } catch(error) {
       createUserLog(error);
       errorHandler(res, error, "Failed! User wasn't registered!");
@@ -54,11 +57,11 @@ const shared = {
   },
   deleteUser: async(res, query) => {
     try{
-      const done = await User.findOneAndDelete(query).exec();
-      if(!done)
+      const deletedUser = await User.findOneAndDelete(query).exec();
+      if(!deletedUser)
         throw new customError("Failed! User isn't removed!", INTERR);
 
-      res.status(200).json({message: "User was removed successfully!"});
+      res.status(200).json({message: "User was removed successfully!", data: deletedUser});
     } catch(error) {
       deleteUserLog(error);
       errorHandler(res, error, "Failed! User isn't removed!");
@@ -73,7 +76,7 @@ const shared = {
       .exec();
   
       listUsersLog(users);
-      res.status(200).json({users: users});
+      res.status(200).json({data: users});
     } catch(error){
       listUsersLog(error);
       errorHandler(res, error, "Failed! Can't get users!");
@@ -88,7 +91,7 @@ const shared = {
       .exec();
   
       listServicesLog(services);
-      res.status(200).json({services: services});
+      res.status(200).json({data: services});
     } catch(error){
       listServicesLog(error);
       errorHandler(res, error, "Failed! Can't get services!");
@@ -103,7 +106,7 @@ const shared = {
       .exec();
   
       listAgentLimitsLog(agentLimits);
-      res.status(200).json({agentLimits: agentLimits});
+      res.status(200).json({data: agentLimits});
     } catch(error){
       listAgentLimitsLog(error);
       errorHandler(res, error, "Failed! Can't get agent limits!");
@@ -129,13 +132,14 @@ const shared = {
   
       const token = jwt.sign({id: user._id}, config.secret, {expiresIn: 86400});
       loginLog(token);
-      res.status(200).json({
+      const userData = {
         id: user._id,
         username: user.username,
         nickname: user.nickname,
         role: user.role,
         accessToken: token 
-      });
+      };
+      res.status(200).json({data: userData});
     } catch(error){
       loginLog(error);
       errorHandler(res, error, "Failed! Can/'t sign in");

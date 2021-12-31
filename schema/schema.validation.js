@@ -12,6 +12,7 @@ module.exports.schema = {
       .label("Confirm password")
       .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } }),
     phone: Joi.number().min(9).optional(),
+    address: Joi.string().trim().optional(),
     tel: Joi.number().min(7).optional(),
     note: Joi.string().trim().min(10).optional(),
     role: Joi.string().trim().required().min(5),
@@ -19,6 +20,21 @@ module.exports.schema = {
       agentID: Joi.string().trim().optional(),
       agentNickname: Joi.string().trim().optional(),
     }).optional(),
+  }),
+  createUserForAgent: Joi.object().keys({
+    username: Joi.string().trim().required().min(3),
+    nickname: Joi.string().trim().min(3).optional(),
+    password: Joi.string().trim().required().label('password'),
+    confirmPassword: Joi.any()
+      .equal(Joi.ref('password'))
+      .required()
+      .strip() //remove it from body after validation
+      .label("Confirm password")
+      .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } }),
+    phone: Joi.number().min(9).optional(),
+    address: Joi.string().trim().optional(),
+    tel: Joi.number().min(7).optional(),
+    note: Joi.string().trim().min(10).optional()
   }),
   login: Joi.object().keys({
     username: Joi.string().trim()
@@ -29,7 +45,7 @@ module.exports.schema = {
   }),
   deleteUserForAdmin: Joi.object().keys({
     username: Joi.string().trim()
-    .pattern(/^(AG-\d{6})$|^(C-\d{8})$/)
+    .pattern(/^(SUP-\d{5})$|^(AG-\d{6})$|^(C-\d{8})$/)
     .required()
     .options({messages: {"string.pattern.base": "username is wrong!"}})
   }),
@@ -113,5 +129,8 @@ module.exports.schema = {
     dailyCost: Joi.number().optional(),
     startDate: Joi.date().required(),
     endDate: Joi.date().required(),
+  }),
+  deleteServiceToCustomerOfAgent: Joi.object().keys({
+    customerServiceID: Joi.string().trim().required()
   }),
 };
