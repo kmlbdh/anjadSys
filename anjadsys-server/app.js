@@ -14,6 +14,7 @@ const app = express();
 initial();
 async function initial(){
   try{
+    const SECRET = bcrypt.hashSync("12345");
     const count = await Role.estimatedDocumentCount();
 
     if(count === 0){
@@ -40,7 +41,7 @@ async function initial(){
         _id: "AD-001",
         username: "obada",
         nickname: "newUser",
-        password: bcrypt.hashSync("12345"),
+        password: SECRET,
         phone: "2228220",
         tel: "0569137015",
         role: "admin"
