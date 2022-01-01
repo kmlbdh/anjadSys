@@ -54,7 +54,8 @@ const createSupplier = async (req, res) => {
     if(!roleDB)
       throw new customError("Failed! Role not exist!", INTERR);
 
-    await sharedCreateUser(res, {username, nickname, address, undefined, phone, tel, note, role: roleDB.name, undefined});
+    await sharedCreateUser(res, 
+      {username, nickname, address, undefined, phone, tel, note, role: roleDB.name, undefined});
   } catch(error) {
     createUserLog(error);
     errorHandler(res, error, "Failed! Supplier wasn't registered!");
