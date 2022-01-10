@@ -1,0 +1,24 @@
+<div id="main-container">
+  <nav id="header">
+    <div class="nav-wrapper">
+      <div class="navbar-logo">
+        <a routerLink="/admin">
+          <img src="../../../../../assets/logo-injad.png" alt="logo" width="160">
+        </a>
+        <a (click)="profilePop()">
+          <fa-icon [icon]="faBars"></fa-icon>
+        </a>
+      </div>
+      <div class="navbar-container">
+        <div class="profile-section">
+          <img src="../../../../../../assets/profile.png" alt="صورة المستخدم"/>
+          <p class="username">{{user.username}}</p>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="main-content">
+    <app-nav></app-nav>
+    <router-outlet></router-outlet>
+  </div>
+</div>
