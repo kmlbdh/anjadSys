@@ -19,53 +19,70 @@ const checkDuplicateLog = util.debuglog("middleware.auth-checkDuplicateUsernameO
 
 const auth = {
   isAdmin: async (req, res, next) => {
+    let errorCode;
     try{
       const done = await checkRole(2, req, res);
       if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
+      else{
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      } 
     } catch(error){
       console.log(error);
-      errorHandler(res, error, "Failed! can't get admin privilege!");
+      errorHandler(res, error, "Failed! can't get admin privilege!", errorCode);
     }
   },
   isAgent: async (req, res, next) => {
+    let errorCode;
     try{
       const done = await checkRole(1, req, res);
       if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
+      else{
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      } 
     } catch(error){
       console.log(error);
-      errorHandler(res, error, "Failed! can't get agent privilege!");
+      errorHandler(res, error, "Failed! can't get agent privilege!", errorCode);
     }
   },
   isCustomer: async (req, res, next) => {
+    let errorCode;
     try{
       const done = await checkRole(0, req, res);;
       if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
+      else{
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      }
     } catch(error){
       console.log(error);
       errorHandler(res, error, "Failed! can't get customer privilege!");
     }
   },
   verifyToken: (req, res, next) => {
+    let errorCode;
     try{
       let token = req.headers['x-access-token'];
       verifyTokenLog(token);
   
-      if(!token)
+      if(!token){
+        errorCode = 401;
         throw new customError("No token provided!", INTERR);
+      }
       
       jwt.verify(token, config.secret, (error, decoded) => {
-        if(error)
-          throw new customError("Unauthorized!", INTERR);
+      if(error){
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      }
     
           req.id = decoded.id;
           next();
       });
     } catch(error){
       verifyTokenLog(error);
-      errorHandler(res, error, "Failed! can't get token!");
+      errorHandler(res, error, "Failed! can't get token!", errorCode);
     }
   }
 };
