@@ -1,0 +1,16 @@
+<div id="nav">
+  <ul class="first-nav">
+    <li *ngFor="let nav of navData; trackBy: trackByName">
+      <p (click)="nav.hide= !nav.hide">
+        <fa-icon [icon]="nav.faIcon"></fa-icon>
+        <span>{{nav.name}}</span>
+      </p>
+      <ul [class.close]="!nav.hide">
+        <li *ngFor="let child of nav.children; trackBy: trackByName" [routerLink]="child.routeLink" routerLinkActive="active">
+          <fa-icon [icon]="chevronLeftIcon"></fa-icon>
+          <span>{{child.name}}</span>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
