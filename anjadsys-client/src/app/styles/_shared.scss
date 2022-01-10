@@ -1,0 +1,50 @@
+@import 'variables';
+
+@mixin card(){
+  border-radius: 5px;
+  // -webkit-box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
+  // box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
+  @include box-shadow(0 1px 20px 0 rgb(69 90 100 / 8%));
+  border: none;
+  margin-bottom: 30px;
+  background: #fff;
+  padding: 1rem 1.25rem 1.25rem 1.25rem;
+}
+
+%share-alert{
+  color: #fff;
+  padding: 9px;
+  flex-basis: 80%;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+@mixin messageBox($color) {
+  @extend %share-alert;
+  background-color: $color;
+}
+
+@mixin prefix($property, $prefixes, $value...) {
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value
+}
+
+@mixin box-shadow($value...) {
+  @include prefix(box-shadow, moz webkit, $value);
+}
+// .card{
+//   @include card;
+// }
+
+// div.error{
+//   @extend %share-alert;
+//   background-color: $mainRedColor;
+// }
+
+// div.success {
+//   @extend %share-alert;
+//   background-color: $mainGreenColor;
+// }
