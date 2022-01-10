@@ -1,0 +1,19 @@
+<div id="main-container">
+  <div class="login-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <h3>Injad Logistics</h3>
+      <div>
+        <label for="username">اسم المستخدم/ رقم الحساب</label>
+        <input id="username" type="text" name="username" formControlName="username" required/>
+      </div>
+      <div>
+          <label for="password">كلمة المرور</label>
+          <input id="password" type="password" name="password" formControlName="password" required/>
+      </div>
+      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+      <div class="btn-container">
+        <button type="submit">تسجيل الدخول</button>
+      </div>
+    </form>
+  </div>
+</div>
