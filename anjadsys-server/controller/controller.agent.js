@@ -25,24 +25,30 @@ const addServiceToCustDocLog = util.debuglog("controller.agent-AddServiceToCustD
 const deletedServiceToCustomerLog = util.debuglog("controller.agent-deletedServiceToCustomer");
 
 const listUsers = async(req, res) => {
-  const role = await Role.findOne({name: 'customer'}).exec();
-  const limit = req.body.limit ? req.body.limit : 20;
-  const skip = req.body.skip ? req.body.skip : 0;
+  try{
+    const roleDB = await Role.findOne({name: 'customer'}).exec();
+    const limit = req.body.limit ? req.body.limit : 20;
+    const skip = req.body.skip ? req.body.skip : 0;
+  
+    if(!roleDB)
+      throw new customError("Failed! can't find specified role!", INTERR);
 
-  if(!req.agent || !role)
-    throw new customError("Unauthorized!", INTERR);
-
-  const query = {'role': role.name, 'agent.agentID': req.agent._id};
-  // if (req.agent.nickname) query = {...query,  'agent.agentNickname': req.agent.nickname};
-  if (req.body.userID) query._id = req.body.userID;
-
-  listUsersLog(role);
-  await sharedListUsers(res, query, skip, limit);
+    const query = {'role': roleDB.name, 'agent.agentID': req.agent._id};
+    // if (req.agent.nickname) query = {...query,  'agent.agentNickname': req.agent.nickname};
+    if (req.body.userID) query._id = req.body.userID;
+  
+    listUsersLog(roleDB);
+    await sharedListUsers(res, query, skip, limit);
+  } catch(error){
+    createUserLog(error);
+    errorHandler(res, error, "Failed! User wasn't registered!");
+  }
 };
 
 const createUser = async (req, res) => {
   try {
     let {username, nickname, address, password, phone, tel, note} = req.body;
+
     const agent = {
       agentID: req.agent._id,
       agentNickname: req.agent.nickname
@@ -68,26 +74,20 @@ const deleteUser = async(req, res) => {
 
 //TODO same function in admin, if haven't more requirements in both need to move to shared controller
 const listServices = async(req, res) => {
-  try{
-    listServicesLog(req.body.agentID);
-    let query = {};
-    const limit = req.body.limit ? req.body.limit : 20;
-    const skip = req.body.skip ? req.body.skip : 0;
-    if (req.body.serviceName) query.name = req.body.serviceName;
+  listServicesLog(req.body.agentID);
+  let query = {};
+  const limit = req.body.limit ? req.body.limit : 20;
+  const skip = req.body.skip ? req.body.skip : 0;
+  if (req.body.serviceName) query.name = req.body.serviceName;
 
-    listServicesLog(query);
-    await sharedlistServices(res, query, skip, limit);
-  } catch(error) {
-    listServicesLog(error);
-    errorHandler(res, error, "Failed! can't get services!");
-  }
+  listServicesLog(query);
+  await sharedlistServices(res, query, skip, limit);
 };
 
 const addServiceToCustomer = async(req, res) => {
   // Using Mongoose's default connection
   const session = await mongoose.startSession();
   session.startTransaction();
-
   try{
     let { userID, serviceID, price: reqPrice, dailyCost, additionalDays, period} = req.body;
     //Equation

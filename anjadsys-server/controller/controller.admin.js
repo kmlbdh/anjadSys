@@ -18,6 +18,7 @@ const SupplierParts = db.supplierPartsModel;
 const INTERR = 'INT_ERR';
 
 //debugging NOT FOR PRODUCTION
+const verifyLoggedInLog = util.debuglog("controller.admin-verifyLoggedIn");
 const listUsersLog = util.debuglog("controller.admin-ListUsers");
 const createUserLog = util.debuglog("controller.admin-CreateUser");
 const addServiceLog = util.debuglog("controller.admin-AddService");
@@ -29,6 +30,18 @@ const listMainAgentLimitsLog = util.debuglog("controller.admin-listMainAgentLimi
 const addSupplierPartsLog = util.debuglog("controller.admin-addSupplierParts");
 const deleteSupplierPartsLog = util.debuglog("controller.admin-deleteSupplierParts");
 const listSupplierPartsLog = util.debuglog("controller.admin-ListSupplierParts");
+
+const verifyLoggedIn = async(req, res) => {
+  try{
+    if(!req.admin)
+    throw new customError("Failed! Need to log in with admin account!", INTERR);
+
+    res.status(200).json({message: "Admin is logged In!", data: req.admin});
+  } catch(error){
+    verifyLoggedInLog(error);
+    errorHandler(res, error, "Failed! Need to log in with admin account!");
+  }
+}
 
 const createUser = async (req, res) => {
   try {
@@ -42,7 +55,7 @@ const createUser = async (req, res) => {
     await sharedCreateUser(res, {username, nickname, address, password, phone, tel, note, role: roleDB.name, agent});
   } catch(error) {
     createUserLog(error);
-    errorHandler(res, error, "Failed! User wasn't registered!")
+    errorHandler(res, error, "Failed! User wasn't registered!");
   }
 };
 
@@ -134,6 +147,7 @@ const listUsers = async(req, res) => {
   try {
     listUsersLog(req.body.agentID);
     let query = {};
+    let OR = [];
     const limit = req.body.limit ? req.body.limit : 20;
     const skip = req.body.skip ? req.body.skip : 0;
     if (req.body.role) query.role = req.body.role;
@@ -141,8 +155,18 @@ const listUsers = async(req, res) => {
       const agId = String(req.body.agentID);
       query = {...query, 'agent.agentID': agId};
     }
-    if (req.body.nickname) query = {...query, 'agent.agentNickname': req.body.nickname};
+
+    if (req.body.nickname) 
+      OR.push({'nickname': {$regex: req.body.nickname, $options: 'i'}});
+    
+    if (req.body.username)
+      OR.push({'username': {$regex: req.body.nickname, $options: 'i'}});
+ 
+    // if (req.body.nickname) query = {...query, 'agent.agentNickname': req.body.nickname};
     if (req.body.userID) query._id = req.body.userID;
+
+    if(OR.length)
+      query = {...query, $or: OR};
 
     listUsersLog(query);
     await sharedListUsers(res, query, skip, limit);
@@ -265,6 +289,7 @@ const listMainAgentLimits = async(req, res) => {
 };
 
 module.exports = {
+  verifyLoggedIn,
   listUsers,
   createUser,
   deleteUser,
