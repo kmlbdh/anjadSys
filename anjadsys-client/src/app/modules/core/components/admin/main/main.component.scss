@@ -1,0 +1,13 @@
+:host {
+  flex-grow: 11;
+}
+#main-container{
+  padding: 20px;
+  .page-content{
+    width: 100%;
+    min-height: 80%;
+    h2{
+      text-align: right;
+    }
+  }
+}
