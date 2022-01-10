@@ -80,6 +80,7 @@ module.exports.schema = {
     agentID: Joi.string().trim().min(9).max(9).optional(),
     userID: Joi.string().trim().min(10).max(10).optional(),
     nickname: Joi.string().trim().optional(),
+    username: Joi.string().trim().optional(),
   }),
   addServiceForAdmin: Joi.object().keys({
     serviceName: Joi.string().trim().min(5).required(),
