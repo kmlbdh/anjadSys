@@ -10,7 +10,7 @@ const errorHandler = require("../classes/errorhandler");
 //debugging NOT FOR PRODUCTION 
 const createUserLog = util.debuglog("controller.shared-createUser");
 const createUniqueRefIdLog = util.debuglog("controller.shared-createUniqueRefId");
-const getUserLastRefIdLog = util.debuglog("controller.shared-getLastId");
+const getUserLastIdLog = util.debuglog("controller.shared-getLastId");
 const loginLog = util.debuglog("controller.shared-login");
 const listUsersLog = util.debuglog("controller.shared-listUsers");
 const listServicesLog = util.debuglog("controller.shared-listServices");
@@ -22,6 +22,26 @@ const Service = db.serviceModel;
 const AgentLimits = db.agentLimitsModel;
 // const Role = db.roleModel;
 const INTERR = 'INT_ERR';
+const NUM_OF_DOCS_RETRUN = 30;
+const DEFAULT_SKIP = 0;
+const IdPrefixByRole = {
+  admin: {
+    shortPrefix: 'AD',
+    length: 3
+  },
+  agent: {
+    shortPrefix: 'AG',
+    length: 6
+  },
+  customer: {
+    shortPrefix: 'C',
+    length: 8
+  },
+  supplier: {
+    shortPrefix: 'SUP',
+    length: 5
+  }
+};
 
 const shared = {
   createUser: async(res, data) => {
@@ -67,12 +87,13 @@ const shared = {
       errorHandler(res, error, "Failed! User isn't removed!");
     }
   },
-  listUsers: async(res, query, skip, limit) => {
+  listUsers: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
     try{
-      const users = await User.find(query)
+      const users = await User.find(query, {}, {$sort: {'_id': 1}})
       .select({password: 0, __v: 0})
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
   
       listUsersLog(users);
@@ -82,12 +103,13 @@ const shared = {
       errorHandler(res, error, "Failed! Can't get users!");
     }
   },
-  listServices: async(res, query, skip, limit) => {
+  listServices: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
     try{
       const services = await Service.find(query)
       .select({__v: 0})
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
   
       listServicesLog(services);
@@ -97,12 +119,13 @@ const shared = {
       errorHandler(res, error, "Failed! Can't get services!");
     }
   },
-  listAgentLimits: async(res, query, skip, limit) => {
+  listAgentLimits: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
     try{
       const agentLimits = await AgentLimits.find(query)
       .select({__v: 0})
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
   
       listAgentLimitsLog(agentLimits);
@@ -114,10 +137,10 @@ const shared = {
   },
   login: async(req, res) => {
     try{
-      const { username, password } = req.body;
-      loginLog(username, password);
+      const { username: loginUsername, password } = req.body;
+      loginLog(loginUsername, password);
 
-      const user = await User.findOne({_id: username}).exec();
+      const user = await User.findOne({_id: loginUsername}).lean().exec();
       
       if(!user)
         throw new customError("User not found!", INTERR);
@@ -129,15 +152,18 @@ const shared = {
         throw new customError("wrong password!", INTERR);
   
       loginLog(validPassword);
-  
-      const token = jwt.sign({id: user._id}, config.secret, {expiresIn: 86400});
-      loginLog(token);
+
+      const {_id, username, nickname, role} = user;
+      const accessToken = jwt.sign({id: _id}, config.secret, {expiresIn: 86400});
+
+      loginLog(accessToken);
+
       const userData = {
-        id: user._id,
-        username: user.username,
-        nickname: user.nickname,
-        role: user.role,
-        accessToken: token 
+        _id,
+        username,
+        nickname,
+        role,
+        accessToken
       };
       res.status(200).json({data: userData});
     } catch(error){
@@ -148,52 +174,36 @@ const shared = {
 };
 
 const createUniqueRefId = async (roleName) => {
-  let length = 8;
-  let shortPrefix = '';
-  switch(roleName){
-    case 'admin':
-      shortPrefix = 'AD';
-      length = 3;
-      break;
-      
-    case 'agent':
-      shortPrefix = 'AG';
-      length = 6;
-      break;
+  const prefix = IdPrefixByRole[roleName];
+  if(!prefix)
+    throw new customError('Failed! can\'t get prefix', INTERR);
 
-    case 'customer':
-      shortPrefix = 'C';
-      length = 8;
-      break;
-
-    case 'supplier':
-      shortPrefix = 'SUP';
-      length = 5;
-      break;
-  }
-  const lastUserId = await getUserLastRefId(roleName);
-  createUniqueRefIdLog(lastUserId?._id);
-  const alphaNumericID = AutoID().newFormat()
-    .addPart(true, shortPrefix, 2)
+  const lastUserId = await getUserLastId(roleName);
+  createUniqueRefIdLog(lastUserId);
+  const alphaNumericID = AutoID()
+    .newFormat()
+    .addPart(true, prefix.shortPrefix, 2)
     .addPart(true, '-', 1)
-    .addPart(false, 'number', length) 
+    .addPart(false, 'number', prefix.length)
     .compile();
     
-  let ID = alphaNumericID.generateID(lastUserId?._id);
+  const ID = alphaNumericID.generateID(lastUserId);
   createUniqueRefIdLog(ID);
-  return new Promise(resolve => resolve(ID)); //TODO remove promise
+  return ID;
 };
 
-const getUserLastRefId = async (roleName) => {
+const getUserLastId = async (roleName) => {
   try{
-    getUserLastRefIdLog(roleName);
+    getUserLastIdLog(roleName);
     const user = await User.findOne({role: roleName}, {}, {sort: {'created_at': -1}})
+      .select({_id: 1})
+      .lean()
       .exec();
-      getUserLastRefIdLog(user);
-      return new Promise(resolve => resolve(user)); //TODO remove promise, wrong way, by default return promise
+      getUserLastIdLog(user);
+      return user?._id;
   } catch(error){
-    getUserLastRefIdLog(error);
-    errorHandler(res, error, "Failed! No id found!");
+    getUserLastIdLog(error);
+    errorHandler(res, error, "Failed! can't get last user!");
   }
 };
 
