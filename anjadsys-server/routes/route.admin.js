@@ -1,12 +1,15 @@
 const { 
+  verifyLoggedIn,
   validateListUsers,
   validateDeleteUser,
+  validateUpdateUser,
   validateAddService,
   validateDeleteService,
+  validateUpdateService,
   validateListServices,
   validateAddAgentLimits,
   validateDeleteAgentLimits,
-  validateListMainAgentLimits,
+  validateListAgentLimits,
   validateAddSupplier,
   validateAddSupplierParts,
   validateDeleteSupplierPart,
@@ -30,6 +33,12 @@ module.exports = function(app){
     verifyCreateUser.validateCreateUser,
     verifyCreateUser.checkDuplicateUsernameOrNickname
   ], controller.createUser);
+
+  app.post("/api/admin/edit-user",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateUpdateUser,
+  ], controller.updateUser);
 
   app.post("/api/admin/delete-user",[
     auth.verifyToken,
@@ -80,6 +89,12 @@ module.exports = function(app){
     validateDeleteService,
   ], controller.deleteService);
 
+  app.post("/api/admin/update-service",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateUpdateService,
+  ], controller.updateService);
+
   app.post("/api/admin/list-services",[
     auth.verifyToken,
     auth.isAdmin,
@@ -98,9 +113,14 @@ module.exports = function(app){
     validateDeleteAgentLimits,
   ], controller.deleteAgentLimits);
 
-  app.post("/api/admin/list-main-agent-limits",[
+  app.post("/api/admin/list-agent-limits",[
     auth.verifyToken,
     auth.isAdmin,
-    validateListMainAgentLimits,
-  ], controller.listMainAgentLimits);
+    validateListAgentLimits,
+  ], controller.listAgentLimits);
+
+  app.post("/api/admin/verify-logged-in", [
+    auth.verifyToken,
+    auth.isAdmin
+  ], controller.verifyLoggedIn);
 };

@@ -4,6 +4,7 @@ const customError = require("../classes/customError");
 const errorHandler = require("../classes/errorhandler");
 const { 
   createUser: sharedCreateUser,
+  updateUser: sharedUpdateUser,
   listUsers: sharedListUsers,
   listServices: sharedlistServices,
   listAgentLimits: sharedListAgentLimits,
@@ -20,13 +21,15 @@ const INTERR = 'INT_ERR';
 //debugging NOT FOR PRODUCTION
 const verifyLoggedInLog = util.debuglog("controller.admin-verifyLoggedIn");
 const listUsersLog = util.debuglog("controller.admin-ListUsers");
+const updateUserLog = util.debuglog("controller.admin-UpdateUser");
 const createUserLog = util.debuglog("controller.admin-CreateUser");
 const addServiceLog = util.debuglog("controller.admin-AddService");
 const deleteServiceLog = util.debuglog("controller.admin-DeleteService");
+const updateServiceLog = util.debuglog("controller.admin-UpdateService");
 const listServicesLog = util.debuglog("controller.admin-ListServices");
 const addAgentLimitsLog = util.debuglog("controller.admin-AddAgentLimits");
 const deleteAgentLimitsLog = util.debuglog("controller.admin-DeleteAgentLimits");
-const listMainAgentLimitsLog = util.debuglog("controller.admin-listMainAgentLimits");
+const listAgentLimitsLog = util.debuglog("controller.admin-listAgentLimits");
 const addSupplierPartsLog = util.debuglog("controller.admin-addSupplierParts");
 const deleteSupplierPartsLog = util.debuglog("controller.admin-deleteSupplierParts");
 const listSupplierPartsLog = util.debuglog("controller.admin-ListSupplierParts");
@@ -82,6 +85,30 @@ const deleteUser = async(req, res) => {
   await sharedDeleteUser(res, query);
 };
 
+const updateUser = async(req, res) => {
+  try {
+    let { id } = req.body;
+
+    if(!id) 
+      throw new customError("Failed! user data isn't provided!", INTERR);
+
+    const query = {_id: id};
+    const updateData = {
+      $set: {}
+    };
+    Object.entries(req.body).forEach((val, ind) => {
+      updateUserLog(val[0], val[1])
+      if(val && val.length > 0 && val[0] !== 'id')
+        updateData['$set'][val[0]] = val[1];
+    });
+    updateUserLog(updateData);
+    await sharedUpdateUser(res, query, updateData);
+  } catch(error) {
+    updateUserLog(error);
+    errorHandler(res, error, "Failed! User wasn't registered!");
+  }
+}
+
 const addSupplierParts = async(req, res) => {
   try {
     let {partNo, partName, quantity, cost, supplierID} = req.body;
@@ -106,7 +133,10 @@ const addSupplierParts = async(req, res) => {
 const deleteSupplierParts = async(req, res) => {
   try{
     let {supplierPartsID} = req.body;
-    const supplierParts = await SupplierParts.findOneAndDelete({_id: supplierPartsID}).exec();
+    const supplierParts = await SupplierParts.findOneAndDelete({_id: supplierPartsID})
+    .lean()
+    .exec();
+    
     if(!supplierParts)
       throw new customError("Failed! part of the supplier wasn't deleted!", INTERR);
 
@@ -131,6 +161,7 @@ const listSupplierParts = async(req, res) => {
     const supplierParts = await SupplierParts.find(query)
     .skip(skip)
     .limit(limit)
+    .lean()
     .exec();
     
     if(!supplierParts || supplierParts.length === 0)
@@ -211,6 +242,46 @@ const deleteService = async(req, res) => {
   }
 };
 
+const updateService = async(req, res) => {
+  try {
+    let {serviceID} = req.body;
+
+    if(!serviceID) 
+      throw new customError("Failed! service data isn't provided!", INTERR);
+
+    const query = {_id: serviceID};
+    const updateData = {
+      $set: {}
+    };
+    Object.entries(req.body).forEach((val, ind) => {
+      updateServiceLog(val[0], val[1])
+      if(val && val.length > 0 && val[0] !== 'serviceID')
+        updateData['$set'][val[0]] = val[1];
+    });
+    updateData['$set']['coverDays'] = updateData['$set']['coverageDays'];
+    delete updateData['$set']['coverageDays'];
+    
+    updateServiceLog(updateData);
+    const {value: updatedService, lastErrorObject} = await Service.findOneAndUpdate(query,
+      updateData, {
+      rawResult: true,
+      new: true
+    })
+    .select({__v: 0})
+    .lean()
+    .exec();
+    
+    if(!lastErrorObject.updatedExisting || lastErrorObject.n !== 1) 
+      throw new customError("Failed! service isn't updated!", INTERR);
+
+      updateServiceLog(updatedService);
+    res.status(200).json({message: "Service was updated successfully!", data: updatedService});
+  } catch(error) {
+    updateServiceLog(error);
+    errorHandler(res, error, "Failed! Service wasn't registered!");
+  }
+}
+
 const listServices = async(req, res) => {
   try{
     listServicesLog(req.body.agentID);
@@ -218,6 +289,7 @@ const listServices = async(req, res) => {
     const limit = req.body.limit ? req.body.limit : 20;
     const skip = req.body.skip ? req.body.skip : 0;
     if (req.body.serviceName) query.name = req.body.serviceName;
+    if (req.body.serviceID) query._id = req.body.serviceID;
 
     listServicesLog(query);
     await sharedlistServices(res, query, skip, limit);
@@ -251,16 +323,15 @@ const deleteAgentLimits = async(req, res) => {
   try {
     let {agentLimitID} = req.body;
     deleteAgentLimitsLog(req.body);
-    const agentLimits = await AgentLimits.findOneAndDelete( 
-      {$and: [
-        {_id: agentLimitID},
-        {$or: 
-          [
-            {services: {$exists: false}},
-            {services: {$size: 0}}
-          ]
-        }
-      ]}).exec();
+    const agentLimits = await AgentLimits.findOneAndDelete({$and: [
+      {_id: agentLimitID},
+      {$or: 
+        [
+          {service: {$exists: false}},
+          {service: {$size: 0}}
+        ]
+      }]
+    }).exec();
 
     if(!agentLimits)
       throw new customError("Failed! agent limits wasn't deleted!", INTERR);
@@ -272,18 +343,19 @@ const deleteAgentLimits = async(req, res) => {
   }
 };
 
-const listMainAgentLimits = async(req, res) => {
+const listAgentLimits = async(req, res) => {
   try {
-    listMainAgentLimitsLog(req.body);
+    listAgentLimitsLog(req.body);
     let query = {};
     const limit = req.body.limit ? req.body.limit : 20;
     const skip = req.body.skip ? req.body.skip : 0;
     if (req.body.agentID) query.agentID = req.body.agentID;
-    query.services = { $exists: false };
+    if (req.body.main)
+      query.services = { $exist: false };
 
     await sharedListAgentLimits(res, query, skip, limit);
   } catch(error) {
-    listMainAgentLimitsLog(error);
+    listAgentLimitsLog(error);
     errorHandler(res, error, "Failed! can't list agent limits!");
   }
 };
@@ -292,9 +364,11 @@ module.exports = {
   verifyLoggedIn,
   listUsers,
   createUser,
+  updateUser,
   deleteUser,
   addService,
   deleteService,
+  updateService,
   listServices,
   createSupplier,
   addSupplierParts,
@@ -302,5 +376,5 @@ module.exports = {
   listSupplierParts,
   addAgentLimits,
   deleteAgentLimits,
-  listMainAgentLimits
+  listAgentLimits
 };

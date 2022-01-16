@@ -17,8 +17,28 @@ module.exports.schema = {
     note: Joi.string().trim().min(10).optional(),
     role: Joi.string().trim().required().min(5),
     agent: Joi.object().keys({
-      agentID: Joi.string().trim().optional(),
-      agentNickname: Joi.string().trim().optional(),
+      agentID: Joi.string().trim().required(),
+      agentNickname: Joi.string().trim().required(),
+    }).optional(),
+  }), 
+  updateUser: Joi.object().keys({
+    id: Joi.string().trim().min(6).required(),
+    username: Joi.string().trim().optional(),
+    nickname: Joi.string().optional(),
+    password: Joi.string().trim().optional().label('password'),
+    confirmPassword: Joi.any()
+      .equal(Joi.ref('password'))
+      .optional()
+      .strip() //remove it from body after validation
+      .label("Confirm password")
+      .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } }),
+    phone: Joi.number().min(9).optional(),
+    address: Joi.string().trim().optional(),
+    tel: Joi.number().min(7).optional(),
+    note: Joi.string().trim().min(10).optional(),
+    agent: Joi.object().keys({
+      agentID: Joi.string().trim().required(),
+      agentNickname: Joi.string().trim().required(),
     }).optional(),
   }),
   createUserForAgent: Joi.object().keys({
@@ -78,7 +98,7 @@ module.exports.schema = {
     limit: Joi.number().optional(),
     skip: Joi.number().optional(),
     agentID: Joi.string().trim().min(9).max(9).optional(),
-    userID: Joi.string().trim().min(10).max(10).optional(),
+    userID: Joi.string().trim().min(6).max(10).optional(),
     nickname: Joi.string().trim().optional(),
     username: Joi.string().trim().optional(),
   }),
@@ -89,11 +109,20 @@ module.exports.schema = {
     note: Joi.string().trim().optional(),
     dailyCost: Joi.number().optional(),
   }),
+  updateServiceForAdmin: Joi.object().keys({
+    serviceID: Joi.string().trim().required(),
+    serviceName: Joi.string().trim().min(5).optional(),
+    coverageDays: Joi.number().min(1).optional(),
+    cost: Joi.number().min(1).optional(),
+    note: Joi.string().trim().optional(),
+    dailyCost: Joi.number().optional(),
+  }),
   deleteServiceForAdmin: Joi.object().keys({
     serviceID: Joi.string().trim().required()
   }),
   listServicesForAdmin: Joi.object().keys({
     serviceName: Joi.string().trim().min(1).optional(),
+    serviceID: Joi.string().trim().min(1).optional(),
     limit: Joi.number().optional(),
     skip: Joi.number().optional()
   }),
@@ -111,8 +140,9 @@ module.exports.schema = {
   deleteAgentLimitsForAdmin: Joi.object().keys({
     agentLimitID: Joi.string().trim().required()
   }),
-  listMainAgentLimitsForAdmin: Joi.object().keys({
-    agentID: Joi.string().trim().min(9).max(9).optional()
+  listAgentLimitsForAdmin: Joi.object().keys({
+    agentID: Joi.string().trim().min(9).max(9).optional(),
+    main: Joi.boolean().optional()
   }),
   listUsersForAgent: Joi.object().keys({
     limit: Joi.number().optional(),

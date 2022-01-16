@@ -9,6 +9,7 @@ const errorHandler = require("../classes/errorhandler");
 
 //debugging NOT FOR PRODUCTION 
 const createUserLog = util.debuglog("controller.shared-createUser");
+const updateUserLog = util.debuglog("controller.shared-updateUser");
 const createUniqueRefIdLog = util.debuglog("controller.shared-createUniqueRefId");
 const getUserLastIdLog = util.debuglog("controller.shared-getLastId");
 const loginLog = util.debuglog("controller.shared-login");
@@ -75,9 +76,33 @@ const shared = {
       errorHandler(res, error, "Failed! User wasn't registered!");
     }
   },
+  updateUser: async(res, query, update) => {
+    try{ 
+      const {value: updatedUser, lastErrorObject} = await User.findOneAndUpdate(query,
+        update, {
+        rawResult: true,
+        new: true
+      })
+      .select({password: 0, __v:0})
+      .lean()
+      .exec();
+      
+      if(!lastErrorObject.updatedExisting || lastErrorObject.n !== 1) 
+        throw new customError("Failed! user isn't updated!", INTERR);
+
+      updateUserLog(updatedUser);
+      res.status(200).json({message: "User was updated successfully!", data: updatedUser});
+    } catch(error) {
+      updateUserLog(error);
+      errorHandler(res, error, "Failed! User wasn't updated!");
+    }
+  },
   deleteUser: async(res, query) => {
     try{
-      const deletedUser = await User.findOneAndDelete(query).exec();
+      const deletedUser = await User.findOneAndDelete(query)
+      .select({password: 0, __v:0})
+      .lean()
+      .exec();
       if(!deletedUser)
         throw new customError("Failed! User isn't removed!", INTERR);
 

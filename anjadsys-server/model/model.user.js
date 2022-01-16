@@ -37,4 +37,7 @@ const User = new Schema({
   services: {type: [userServices], required: false, default: undefined}
 }, {timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}});
 
+// User.virtual('id').get(function(){
+//   return this._id;
+// });
 module.exports = model('User' , User);
