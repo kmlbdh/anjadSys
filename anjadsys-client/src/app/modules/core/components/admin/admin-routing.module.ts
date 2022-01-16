@@ -1,10 +1,8 @@
 import { AdminComponent } from './admin.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ShowUsersComponent } from './user/show-users/show-users.component';
-import { AddUserComponent } from './user/add-user/add-user.component';
+
 import { MainComponent } from './main/main.component';
-import { EditUserComponent } from './user/edit-user/edit-user.component';
 import { ServiceModule } from './service/service.module';
 import { AgentModule } from './agent/agent.module';
 import { SupplierModule } from './supplier/supplier.module';
