@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User, AdminService } from './admin.service';
+import { AdminService } from './admin.service';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { UserLoggedInAPI } from '../../model/general';
+import { faUsers, faUserTie, faTruckLoading, faTaxi } from '@fortawesome/free-solid-svg-icons';
+import { NavInput } from '../../../shared/components/nav/nav.component';
 
 @Component({
   selector: 'app-admin',
@@ -11,7 +13,70 @@ import { Subscription } from 'rxjs';
 })
 export class AdminComponent implements OnInit {
   faBars = faBars;
-  user!: User;
+  user!: UserLoggedInAPI;
+
+  navData: NavInput[] = [
+    {
+      name: 'مستخدمي النظام',
+      faIcon: faUsers,
+      hide: true,
+      children: [
+        {
+          name: 'اظهار المستخدمين',
+          link: 'user/show-users'
+        },
+        {
+          name: 'اضافة مستخدم جديد',
+          link: 'user/add-user'
+        },
+      ]
+    },
+    {
+      name: 'الوكيل',
+      faIcon: faUserTie,
+      hide: true,
+      children: [
+        {
+          name: 'اظهار الوكلاء',
+          link: 'agent/show-agents'
+        },
+        {
+          name: 'اضافة سقف مالي للوكيل',
+          link: 'agent/add-agent-limit'
+        },
+      ]
+    },
+    {
+      name: 'الموردين',
+      faIcon: faTruckLoading,
+      hide: true,
+      children: [
+        {
+          name: 'اظهار الموردين',
+          link: 'supplier/show-supplier'
+        },
+        {
+          name: 'اضافة قطع جديدة للمورد',
+          link: 'supplier/add-supplier-parts'
+        },
+      ]
+    },
+    {
+      name: 'الخدمات',
+      faIcon: faTaxi,
+      hide: true,
+      children: [
+        {
+          name: 'اظهار الخدمات',
+          link: 'service/show-services'
+        },
+        {
+          name: 'اضافة خدمة جديدة ',
+          link: 'service/add-service'
+        },
+      ]
+    }
+  ];
   constructor(private adminService: AdminService, private router: Router) {
   }
 
@@ -29,7 +94,7 @@ export class AdminComponent implements OnInit {
 
   }
 
-  verifyLoggedInAdmin(user: User){
+  verifyLoggedInAdmin(user: UserLoggedInAPI){
     this.adminService.verifyLoggedInAdmin(user.accessToken).subscribe({
       next: (res) =>{
         if(!res.data || res?.data?._id !== user.id)

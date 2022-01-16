@@ -6,15 +6,9 @@ import {
   HttpInterceptor,
   HttpResponse
 } from '@angular/common/http';
-import { tap, Observable, catchError } from 'rxjs';
+import { tap, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-
-interface User{
-  username: string,
-  nickname: string,
-  role: string,
-  accessToken: string
-}
+import { UserLoggedInAPI } from '../../core/model/general';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -29,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    const user: User = JSON.parse(storedUser);
+    const user: UserLoggedInAPI = JSON.parse(storedUser);
     const token: string = user.accessToken;
 
     let newRq = request.clone({

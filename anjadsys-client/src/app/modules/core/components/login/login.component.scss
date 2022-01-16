@@ -68,34 +68,29 @@
           margin-bottom: 14px;
 
           button{
-            border: none;
-            background-color: $mainBlueColor;
-            @include box-shadow(
-            rgb(0 0 0 / 0%) 0px 0px 0px 0px,
-            rgb(0 0 0 / 0%) 0px 0px 0px 0px,
-            rgb(0 0 0 / 12%) 0px 1px 1px 0px,
-            rgb(0 102 204) 0px 0px 0px 1px,
-            rgb(0 0 0 / 0%) 0px 0px 0px 0px,
-            rgb(0 0 0 / 0%) 0px 0px 0px 0px,
-            rgb(60 66 87 / 8%) 0px 2px 5px 0px
-            );
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 4px;
-            line-height: 30px;
-            font-size: 16px;
+            @include button-primary;
+            // border: none;
+            // background-color: $mainBlueColor;
+            // @include box-shadow(
+            // rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+            // rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+            // rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+            // rgb(0 102 204) 0px 0px 0px 1px,
+            // rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+            // rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+            // rgb(60 66 87 / 8%) 0px 2px 5px 0px
+            // );
+            // color: #fff;
+            // font-weight: 600;
+            // cursor: pointer;
+            // border-radius: 4px;
+            // line-height: 30px;
+            // font-size: 16px;
           }
         }
 
         &.error{
           @include messageBox($mainRedColor);
-
-          // background-color: crimson;
-          // color: #fff;
-          // padding: 8px;
-          // border-radius: 4px;
-          // font-size: 14px;
         }
       }
     }

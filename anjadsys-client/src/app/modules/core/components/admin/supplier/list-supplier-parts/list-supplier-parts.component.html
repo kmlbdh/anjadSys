@@ -1,0 +1,40 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اظهار كل قطع وخدمات المورد</p>
+    <p style="margin-top: 10px">المورد :
+      <span style="font-weight: 400;">{{selectedSupplier}}</span>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col col-1">الرقم</div>
+        <div class="col col-2">اسم القطعة</div>
+        <div class="col col-3">عدد القطع</div>
+        <div class="col col-4">المبلغ المالي</div>
+        <div class="col col-5">تاريخ الاضافة</div>
+        <div class="col col-6">التحكم</div>
+      </li>
+      <ng-template [ngIf]="parts.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="parts.length > 0">
+        <li *ngFor="let part of parts; trackBy: trackById; let i = index;" class="table-row">
+          <div class="col col-1" data-label="ID">{{part.partNo || i+1}}</div>
+          <div class="col col-2" data-label="Total Limits">{{part.partName}}</div>
+          <div class="col col-3" data-label="Bolias">{{part.quantity}}</div>
+          <div class="col col-4" data-label="Customer Role">{{part.cost}} {{currency}}</div>
+          <div class="col col-5" data-label="Customer Role">{{part.created_at | date}}</div>
+          <div class="col col-6 control" data-label="Control">
+             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
+             <!-- <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(user._id)"></fa-icon> -->
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

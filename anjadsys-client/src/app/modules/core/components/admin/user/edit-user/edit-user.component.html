@@ -1,0 +1,67 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>تعديل بيانات المستخدم</p>
+  </div>
+
+  <div class="page-content card">
+      <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="username">اسم المستخدم</label>
+            <input id="username" type="text" name="username" formControlName="username"/>
+          </div>
+          <div class="form-control-group">
+            <label for="nickname">اسم الشركة</label>
+            <input id="nickname" type="text" name="nickname" formControlName="nickname"/>
+          </div>
+          <div class="form-control-group" *ngIf="removePassword">
+            <label for="password">كلمة المرور</label>
+            <input id="password" type="password" name="password" formControlName="password"/>
+          </div>
+          <div class="form-control-group" *ngIf="removePassword">
+            <label for="confirmPassword">تأكيد كلمة المرور</label>
+            <input id="confirmPassword" type="password" name="confirmPassword" formControlName="confirmPassword"/>
+          </div>
+          <div class="form-control-group">
+            <label for="role">نوع المستخدم</label>
+            <input id="role" type="text" formControlName="role">
+           <!-- <select id="role" formControlName="role">
+              <option [selected]="(role === 'admin')">ادمن</option>
+              <option [selected]="(role === 'customer')">زبون</option>
+              <option [selected]="(role === 'agent')">وكيل</option>
+              <option [selected]="(role === 'supplier')">مورد بضاعة</option>
+            </select> -->
+          </div>
+        </div>
+
+        <div class="form-sec2">
+          <div class="form-control-group">
+            <label for="phone">رقم الجوال</label>
+            <input id="phone" type="number" name="phone" formControlName="phone"/>
+          </div>
+          <div class="form-control-group">
+            <label for="tel">رقم الهاتف</label>
+            <input id="tel" type="number" name="tel" formControlName="tel"/>
+          </div>
+          <div class="form-control-group">
+            <label for="address">العنوان</label>
+            <input id="address" type="text" name="address" formControlName="address"/>
+          </div>
+          <div class="form-control-group">
+            <label for="note">ملاحظات</label>
+            <textarea id="note" formControlName="note"></textarea>
+          </div>
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>
+              تحديث
+            </span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>تعديل بيانات الخدمة </p>
+  </div>
+
+  <div class="page-content card">
+      <form [formGroup]="editServiceForm" (ngSubmit)="updateService()">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="serviceName">الخدمة</label>
+            <input id="serviceName" type="text" name="serviceName" formControlName="serviceName" required/>
+          </div>
+          <div class="form-control-group">
+            <label for="coverageDays">عدد أيام تغطية الخدمة</label>
+            <input id="coverageDays" type="number" name="coverageDays"
+            (keyup)="calculateTotalCost($event)"
+            formControlName="coverageDays" required/>
+          </div>
+          <div class="form-control-group">
+            <label for="dailyCost">تكلفة تغطية اليوم</label>
+            <input id="dailyCost" type="number" name="dailyCost"
+            (keyup)="calculateTotalCost($event)"
+            formControlName="dailyCost" required/>
+          </div>
+          <div class="form-control-group">
+            <label for="cost">التكلفة الاجمالية</label>
+            <input id="cost" type="number" name="cost" formControlName="cost" required/>
+          </div>
+        </div>
+
+        <div class="form-sec2">
+          <div class="form-control-group">
+            <label for="note">ملاحظات</label>
+            <textarea id="note" formControlName="note"></textarea>
+          </div>
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>تحديث</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

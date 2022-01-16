@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { take } from 'rxjs';
@@ -9,7 +9,7 @@ import { LoginService } from './login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   errorMsg: String | undefined;
 
   loginForm = this.fb.group({
@@ -22,15 +22,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {}
-  ngOnDestroy(): void {
-
-  }
-
   onLogin = () => {
     this.loginService.login(this.loginForm.value)
-    .pipe(
-      take(1)
-    )
+    .pipe(take(1))
     .subscribe({
       next: (response) => {
         localStorage.setItem('user', JSON.stringify(response.data));

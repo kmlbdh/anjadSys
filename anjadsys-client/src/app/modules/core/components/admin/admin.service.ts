@@ -1,90 +1,13 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-
-export interface User{
-  id: string,
-  username: string,
-  nickname: string,
-  role: string,
-  accessToken: string
-}
-
-export interface Users{
-  data:[{
-    _id: string,
-    username: string,
-    nickname: string,
-    role: string,
-    phone: number,
-    address: string,
-    tel: number,
-    created_at: Date,
-    updated_at: Date
-  }]
-}
-
-export interface regUser{
-    username: string,
-    nickname?: string,
-    password: string,
-    confirmPassword: string,
-    role: string,
-    phone?: number,
-    tel?: number,
-    address?: string,
-    note?: string
-}
-
-export interface SearchUser {
-  skip?:number,
-  limit?: number,
-  userID?: string,
-  role?: string,
-  agentID?: string,
-  nickname?: string
-}
-
-export interface agentLimits{
-  limitAmount: number,
-  agentID: string
-}
-
-export interface supplierParts{
-  partNo?: number,
-  partName: string,
-  quantity: number,
-  cost: number,
-  supplierID: string
-}
-
-export interface listSupplierSearch{
-    role?: string,
-    limit?: number,
-    skip?: number,
-    agentID?: string,
-    userID?: string,
-    nickname?: string,
-    username?: string,
-}
-
-export interface listAgentSearch{
-    role?: string,
-    limit?: number,
-    skip?: number,
-    userID?: string,
-    nickname?: string,
-    username?: string,
-}
-
-export interface supplier{
-    username: string,
-    nickname: string,
-    address: string,
-    tel: number,
-    phone: number,
-    role: string,
-}
+import { AgentLimitsArrayAPI, NewAgentLimits, SearchAgentLimits } from '../../model/agentlimits';
+import { NewPart } from '../../model/supplierparts';
+import { SearchUser, UsersAPI, NewUser, updateUser } from '../../model/user';
+import { SearchSuppliers } from '../../model/supplier';
+import { SearchService, ServicesAPI } from '../../model/service';
+import { SearchAgent } from '../../model/agent';
+import { AdminModule } from './admin.module';
 
 @Injectable()
 export class AdminService {
@@ -92,61 +15,114 @@ export class AdminService {
   constructor(private http: HttpClient) { }
 
   verifyLoggedInAdmin(token: string): Observable<any>{
-    return this.http.post<string>(this.url + "verify-logged-in", {token: token}).pipe(
+    return this.http.post<string>(`${this.url}verify-logged-in`, {token: token}).pipe(
       catchError(this.handleError)
     );
   }
-  showUsers(searchBy: SearchUser):Observable<Users>{
-    return this.http.post<Users>(this.url + "list-users", searchBy).pipe(
+
+  showUsers(searchBy: SearchUser):Observable<UsersAPI>{
+    return this.http.post<UsersAPI>(`${this.url}list-users`, searchBy).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteUser(id: string): Observable<any>{
-    return this.http.post<any>(this.url + "delete-user", {username: id}).pipe(
+    return this.http.post<any>(`${this.url}delete-user`, {username: id}).pipe(
       catchError(this.handleError)
     );
   }
 
-  addUser(userData: regUser): Observable<any>{
-    return this.http.post<any>(this.url + "create-user", userData).pipe(
+  addUser(userData: NewUser): Observable<any>{
+    return this.http.post<any>(`${this.url}create-user`, userData).pipe(
       catchError(this.handleError)
     );
   }
 
-  addSupplier(userData: regUser): Observable<any>{
-    return this.http.post<any>(this.url + "create-supplier", userData).pipe(
+  updateUser(userData: updateUser): Observable<any>{
+    return this.http.post<any>(`${this.url}edit-user`, userData).pipe(
       catchError(this.handleError)
     );
   }
 
-  listSuppliers(searchConditions: listSupplierSearch): Observable<any>{
+  addSupplier(userData: NewUser): Observable<any>{
+    return this.http.post<any>(`${this.url}create-supplier`, userData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listSuppliers(searchConditions: SearchSuppliers): Observable<any>{
     searchConditions.role = "supplier";
-    return this.http.post<any>(this.url + "list-users", searchConditions).pipe(
+    return this.http.post<any>(`${this.url}list-users`, searchConditions).pipe(
       catchError(this.handleError)
     );
   }
 
-  addSupplierParts(supplierPartsData: supplierParts){
-    return this.http.post<any>(this.url + "add-supplier-part", supplierPartsData).pipe(
+  listServices(searchConditions?: SearchService): Observable<ServicesAPI>{
+    return this.http.post<ServicesAPI>(`${this.url}list-services`, searchConditions).pipe(
       catchError(this.handleError)
     );
   }
 
-  listAgents(searchConditions: listAgentSearch): Observable<any>{
+  addSupplierParts(supplierPartsData: NewPart){
+    return this.http.post<any>(`${this.url}add-supplier-part`, supplierPartsData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listSupplierParts(searchConditions: {supplierID: string}): Observable<any>{
+    return this.http.post<any>(`${this.url}list-supplier-parts`, searchConditions).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteSupplierPart(id: string): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-supplier-part`, {supplierPartsID: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listAgents(searchConditions: SearchAgent): Observable<any>{
     searchConditions.role = "agent";
-    return this.http.post<any>(this.url + "list-users", searchConditions).pipe(
+    return this.http.post<any>(`${this.url}list-users`, searchConditions).pipe(
       catchError(this.handleError)
     );
   }
 
-  addAgentLimits(agentLimitsData: agentLimits){
-    return this.http.post<any>(this.url + "add-agent-limits", agentLimitsData).pipe(
+  addAgentLimits(agentLimitsData: NewAgentLimits){
+    return this.http.post<any>(`${this.url}add-agent-limits`, agentLimitsData).pipe(
       catchError(this.handleError)
     );
   }
 
+  listAgentLimits(searchAgentLimitsData: SearchAgentLimits){
+    return this.http.post<AgentLimitsArrayAPI>(`${this.url}list-agent-limits`, searchAgentLimitsData).pipe(
+      catchError(this.handleError)
+    );
+  }
 
+  deleteAgentLimits(id: string){
+    return this.http.post<any>(`${this.url}delete-agent-limits`, {agentLimitID: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteService(id: string): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-service`, {serviceID: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addService(service: Partial<ServicesAPI>){
+    return this.http.post<any>(`${this.url}add-service`, service).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateService(service: Partial<ServicesAPI>){
+    return this.http.post<any>(`${this.url}update-service`, service).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
