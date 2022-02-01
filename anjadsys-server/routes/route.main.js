@@ -10,5 +10,5 @@ module.exports = function(app){
     next();
   });
 
-  app.post("/api/login", verifyLogin.validateLogin, login);
+  app.post("/api/login", verifyLogin, login);
 };

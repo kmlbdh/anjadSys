@@ -1,22 +1,29 @@
 const { 
   verifyLoggedIn,
-  validateListUsers,
-  validateDeleteUser,
-  validateUpdateUser,
-  validateAddService,
-  validateDeleteService,
-  validateUpdateService,
-  validateListServices,
-  validateAddAgentLimits,
-  validateDeleteAgentLimits,
-  validateListAgentLimits,
+  userValidation,
+  serviceValidation,
+  agentLimitsValidation,
   validateAddSupplier,
-  validateAddSupplierParts,
-  validateDeleteSupplierPart,
-  validateListSupplierPart,
+  carTypeValidation,
+  carModelValidation,
+  carValidation,
  } = require("../middleware/middleware.admin");
-const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
-const controller = require("../controller/controller.admin");
+
+const { 
+  auth,
+  checkDuplicateUsernameOrNickname 
+} = require("../middleware/middleware.shared");
+
+const {
+  userActions,
+  serviceActions,
+  agentActions,
+  sharedActions,
+  accidentActions,
+  carTypeActions,
+  carModelActions,
+  carActions,
+} = require("../controller/controller.admin");
 
 module.exports = function(app){
   app.use((_req, res, next) => {
@@ -26,101 +33,200 @@ module.exports = function(app){
     );
     next();
   });
+  
+/** #################### USER  ########################*/
 
   app.post("/api/admin/create-user",[
     auth.verifyToken,
     auth.isAdmin,
-    verifyCreateUser.validateCreateUser,
-    verifyCreateUser.checkDuplicateUsernameOrNickname
-  ], controller.createUser);
+    userValidation.create,
+    checkDuplicateUsernameOrNickname
+  ], userActions.create);
 
   app.post("/api/admin/edit-user",[
     auth.verifyToken,
     auth.isAdmin,
-    validateUpdateUser,
-  ], controller.updateUser);
+    userValidation.update,
+  ], userActions.update);
 
   app.post("/api/admin/delete-user",[
     auth.verifyToken,
     auth.isAdmin,
-    validateDeleteUser,
-  ], controller.deleteUser);
-
-  app.post("/api/admin/create-supplier",[
-    auth.verifyToken,
-    auth.isAdmin,
-    validateAddSupplier,
-    verifyCreateUser.checkDuplicateUsernameOrNickname
-  ], controller.createSupplier);
-
-  app.post("/api/admin/add-supplier-part",[
-    auth.verifyToken,
-    auth.isAdmin,
-    validateAddSupplierParts,
-  ], controller.addSupplierParts);
-
-  app.post("/api/admin/delete-supplier-part",[
-    auth.verifyToken,
-    auth.isAdmin,
-    validateDeleteSupplierPart,
-  ], controller.deleteSupplierParts);
-
-  app.post("/api/admin/list-supplier-parts",[
-    auth.verifyToken,
-    auth.isAdmin,
-    validateListSupplierPart,
-  ], controller.listSupplierParts);
+    userValidation.delete,
+  ], userActions.delete);
 
   app.post("/api/admin/list-users",[
     auth.verifyToken,
     auth.isAdmin,
-    validateListUsers
-  ], controller.listUsers);
+    userValidation.list,
+  ], userActions.list);
+
+/** #################### SUPPLIER  ########################*/
+  app.post("/api/admin/create-supplier",[
+    auth.verifyToken,
+    auth.isAdmin,
+    validateAddSupplier,
+    checkDuplicateUsernameOrNickname
+  ], userActions.create);
+
+  
+/** #################### SERVICE  ########################*/
 
   app.post("/api/admin/add-service",[
     auth.verifyToken,
     auth.isAdmin,
-    validateAddService,
-  ], controller.addService);
+    serviceValidation.add,
+  ], serviceActions.add);
 
   app.post("/api/admin/delete-service",[
     auth.verifyToken,
     auth.isAdmin,
-    validateDeleteService,
-  ], controller.deleteService);
+    serviceValidation.delete,
+  ], serviceActions.delete);
 
   app.post("/api/admin/update-service",[
     auth.verifyToken,
     auth.isAdmin,
-    validateUpdateService,
-  ], controller.updateService);
+    serviceValidation.update,
+  ], serviceActions.update);
 
   app.post("/api/admin/list-services",[
     auth.verifyToken,
     auth.isAdmin,
-    validateListServices,
-  ], controller.listServices);
+    serviceValidation.list,
+  ], serviceActions.list);
+
+/** #################### AGENT LIMITS  ########################*/
 
   app.post("/api/admin/add-agent-limits",[
     auth.verifyToken,
     auth.isAdmin,
-    validateAddAgentLimits,
-  ], controller.addAgentLimits);
+    agentLimitsValidation.add,
+  ], agentActions.add);
 
   app.post("/api/admin/delete-agent-limits",[
     auth.verifyToken,
     auth.isAdmin,
-    validateDeleteAgentLimits,
-  ], controller.deleteAgentLimits);
+    agentLimitsValidation.delete,
+  ], agentActions.delete);
 
   app.post("/api/admin/list-agent-limits",[
     auth.verifyToken,
     auth.isAdmin,
-    validateListAgentLimits,
-  ], controller.listAgentLimits);
+    agentLimitsValidation.list,
+  ], agentActions.list);
 
-  app.post("/api/admin/verify-logged-in", [
+/** #################### REGION & ROLES API ########################*/
+
+  app.get("/api/admin/get-regions-roles",[
     auth.verifyToken,
-    auth.isAdmin
-  ], controller.verifyLoggedIn);
+    auth.isAdmin,
+  ], sharedActions.getRegionsAndRoles);
+
+/** #################### CAR TYPE ########################*/
+  
+  app.post("/api/admin/add-car-type",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carTypeValidation.add
+  ], carTypeActions.add);
+
+  app.post("/api/admin/edit-car-type",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carTypeValidation.update,
+  ], carTypeActions.update);
+
+  app.post("/api/admin/delete-car-type",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carTypeValidation.delete,
+  ], carTypeActions.delete);
+
+  app.post("/api/admin/list-car-types",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carTypeValidation.list,
+  ], carTypeActions.list);
+
+/** #################### CAR MODEL ########################*/
+
+  app.post("/api/admin/add-car-model",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carModelValidation.add
+  ], carModelActions.add);
+
+  app.post("/api/admin/edit-car-model",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carModelValidation.update,
+  ], carModelActions.update);
+
+  app.post("/api/admin/delete-car-model",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carModelValidation.delete,
+  ], carModelActions.delete);
+
+  app.post("/api/admin/list-car-models",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carModelValidation.list,
+  ], carModelActions.list);
+
+  /** #################### CAR ########################*/
+  app.post("/api/admin/add-car",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.add
+  ], carActions.add);
+
+  app.post("/api/admin/edit-car",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.update,
+  ], carActions.update);
+
+  app.post("/api/admin/delete-car",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.delete,
+  ], carActions.delete);
+
+  app.post("/api/admin/list-cars",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.list,
+  ], carActions.list);
+
+  /** #################### ACCIDENT ########################*/
+  app.post("/api/admin/add-accident",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.add
+  ], accidentActions.add);
+
+  app.post("/api/admin/edit-accident",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.update,
+  ], accidentActions.update);
+
+  app.post("/api/admin/delete-accident",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.delete,
+  ], accidentActions.delete);
+
+  app.post("/api/admin/list-accidents",[
+    auth.verifyToken,
+    auth.isAdmin,
+    carValidation.list,
+  ], accidentActions.list);
+
+  // app.post("/api/admin/verify-logged-in", [
+  //   auth.verifyToken,
+  //   auth.isAdmin
+  // ], verifyLoggedIn);
 };

@@ -1,18 +1,15 @@
 const validation = require("./middleware.validation");
-const { schema } = require("../schema/schema.validation");
+const { userSchema, serviceSchema } = require("../schema/schema.validation.agent");
 
-const validateCreateUser = validation(schema.createUserForAgent, 'body');
-const validateListUsers = validation(schema.listUsersForAgent, 'body');
-const validateListServices = validation(schema.listServicesForAdmin, 'body');
-const validateAddServiceToCustomer = validation(schema.addServiceToCustomerOfAgent, 'body');
-const validateDeleteServiceToCustomer = validation(schema.deleteServiceToCustomerOfAgent, 'body');
-const validateDeleteUser = validation(schema.deleteUserForAgent, 'body');
+const userValidation = {
+ create: validation(userSchema.create, 'body'),
+ list: validation(userSchema.list, 'body'),
+ delete: validation(userSchema.delete, 'body'),
+};
+
+const validateListServices = validation(serviceSchema.list, 'body');
 
 module.exports = { 
-  validateCreateUser,
-  validateListUsers,
-  validateDeleteUser,
-  validateListServices,
-  validateAddServiceToCustomer,
-  validateDeleteServiceToCustomer
+  userValidation,
+  validateListServices
 };

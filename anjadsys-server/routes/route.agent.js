@@ -1,12 +1,8 @@
 const {
-  validateCreateUser,
-  validateListUsers,
-  validateDeleteUser,
+  userValidation,
   validateListServices,
-  validateAddServiceToCustomer,
-  validateDeleteServiceToCustomer,
 } = require("../middleware/middleware.agent");
-const { auth, verifyCreateUser } = require("../middleware/middleware.shared");
+const { auth, checkDuplicateUsernameOrNickname } = require("../middleware/middleware.shared");
 const controller = require("../controller/controller.agent");
 
 module.exports = function(app){
@@ -21,20 +17,20 @@ module.exports = function(app){
   app.post("/api/agent/list-users",[
     auth.verifyToken,
     auth.isAgent,
-    validateListUsers
+    userValidation.list
   ], controller.listUsers);
 
   app.post("/api/agent/create-user",[
     auth.verifyToken,
     auth.isAgent,
-    validateCreateUser,
-    verifyCreateUser.checkDuplicateUsernameOrNickname
+    userValidation.create,
+    checkDuplicateUsernameOrNickname
   ], controller.createUser);
 
   app.post("/api/agent/delete-user",[
     auth.verifyToken,
     auth.isAgent,
-    validateDeleteUser
+    userValidation.delete
   ], controller.deleteUser);
 
   app.post("/api/agent/list-services",[
@@ -43,15 +39,15 @@ module.exports = function(app){
     validateListServices,
   ], controller.listServices);
 
-  app.post("/api/agent/add-customer-service",[
-    auth.verifyToken,
-    auth.isAgent,
-    validateAddServiceToCustomer,
-  ], controller.addServiceToCustomer);
+  // app.post("/api/agent/add-customer-service",[
+  //   auth.verifyToken,
+  //   auth.isAgent,
+  //   validateAddServiceToCustomer,
+  // ], controller.addServiceToCustomer);
 
-  app.post("/api/agent/delete-customer-service",[
-    auth.verifyToken,
-    auth.isAgent,
-    validateDeleteServiceToCustomer,
-  ], controller.deleteServiceFromCustomer);
+  // app.post("/api/agent/delete-customer-service",[
+  //   auth.verifyToken,
+  //   auth.isAgent,
+  //   validateDeleteServiceToCustomer,
+  // ], controller.deleteServiceFromCustomer);
 };

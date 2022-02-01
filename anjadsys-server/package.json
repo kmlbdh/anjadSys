@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "dev": "NODE_DEBUG=controller*,middleware* nodemon index.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init",
     "test": "./node_modules/jasmine/bin/jasmine.js"
@@ -22,16 +22,20 @@
   "dependencies": {
     "auto-id-builder": "^1.0.0",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "joi": "^17.5.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.1.2",
+    "mysql2": "^2.3.3",
     "request": "^2.88.2",
+    "sequelize": "^6.13.0",
+    "sequelize-auto-migrations-v2": "^1.2.1",
     "xss": "^1.0.10"
   },
   "devDependencies": {
     "jasmine": "^3.10.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "sequelize-cli": "^6.4.1"
   }
 }

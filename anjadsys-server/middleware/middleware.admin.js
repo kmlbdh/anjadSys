@@ -1,34 +1,64 @@
 const validation = require("./middleware.validation");
-const { schema } = require("../schema/schema.validation");
+const { 
+  userSchema,
+  serviceSchema,
+  agentLimitsSchema,
+  createSupplier,
+  carSchema,
+  carTypeSchema,
+  carModelSchema,
+} = require("../schema/schema.validation.admin");
 
-const validateUpdateUser = validation(schema.updateUser, 'body');
-const validateListUsers = validation(schema.listUsersForAdmin, 'body');
-const validateAddService = validation(schema.addServiceForAdmin, 'body');
-const validateDeleteService = validation(schema.deleteServiceForAdmin, 'body');
-const validateUpdateService = validation(schema.updateServiceForAdmin, 'body');
-const validateListServices = validation(schema.listServicesForAdmin, 'body');
-const validateAddAgentLimits = validation(schema.addAgentLimitsForAdmin, 'body');
-const validateDeleteAgentLimits = validation(schema.deleteAgentLimitsForAdmin, 'body');
-const validateListAgentLimits = validation(schema.listAgentLimitsForAdmin, 'body');
-const validateAddSupplier = validation(schema.createSupplierForAdmin, 'body');
-const validateAddSupplierParts = validation(schema.addSupplierPartsForAdmin, 'body');
-const validateDeleteSupplierPart = validation(schema.deleteSupplierPartsForAdmin, 'body');
-const validateListSupplierPart = validation(schema.listSupplierPartsForAdmin, 'body');
-const validateDeleteUser = validation(schema.deleteUserForAdmin, 'body');
+const userValidation = {
+  create: validation(userSchema.create, 'body'),
+  update: validation(userSchema.update, 'body'),
+  list: validation(userSchema.list, 'body'),
+  delete: validation(userSchema.delete, 'body'),
+};
+
+const serviceValidation = {
+   add: validation(serviceSchema.add, 'body'),
+   delete: validation(serviceSchema.delete, 'body'),
+   update: validation(serviceSchema.update, 'body'),
+   list: validation(serviceSchema.list, 'body'),
+};
+
+const agentLimitsValidation = {
+ add: validation(agentLimitsSchema.add, 'body'),
+ delete: validation(agentLimitsSchema.delete, 'body'),
+ list: validation(agentLimitsSchema.list, 'body'),
+};
+
+const carTypeValidation = {
+ add: validation(carTypeSchema.add, 'body'),
+ update: validation(carTypeSchema.update, 'body'),
+ delete: validation(carTypeSchema.delete, 'body'),
+ list: validation(carTypeSchema.list, 'body'),
+};
+
+const carModelValidation = {
+ add: validation(carModelSchema.add, 'body'),
+ update: validation(carModelSchema.update, 'body'),
+ delete: validation(carModelSchema.delete, 'body'),
+ list: validation(carModelSchema.list, 'body'),
+};
+
+const carValidation = {
+ add: validation(carSchema.add, 'body'),
+ update: validation(carSchema.update, 'body'),
+ delete: validation(carSchema.delete, 'body'),
+ list: validation(carSchema.list, 'body'),
+};
+
+const validateAddSupplier = validation(createSupplier, 'body');
+
 
 module.exports = { 
-  validateListUsers,
-  validateDeleteUser,
-  validateUpdateUser,
-  validateAddService,
-  validateDeleteService,
-  validateUpdateService,
+  userValidation,
+  serviceValidation,
   validateAddSupplier,
-  validateAddSupplierParts,
-  validateDeleteSupplierPart,
-  validateListSupplierPart,
-  validateListServices,
-  validateAddAgentLimits,
-  validateDeleteAgentLimits,
-  validateListAgentLimits,
+  agentLimitsValidation,
+  carTypeValidation,
+  carModelValidation,
+  carValidation,
 };

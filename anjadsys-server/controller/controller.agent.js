@@ -1,4 +1,4 @@
-const db = require("../model");
+const db = require("../models");
 const util = require("util");
 const customError = require("../classes/customError");
 const errorHandler = require("../classes/errorhandler");
@@ -8,11 +8,9 @@ const {
   deleteUser: sharedDeleteUser,
 } = require("./controller.shared");
 
-const User = db.userModel;
-const Role = db.roleModel;
-const mongoose = db.mongoose;
-// const Service = db.serviceModel;
-const agentLimits = db.agentLimitsModel;
+const User = db.User;
+const Role = db.Role;
+const Account = db.Account;
 const INTERR = 'INT_ERR';
 
 //debugging NOT FOR PRODUCTION
@@ -26,16 +24,16 @@ const deletedServiceToCustomerLog = util.debuglog("controller.agent-deletedServi
 
 const listUsers = async(req, res) => {
   try{
-    const roleDB = await Role.findOne({name: 'customer'}).exec();
-    const limit = req.body.limit ? req.body.limit : 20;
-    const skip = req.body.skip ? req.body.skip : 0;
+    const roleDB = await Role.findOne({where: {name: 'customer'}});
+    const limit = req.body.limit;
+    const skip = req.body.skip;
   
     if(!roleDB)
       throw new customError("Failed! can't find specified role!", INTERR);
 
-    const query = {'role': roleDB.name, 'agent.agentID': req.agent._id};
-    // if (req.agent.nickname) query = {...query,  'agent.agentNickname': req.agent.nickname};
-    if (req.body.userID) query._id = req.body.userID;
+    const query = {where: { roleId: roleDB.id, agentId: req.agent.id }};
+    
+    if (req.body.userID) query.where.id = req.body.userID;
   
     listUsersLog(roleDB);
     await sharedListUsers(res, query, skip, limit);

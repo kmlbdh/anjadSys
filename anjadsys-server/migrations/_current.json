@@ -1,0 +1,672 @@
+{
+    "tables": {
+        "Accidents": {
+            "tableName": "Accidents",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "accidentPlace": {
+                    "allowNull": false,
+                    "field": "accidentPlace",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "accidentDate": {
+                    "field": "accidentDate",
+                    "seqType": "Sequelize.DATE"
+                },
+                "registerAccidentDate": {
+                    "field": "registerAccidentDate",
+                    "seqType": "Sequelize.DATE"
+                },
+                "driverName": {
+                    "field": "driverName",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "driverIdentity": {
+                    "field": "driverIdentity",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "accidentDescription": {
+                    "field": "accidentDescription",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "expectedCost": {
+                    "field": "expectedCost",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "customerId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "customerId",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "agentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "agentId",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "carNumber": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Cars",
+                        "key": "carNumber"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "carNumber",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                }
+            },
+            "indexes": []
+        },
+        "Accounts": {
+            "tableName": "Accounts",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "credit": {
+                    "field": "credit",
+                    "seqType": "Sequelize.DECIMAL"
+                },
+                "debit": {
+                    "field": "debit",
+                    "seqType": "Sequelize.DECIMAL"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "insurancePolicyId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "InsurancePolicies",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "insurancePolicyId",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "agentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "agentId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        },
+        "Cars": {
+            "tableName": "Cars",
+            "schema": {
+                "carNumber": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "carNumber",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "motorNumber": {
+                    "unique": true,
+                    "allowNull": false,
+                    "field": "motorNumber",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "motorPH": {
+                    "field": "motorPH",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "licenseType": {
+                    "allowNull": false,
+                    "field": "licenseType",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "serialNumber": {
+                    "field": "serialNumber",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "passengersCount": {
+                    "field": "passengersCount",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "productionYear": {
+                    "field": "productionYear",
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "customerId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "customerId",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "carTypeId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "CarTypes",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "carTypeId",
+                    "seqType": "Sequelize.SMALLINT.UNSIGNED"
+                },
+                "carModelId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "CarModels",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "carModelId",
+                    "seqType": "Sequelize.SMALLINT.UNSIGNED"
+                }
+            },
+            "indexes": []
+        },
+        "CarModels": {
+            "tableName": "CarModels",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.SMALLINT.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(20)"
+                },
+                "carTypeId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "CarTypes",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "carTypeId",
+                    "seqType": "Sequelize.SMALLINT.UNSIGNED"
+                }
+            },
+            "indexes": []
+        },
+        "CarTypes": {
+            "tableName": "CarTypes",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.SMALLINT.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(20)"
+                }
+            },
+            "indexes": []
+        },
+        "InsurancePolicies": {
+            "tableName": "InsurancePolicies",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "totalPrice": {
+                    "allowNull": false,
+                    "field": "totalPrice",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "carNumber": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Cars",
+                        "key": "carNumber"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "carNumber",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "customerId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "customerId",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "agentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "agentId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        },
+        "Regions": {
+            "tableName": "Regions",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(20)"
+                }
+            },
+            "indexes": []
+        },
+        "Roles": {
+            "tableName": "Roles",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(50)"
+                }
+            },
+            "indexes": []
+        },
+        "Services": {
+            "tableName": "Services",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.MEDIUMINT.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "cost": {
+                    "unique": true,
+                    "allowNull": false,
+                    "field": "cost",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "coverageDays": {
+                    "field": "coverageDays",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "ServiceAccidents": {
+            "tableName": "ServiceAccidents",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "cost": {
+                    "allowNull": false,
+                    "field": "cost",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "additionalDays": {
+                    "allowNull": false,
+                    "field": "additionalDays",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "accidentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Accidents",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "accidentId",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "serviceId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Services",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "serviceId",
+                    "seqType": "Sequelize.MEDIUMINT.UNSIGNED"
+                },
+                "supplierId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "supplierId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        },
+        "ServicePolicies": {
+            "tableName": "ServicePolicies",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "cost": {
+                    "allowNull": false,
+                    "field": "cost",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "additionalDays": {
+                    "allowNull": false,
+                    "field": "additionalDays",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "insurancePolicyId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "InsurancePolicies",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "insurancePolicyId",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "serviceId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Services",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "serviceId",
+                    "seqType": "Sequelize.MEDIUMINT.UNSIGNED"
+                },
+                "supplierId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "supplierId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        },
+        "Users": {
+            "tableName": "Users",
+            "schema": {
+                "id": {
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "identityNum": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "identityNum",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "username": {
+                    "unique": true,
+                    "allowNull": false,
+                    "field": "username",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "companyName": {
+                    "field": "companyName",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "password": {
+                    "field": "password",
+                    "seqType": "Sequelize.STRING"
+                },
+                "address": {
+                    "field": "address",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "jawwal1": {
+                    "unique": true,
+                    "field": "jawwal1",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "jawwal2": {
+                    "unique": true,
+                    "field": "jawwal2",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "fax": {
+                    "unique": true,
+                    "field": "fax",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "tel": {
+                    "unique": true,
+                    "field": "tel",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "email": {
+                    "unique": true,
+                    "field": "email",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "note": {
+                    "field": "note",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "regionId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Regions",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "regionId",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "roleId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Roles",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "roleId",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                },
+                "agentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "agentId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        }
+    },
+    "revision": 1
+}
