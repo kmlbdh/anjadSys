@@ -1,3 +1,4 @@
+import { updateCar, updateCarModel, updateCarType } from './../../model/car';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -8,11 +9,14 @@ import { SearchSuppliers } from '../../model/supplier';
 import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchAgent } from '../../model/agent';
 import { AdminModule } from './admin.module';
+import { CarAPI, CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
 
 @Injectable()
 export class AdminService {
   private url = "http://localhost:4200/api/admin/";
   constructor(private http: HttpClient) { }
+
+  [index: string]: any;
 
   verifyLoggedInAdmin(token: string): Observable<any>{
     return this.http.post<string>(`${this.url}verify-logged-in`, {token: token}).pipe(
@@ -106,7 +110,7 @@ export class AdminService {
     );
   }
 
-  deleteService(id: string): Observable<any>{
+  deleteService(id: number): Observable<any>{
     return this.http.post<any>(`${this.url}delete-service`, {serviceID: id}).pipe(
       catchError(this.handleError)
     );
@@ -123,6 +127,85 @@ export class AdminService {
       catchError(this.handleError)
     );
   }
+
+  getRegionsAndRoles(){
+    return this.http.get<any>(`${this.url}get-regions-roles`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  deleteCar(id: string): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-car`, {carId: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  showCars(searchBy: SearchCar):Observable<CarsAPI>{
+    return this.http.post<CarsAPI>(`${this.url}list-cars`, searchBy).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addCar(carData: NewCar): Observable<any>{
+    return this.http.post<any>(`${this.url}add-car`, carData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateCar(carData: updateCar): Observable<any>{
+    return this.http.post<any>(`${this.url}edit-car`, carData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addCarType(carTypeData: NewCarType): Observable<any>{
+    return this.http.post<any>(`${this.url}add-car-type`, carTypeData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listCarTypes(searchCarTypeData: SearchCarType){
+    return this.http.post<CarTypeArrayAPI>(`${this.url}list-car-types`, searchCarTypeData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteCarType(id: number): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-car-type`, {carTypeId: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateCarType(carModelData: updateCarType): Observable<any>{
+    return this.http.post<any>(`${this.url}edit-car-type`, carModelData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addCarModel(carModelData: NewCarModel): Observable<any>{
+    return this.http.post<any>(`${this.url}add-car-model`, carModelData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listCarModels(searchCarModelData: SearchCarModel){
+    return this.http.post<CarModelArrayAPI>(`${this.url}list-car-models`, searchCarModelData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteCarModel(id: number): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-car-model`, {carModelId: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateCarModel(carModelData: updateCarModel): Observable<any>{
+    return this.http.post<any>(`${this.url}edit-car-model`, carModelData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {

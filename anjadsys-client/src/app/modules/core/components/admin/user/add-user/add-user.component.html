@@ -4,53 +4,146 @@
   </div>
 
   <div class="page-content card">
-      <form [formGroup]="addUserForm" (ngSubmit)="addUser()">
+      <form [formGroup]="addUserForm" #form="ngForm" (ngSubmit)="addUser(form)">
         <div class="form-sec1">
+          <div class="form-control-group" *ngIf="removeIdentityNum">
+            <label for="identityNum">رقم هوية المستخدم</label>
+            <input id="identityNum" type="text" name="identityNum" formControlName="identityNum"
+            (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('identityNum')?.touched)
+              && formCont('identityNum')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('identityNum').hasError('required')">
+                رقم الهوية الشخصية مطلوب تعبئته</div>
+              <div *ngIf="formCont('identityNum').hasError('minlength')">
+                رقم الهوية الشخصية مكون من ٩ أرقام.</div>
+              <div *ngIf="formCont('identityNum').hasError('pattern')">
+                رقم الهوية يجب ان يكون ارقام فقط.</div>
+            </div>
+          </div>
+
           <div class="form-control-group">
             <label for="username">اسم المستخدم</label>
-            <input id="username" type="text" name="username" formControlName="username" required/>
+            <input id="username" type="text" name="username" formControlName="username"/>
+
+            <div *ngIf="(form.submitted || formCont('username')?.touched) &&
+             formCont('username')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('username').hasError('required')">اسم المستخدم مطلوب تعبئته</div>
+            </div>
           </div>
-          <div class="form-control-group">
-            <label for="nickname">اسم الشركة</label>
-            <input id="nickname" type="text" name="nickname" formControlName="nickname" required/>
+
+          <div class="form-control-group" *ngIf="removeCompanyName">
+            <label for="companyName">اسم الشركة</label>
+            <input id="companyName" type="text" name="companyName" formControlName="companyName"/>
           </div>
+
           <div class="form-control-group" *ngIf="removePassword">
             <label for="password">كلمة المرور</label>
-            <input id="password" type="password" name="password" formControlName="password" required/>
+            <input id="password" type="password" name="password" formControlName="password"/>
+
+            <div *ngIf="(form.submitted || formCont('password')?.touched) &&
+             formCont('password')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('password').hasError('required')">كلمة المرور مطلوب تعبئته</div>
+            </div>
           </div>
+
           <div class="form-control-group" *ngIf="removePassword">
             <label for="confirmPassword">تأكيد كلمة المرور</label>
-            <input id="confirmPassword" type="password" name="confirmPassword" formControlName="confirmPassword" required/>
+            <input id="confirmPassword" type="password" name="confirmPassword"
+            formControlName="confirmPassword"/>
+
+            <div *ngIf="(form.submitted || formCont('confirmPassword')?.touched)
+             && formCont('confirmPassword')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('confirmPassword').hasError('required')">
+                تأكيد كلمة المرور مطلوب تعبئته</div>
+              <div *ngIf="formCont('confirmPassword').hasError('mismatch')">
+                حقل تأكيد كلمة المرور لا يطابق حقل كلمة المرور</div>
+            </div>
           </div>
+
           <div class="form-control-group">
-            <label for="role">نوع المستخدم</label>
-            <select id="role" formControlName="role" (change)="changeForm($event.target)">
-              <option value="">اختر حسب الصلاحيات</option>
-              <option value="admin">ادمن</option>
-              <option value="customer">زبون</option>
-              <option value="agent">وكيل</option>
-              <option value="supplier">مورد بضاعة</option>
+            <label for="roleId">نوع المستخدم</label>
+           <select id="roleId" formControlName="roleId" (change)="changeForm($event.target)">
+              <option value="">اختر نوع المستخدم</option>
+              <ng-template [ngIf]="rolesAPI">
+                <option *ngFor="let role of rolesAPI" [value]="role.id">{{roles[role.name]}}</option>
+              </ng-template>
             </select>
+
+            <div *ngIf="(form.submitted || formCont('roleId')?.touched)
+             && formCont('roleId')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('roleId').hasError('required')">نوع المستخدم مطلوب تعبئته</div>
+            </div>
           </div>
+
+          <div class="form-control-group">
+            <label for="regionId">المنطقة</label>
+            <select id="regionId" formControlName="regionId">
+              <ng-template [ngIf]="regionsAPI">
+                <option value="">اختر المنطقة</option>
+                <option *ngFor="let region of regionsAPI" [value]="region.id">{{ region.name }}</option>
+              </ng-template>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('regionId')?.touched)
+             && formCont('regionId')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('regionId').hasError('required')">المنطقة مطلوب تعبئته</div>
+            </div>
+          </div>
+
         </div>
 
         <div class="form-sec2">
-          <div class="form-control-group">
-            <label for="phone">رقم الجوال</label>
-            <input id="phone" type="number" name="phone" formControlName="phone"/>
-          </div>
-          <div class="form-control-group">
-            <label for="tel">رقم الهاتف</label>
-            <input id="tel" type="number" name="tel" formControlName="tel"/>
-          </div>
+
           <div class="form-control-group">
             <label for="address">العنوان</label>
             <input id="address" type="text" name="address" formControlName="address"/>
           </div>
+
+          <div class="form-control-group">
+            <label for="jawwal1">رقم الجوال الاول</label>
+            <input id="jawwal1" type="text" name="jawwal1" formControlName="jawwal1"
+             (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('jawwal1')?.touched)
+             && formCont('jawwal1')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('jawwal1').hasError('required')">رقم الجوال الأول مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="jawwal2">رقم الجوال الثاني</label>
+            <input id="jawwal2" type="text" name="jawwal2" formControlName="jawwal2"
+             (keydown)="acceptNumbers($event)"/>
+          </div>
+
+          <div class="form-control-group">
+            <label for="tel">رقم الهاتف</label>
+            <input id="tel" type="text" name="tel" formControlName="tel"
+              (keydown)="acceptNumbers($event)"/>
+          </div>
+
+          <div class="form-control-group">
+            <label for="fax">رقم الفاكس</label>
+            <input id="fax" type="text" name="fax" formControlName="fax"
+              (keydown)="acceptNumbers($event)"/>
+          </div>
+
+          <div class="form-control-group">
+            <label for="email">البريد الالكتروني</label>
+            <input id="email" type="text" name="email" formControlName="email"/>
+          </div>
+
           <div class="form-control-group">
             <label for="note">ملاحظات</label>
             <textarea id="note" formControlName="note"></textarea>
           </div>
+
         </div>
 
         <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchUser, UsersAPI, UserAPI } from '../../../../model/user';
-import { faTrashAlt, faUserEdit, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faUserEdit, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-show-users',
@@ -10,10 +11,10 @@ import { AdminService } from '../../admin.service';
   styleUrls: ['./show-users.component.scss']
 })
 
-export class ShowUsersComponent implements OnInit {
+export class ShowUsersComponent implements OnInit, OnDestroy {
   users: UserAPI[] = [];
   trashIcon = faTrashAlt;
-  userEditIcon = faUserEdit;
+  userEditIcon = faEdit;
   addAgentLimitIcon = faMoneyBillAlt;
   agentLimitsListIcon = faCopy;
   customersIcon = faUsers;
@@ -23,9 +24,21 @@ export class ShowUsersComponent implements OnInit {
   successMsg: string | undefined;
   searchConditions: SearchUser = {};
 
+  private unsubscribe$ = new Subject<void>();
+
   pageTitle!: string;
   activeAgentLimits: boolean = false;
   activeSuppliers: boolean = false;
+
+  rolesLang:{
+    [index: string]: string;
+  } = {
+    'agent': 'وكيل',
+    'admin': 'مدير',
+    'supplier':  'مورد',
+    'customer': 'زبون'
+  };
+
   constructor(
     private adminService: AdminService,
     private router: Router,
@@ -42,9 +55,17 @@ export class ShowUsersComponent implements OnInit {
       }
     });
   }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
 //TODO wrong response type
   getUsers(searchConditions: SearchUser){
-    this.adminService.showUsers(searchConditions).subscribe({
+    this.adminService.showUsers(searchConditions)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: (response: UsersAPI) => this.users = response.data,
       error: (error) => console.log(error)
     })
@@ -53,10 +74,12 @@ export class ShowUsersComponent implements OnInit {
   deleteUser(user: any){
     if(!user) return;
 
-    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user._id}`);
+    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
     if(!yes) return;
 
-    this.adminService.deleteUser(user._id).subscribe({
+    this.adminService.deleteUser(user.id)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: response => {
         if(response.data)
           this.successMsg = response.message;
@@ -69,30 +92,30 @@ export class ShowUsersComponent implements OnInit {
   }
 
   trackById(index: number, el: any){
-    return el._id;
+    return el.id;
   }
 
   goToUserEdit(id: string){
-    this.router.navigate(['admin/edit-user', id]);
+    this.router.navigate(['admin/user/edit', id]);
   }
 
   goToAddAgentLimits(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.nickname}`;
-    this.router.navigate([`admin/add-agent-limit`, { id: agent._id, fullname }]);
+    const fullname = `${agent.username} | ${agent.companyName}`;
+    this.router.navigate([`admin/agent/add-agent-limit`, { id: agent.id, fullname }]);
   }
 
   goToListAgentLimits(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.nickname}`;
-    this.router.navigate([`admin/show-agent-limits/${agent._id}`, {fullname}]);
+    const fullname = `${agent.username} | ${agent.companyName}`;
+    this.router.navigate([`admin/agent/show-agent-limits/${agent.id}`, {fullname}]);
   }
 
   goToListCustomers(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.nickname}`;
-    this.router.navigate([`admin/show-agent-customers/${agent._id}`, {fullname}]);
+    const fullname = `${agent.username} | ${agent.companyName}`;
+    this.router.navigate([`admin/agent/show-agent-customers/${agent.id}`, {fullname}]);
   }
 
   goToSupplierPartsList(supplier: UserAPI){
-    const fullname = `${supplier.username} | ${supplier.nickname}`;
-    this.router.navigate([`admin/list-supplier-parts/${supplier._id}`, { fullname }]);
+    const fullname = `${supplier.username} | ${supplier.companyName}`;
+    this.router.navigate([`admin/list-supplier-parts/${supplier.id}`, { fullname }]);
   }
 }

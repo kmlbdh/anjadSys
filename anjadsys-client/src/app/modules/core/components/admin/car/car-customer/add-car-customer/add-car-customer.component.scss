@@ -1,7 +1,8 @@
 @import 'shared';
 
 :host {
-  flex-grow: 8;
+  flex-grow: 12.3;
+  width: min-content;
 }
 #main-container {
   padding: 25px;
@@ -55,16 +56,6 @@
         align-items: stretch;
         margin-bottom: 15px;
 
-        .label-with-data{
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: center;
-          flex-wrap: nowrap;
-          > span {
-            margin: 0 10px 10px 0;
-          }
-        }
         label{
           font-size: 14px;
           font-weight: 600;
@@ -87,6 +78,24 @@
         rgb(0 0 0 / 0%) 0px 0px 0px 0px
         );
       }
+
+      div.alert{
+        margin: 10px 2px;
+        font-size: 0.85rem;
+      }
+
+      div.alert-danger{
+        color: $mainRedColor;
+      }
+
+      .ng-valid[required], .ng-valid.required  {
+        border-left: 5px solid $mainGreenColor;
+      }
+
+      .ng-invalid:not(form)  {
+        border-left: 5px solid $mainRedColor;
+      }
+
 
       div.btn-container{
         margin-top: 14px;

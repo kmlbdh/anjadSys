@@ -1,20 +1,20 @@
 export interface NewAgentLimits{
-  limitAmount: number;
+  debit: number;
   agentID: string;
 }
 
 export interface AgentLimitsAPI {
-  _id: string;
-  totalMoney: number;
-  agentID: string;
+  id: string;
+  debit: number;
+  credit: string;
   service?: {
     serviceID: string;
     userID: string;
     cost: number;
     customerServiceID: string
   };
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AgentLimitsArrayAPI{

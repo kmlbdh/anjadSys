@@ -6,16 +6,16 @@ import { ShowUsersComponent } from './show-users/show-users.component';
 
 const routes: Routes = [
   {
-    path: 'edit-user/:id',
+    path: 'edit/:id',
     component: EditUserComponent,
   },
   {
-    path: 'show-users',
+    path: 'show',
     component: ShowUsersComponent,
     data: {title: 'اظهار كافة مستخدمي النظام'}
   },
   {
-    path: 'add-user',
+    path: 'add',
     component: AddUserComponent
   },
 ];

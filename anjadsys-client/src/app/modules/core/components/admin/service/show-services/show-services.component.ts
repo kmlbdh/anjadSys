@@ -18,6 +18,7 @@ export class ShowServicesComponent implements OnInit {
   editServiceIcon = faEdit;
   selectedAgentName: string | undefined;
   currency: string = "شيكل";
+  day: string = "يوم";
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -54,7 +55,7 @@ export class ShowServicesComponent implements OnInit {
     const yes = confirm(`هل تريد حذف الخدمة "${service.name}"؟`);
     if(!yes) return;
 
-    this.adminService.deleteService(service._id)
+    this.adminService.deleteService(service.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -72,6 +73,6 @@ export class ShowServicesComponent implements OnInit {
   }
 
   goToEditService(service: ServiceAPI){
-    this.router.navigate([`/admin/edit-service/${service._id}`]);
+    this.router.navigate([`/admin/service/edit/${service.id}`]);
   }
 }

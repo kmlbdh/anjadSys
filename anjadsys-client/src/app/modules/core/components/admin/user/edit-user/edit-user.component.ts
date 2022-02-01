@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { UserAPI } from '../../../../model/user';
+import { UserAPI, updateUser } from '../../../../model/user';
+import { RoleAPI, RegionAPI } from '../../../../model/general';
+import { ConfirmedValidator } from '../confirm.validator';
 
 @Component({
   selector: 'app-edit-user',
@@ -12,33 +14,42 @@ import { UserAPI } from '../../../../model/user';
   styleUrls: ['./edit-user.component.scss']
 })
 export class EditUserComponent implements OnInit, OnDestroy {
-  trashIcon = faTrashAlt;
-  userEditIcon = faUserEdit;
   errorMsg: string | undefined;
   successMsg: string | undefined;
   removePassword: boolean = true;
+  removeIdentityNum: boolean = true;
+  removeCompanyName: boolean = true;
   private unsubscribe$ = new Subject<void>();
   user!: UserAPI;
+  rolesAPI!: RoleAPI[];
+  regionsAPI!: RegionAPI[];
   roles:{
     [index: string]: string;
   } = {
     'agent': 'وكيل',
     'admin': 'مدير',
-    'supplier':  'مورد بضاعة',
+    'supplier':  'مورد',
     'customer': 'زبون'
   };
 
+  TIMEOUTMILISEC = 7000;
+
   editUserForm = this.fb.group({
+    identityNum: ['', [Validators.required,Validators.minLength(9), Validators.pattern('[0-9]*')]],
     username: ['', Validators.required],
-    nickname: [''],
+    companyName: [''],
     password: [''],
     confirmPassword: [''],
     tel: [''],
-    phone: [''],
+    fax: [''],
+    jawwal1: ['', Validators.required],
+    jawwal2: [''],
     note: [''],
     address: [''],
-    role: [{value: '', disabled: true}],
-  });
+    email: [''],
+    roleId: ['', Validators.required],
+    regionId: ['', Validators.required],
+  }, {validators: ConfirmedValidator('password', 'confirmPassword')});
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +58,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.getRegionsAndRoles();
     this.getUserData();
   }
 
@@ -61,7 +73,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
         const userID = params.get('id');
         console.log("userID", userID);
         if(!userID)
-          this.router.navigate(['/admin/show-users']);
+          this.router.navigate(['/admin/user/show']);
 
           this.adminService.showUsers({userID: userID!})
           .pipe(takeUntil(this.unsubscribe$))
@@ -76,8 +88,21 @@ export class EditUserComponent implements OnInit, OnDestroy {
     });
   }
 
+  getRegionsAndRoles(){
+    this.adminService.getRegionsAndRoles()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: response => {
+        if(response.data && response.data.regions && response.data.roles)
+        this.rolesAPI = response.data.roles;
+        this.regionsAPI = response.data.regions;
+      }
+    });
+  }
+
   updateUser = (): void => {
-    let formObj: { [index: string]: string | number} = {id: this.user._id};
+    let formObj: updateUser = {} as updateUser;
+    formObj.id = this.user.id;
 
     let controlsObject = this.editUserForm.controls;
     let keys = Object.keys(controlsObject);
@@ -88,75 +113,96 @@ export class EditUserComponent implements OnInit, OnDestroy {
             formObj[val] = currValue;
       }
     });
-    // if(this.removePassword){
-    if(Object.keys(formObj).length < 2)
+
+    if(Object.keys(formObj).length < 2){
+      this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
+      setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
+    }
 
     this.adminService.updateUser(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          this.user = response.data;
-          setTimeout(() => this.successMsg = undefined, 50000);
+        next: (response) => {
+          if(response.data)
+            this.successMsg = response.message;
+            // this.user = response.data;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
 
-        this.buildForm();
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, 50000);
+          // this.buildForm();
+          console.log(response);
+        },
+        error: (err) => {
+          console.error(err.error);
+          if(err?.error?.message){
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
-      }
     });
 
     console.log(formObj);
   }
 
   buildForm():void{
-    if(this.user.role === 'supplier')
-      this.removePassword = false;
-    else
-      this.removePassword = true;
+    this.rebuildFormShared(Number(this.user.Role.id));
 
     this.editUserForm.setValue({
+      identityNum: this.user.identityNum,
       username: this.user.username,
-      nickname: this.user.nickname || '',
+      companyName: this.user.companyName || '',
       password: '',
       confirmPassword: '',
       tel: this.user.tel || '',
-      phone: this.user.phone || '',
+      fax: this.user.fax || '',
+      jawwal1: this.user.jawwal1,
+      jawwal2: this.user.jawwal2 || '',
       note: this.user.note || '',
+      email: this.user.email || '',
       address: this.user.address || '',
-      role: this.roles[this.user.role],
+      roleId: this.user.Role.id,
+      regionId: this.user.Region.id,
     });
   }
 
   changeForm(roleFormControl: any) {
-    const role = roleFormControl.value;
-    if(!role) return;
+    const role = Number(roleFormControl.value);
+    this.rebuildFormShared(role);
+  }
 
-    this.removePassword = !(role === "supplier");
-    let pass = this.editUserForm.get('password');
-    let conPass = this.editUserForm.get('confirmPassword');
+  rebuildFormShared(roleId: number){
+    const roleString = this.rolesAPI.filter(roleAPI => Number(roleAPI.id) === roleId)[0]?.name;
+    console.log('role', roleId, roleString);
+    if(!roleString) return;
 
-    if(role === "supplier"){
-      pass?.clearValidators();
-      conPass?.clearValidators();
+    this.removePassword = !(roleString === "supplier");
+    this.removeCompanyName = !(roleString === "customer");
+    this.removeIdentityNum = !(roleString === "admin");
+    const identityNum = this.editUserForm.get('identityNum');
+
+    if(roleString === this.roles["admin"]){
+      identityNum?.clearValidators();
     } else {
-      pass?.addValidators([Validators.required]);
-      conPass?.addValidators([Validators.required]);
+      identityNum?.addValidators([Validators.required, Validators.minLength(5)]);
     }
-
-    pass?.updateValueAndValidity;
-    conPass?.updateValueAndValidity;
+    identityNum?.updateValueAndValidity;
   }
 
   get role(){
     return this.editUserForm.get('role')?.value;
+  }
+
+  formCont(controlName: string): AbstractControl{
+    return this.editUserForm.controls[controlName];
+  }
+
+  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
+    const code = event.key;
+    if(Number.isNaN(+code))
+      if(code.toLowerCase() !== 'backspace')
+        return false;
+
+    return;
   }
 
 }

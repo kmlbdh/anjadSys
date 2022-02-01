@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCarSide, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { faUsers, faUserTie, faTruckLoading, faTaxi } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../../shared/components/nav/nav.component';
@@ -17,65 +17,122 @@ export class AdminComponent implements OnInit {
 
   navData: NavInput[] = [
     {
+      id: 1,
       name: 'مستخدمي النظام',
       faIcon: faUsers,
       hide: true,
       children: [
         {
+          id: 1,
           name: 'اظهار المستخدمين',
-          link: 'user/show-users'
+          link: 'user/show'
         },
         {
+          id: 2,
           name: 'اضافة مستخدم جديد',
-          link: 'user/add-user'
+          link: 'user/add'
         },
       ]
     },
     {
+      id: 2,
       name: 'الوكيل',
       faIcon: faUserTie,
       hide: true,
       children: [
         {
+          id: 1,
           name: 'اظهار الوكلاء',
-          link: 'agent/show-agents'
+          link: 'agent/show'
         },
         {
+          id: 2,
           name: 'اضافة سقف مالي للوكيل',
           link: 'agent/add-agent-limit'
         },
       ]
     },
     {
+      id: 2,
       name: 'الموردين',
       faIcon: faTruckLoading,
       hide: true,
       children: [
         {
+          id: 1,
           name: 'اظهار الموردين',
-          link: 'supplier/show-supplier'
+          link: 'supplier/show'
+        },
+        // {
+        //   name: 'اضافة قطع جديدة للمورد',
+        //   link: 'supplier/add-supplier-parts'
+        // },
+      ]
+    },
+    {
+      id: 3,
+      name: 'الخدمات',
+      faIcon: faWrench,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار الخدمات',
+          link: 'service/show'
         },
         {
-          name: 'اضافة قطع جديدة للمورد',
-          link: 'supplier/add-supplier-parts'
+          id: 2,
+          name: 'اضافة خدمة جديدة ',
+          link: 'service/add'
         },
       ]
     },
     {
-      name: 'الخدمات',
+      id: 4,
+      name: 'السيارات',
       faIcon: faTaxi,
       hide: true,
       children: [
         {
-          name: 'اظهار الخدمات',
-          link: 'service/show-services'
+          id: 1,
+          name: 'اظهار سيارات الزبائن',
+          link: 'car/car-customer/show'
         },
         {
-          name: 'اضافة خدمة جديدة ',
-          link: 'service/add-service'
+          id: 2,
+          name: 'اضافة سيارة جديدة ',
+          link: 'car/car-customer/add'
         },
       ]
-    }
+    },
+    {
+      id: 5,
+      name: 'نوع وموديل السيارات',
+      faIcon: faCarSide,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار انواع السيارات',
+          link: 'car/car-type/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة نوع سيارة ',
+          link: 'car/car-type/add'
+        },
+        {
+          id: 3,
+          name: 'اظهار موديلات السيارات',
+          link: 'car/car-model/show'
+        },
+        {
+          id: 4,
+          name: 'اضافة موديل سيارة ',
+          link: 'car/car-model/add'
+        },
+      ]
+    },
   ];
   constructor(private adminService: AdminService, private router: Router) {
   }

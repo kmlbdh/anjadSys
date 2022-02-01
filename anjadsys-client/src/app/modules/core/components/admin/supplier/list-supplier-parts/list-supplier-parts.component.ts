@@ -43,7 +43,7 @@ export class ListSupplierPartsComponent implements OnInit {
 
        this.selectedSupplier = params.get('fullname') || undefined;
         console.log(this.selectedSupplier);
-        if(!supplierId || !this.selectedSupplier) this.router.navigate(['admin/show-supplier']);
+        if(!supplierId || !this.selectedSupplier) this.router.navigate(['admin/supplier/show']);
 
         this.adminService.listSupplierParts({supplierID: supplierId?.toUpperCase()!})
         .pipe(takeUntil(this.unsubscribe$))

@@ -1,0 +1,55 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اضافة موديل سيارة جديد</p>
+  </div>
+
+  <div class="page-content card">
+      <form [formGroup]="addCarModelForm" #form="ngForm" (ngSubmit)="addCarModel(form)">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="name">موديل السيارة</label>
+            <input id="name" type="text" name="name" formControlName="name" required/>
+
+            <div *ngIf="(form.submitted || formCont('name')?.touched)
+              && formCont('name')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('name').hasError('required')">
+                نوع السيارة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <div class="label-with-data">
+              <label for="carTypeId">نوع السيارة :</label>
+              <span *ngIf="carTypeName">{{carTypeName}}</span>
+            </div>
+            <input id="carTypeId" type="text" (keyup)="searchCarType($event)" list="carTypeList"
+             name="carTypeId" formControlName="carTypeId" required/>
+            <datalist id="carTypeList">
+              <option *ngFor="let carType of carTypes;" [value]="carType.id">
+                 {{carType.name}}
+              </option>
+            </datalist>
+
+            <div *ngIf="(form.submitted || formCont('carTypeId')?.touched) &&
+            formCont('carTypeId')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('carTypeId').hasError('required')">نوع السيارة مطلوب تعبئته</div>
+           </div>
+          </div>
+
+        </div>
+
+        <div class="form-sec2">
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>حفظ</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

@@ -3,6 +3,6 @@ export interface SearchAgent{
   limit?: number;
   skip?: number;
   userID?: string;
-  nickname?: string;
+  companyName?: string;
   username?: string;
 }

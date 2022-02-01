@@ -7,6 +7,7 @@ import { ServiceModule } from './service/service.module';
 import { AgentModule } from './agent/agent.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { UserModule } from './user/user.module';
+import { CarModule } from './car/car.module';
 
 const routes: Routes = [
   {
@@ -29,7 +30,10 @@ const routes: Routes = [
         path: 'service',
         loadChildren: () => ServiceModule
       },
-
+      {
+        path: 'car',
+        loadChildren: () => CarModule
+      },
       {
         path: '',
         component: MainComponent

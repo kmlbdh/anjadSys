@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, first } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, first, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { UserAPI } from '../../../../model/user';
 
@@ -10,45 +10,66 @@ import { UserAPI } from '../../../../model/user';
   templateUrl: './add-agent-limits.component.html',
   styleUrls: ['./add-agent-limits.component.scss']
 })
-export class AddAgentLimitsComponent implements OnInit {
+export class AddAgentLimitsComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   paramAgentId: string | undefined;
+
   private searchAgentText$ = new Subject<string>();
+  private unsubscribe$ = new Subject<void>();
+
   agents: any[] = [];
   selectedAgent: UserAPI | undefined;
   fullname: string | undefined;
+
   addAgentLimitsForm = this.fb.group({
-    limitAmount: ['', Validators.required],
+    debit: ['', Validators.required],
     agentID: ['', Validators.required],
   });
+  TIMEOUTMILISEC = 7000;
+
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.getAgentFromRoute();
+    this.searchAPI();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  getAgentFromRoute(){
     this.route.paramMap
     .pipe(first())
     .subscribe({
       next: params => {
-        this.paramAgentId = params.get('id')!;
-        this.fullname = params.get('fullname')!;
+        this.paramAgentId = params.get('id') || undefined;
+        this.fullname = params.get('fullname') || undefined;
         this.agentId?.setValue(this.paramAgentId);
       }
     });
-    this.searchAPI();
   }
 
   addAgentLimit(){
-    this.adminService.addAgentLimits(this.addAgentLimitsForm.value).subscribe({
+    if(this.addAgentLimitsForm.invalid) return;
+    this.adminService.addAgentLimits(this.addAgentLimitsForm.value)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: response => {
         if(response.data)
           this.successMsg = response.message;
+          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+
         console.log(response);
       },
       error: err => {
         this.errorMsg = err.error.message;
+        setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
         console.log(err);
       }
     })
@@ -59,9 +80,8 @@ export class AddAgentLimitsComponent implements OnInit {
     if(!(event instanceof KeyboardEvent)){
       event.preventDefault();
       event.stopPropagation();
-      this.selectedAgent = this.agents.filter(agent =>
-        agent._id === this.agentId?.value)[0];
-        this.fullname = `${this.selectedAgent?.username} | ${this.selectedAgent?.nickname}`;
+      this.selectedAgent = this.agents.filter(agent => agent.id === this.agentId?.value)[0];
+      this.fullname = `${this.selectedAgent?.username} | ${this.selectedAgent?.companyName}`;
       return;
     }
     if(this.agentId?.value === '')
@@ -74,9 +94,10 @@ export class AddAgentLimitsComponent implements OnInit {
 
   searchAPI(){
     this.searchAgentText$.pipe(
+      takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.listAgents({username: text, nickname: text}))
+      switchMap(text => this.adminService.listAgents({username: text, companyName: text}))
     ).subscribe({
       next: response =>{
         if(response.data)
@@ -89,5 +110,27 @@ export class AddAgentLimitsComponent implements OnInit {
 
   get agentId(){
    return this.addAgentLimitsForm?.get('agentID');
+  }
+
+  formCont(controlName: string): AbstractControl {
+    return this.addAgentLimitsForm.controls[controlName];
+  }
+
+  acceptNumbers(event: Event): Boolean | undefined{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      if(Number.isNaN(+code))
+        if(code.toLowerCase() !== 'backspace')
+          return false;
+    } else {
+      setTimeout(() => {
+        const code = this.addAgentLimitsForm.get('debit')?.value;
+        console.log("code", code);
+        if(Number.isNaN(+code))
+          this.addAgentLimitsForm.get('debit')?.setValue('');
+      }, 0)
+
+    }
+    return;
   }
 }

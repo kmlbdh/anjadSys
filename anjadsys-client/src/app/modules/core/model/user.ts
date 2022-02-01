@@ -1,41 +1,71 @@
 export interface UserAPI{
-  [index: string]: number | string | Date;
-  _id: string;
+  [index: string]: number | string | Date | {} | null;
+  id: string;
+  identityNum: number,
   username: string;
-  nickname: string;
-  role: string;
-  phone: number;
+  companyName: string | null;
+  jawwal1: number;
+  jawwal2: number | null;
   address: string;
-  tel: number;
-  note: any;
-  created_at: Date;
-  updated_at: Date;
+  Region: {
+    id: string,
+    name: string
+  };
+  Role: {
+    id: string,
+    name: string
+  },
+  Agent: {
+    id: string,
+    name: string
+  } | null,
+  tel: number | null;
+  fax: number | null;
+  email: string | null,
+  note: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface UsersAPI{
   data:[UserAPI];
 }
 
 export interface NewUser{ //CreateUserData
+    identityNum: number,
     username: string;
-    nickname?: string;
+    companyName?: string;
     password: string;
     confirmPassword: string;
-    role: string;
-    phone?: number;
+    roleId: number;
+    regionId: number;
+    jawwal1: number;
+    jawwal2?: number;
     tel?: number;
+    fax?: number;
+    email?: number;
     address?: string;
     note?: string;
+    agentId?: number,
 }
 
 export interface updateUser{ //updateUser
-  username?: string;
-  nickname?: string;
+  [index: string]: number | string | undefined;
+  id: string,
+  identityNum: number,
+  username: string;
+  companyName?: string;
   password?: string;
   confirmPassword?: string;
-  phone?: number;
+  roleId: number;
+  regionId: number;
+  jawwal1: number;
+  jawwal2?: number;
   tel?: number;
+  fax?: number;
+  email?: number;
   address?: string;
   note?: string;
+  agentId?: number,
 }
 
 export interface SearchUser {
@@ -44,5 +74,5 @@ export interface SearchUser {
   userID?: string;
   role?: string;
   agentID?: string;
-  nickname?: string;
+  companyName?: string;
 }

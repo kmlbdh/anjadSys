@@ -34,7 +34,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   }
 
   trackById(index: number, el: any){
-    return el._id;
+    return el.id;
   }
 
   loadCustomerById(): void{
@@ -44,7 +44,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
       next: params => {
         const agentId = params.get('id');
         if(!agentId)
-          this.router.navigate(['admin/show-agents']);
+          this.router.navigate(['admin/agent/show-agents']);
 
        this.selectedAgentName = params.get('fullname') || undefined;
 
@@ -64,16 +64,18 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   }
 
   goToUserEdit(id: string): void{
-    this.router.navigate(['/admin/edit-user/', id]);
+    this.router.navigate(['/admin/user/edit/', id]);
   }
 
   deleteUser(user: UserAPI){
     if(!user) return;
 
-    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user._id}`);
+    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
     if(!yes) return;
 
-    this.adminService.deleteUser(user._id).subscribe({
+    this.adminService.deleteUser(user.id)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: response => {
         if(response.data)
           this.successMsg = response.message;

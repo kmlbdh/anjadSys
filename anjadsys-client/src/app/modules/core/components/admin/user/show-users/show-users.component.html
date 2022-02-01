@@ -9,7 +9,8 @@
         <div class="col col-1">رقم المستخدم</div>
         <div class="col col-2">اسم المستخدم</div>
         <div class="col col-3">اسم الشركة</div>
-        <div class="col col-4">النوع</div>
+        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col col-4">النوع</div>
+        <div *ngIf="activeSuppliers || activeAgentLimits" class="col col-4">تاريخ الانضمام</div>
         <div class="col col-5">التحكم</div>
       </li>
       <ng-template [ngIf]="users.length === 0">
@@ -19,27 +20,41 @@
       </ng-template>
       <ng-template [ngIf]="users.length > 0">
         <li *ngFor="let user of users; trackBy: trackById" class="table-row">
-          <div class="col col-1" data-label="Id">{{user._id}}</div>
+          <div class="col col-1" data-label="Id">{{user.id}}</div>
           <div class="col col-2" data-label="Customer Name">{{user.username}}</div>
-          <div class="col col-3" data-label="Customer Nickname">{{user.nickname}}</div>
-          <div class="col col-4" data-label="Customer Role">{{user.role}}</div>
+          <div class="col col-3" data-label="Customer Company">{{user.companyName}}</div>
+          <div class="col col-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date) : rolesLang[user.Role.name] }}</div>
           <div class="col col-5 control" data-label="Control">
-            <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)="deleteUser(user)"
-             title="حذف المستخدم"></fa-icon>
-            <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(user._id)"
-             title="تعديل بيانات المستخدم"></fa-icon>
+
+            <button class="btn-error" title="حذف المستخدم">
+              <fa-icon [icon]="trashIcon" (click)="deleteUser(user)"></fa-icon>
+            </button>
+
+            <button class="btn-primary" title="تعديل بيانات المستخدم">
+              <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(user.id)"></fa-icon>
+            </button>
+
             <ng-template [ngIf]="activeAgentLimits">
-              <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(user)"
-              title="اضافة سقف مالي للوكيل"></fa-icon>
-              <fa-icon [icon]="agentLimitsListIcon" (click)="goToListAgentLimits(user)"
-              title="اظهار جميع عمليات الوكيل"></fa-icon>
-              <fa-icon [icon]="customersIcon" (click)="goToListCustomers(user)"
-              title="زبائن الوكيل"></fa-icon>
+              <button class="btn-primary" title="اضافة سقف مالي للوكيل">
+                <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(user)"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="اظهار جميع عمليات الوكيل">
+                <fa-icon [icon]="agentLimitsListIcon" (click)="goToListAgentLimits(user)"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="زبائن الوكيل">
+                <fa-icon [icon]="customersIcon" (click)="goToListCustomers(user)"></fa-icon>
+              </button>
+
             </ng-template>
+
             <ng-template [ngIf]="activeSuppliers">
-              <fa-icon [icon]="supplierPartsIcon" (click)="goToSupplierPartsList(user)"
-              title="اظهار قطع وخدمات المورد"></fa-icon>
+              <button class="btn-primary" title="اظهار قطع وخدمات المورد">
+                <fa-icon [icon]="supplierPartsIcon" (click)="goToSupplierPartsList(user)"></fa-icon>
+              </button>
             </ng-template>
+
           </div>
         </li>
       </ng-template>

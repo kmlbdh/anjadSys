@@ -2,6 +2,7 @@
 
 :host {
   flex-grow: 8;
+  width: min-content;
 }
 #main-container {
   padding: 25px;
@@ -76,6 +77,23 @@
         rgb(0 0 0 / 0%) 0px 0px 0px 0px,
         rgb(0 0 0 / 0%) 0px 0px 0px 0px
         );
+      }
+
+      div.alert{
+        margin: 10px 2px;
+        font-size: 0.85rem;
+      }
+
+      div.alert-danger{
+        color: $mainRedColor;
+      }
+
+      .ng-valid[required], .ng-valid.required  {
+        border-left: 5px solid $mainGreenColor;
+      }
+
+      .ng-invalid:not(form)  {
+        border-left: 5px solid $mainRedColor;
       }
 
       div.btn-container{

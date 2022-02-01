@@ -20,14 +20,14 @@
       </ng-template>
       <ng-template [ngIf]="customers.length > 0">
         <li *ngFor="let customer of customers; trackBy: trackById" class="table-row">
-          <div class="col col-1" data-label="Id">{{customer._id}}</div>
+          <div class="col col-1" data-label="Id">{{customer.id}}</div>
           <div class="col col-2" data-label="Customer Name">{{customer.username}}</div>
-          <div class="col col-3" data-label="Customer Nickname">{{customer.nickname}}</div>
-          <div class="col col-4" data-label="Customer Role">{{customer.role}}</div>
+          <div class="col col-3" data-label="Customer Company">{{customer.companyName}}</div>
+          <div class="col col-4" data-label="Customer Role">{{customer.Role.name}}</div>
           <div class="col col-5 control" data-label="Control">
             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)="deleteUser(customer)"
              title="حذف المستخدم"></fa-icon>
-            <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(customer._id)"
+            <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(customer.id)"
              title="تعديل بيانات المستخدم"></fa-icon>
             <!-- <ng-template [ngIf]="activeAgentLimits">
               <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(customers)"

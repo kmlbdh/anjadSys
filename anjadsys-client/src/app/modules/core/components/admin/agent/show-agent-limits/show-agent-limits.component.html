@@ -23,12 +23,15 @@
       <ng-template [ngIf]="agentLimits.length > 0">
         <li *ngFor="let agentLimit of agentLimits; trackBy: trackById; let i = index;" class="table-row">
           <div class="col col-1" data-label="ID">{{i+1}}</div>
-          <div class="col col-2" data-label="Total Limits">{{agentLimit.totalMoney}} {{currency}}</div>
-          <div class="col col-3" data-label="Bolias">{{(agentLimit.service | json)
+          <div class="col col-2" data-label="Total Limits">{{agentLimit.debit}} {{currency}}</div>
+          <div class="col col-3" data-label="Policy">{{(agentLimit.service | json)
             || 'لا يوجد بوليصة - سقف مالي أساسي'}}</div>
-          <div class="col col-4" data-label="Customer Role">{{agentLimit.created_at | date}}</div>
+          <div class="col col-4" data-label="Customer Role">{{agentLimit.createdAt | date}}</div>
           <div class="col col-5 control" data-label="Control">
-             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)="deleteAgentLimits(agentLimit)"></fa-icon>
+            <button class="btn-error" title="حذف السقف المالي" (click)="deleteAgentLimits(agentLimit)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
              <!-- <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(user._id)"></fa-icon> -->
           </div>
         </li>

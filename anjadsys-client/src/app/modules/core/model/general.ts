@@ -5,3 +5,12 @@ export interface UserLoggedInAPI{
   role: string;
   accessToken: string;
 }
+export interface RegionAPI{
+  id: string,
+  name: string,
+}
+
+export interface RoleAPI{
+  id: string,
+  name: string,
+}

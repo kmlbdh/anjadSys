@@ -85,10 +85,36 @@
           justify-content: center;
           align-items: center;
 
-          fa-icon{
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 20px;
+          button{
+            margin-left: 14px;
+            margin-right: 14px;
+            $btnWidth: 50px;
+
+            fa-icon{
+              cursor: pointer;
+              // margin-left: 10px;
+              font-size: 20px;
+              margin: auto;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              justify-content: space-evenly;
+              justify-content: center;
+              align-items: stretch;
+              margin: 6px;
+            }
+
+            &.btn-error{
+              @include button-error;
+              width: $btnWidth;
+              margin: 0;
+            }
+
+            &.btn-primary{
+              @include button-primary;
+              width: $btnWidth;
+              margin: 0;
+            }
           }
         }
       }
@@ -97,9 +123,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

@@ -1,0 +1,59 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اظهار جميع سيارات الزبائن</p>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col col-1">رقم السيارة</div>
+        <div class="col col-2">اسم صاحب السيارة</div>
+        <div class="col col-3">نوع/موديل السيارة</div>
+        <div class="col col-4">تاريخ تسجيل السيارة</div>
+        <div class="col col-5">التحكم</div>
+      </li>
+      <ng-template [ngIf]="cars.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="cars.length > 0">
+        <li *ngFor="let car of cars; trackBy: trackById" class="table-row">
+          <div class="col col-1" data-label="Car Number">{{car.carNumber}}</div>
+          <div class="col col-2" data-label="Customer Name">{{car.User.username}}</div>
+          <div class="col col-3" data-label="Car Type/Model">{{car.CarType.name}}/{{car.CarModel.name}}</div>
+          <div class="col col-4" data-label="Car Registration Date Role">{{ (car.createdAt | date) }}</div>
+          <div class="col col-5 control" data-label="Control">
+
+            <button class="btn-error" title="حذف السيارة" (click)="deleteCar(car)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+            <button class="btn-primary" title="تعديل بيانات السيارة" (click)="goToCarEdit(car.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+<!--
+            <ng-template [ngIf]="activeAgentLimits">
+              <button class="btn-primary" title="اضافة سقف مالي للوكيل">
+                <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(user)"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="اظهار جميع عمليات الوكيل">
+                <fa-icon [icon]="agentLimitsListIcon" (click)="goToListAgentLimits(user)"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="زبائن الوكيل">
+                <fa-icon [icon]="customersIcon" (click)="goToListCustomers(user)"></fa-icon>
+              </button>
+
+            </ng-template> -->
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

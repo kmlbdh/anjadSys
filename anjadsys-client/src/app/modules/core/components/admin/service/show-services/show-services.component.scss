@@ -1,7 +1,8 @@
 @import 'shared';
 
 :host {
-  flex-grow: 7;
+  width: min-content;
+  flex-grow: 10.6;
 }
 #main-container {
   padding: 25px;
@@ -77,21 +78,41 @@
         flex-basis: 10%;
       }
       .col-5 {
-        flex-basis: 10%;
-      }
-      .col-6 {
-        flex-basis: 22%;
+        flex-basis: 32%;
         text-align: center;
         &.control{
           display: flex;
           flex-direction: row;
-          justify-content: center;
+          justify-content: space-evenly;
           align-items: center;
 
-          fa-icon{
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 20px;
+          button{
+            margin-left: 14px;
+            margin-right: 14px;
+            $btnWidth: auto;
+
+            fa-icon{
+              cursor: pointer;
+              font-size: 20px;
+              margin: auto;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              justify-content: space-evenly;
+              justify-content: center;
+              align-items: stretch;
+              margin: 6px;
+            }
+
+            &.btn-error{
+              @include button-error;
+              width: $btnWidth;
+            }
+
+            &.btn-primary{
+              @include button-primary;
+              width: $btnWidth;
+            }
           }
         }
       }

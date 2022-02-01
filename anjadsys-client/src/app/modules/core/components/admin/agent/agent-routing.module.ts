@@ -20,7 +20,7 @@ const routes: Routes = [
     component: AddAgentLimitsComponent
   },
   {
-    path: 'show-agents',
+    path: 'show',
     component: ShowUsersComponent,
     data: {role: 'agent', title: 'اظهار جميع وكلاء الشركة'}
   },

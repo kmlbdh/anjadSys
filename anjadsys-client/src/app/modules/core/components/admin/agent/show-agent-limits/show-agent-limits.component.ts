@@ -68,10 +68,10 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
   }
 
   deleteAgentLimits(agentLimits: AgentLimitsAPI): void{
-    const yes = confirm(`هل تريد حذف السقف المالي "${agentLimits.totalMoney}" للوكيل؟`);
+    const yes = confirm(`هل تريد حذف السقف المالي "${agentLimits.debit}" للوكيل؟`);
     if(!yes) return;
 
-    this.adminService.deleteAgentLimits(agentLimits._id)
+    this.adminService.deleteAgentLimits(agentLimits.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

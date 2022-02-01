@@ -6,20 +6,20 @@ import { ShowServicesComponent } from './show-services/show-services.component';
 
 const routes: Routes = [
   {
-    path: 'edit-service/:id',
+    path: 'edit/:id',
     component: EditServiceComponent
   },
   {
-    path: 'add-service',
+    path: 'add',
     component: AddServiceComponent
   },
   {
-    path: 'show-services',
+    path: 'show',
     component: ShowServicesComponent,
   },
   {
     path: '',
-    redirectTo: 'show-services',
+    redirectTo: 'show',
     pathMatch: 'full'
   }
 ];

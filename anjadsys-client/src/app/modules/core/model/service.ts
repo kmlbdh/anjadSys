@@ -5,14 +5,13 @@ export interface SearchService {
 
 export interface ServiceAPI {
   [index: string]: string | number | Date;
-  _id: string;
+  id: number;
   name: string;
-  coverDays: number;
+  coverageDays: number;
   cost: number;
   note: string;
-  dailyCost: number;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ServicesAPI {
