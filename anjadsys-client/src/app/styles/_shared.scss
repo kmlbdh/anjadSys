@@ -52,6 +52,27 @@
   font-size: 17px;
 }
 
+%btn-error{
+  border: none;
+  background-color: $mainRedColor;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(254 93 112) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
 %btn-primary-span{
   height: 100%;
   margin: auto;
@@ -66,6 +87,13 @@
 
 @mixin button-primary(){
   @extend %btn-primary;
+  span{
+    @extend %btn-primary-span
+  }
+}
+
+@mixin button-error(){
+  @extend %btn-error;
   span{
     @extend %btn-primary-span
   }
