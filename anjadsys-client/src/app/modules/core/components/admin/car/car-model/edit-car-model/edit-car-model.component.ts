@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { CarTypeAPI, updateCarModel } from 'src/app/modules/core/model/car';
@@ -11,7 +11,7 @@ import { CarModelAPI } from '../../../../../model/car';
   templateUrl: './edit-car-model.component.html',
   styleUrls: ['./edit-car-model.component.scss']
 })
-export class EditCarModelComponent implements OnInit {
+export class EditCarModelComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   selectedCarType: CarTypeAPI | undefined;

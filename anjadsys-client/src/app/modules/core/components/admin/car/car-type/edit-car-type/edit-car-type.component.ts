@@ -1,5 +1,5 @@
 import { CarTypeAPI, updateCarType } from 'src/app/modules/core/model/car';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../../admin.service';
@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './edit-car-type.component.html',
   styleUrls: ['./edit-car-type.component.scss']
 })
-export class EditCarTypeComponent implements OnInit {
+export class EditCarTypeComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
 

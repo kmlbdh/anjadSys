@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,7 @@ import { partAPI } from '../../../../model/supplierparts';
   templateUrl: './list-supplier-parts.component.html',
   styleUrls: ['./list-supplier-parts.component.scss']
 })
-export class ListSupplierPartsComponent implements OnInit {
+export class ListSupplierPartsComponent implements OnInit, OnDestroy {
   parts: partAPI[] = [];
 
   private unsubscribe$ = new Subject<void>();

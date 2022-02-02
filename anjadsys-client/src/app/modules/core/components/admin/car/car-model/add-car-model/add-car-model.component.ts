@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
@@ -10,7 +10,7 @@ import { CarTypeAPI } from '../../../../../model/car';
   templateUrl: './add-car-model.component.html',
   styleUrls: ['./add-car-model.component.scss']
 })
-export class AddCarModelComponent implements OnInit {
+export class AddCarModelComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   selectedCarType: CarTypeAPI | undefined;

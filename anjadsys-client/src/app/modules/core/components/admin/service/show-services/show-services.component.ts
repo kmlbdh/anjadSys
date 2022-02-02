@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
@@ -10,7 +10,7 @@ import { ServiceAPI } from '../../../../model/service';
   templateUrl: './show-services.component.html',
   styleUrls: ['./show-services.component.scss']
 })
-export class ShowServicesComponent implements OnInit {
+export class ShowServicesComponent implements OnInit, OnDestroy {
   services: ServiceAPI[] = [];
   private unsubscribe$ = new Subject<void>();
 
