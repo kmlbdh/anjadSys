@@ -43,21 +43,6 @@ export interface CarTypeAPI {
   name: string,
 }
 
-export interface CarModelAPI {
-  [index: string]: number | CarTypeAPI | string | undefined,
-  id: number,
-  name: string,
-  carTypeId?: number,
-  CarType: CarTypeAPI,
-}
-
-export interface updateCarModel {
-  [index: string]: number | string,
-  carModelId: number,
-  name: string,
-  carTypeId: number,
-}
-
 export interface SearchCar {
   limit?: number,
   skip?: number,
@@ -103,6 +88,21 @@ export interface updateCarType {
 
 export interface CarTypeArrayAPI{
   data: [CarTypeAPI]
+}
+
+export interface CarModelAPI {
+  [index: string]: number | CarTypeAPI | string | undefined,
+  id: number,
+  name: string,
+  carTypeId?: number,
+  CarType: CarTypeAPI,
+}
+
+export interface updateCarModel {
+  [index: string]: number | string,
+  carModelId: number,
+  name: string,
+  carTypeId: number,
 }
 
 export interface NewCarModel{
