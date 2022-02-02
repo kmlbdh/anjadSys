@@ -136,7 +136,9 @@ module.exports = {
     }),
     list: Joi.object().keys({
       agentID: Joi.string().trim().min(9).max(9).optional(),
-      main: Joi.boolean().optional()
+      main: Joi.boolean().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
     }),
   },
   carTypeSchema: {
@@ -150,6 +152,8 @@ module.exports = {
     list: Joi.object().keys({
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
     }),
     delete: Joi.object().keys({
       carTypeId: Joi.number().required()
@@ -169,6 +173,8 @@ module.exports = {
       carModelId: Joi.number().optional(),
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
     }),
     delete: Joi.object().keys({
       carModelId: Joi.number().required()
@@ -212,6 +218,59 @@ module.exports = {
       carTypeId: Joi.number().optional(),
       carModelId: Joi.number().optional(),
       customerId: Joi.string().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
+    }),
+    delete: Joi.object().keys({
+      carId: Joi.number().required()
+    }),
+  },
+  AccidentSchema: {
+    add: Joi.object().keys({
+      name: Joi.string().trim().required(),
+      accidentPlace: Joi.string().trim().required(),
+      accidentDate: Joi.date().required(),
+      registerAccidentDate: Joi.date().required(),
+      driverName: Joi.string().trim().required(),
+      driverIdentity: Joi.number().min(1).required(),
+      accidentDescription: Joi.string().trim().required(),
+      expectedCost: Joi.number().required(),
+      note: Joi.any().optional(),
+      regionId: Joi.number().required(),
+      csutomerId: Joi.number().required(),
+      agentId: Joi.number().required(),
+      carId: Joi.string().required(),
+    }),
+    update: Joi.object().keys({
+      accidentId: Joi.number().required(),
+      name: Joi.string().trim().optional(),
+      accidentPlace: Joi.string().trim().optional(),
+      accidentDate: Joi.date().optional(),
+      registerAccidentDate: Joi.date().optional(),
+      driverName: Joi.string().trim().optional(),
+      driverIdentity: Joi.number().min(1).optional(),
+      accidentDescription: Joi.string().trim().optional(),
+      expectedCost: Joi.number().optional(),
+      note: Joi.any().optional(),
+      regionId: Joi.number().optional(),
+      csutomerId: Joi.number().optional(),
+      agentId: Joi.number().optional(),
+      carId: Joi.string().optional(),
+    }),
+    list: Joi.object().keys({
+      accidentID: Joi.number().optional(),
+      carNumber: Joi.number().optional(),
+      accidentPlace: Joi.string().trim().optional(),
+      accidentDate: Joi.date().optional(),
+      registerAccidentDate: Joi.date().optional(),
+      driverName: Joi.string().trim().optional(),
+      driverIdentity: Joi.number().min(1).optional(),
+      regionId: Joi.number().optional(),
+      csutomerID: Joi.number().optional(),
+      agentID: Joi.number().optional(),
+      carID: Joi.string().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
     }),
     delete: Joi.object().keys({
       carId: Joi.number().required()

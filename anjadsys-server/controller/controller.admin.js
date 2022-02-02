@@ -450,18 +450,30 @@ const accidentActions = {
       let query = {};
       const limit = req.body.limit || 20;
       const skip = req.body.skip || 0;
-        
+ 
+      if (req.body.accidentId) 
+        query.where.id = req.body.accidentId;
+     
       if (req.body.carNumber) 
         query.where.carNumber = req.body.carNumber; 
       
-      if (req.body.carId) 
-        query.where.carId = req.body.carId;
+      if (req.body.carID) 
+        query.where.carId = req.body.carID;
       
-      if (req.body.accidentID)
-        query.where.id = req.body.accidentID; 
+      if (req.body.accidentPlace)
+        query.where.accidentPlace = req.body.accidentPlace; 
 
       if (req.body.agentID)
         query.where.agentId = req.body.agentID;
+
+      if (req.body.accidentDate)
+        query.where.accidentDate = req.body.accidentDate;
+        
+      if (req.body.driverIdentity)
+        query.where.driverIdentity = req.body.driverIdentity;
+
+      if (req.body.csutomerID)
+        query.where.csutomerId = req.body.csutomerID;
 
       query = { ...query, 
         order: [['id', 'ASC' ]],
@@ -473,12 +485,32 @@ const accidentActions = {
           model: User,
           required: true,
           as: 'Agent',
+          include:[
+            {
+              model: Role,
+              required: true
+            },
+            {
+              model: Region,
+              required: true
+            }
+          ],
           attributes: { exclude: ['password', 'note'] }
         },
         {
           model: User,
           required: true,
           as: 'Customer',
+          include:[
+            {
+              model: Role,
+              required: true
+            },
+            {
+              model: Region,
+              required: true
+            }
+          ],
           attributes: { exclude: ['password', 'note'] }
         },
         {
