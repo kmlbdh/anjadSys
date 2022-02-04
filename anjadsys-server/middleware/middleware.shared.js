@@ -117,8 +117,8 @@ const verifyLogin =  validation(login, 'body');
 
 const checkRole = async(roleName, req, res) => {
   try{
-    checkRoleLog(roleName);
-    checkRoleLog(req.id);
+    // checkRoleLog(roleName);
+    // checkRoleLog(req.id);
 
     const user = await User.findOne({
       where: { id: req.id },
@@ -131,7 +131,7 @@ const checkRole = async(roleName, req, res) => {
       }]
     });
 
-    checkRoleLog(user);
+    // checkRoleLog(user);
 
     if(!user || !user.Role || user.Role.name !== roleName)
       throw new customError(`Require ${roleName} Role!`, INTERR);
@@ -144,7 +144,7 @@ const checkRole = async(roleName, req, res) => {
     else if(roleName === 'agent'){
       req.agent = { id, username, companyName, role};
     }
-    checkRoleLog(req.admin, req.agent);
+    // checkRoleLog(req.admin, req.agent);
 
     return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
   } catch(error){

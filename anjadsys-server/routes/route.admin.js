@@ -7,6 +7,7 @@ const {
   carTypeValidation,
   carModelValidation,
   carValidation,
+  accidentValidation,
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -23,6 +24,7 @@ const {
   carTypeActions,
   carModelActions,
   carActions,
+  regionActions,
 } = require("../controller/controller.admin");
 
 module.exports = function(app){
@@ -123,6 +125,13 @@ module.exports = function(app){
     auth.isAdmin,
   ], sharedActions.getRegionsAndRoles);
 
+/** #################### REGION ########################*/
+
+  app.get("/api/admin/list-regions",[
+    auth.verifyToken,
+    auth.isAdmin,
+  ], regionActions.list);
+
 /** #################### CAR TYPE ########################*/
   
   app.post("/api/admin/add-car-type",[
@@ -204,25 +213,25 @@ module.exports = function(app){
   app.post("/api/admin/add-accident",[
     auth.verifyToken,
     auth.isAdmin,
-    carValidation.add
+    accidentValidation.add
   ], accidentActions.add);
 
   app.post("/api/admin/edit-accident",[
     auth.verifyToken,
     auth.isAdmin,
-    carValidation.update,
+    accidentValidation.update,
   ], accidentActions.update);
 
   app.post("/api/admin/delete-accident",[
     auth.verifyToken,
     auth.isAdmin,
-    carValidation.delete,
+    accidentValidation.delete,
   ], accidentActions.delete);
 
   app.post("/api/admin/list-accidents",[
     auth.verifyToken,
     auth.isAdmin,
-    carValidation.list,
+    accidentValidation.list,
   ], accidentActions.list);
 
   // app.post("/api/admin/verify-logged-in", [

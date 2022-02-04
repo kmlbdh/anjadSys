@@ -23,6 +23,7 @@ const InsurancePolicy = db.InsurancePolicy;
 const Region = db.Region;
 const ServiceAccident = db.ServiceAccident;
 const ServicePolicy = db.ServicePolicy;
+const sequelizeDB = db.sequelize;
 
 const INTERR = 'INT_ERR';
 
@@ -100,28 +101,33 @@ const userActions = {
     try {
       listUsersLog(req.body.agentID);
       let query = {where: {
-        [Op.and]: [],
-        [Op.or]: []
+        [Op.or]:[]
       }};
       const limit = req.body.limit;
       const skip = req.body.skip;
-      if (req.body.role) query.where[Op.and].push({'$Role.name$': req.body.role});
-      if (req.body.agentID) query.where[Op.and].push({agentId: req.body.agentID});
+      if (req.body.role) query.where = ({'$Role.name$': req.body.role});
+      if (req.body.agentID) query.where.agentId = req.body.agentID;
+      if (req.body.regionID) query.where.regionId = req.body.regionID;
   
-      if (req.body.companyName)
-        query.where[Op.or].push({companyName: {[Op.substring]: req.body.companyName}});
-      
-      if (req.body.username)
-        query.where[Op.or].push({username: {[Op.substring]: req.body.username}});
+      if (req.body.companyName && req.body.username){
+        query.where[Op.or] = [
+          {companyName:{[Op.substring]: req.body.companyName}},
+          {username:{[Op.substring]: req.body.username}}
+        ];
+      } else {
+        if (req.body.companyName && req.body.username)
+          query.where.companyName = {[Op.substring]: req.body.companyName};
+        if (req.body.username)
+          query.where.username = {[Op.substring]: req.body.username};
+      }
    
-      // if (req.body.nickname) query = {...query, 'agent.agentNickname': req.body.nickname};
-      if (req.body.userID) query.where[Op.and].push({id: req.body.userID});
+      if (req.body.userID) query.where.id = req.body.userID;
   
-      if(query.where[Op.or].length === 0) delete query.where[Op.or];
-      if(query.where[Op.and].length === 0) delete query.where[Op.and];
+      if(query.where[Op.or] && query.where[Op.or].length === 0) delete query.where[Op.or];
+      // if(query.where[Op.and].length === 0) delete query.where[Op.and];
 
       listUsersLog(query);
-      await userShared.listUsers(res, query, skip, limit);
+      await userShared.listUsers(res, query, skip, limit, req.body.agent);
     } catch(error) {
       listUsersLog(error);
       errorHandler(res, error, "Failed! cant get Users!");
@@ -294,7 +300,7 @@ const accidentActions = {
         services
       } = req.body;
 
-     await sequelize.Transaction( async t => {
+     await sequelizeDB.transaction( async t => {
 
         const accident = Accident.build({
           name,
@@ -315,7 +321,7 @@ const accidentActions = {
         const savedAccident = await accident.save();
 
         if(!savedAccident || !accident.id)
-          throw new customError("Failed! service wasn't added!", INTERR);
+          throw new customError("Failed! Accident wasn't added!", INTERR);
 
         let serviceAccidentObj = [];
 
@@ -332,22 +338,26 @@ const accidentActions = {
 
         const serviceAccidents = await ServiceAccident.bulkCreate(serviceAccidentObj,
           { transaction: t});
-    
+          addServiceLog(serviceAccidents);
+
+        if(serviceAccidents.length === 0)
+          throw new customError("Failed! Accident wasn't added!", INTERR);
+
         res.status(200).json({
-          message: "Service was added successfully!",
-          data: {accident: savedAccident.toJSON(), serviceAccidents: serviceAccidents.toJSON()}
+          message: "Accident was added successfully!",
+          data: {accident: savedAccident.toJSON(), serviceAccidents: serviceAccidents}
         });
       });
     } catch(error) {
       addServiceLog(error);
-      errorHandler(res, error, "Failed! service wasn't added!");
+      errorHandler(res, error, "Failed! Accident wasn't added!");
     }
   },
   delete: async(req, res) => {
     try {
       let { accidentID } = req.body;
 
-      await sequelize.Transaction( async t => {
+      await sequelizeDB.transaction( async t => {
         const deletedAccidentServices = await ServiceAccident.destroy({ where: 
           { accidentId: accidentID }}, 
           {transaction: t});
@@ -901,6 +911,24 @@ const carModelActions = {
   },
 };
 
+const regionActions = {
+  list: async(req, res) => {
+    try {
+      const regions = await Region.findAll();
+  
+      if(!regions) 
+        throw new customError("Failed! can't get regions!");
+
+      res.status(200).json({
+        message: "Regions were reterived successfully!",
+        data: regions
+      });   
+    } catch(err){
+      errorHandler(res, error, "Failed! can't get data!!");
+    }
+  },
+}
+
 const sharedActions = {
   getRegionsAndRoles: async(req, res) => {
     try {
@@ -929,4 +957,5 @@ module.exports = {
   carTypeActions,
   carModelActions,
   carActions,
+  regionActions
 };

@@ -141,7 +141,8 @@ const shared = {
         errorHandler(res, error, "Failed! User isn't removed!");
       }
     },
-    listUsers: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
+    listUsers: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN,
+       requiredAgentJoin = false) => {
       try{
         query = { ...query, 
           order: [['id', 'ASC' ]],
@@ -155,7 +156,7 @@ const shared = {
           },
           {
             model: User,
-            required: false,
+            required: requiredAgentJoin,
             as: 'Agent',
             attributes: { exclude: ['password', 'note'] }
           }],
@@ -166,7 +167,7 @@ const shared = {
         listUsersLog(query);
         const { count, rows: users } = await User.findAndCountAll(query);
     
-        listUsersLog(users);
+        // listUsersLog(users);
         res.status(200).json({data: users, total: count});
       } catch(error){
         listUsersLog(error);

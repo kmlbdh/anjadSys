@@ -7,6 +7,7 @@ const {
   carSchema,
   carTypeSchema,
   carModelSchema,
+  accidentSchema,
 } = require("../schema/schema.validation.admin");
 
 const userValidation = {
@@ -50,6 +51,13 @@ const carValidation = {
  list: validation(carSchema.list, 'body'),
 };
 
+const accidentValidation = {
+ add: validation(accidentSchema.add, 'body'),
+ update: validation(accidentSchema.update, 'body'),
+ delete: validation(accidentSchema.delete, 'body'),
+ list: validation(accidentSchema.list, 'body'),
+};
+
 const validateAddSupplier = validation(createSupplier, 'body');
 
 
@@ -61,4 +69,5 @@ module.exports = {
   carTypeValidation,
   carModelValidation,
   carValidation,
+  accidentValidation,
 };
