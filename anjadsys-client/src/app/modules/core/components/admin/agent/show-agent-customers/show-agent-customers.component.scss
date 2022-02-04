@@ -1,12 +1,13 @@
 @import 'shared';
 
 :host {
-  flex-grow: 9;
+  flex-grow: 7.9;
+  height: min-content;
 }
 #main-container {
   padding: 25px;
   background-color:#f3f3f3;
-  height: 100%;
+  min-height: 100%;
 
   .card{
     @include card;
@@ -25,6 +26,118 @@
     }
   }
 
+  .add-user-container{
+    width: 100%;
+    min-height: 20%;
+
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-self: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 100%;
+
+      .form-sec1,
+      .form-sec2 {
+        flex-basis: 40%;
+      }
+      .form-sec2 {
+        flex-basis: 55%;
+      }
+
+      div.form-control-group {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        align-items: stretch;
+        // margin-bottom: 15px;
+
+
+        label{
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+      }
+
+      input, textarea, select, div.input{
+        line-height: 22px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        @include box-shadow(
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(60 66 87 / 16%) 0px 0px 0px 1px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px
+        );
+        &.hide{
+          display: none;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      div.input {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+
+        fa-icon {
+          vertical-align: sub;
+          cursor: pointer;
+        }
+      }
+
+      div.alert{
+        margin: 10px 2px;
+        font-size: 0.85rem;
+      }
+
+      div.alert-danger{
+        color: $mainRedColor;
+      }
+
+      .ng-valid[required], .ng-valid.required  {
+        border-left: 5px solid $mainGreenColor;
+      }
+
+      .ng-invalid:not(form)  {
+        border-left: 5px solid $mainRedColor;
+      }
+
+
+      div.btn-container{
+        // margin-top: 14px;
+        // margin-bottom: 14px;
+        margin: 1px 0;
+        flex-basis: 100%;
+
+        button{
+          @include button-primary;
+        }
+      }
+
+      div.error{
+        @include messageBox($mainRedColor);
+      }
+      div.success{
+        @include messageBox($mainGreenColor);
+      }
+    }
+  }
+
   .page-content{
     width: 100%;
     min-height: 80%;
@@ -38,6 +151,7 @@
         padding: 15px 15px;
         display: flex;
         justify-content: space-between;
+        align-items: flex-end;
         margin-bottom: 15px;
         &.no-data{
           width:100%;
@@ -62,19 +176,21 @@
         @include box-shadow(0px 0px 9px 0px rgba(0,0,0,0.1));
       }
       div[class*=col-]{
-        margin: auto;
+        // margin: auto;
+        margin:0;
+        text-align: center;
       }
       .col-1 {
-        flex-basis: 12%;
+        flex-basis: 11%;
       }
       .col-2 {
-        flex-basis: 20%;
+        flex-basis: 19%;
       }
       .col-3 {
-        flex-basis: 20%;
+        flex-basis: 12%;
       }
       .col-4 {
-        flex-basis: 10%;
+        flex-basis: 20%;
       }
       .col-5 {
         flex-basis: 38%;
@@ -82,13 +198,39 @@
         &.control{
           display: flex;
           flex-direction: row;
-          justify-content: center;
+          justify-content: space-evenly;
           align-items: center;
 
-          fa-icon{
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 20px;
+          button{
+            margin-left: 14px;
+            margin-right: 14px;
+            $btnWidth: 50px;
+
+            fa-icon{
+              cursor: pointer;
+              // margin-left: 10px;
+              font-size: 20px;
+              margin: auto;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              justify-content: space-evenly;
+              justify-content: center;
+              align-items: stretch;
+              margin: 6px;
+            }
+
+            &.btn-error{
+              @include button-error;
+              width: $btnWidth;
+              margin: 0;
+            }
+
+            &.btn-primary{
+              @include button-primary;
+              width: $btnWidth;
+              margin: 0;
+            }
           }
         }
       }

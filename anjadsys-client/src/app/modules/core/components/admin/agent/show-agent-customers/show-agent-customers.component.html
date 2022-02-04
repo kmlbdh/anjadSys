@@ -4,13 +4,61 @@
       <span style="font-weight: 400;">{{selectedAgentName}}</span></p>
   </div>
 
+  <div class="card add-user-container">
+    <form [formGroup]="addCustomerToAgentForm" #form="ngForm" (ngSubmit)="addCustomerToAgent(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="customerId">اضافة زبون الى الوكيل</label>
+          </div>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
+           name="customerId" formControlName="customerId" placeholder="قم بالبحث عن الزبون بادخال اسمه" required/>
+          <datalist id="customerList">
+            <option *ngFor="let customer of allCustomers;" [value]="customer.id">
+               {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>اضافة</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div *ngIf="(form.submitted || formCont('customerId')?.touched) &&
+      formCont('customerId')?.invalid" class="alert alert-danger">
+
+       <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+     </div>
+
+      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+      <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+    </form>
+
+  </div>
+
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">رقم المستخدم</div>
-        <div class="col col-2">اسم المستخدم</div>
-        <div class="col col-3">اسم الشركة</div>
-        <div class="col col-4">النوع</div>
+        <div class="col col-1">رقم الزبون</div>
+        <div class="col col-2">اسم الزبون</div>
+        <div class="col col-3">ارقم الهاتف</div>
+        <div class="col col-4">العنوان</div>
         <div class="col col-5">التحكم</div>
       </li>
       <ng-template [ngIf]="customers.length === 0">
@@ -22,13 +70,17 @@
         <li *ngFor="let customer of customers; trackBy: trackById" class="table-row">
           <div class="col col-1" data-label="Id">{{customer.id}}</div>
           <div class="col col-2" data-label="Customer Name">{{customer.username}}</div>
-          <div class="col col-3" data-label="Customer Company">{{customer.companyName}}</div>
-          <div class="col col-4" data-label="Customer Role">{{customer.Role.name}}</div>
+          <div class="col col-3" data-label="Customer Jawwal">{{customer.jawwal1}}</div>
+          <div class="col col-4" data-label="Customer Address and Region">{{customer.Region.name}} - {{customer.address}}</div>
           <div class="col col-5 control" data-label="Control">
-            <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)="deleteUser(customer)"
-             title="حذف المستخدم"></fa-icon>
-            <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(customer.id)"
-             title="تعديل بيانات المستخدم"></fa-icon>
+            <button class="btn-error" title="حذف الزبون نهائي" (click)="deleteUser(customer)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+            <button class="btn-primary" title="تعديل بيانات الزبون" (click)="goToUserEdit(customer.id)">
+              <fa-icon [icon]="userEditIcon"></fa-icon>
+            </button>
+
+
             <!-- <ng-template [ngIf]="activeAgentLimits">
               <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(customers)"
               title="اضافة سقف مالي للوكيل"></fa-icon>

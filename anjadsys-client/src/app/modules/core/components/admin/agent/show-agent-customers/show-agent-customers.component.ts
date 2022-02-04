@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, first, Subject, switchMap, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { UserAPI } from 'src/app/modules/core/model/user';
+import { faTimes, faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { SearchUser, updateUser, UserAPI } from 'src/app/modules/core/model/user';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-show-agent-customers',
@@ -11,21 +12,35 @@ import { UserAPI } from 'src/app/modules/core/model/user';
   styleUrls: ['./show-agent-customers.component.scss']
 })
 export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
-  selectedAgentName: string | undefined;
-  unsubscribe$ = new Subject<void>();
-  customers: UserAPI[] = [];
+  cancelInput = faTimes;
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
+
+  selectedAgentName: string | undefined;
+  selectedAgent: UserAPI | undefined;
+  unsubscribe$ = new Subject<void>();
+  customers: UserAPI[] = [];
   successMsg: string | undefined;
   errorMsg: string | undefined;
 
+  TIMEOUTMILISEC = 7000;
+  private searchUserText$ = new Subject<string>();
+
+  allCustomers: UserAPI[] = [];
+  selectedCustomer: UserAPI | undefined;
+  addCustomerToAgentForm = this.fb.group({
+    customerId: ['', Validators.required]
+  });
+
   constructor(
+    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.loadCustomerById();
+    this.loadCustomersById();
+    this.searchAPI();
   }
 
   ngOnDestroy(): void {
@@ -37,18 +52,18 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     return el.id;
   }
 
-  loadCustomerById(): void{
+  loadCustomersById(): void{
     this.route.paramMap
     .pipe(first())
     .subscribe({
       next: params => {
-        const agentId = params.get('id');
-        if(!agentId)
+        this.selectedAgent = {id: params.get('id')} as UserAPI;
+        if(!this.selectedAgent)
           this.router.navigate(['admin/agent/show-agents']);
 
        this.selectedAgentName = params.get('fullname') || undefined;
 
-       this.adminService.showUsers({agentID: agentId!})
+       this.adminService.showUsers({agentID: this.selectedAgent.id!})
        .pipe(takeUntil(this.unsubscribe$))
        .subscribe({
          next: response => {
@@ -80,10 +95,91 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
         if(response.data)
           this.successMsg = response.message;
 
-        this.loadCustomerById();
+        this.loadCustomersById();
       },
       error: err => console.log(err)
     })
+  }
+
+  addCustomerToAgent = (form: FormGroupDirective): void => {
+    if(this.addCustomerToAgentForm.invalid) return;
+
+    let formObj: updateUser = {} as updateUser;
+    formObj.id = this.selectedCustomer?.id!;
+    formObj.agentId = this.selectedAgent?.id;
+
+    this.adminService.updateUser(formObj)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          if(response.data){
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.loadCustomersById();
+            this.resetForm(form);
+          }
+          console.log(response);
+        },
+        error: (err) => {
+          console.error(err.error);
+          if(err?.error?.message){
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
+        }
+    });
+
+    console.log(formObj);
+  }
+
+  searchCustomer(event: Event){
+    console.log(event);
+    if(!(event instanceof KeyboardEvent)){
+      event.preventDefault();
+      event.stopPropagation();
+      this.selectedCustomer = this.allCustomers?.filter(customer =>
+         customer.id === this.formCont('customerId')?.value
+      )[0];
+      return;
+    }
+
+    let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
+    if(carTypeTxt)
+      this.searchUserText$.next(carTypeTxt)
+  }
+
+  searchAPI(){
+    this.searchUserText$.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap(text => this.adminService.showUsers({username: text, role: 'customer'} as SearchUser))
+    ).subscribe({
+      next: response =>{
+        if(response.data)
+          this.allCustomers = response.data;
+          console.log(response)
+      },
+      error: err => console.log(err)
+    })
+  }
+
+  resetForm(ngform: FormGroupDirective){
+    this.addCustomerToAgentForm.reset();
+    this.addCustomerToAgentForm.updateValueAndValidity();
+    this.addCustomerToAgentForm.markAsUntouched();
+    ngform.resetForm();
+  }
+
+  formCont(controlName: string): any{
+    return this.addCustomerToAgentForm.controls[controlName];
+  }
+
+  cancelCustomerInput(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectedCustomer = undefined;
+    this.formCont('customerId').setValue('');
   }
 
 }
