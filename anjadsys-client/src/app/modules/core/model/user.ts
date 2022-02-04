@@ -15,10 +15,7 @@ export interface UserAPI{
     id: string,
     name: string
   },
-  Agent: {
-    id: string,
-    name: string
-  } | null,
+  Agent: UserAPI | null,
   tel: number | null;
   fax: number | null;
   email: string | null,
@@ -45,7 +42,7 @@ export interface NewUser{ //CreateUserData
     email?: number;
     address?: string;
     note?: string;
-    agentId?: number,
+    agentId?: string,
 }
 
 export interface updateUser{ //updateUser
@@ -65,7 +62,7 @@ export interface updateUser{ //updateUser
   email?: number;
   address?: string;
   note?: string;
-  agentId?: number,
+  agentId?: string,
 }
 
 export interface SearchUser {
@@ -75,4 +72,6 @@ export interface SearchUser {
   role?: string;
   agentID?: string;
   companyName?: string;
+  agent?: boolean;
+  regionID?: number;
 }

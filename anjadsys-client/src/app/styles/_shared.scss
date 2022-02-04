@@ -52,6 +52,28 @@
   font-size: 17px;
 }
 
+%btn-primary-disabled{
+  @extend %btn-primary;
+  border: none;
+  background-color: $mainGrayColorDisabled;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(141, 150, 160) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px
+  );
+  cursor: not-allowed;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
 %btn-error{
   border: none;
   background-color: $mainRedColor;
@@ -89,6 +111,13 @@
   @extend %btn-primary;
   span{
     @extend %btn-primary-span
+  }
+}
+
+@mixin button-primary-disabled(){
+  @extend %btn-primary-disabled;
+  span{
+    @extend %btn-primary-span;
   }
 }
 

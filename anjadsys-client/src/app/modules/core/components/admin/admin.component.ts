@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faBars, faCarSide, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCarCrash, faCarSide, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { faUsers, faUserTie, faTruckLoading, faTaxi } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../../shared/components/nav/nav.component';
@@ -131,6 +131,24 @@ export class AdminComponent implements OnInit {
           name: 'اضافة موديل سيارة ',
           link: 'car/car-model/add'
         },
+      ]
+    },
+    {
+      id: 6,
+      name: 'بلاغات الحوادث',
+      faIcon: faCarCrash,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار بلاغات الحوادث',
+          link: 'accident/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة بلاغ عن حادث جديد ',
+          link: 'accident/add'
+        }
       ]
     },
   ];

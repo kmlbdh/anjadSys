@@ -8,6 +8,7 @@ import { AgentModule } from './agent/agent.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { UserModule } from './user/user.module';
 import { CarModule } from './car/car.module';
+import { AccidentModule } from './accident/accident.module';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
       {
         path: 'car',
         loadChildren: () => CarModule
+      },
+      {
+        path: 'accident',
+        loadChildren: () => AccidentModule
       },
       {
         path: '',

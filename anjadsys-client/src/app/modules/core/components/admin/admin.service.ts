@@ -8,8 +8,9 @@ import { SearchUser, UsersAPI, NewUser, updateUser } from '../../model/user';
 import { SearchSuppliers } from '../../model/supplier';
 import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchAgent } from '../../model/agent';
-import { AdminModule } from './admin.module';
-import { CarAPI, CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
+import { CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
+import { SearchAccident, AccidentsAPI, AccidentAPI, NewAccident } from '../../model/accident';
+import { RegionsAPI } from '../../model/general';
 
 @Injectable()
 export class AdminService {
@@ -206,6 +207,29 @@ export class AdminService {
     );
   }
 
+  addAccident(accidentData: NewAccident):Observable<any>{
+    return this.http.post<any>(`${this.url}add-accident`, accidentData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listAccidents(searchBy: SearchAccident):Observable<AccidentsAPI>{
+    return this.http.post<AccidentsAPI>(`${this.url}list-accidents`, searchBy).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteAccident(id: number): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-accident`, {accidentId: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listRegions():Observable<RegionsAPI>{
+    return this.http.get<RegionsAPI>(`${this.url}list-regions`).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {

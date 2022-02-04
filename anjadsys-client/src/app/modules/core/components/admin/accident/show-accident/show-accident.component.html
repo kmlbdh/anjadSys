@@ -1,0 +1,47 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اظهار جميع بلاغات الحوادث</p>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col col-1">رقم البلاغ</div>
+        <div class="col col-2">رقم السيارة</div>
+        <div class="col col-3">اسم صاحب السيارة</div>
+        <div class="col col-4">اسم الوكيل</div>
+        <div class="col col-5">تاريخ البلاغ</div>
+        <div class="col col-6">التحكم</div>
+      </li>
+      <ng-template [ngIf]="accidents.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accidents.length > 0">
+        <li *ngFor="let accident of accidents; trackBy: trackById" class="table-row">
+          <div class="col col-1" data-label="Car Accident Id">{{accident.id}}</div>
+          <div class="col col-2" data-label="Customer Number">{{accident.Car.carNumber}}</div>
+          <div class="col col-3" data-label="Car Owner">{{accident.Customer.username}}</div>
+          <div class="col col-4" data-label="Car Registration Date Role">{{ accident.Agent.username }}/{{ accident.Agent.companyName }}</div>
+          <div class="col col-5" data-label="Car Registration Date Role">{{ (accident.registerAccidentDate | date) }}</div>
+          <div class="col col-6 control" data-label="Control">
+
+            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+            <!-- <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)"> -->
+            <button class="btn-primary" title="تعديل بيانات بلاع الحادث">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

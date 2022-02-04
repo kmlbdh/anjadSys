@@ -48,7 +48,7 @@ export interface SearchCar {
   skip?: number,
   carId?: number,
   carNumber?: string,
-  customerID?: string,
+  customerId?: string,
   serialNumber?: string,
   motorNumber?: string,
 }

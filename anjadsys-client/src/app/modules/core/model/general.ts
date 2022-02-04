@@ -10,6 +10,10 @@ export interface RegionAPI{
   name: string,
 }
 
+export interface RegionsAPI{
+  data: [RegionAPI]
+}
+
 export interface RoleAPI{
   id: string,
   name: string,
