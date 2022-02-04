@@ -1,11 +1,11 @@
-import { CarTypeAPI } from 'src/app/modules/core/model/car';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { AdminService } from '../../../admin.service';
-import { CarAPI, CarModelAPI } from '../../../../../model/car';
+import { CarModelAPI, CarTypeAPI } from '../../../../../model/car';
 import { UserAPI } from '../../../../../model/user';
+import { RegionAPI } from '../../../../../model/general';
 
 @Component({
   selector: 'app-add-car-customer',
@@ -33,8 +33,6 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     searchCarModelText$: new Subject<string>(),
     searchCustomerText$: new Subject<string>()
   };
-  // rolesAPI!: RoleAPI[];
-  // regionsAPI!: RegionAPI[];
 
   TIMEOUTMILISEC = 7000;
 
@@ -194,5 +192,6 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     else
       this.formCont('carModelId').enable();
   }
+
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faCar, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { CarAPI, CarsAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { AdminService } from '../../../admin.service';
 import { Router } from '@angular/router';
@@ -14,10 +14,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   cars: CarAPI[] = [];
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
-  // addAgentLimitIcon = faMoneyBillAlt;
-  // agentLimitsListIcon = faCopy;
-  // customersIcon = faCar;
-  // supplierPartsIcon = faPeopleCarry;
+
   private unsubscribe$ = new Subject<void>();
 
   errorMsg: string | undefined;

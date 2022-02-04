@@ -1,6 +1,6 @@
-import { updateCar, updateCarModel } from './../../../../../model/car';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
+import { updateCar } from './../../../../../model/car';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { CarModelAPI, CarTypeAPI } from 'src/app/modules/core/model/car';
@@ -14,7 +14,7 @@ import { CarAPI } from '../../../../../model/car';
   templateUrl: './edit-car-customer.component.html',
   styleUrls: ['./edit-car-customer.component.scss']
 })
-export class EditCarCustomerComponent implements OnInit {
+export class EditCarCustomerComponent implements OnInit, OnDestroy {
   [index: string]: any;
 
   trashIcon = faTrashAlt;
@@ -224,12 +224,6 @@ export class EditCarCustomerComponent implements OnInit {
     this.selectedCarType =  this.car.CarType;
   }
 
-  // resetForm(ngform: FormGroupDirective){
-  //   this.addCarForm.reset();
-  //   this.addCarForm.updateValueAndValidity();
-  //   this.addCarForm.markAsUntouched();
-  //   ngform.resetForm();
-  // }
 
   redirect(): void{
     this.router.navigate(['/admin/car/car-customer/show']);
