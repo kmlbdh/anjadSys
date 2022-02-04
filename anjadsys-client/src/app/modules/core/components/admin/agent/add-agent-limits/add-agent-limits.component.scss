@@ -89,6 +89,10 @@
         );
       }
 
+      textarea {
+        resize: vertical;
+      }
+
       div.alert{
         margin: 10px 2px;
         font-size: 0.85rem;
