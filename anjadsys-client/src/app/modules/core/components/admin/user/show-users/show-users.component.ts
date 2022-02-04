@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SearchUser, UsersAPI, UserAPI } from '../../../../model/user';
-import { faTrashAlt, faUserEdit, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { SearchUser, UsersAPI, UserAPI, updateUser } from '../../../../model/user';
+import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
+import { FormBuilder, FormGroupDirective, Validators, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-show-users',
@@ -13,6 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 export class ShowUsersComponent implements OnInit, OnDestroy {
   users: UserAPI[] = [];
+  usersToBeAdded: UserAPI[] = [];
   trashIcon = faTrashAlt;
   userEditIcon = faEdit;
   addAgentLimitIcon = faMoneyBillAlt;
@@ -118,4 +120,5 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     const fullname = `${supplier.username} | ${supplier.companyName}`;
     this.router.navigate([`admin/list-supplier-parts/${supplier.id}`, { fullname }]);
   }
+
 }

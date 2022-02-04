@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatestWith, Subject, takeUntil, Observable, take, first } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { UserAPI, updateUser } from '../../../../model/user';
+import { UserAPI, updateUser, UsersAPI } from '../../../../model/user';
 import { RoleAPI, RegionAPI } from '../../../../model/general';
 import { ConfirmedValidator } from '../confirm.validator';
+import { combineLatest, combineLatestInit } from 'rxjs/internal/observable/combineLatest';
 
 @Component({
   selector: 'app-edit-user',
@@ -58,8 +59,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.getRegionsAndRoles();
-    this.getUserData();
+    this.getPageData();
   }
 
   ngOnDestroy(): void {
@@ -67,37 +67,34 @@ export class EditUserComponent implements OnInit, OnDestroy {
       this.unsubscribe$.complete();
   }
 
-  getUserData(){
+  getPageData(){
     this.route.paramMap.subscribe({
       next: params => {
         const userID = params.get('id');
         console.log("userID", userID);
         if(!userID)
           this.router.navigate(['/admin/user/show']);
-
-          this.adminService.showUsers({userID: userID!})
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: response => {
-              if(response.data && response.data.length === 1)
-              this.user = response.data[0];
-              this.buildForm();
-            }
-          });
+          this.getData(userID!);
       }
     });
   }
 
-  getRegionsAndRoles(){
-    this.adminService.getRegionsAndRoles()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data && response.data.regions && response.data.roles)
-        this.rolesAPI = response.data.roles;
-        this.regionsAPI = response.data.regions;
-      }
-    });
+  getData(userID: string){
+    let user$ = this.adminService.showUsers({userID: userID!}) as Observable<UsersAPI>;
+    let regionsAndRoles$ = this.adminService.getRegionsAndRoles() as Observable<any>;
+
+    combineLatest([user$, regionsAndRoles$])
+    .pipe(first())
+    .subscribe( ([user, regionsAndRoles]: [UsersAPI, any]) => {
+        if(regionsAndRoles.data && regionsAndRoles.data.regions && regionsAndRoles.data.roles){
+          this.rolesAPI = regionsAndRoles.data.roles;
+          this.regionsAPI = regionsAndRoles.data.regions;
+        }
+        if(user.data && user.data.length === 1)
+          this.user = user.data[0];
+
+        this.buildForm();
+      });
   }
 
   updateUser = (): void => {
@@ -167,7 +164,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
   changeForm(roleFormControl: any) {
     const role = Number(roleFormControl.value);
-    this.rebuildFormShared(role);
+    console.log('role', role);
+    if(role)
+      this.rebuildFormShared(role);
   }
 
   rebuildFormShared(roleId: number){
