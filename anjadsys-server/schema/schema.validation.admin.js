@@ -31,7 +31,7 @@ module.exports = {
       .options({ messages: { 'string.email': 'البريد الالكتروني خاطىء' } })
       .optional(),
       note: Joi.string().trim().optional(),
-      agentID: Joi.string().trim().optional(),
+      agentId: Joi.string().trim().optional(),
       regionId: Joi.number().min(1).required(),
       roleId: Joi.number().min(1).required(),
     }),
@@ -65,7 +65,7 @@ module.exports = {
       .options({ messages: { 'string.email.base': 'البريد الالكتروني خاطىء' } })
       .optional(),
       note: Joi.string().trim().optional(),
-      agentID: Joi.string().trim().optional(),
+      agentId: Joi.string().trim().optional(),
       regionId: Joi.number().min(1).optional(),
       roleId: Joi.number().min(1).optional(),
     }),
@@ -83,6 +83,8 @@ module.exports = {
       userID: Joi.string().trim().min(6).max(10).optional(), //TODO convert it to customerID
       companyName: Joi.string().trim().optional(),
       username: Joi.string().trim().optional(),
+      regionID: Joi.number().optional(),
+      agent: Joi.boolean().default(false).optional(),
     }),
   },
   createSupplier: Joi.object().keys({
@@ -225,7 +227,7 @@ module.exports = {
       carId: Joi.number().required()
     }),
   },
-  AccidentSchema: {
+  accidentSchema: {
     add: Joi.object().keys({
       name: Joi.string().trim().required(),
       accidentPlace: Joi.string().trim().required(),
@@ -236,10 +238,11 @@ module.exports = {
       accidentDescription: Joi.string().trim().required(),
       expectedCost: Joi.number().required(),
       note: Joi.any().optional(),
+      services: Joi.array().required(),
       regionId: Joi.number().required(),
-      csutomerId: Joi.number().required(),
-      agentId: Joi.number().required(),
-      carId: Joi.string().required(),
+      customerId: Joi.string().required(),
+      agentId: Joi.string().required(),
+      carId: Joi.number().required(),
     }),
     update: Joi.object().keys({
       accidentId: Joi.number().required(),
@@ -252,10 +255,11 @@ module.exports = {
       accidentDescription: Joi.string().trim().optional(),
       expectedCost: Joi.number().optional(),
       note: Joi.any().optional(),
+      services: Joi.array().optional(),
       regionId: Joi.number().optional(),
       csutomerId: Joi.number().optional(),
-      agentId: Joi.number().optional(),
-      carId: Joi.string().optional(),
+      agentId: Joi.string().optional(),
+      carId: Joi.number().optional(),
     }),
     list: Joi.object().keys({
       accidentID: Joi.number().optional(),
@@ -266,9 +270,9 @@ module.exports = {
       driverName: Joi.string().trim().optional(),
       driverIdentity: Joi.number().min(1).optional(),
       regionId: Joi.number().optional(),
-      csutomerID: Joi.number().optional(),
-      agentID: Joi.number().optional(),
-      carID: Joi.string().optional(),
+      csutomerID: Joi.string().optional(),
+      agentID: Joi.string().optional(),
+      carID: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
     }),
