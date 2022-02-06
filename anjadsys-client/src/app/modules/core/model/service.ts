@@ -1,4 +1,5 @@
 import { AccidentAPI } from './accident';
+import { InsurancePolicyAPI } from './insurancepolicy';
 import { UserAPI } from './user';
 export interface SearchService {
   serviceName?: string;
@@ -40,7 +41,7 @@ export interface ServicesAPI {
 
 /* ########################### SERVICE ACCIDENT ############################### */
 export interface ServiceAccidentAPI {
-  [index: string]: string | number | AccidentAPI | ServiceAPI | UserAPI | undefined;
+  [index: string]: string | number | ServiceAPI | UserAPI | undefined;
   id: number,
   cost: number,
   additionalDays: number,
@@ -48,7 +49,7 @@ export interface ServiceAccidentAPI {
   accidentId?: number,
   serviceId?: number,
   supplierId?: string,
-  Accident: AccidentAPI,
+  // Accident: AccidentAPI,
   Service: ServiceAPI,
   Supplier: UserAPI
 }
@@ -58,6 +59,41 @@ export interface NewServiceAccident {
   additionalDays: number,
   note?: string,
   accidentId?: number,
+  serviceId: number,
+  supplierId: string,
+}
+
+/* ########################### SERVICE POLICY ############################### */
+export interface ServicePolicyAPI {
+  [index: string]: string | number | Date | ServiceAPI | UserAPI | undefined ;
+  id: number,
+  cost: number,
+  additionalDays: number,
+  note?: string,
+  insurancePolicyId?: number,
+  serviceId?: number,
+  supplierId?: string,
+  Service: ServiceAPI,
+  Supplier: UserAPI,
+  createdAt: Date,
+  updatedAt: Date,
+}
+export interface NewServicePolicy {
+  [index: string]: string | number | undefined;
+  cost: number,
+  additionalDays: number,
+  note?: string,
+  serviceId: number,
+  supplierId: string,
+}
+// insurancePolicyId?: number,
+
+export interface updateServicePolicy {
+  [index: string]: string | number | undefined;
+  id?: number,
+  cost: number,
+  additionalDays: number,
+  note?: string,
   serviceId: number,
   supplierId: string,
 }

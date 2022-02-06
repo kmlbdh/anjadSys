@@ -1,3 +1,4 @@
+import { updateInsurancePolicy } from './../../model/insurancepolicy';
 import { updateCar, updateCarModel, updateCarType } from './../../model/car';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -11,6 +12,7 @@ import { SearchAgent } from '../../model/agent';
 import { CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
 import { SearchAccident, AccidentsAPI, AccidentAPI, NewAccident } from '../../model/accident';
 import { RegionsAPI } from '../../model/general';
+import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
 
 @Injectable()
 export class AdminService {
@@ -220,13 +222,37 @@ export class AdminService {
   }
 
   deleteAccident(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-accident`, {accidentId: id}).pipe(
+    return this.http.post<any>(`${this.url}delete-accident`, {accidentID: id}).pipe(
       catchError(this.handleError)
     );
   }
 
   listRegions():Observable<RegionsAPI>{
     return this.http.get<RegionsAPI>(`${this.url}list-regions`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addInsurancePolicy(insurancePolicyData: NewInsurancePolicy):Observable<any>{
+    return this.http.post<any>(`${this.url}add-insurance-policy`, insurancePolicyData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateInsurancePolicy(insurancePolicyData: updateInsurancePolicy):Observable<any>{
+    return this.http.post<any>(`${this.url}edit-insurance-policy`, insurancePolicyData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listInsurancePolicy(searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI>{
+    return this.http.post<InsurancePolicesAPI>(`${this.url}list-insurance-policy`, searchBy).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteInsurancePolicy(id: number): Observable<any>{
+    return this.http.post<any>(`${this.url}delete-insurance-policy`, {insurancePolicyId: id}).pipe(
       catchError(this.handleError)
     );
   }

@@ -151,6 +151,24 @@ export class AdminComponent implements OnInit {
         }
       ]
     },
+    {
+      id: 7,
+      name: 'بوليصة التأمين',
+      faIcon: faCarCrash,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار بوليصات التأمين',
+          link: 'insurance-policy/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة بوليصة تأمين جديدة ',
+          link: 'insurance-policy/add'
+        }
+      ]
+    },
   ];
   constructor(private adminService: AdminService, private router: Router) {
   }
