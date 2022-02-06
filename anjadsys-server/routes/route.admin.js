@@ -8,6 +8,7 @@ const {
   carModelValidation,
   carValidation,
   accidentValidation,
+  insurancePolicyValidation
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -25,6 +26,7 @@ const {
   carModelActions,
   carActions,
   regionActions,
+  insurancePolicyActions
 } = require("../controller/controller.admin");
 
 module.exports = function(app){
@@ -232,7 +234,32 @@ module.exports = function(app){
     auth.verifyToken,
     auth.isAdmin,
     accidentValidation.list,
-  ], accidentActions.list);
+  ], accidentActions.list); 
+  
+  /** #################### INSURANCE POLICY ########################*/
+  app.post("/api/admin/add-insurance-policy",[
+    auth.verifyToken,
+    auth.isAdmin,
+    insurancePolicyValidation.add
+  ], insurancePolicyActions.add);
+
+  app.post("/api/admin/edit-insurance-policy",[
+    auth.verifyToken,
+    auth.isAdmin,
+    insurancePolicyValidation.update,
+  ], insurancePolicyActions.update);
+
+  app.post("/api/admin/delete-insurance-policy",[
+    auth.verifyToken,
+    auth.isAdmin,
+    insurancePolicyValidation.delete,
+  ], insurancePolicyActions.delete);
+
+  app.post("/api/admin/list-insurance-policy",[
+    auth.verifyToken,
+    auth.isAdmin,
+    insurancePolicyValidation.list,
+  ], insurancePolicyActions.list);
 
   // app.post("/api/admin/verify-logged-in", [
   //   auth.verifyToken,

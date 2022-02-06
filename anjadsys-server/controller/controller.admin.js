@@ -156,7 +156,7 @@ const serviceActions = {
       res.status(200).json({message: "Service was added successfully!", data: savedService.toJSON()});
     } catch(error) {
       addServiceLog(error);
-      errorHandler(res, error, "Failed! service wasn't added!");
+      dublicationErrorHandler(error, res, "Failed! service wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -244,7 +244,7 @@ const agentActions = {
       res.status(200).json({message: "Agent limits was added successfully!", data: savedAgentLimits});
     } catch(error) {
       addServiceLog(error);
-      errorHandler(res, error, "Failed! Agent limits wasn't added!");
+      dublicationErrorHandler(error, res, "Failed! Agent limits wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -350,7 +350,7 @@ const accidentActions = {
       });
     } catch(error) {
       addServiceLog(error);
-      errorHandler(res, error, "Failed! Accident wasn't added!");
+      dublicationErrorHandler(error, res, "Failed! Accident wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -482,8 +482,8 @@ const accidentActions = {
       if (req.body.driverIdentity)
         query.where.driverIdentity = req.body.driverIdentity;
 
-      if (req.body.csutomerID)
-        query.where.csutomerId = req.body.csutomerID;
+      if (req.body.customerID)
+        query.where.customerId = req.body.customerID;
 
       query = { ...query, 
         order: [['id', 'ASC' ]],
@@ -528,10 +528,6 @@ const accidentActions = {
           required: true,
         },
         {
-          model: ServiceAccident,
-          required: true,
-        },
-        {
           model: Region,
           required: true,
         }],
@@ -540,8 +536,9 @@ const accidentActions = {
         attributes: { exclude: ['carId', 'customerId', 'agentId', 'regionId']}
       };
 
-      if (req.body.customerID)
-        query.include[2].where.agentId = req.body.customerID;
+      //TODO what is this for?!
+      // if (req.body.customerID)
+      //   query.include[2].where.agentId = req.body.customerID;
 
       const { count, rows: Accidents } = await Accident.findAndCountAll(query);
   
@@ -549,7 +546,268 @@ const accidentActions = {
       res.status(200).json({data: Accidents, total: count});
     } catch(error) {
       listServicesLog(error);
-      errorHandler(res, error, "Failed! can't get services!");
+      errorHandler(res, error, "Failed! can't get Accidents!");
+    }
+  },
+};
+
+const insurancePolicyActions = {
+  add: async(req, res) => {
+    try {
+      let {
+        totalPrice,
+        note,
+        customerId,
+        agentId,
+        carId,
+        services
+      } = req.body;
+
+     await sequelizeDB.transaction( async t => {
+
+        const insurancePolicy = InsurancePolicy.build({
+          totalPrice,
+          note,
+          customerId,
+          agentId,
+          carId,
+        }, { isNewRecord: true, transaction: t });
+
+        const savedInsurancePolicy = await insurancePolicy.save();
+
+        if(!savedInsurancePolicy || !insurancePolicy.id)
+          throw new customError("Failed! Insurance Policy wasn't added!", INTERR);
+
+        let servicePolicyObj = [];
+
+        services.forEach((service, i) => {
+          servicePolicyObj[i] = {
+            cost: service.cost,
+            additionalDays: service.additionalDays,
+            note: service.note,
+            serviceId: service.serviceId,
+            supplierId: service.supplierId,
+            insurancePolicyId: insurancePolicy.id
+          };
+        });
+
+        const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyObj,
+          { transaction: t});
+          addServiceLog(servicesPolicy);
+
+        if(servicesPolicy.length === 0)
+          throw new customError("Failed! Services Policy wasn't added!", INTERR);
+
+        res.status(200).json({
+          message: "Insurance Policy was added successfully!",
+          data: {insurancePolicy: savedInsurancePolicy.toJSON(), servicesPolicy: servicesPolicy}
+        });
+      });
+    } catch(error) {
+      addServiceLog(error);
+      dublicationErrorHandler(error, res, "Failed! Insurance Policy wasn't added!");
+    }
+  },
+  delete: async(req, res) => {
+    try {
+      let { insurancePolicyId } = req.body;
+
+      await sequelizeDB.transaction( async t => {
+        const deletedServicesPolicy = await ServicePolicy.destroy({ where: 
+          { insurancePolicyId: insurancePolicyId }}, 
+          { transaction: t });
+
+        if(!deletedServicesPolicy)
+          throw new customError("Failed! Services Policy isn't deleted!", INTERR);
+
+        const deletedInsurancePolicy = await InsurancePolicy.destroy({ where: { id: insurancePolicyId }}, 
+          {transaction: t});
+
+        if(!deletedInsurancePolicy)
+          throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
+    
+        res.status(200).json({
+          message: "Insurance Policy was deleted successfully!",
+          data: {insurancePolicy: deletedInsurancePolicy, servicesPolicy: deletedServicesPolicy}
+        });
+      });
+
+    } catch(error) {
+      deleteServiceLog(error);
+      errorHandler(res, error, "Failed! Insurance Policy isn't deleted!");
+    }
+  },
+  update: async(req, res) => {
+    try {
+      let {
+        insurancePolicyId,
+        services
+       } = req.body;
+  
+      if(!insurancePolicyId) 
+        throw new customError("Failed! Insurance Policy data isn't provided!", INTERR);
+  
+      await sequelizeDB.transaction( async t => {
+        const query = { where: {id: insurancePolicyId} };
+        const updateData = {};
+
+        Object.entries(req.body).forEach((val, ind) => {
+          updateServiceLog(val[0], val[1])
+          if(val && val.length > 0 && val[0] !== 'insurancePolicyId' && val[0] !== 'services')
+            updateData[val[0]] = val[1];
+        });
+
+        updateServiceLog(updateData);
+        const updatedInsurancePolicy = await InsurancePolicy.update(updateData, query);
+        
+        if(updatedInsurancePolicy[0]!== 1) 
+          throw new customError("Failed! Insurance Policy isn't updated!", INTERR);
+
+        let servicePolicyObj = [];
+        let servAPolicyIds = [];
+
+        services.forEach((service, i) => {
+          if(service.id)
+            servAPolicyIds.push(service.id);
+
+            servicePolicyObj[i] = {
+              id: service.id,
+              cost: service.cost,
+              additionalDays: service.additionalDays,
+              note: service.note,
+              serviceId: service.serviceId,
+              supplierId: service.supplierId,
+              insurancePolicyId: insurancePolicyId
+            };
+        });
+
+        //delete services that are not provided by ids
+        const deletedServicePolicy = await ServicePolicy.destroy({ 
+          where: {
+            [Op.and]: {
+              id:{ [Op.notIn]: [...servAPolicyIds] },
+              insurancePolicyId: insurancePolicyId
+            }
+          }
+        },
+        { transaction: t});
+
+        //update exist one and add the new services
+        const updateServicesPolicy = await ServicePolicy.bulkCreate(servicePolicyObj,
+          { updateOnDuplicate: ["id"] , transaction: t});     
+        
+    
+        updateServiceLog(deletedServicePolicy);
+        res.status(200).json({
+          message: "Insurance Policy was updated successfully!", 
+          data: {
+            insurancePolicy: updatedInsurancePolicy[0],
+            servicesPolicy: updateServicesPolicy[0],
+            deletedServicesPolicy: deletedServicePolicy
+          }
+        });
+      });
+      
+    } catch(error) {
+      updateServiceLog(error);
+      errorHandler(res, error, "Failed! Insurance Policy wasn't updated!");
+    }
+  },
+  list: async(req, res) => {
+    try{
+      let query = {where:{}};
+      const limit = req.body.limit || 20;
+      const skip = req.body.skip || 0;
+ 
+      if (req.body.insurancePolicyId) 
+        query.where.id = req.body.insurancePolicyId;
+     
+      // if (req.body.carNumber) 
+      //   query.where.carNumber = req.body.carNumber; 
+      
+      if (req.body.carID) 
+        query.where.carId = req.body.carID;
+
+      if (req.body.agentID)
+        query.where.agentId = req.body.agentID;
+
+      if (req.body.customerID)
+        query.where.customerID = req.body.csutomerID;
+        
+        if(Object.keys(query.where) === 0 ) delete query.where;
+      query = { ...query,
+        order: [['id', 'ASC' ]],
+        include: [{
+          model: ServicePolicy,
+          required: true,
+          separate: true,
+          include: [
+            {
+              model: Service,
+              required: true,
+              attributes: ['id', 'name', 'cost', 'coverageDays']
+            },
+            {
+              model: User,
+              as: 'Supplier',
+              required: true,
+              attributes: ['id', 'username', 'companyName']
+            }
+          ]
+        },
+        {
+          model: User,
+          required: true,
+          as: 'Agent',
+          include:[
+            {
+              model: Role,
+              required: true
+            },
+            {
+              model: Region,
+              required: true
+            }
+          ],
+          attributes: { exclude: ['password', 'note'] }
+        },
+        {
+          model: User,
+          required: true,
+          as: 'Customer',
+          include:[
+            {
+              model: Role,
+              required: true
+            },
+            {
+              model: Region,
+              required: true
+            }
+          ],
+          attributes: { exclude: ['password', 'note'] }
+        },
+        {
+          model: Car,
+          required: true,
+        }
+      ],
+        offset: skip,
+        limit: limit,
+        attributes: { exclude: ['carId', 'customerId', 'agentId']}
+      };
+
+      //TODO doesn't make sense! what is for?
+      // if (req.body.agentID)
+      //   query.include[2].where.agentId = req.body.agentID;
+
+      const { count, rows: insurancePolices } = await InsurancePolicy.findAndCountAll(query);
+  
+      listServicesLog(query);
+      res.status(200).json({data: insurancePolices, total: count});
+    } catch(error) {
+      listServicesLog(error);
+      errorHandler(res, error, "Failed! can't get Insurance Policies!");
     }
   },
 };
@@ -948,6 +1206,17 @@ const sharedActions = {
   },
 }
 
+const dublicationErrorHandler = (error, res, generalErrorText) => {
+  if(error.parent.code === 'ER_DUP_ENTRY'){
+    let keys = Object.keys(error.fields);
+    addServiceLog(error.fields[keys[0]]);
+    let values = [];
+    keys.forEach(k => values.push(error.fields[k]));
+    errorHandler(res, error, "البيانات التالية مكررة: " + values.toString());
+  } else
+    errorHandler(res, error, generalErrorText);
+    
+}
 module.exports = {
   userActions,
   serviceActions,
@@ -957,5 +1226,6 @@ module.exports = {
   carTypeActions,
   carModelActions,
   carActions,
-  regionActions
+  regionActions,
+  insurancePolicyActions,
 };

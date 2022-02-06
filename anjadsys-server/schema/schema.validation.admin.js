@@ -1,5 +1,15 @@
 const Joi = require("joi");
 
+const ServicePolicy = Joi.object().keys({
+  id: Joi.number().optional(),
+  cost: Joi.number().required(),
+  additionalDays: Joi.number().required(),
+  note: Joi.any().optional(),
+  serviceId: Joi.number().required(),
+  supplierId: Joi.string().optional(),
+  insurancePolicyId: Joi.number().optional(),
+})
+
 module.exports = {
   userSchema: {
     create: Joi.object().keys({
@@ -277,7 +287,39 @@ module.exports = {
       limit: Joi.number().optional(),
     }),
     delete: Joi.object().keys({
-      carId: Joi.number().required()
+      accidentID: Joi.number().required()
+    }),
+  },
+  insurancePolicySchema: {
+    add: Joi.object().keys({
+      totalPrice: Joi.number().required(),
+      note: Joi.any().optional(),
+      services: Joi.array().items(ServicePolicy).required(),
+      customerId: Joi.string().required(),
+      agentId: Joi.string().required(),
+      carId: Joi.number().required(),
+    }),
+    update: Joi.object().keys({
+      insurancePolicyId: Joi.number().required(),
+      totalPrice: Joi.number().optional(),
+      note: Joi.any().optional(),
+      services: Joi.array().items(ServicePolicy).optional(),
+      customerId: Joi.string().optional(),
+      agentId: Joi.string().optional(),
+      carId: Joi.number().optional(),
+    }),
+    list: Joi.object().keys({
+      insurancePolicyId: Joi.number().optional(),
+      totalPrice: Joi.number().optional(),
+      note: Joi.any().optional(),
+      customerID: Joi.string().optional(),
+      agentID: Joi.string().optional(),
+      carID: Joi.number().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
+    }),
+    delete: Joi.object().keys({
+      insurancePolicyId: Joi.number().required()
     }),
   }
 };

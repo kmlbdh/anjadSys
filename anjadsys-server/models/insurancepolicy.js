@@ -10,11 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       InsurancePolicy.belongsTo(models.User, { 
         foreignKey: 'customerId',
+        as: 'Customer',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
       InsurancePolicy.belongsTo(models.User,{ 
         foreignKey: 'agentId',
+        as: 'Agent',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
