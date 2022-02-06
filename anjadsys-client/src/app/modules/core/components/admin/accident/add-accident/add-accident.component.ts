@@ -36,7 +36,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   regions: RegionAPI[] = [];
   selectedCustomer: UserAPI | undefined;
   selectedAgent: UserAPI | undefined | null;
-  selectedRegion!: RegionAPI;
+  selectedRegion: RegionAPI | undefined;
   selectedCar: CarAPI | undefined;
   selectedService: ServiceAPI | undefined;
 
@@ -70,7 +70,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     serviceId: ['', [Validators.required]],
     additionalDays: [{value: '', disabled: true}, Validators.required],
     note: [''],
-    cost: [{value: 0, disabled: true}, Validators.required],
+    cost: [0, Validators.required],
     supplierId: ['', Validators.required],
   });
 
@@ -130,15 +130,11 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     if (this.addServiceAccidentForm.invalid) return;
 
     let formObj: NewServiceAccident = this.addServiceAccidentForm.value;
-    // let keys = Object.keys(formObj);
-    // keys.forEach(k => {
-    //   if(formObj[k] === "") delete formObj[k]
-    // });
 
     this.servicesAccident.push(formObj);
-    this.services.map((service, index) => {
-       service.propertiesUI!.hide = (service.id == this.addServiceAccidentForm.get('serviceId')?.value)
-
+    this.services.map((service) => {
+      service.propertiesUI!.hide = (service.id == this.addServiceAccidentForm.get('serviceId')?.value);
+      return service;
     });
     this.resetAccidentServiceForm(ngform);
     console.log(this.addServiceAccidentForm.value);
@@ -386,7 +382,11 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.addAccidentForm.updateValueAndValidity();
     this.addAccidentForm.markAsUntouched();
     addAccidentFormDirective.resetForm();
-
+    this.selectedCustomer = undefined;
+    this.selectedService = undefined;
+    this.selectedCar = undefined;
+    this.selectedAgent = undefined;
+    this.selectedRegion = undefined;
     this.addServiceAccidentForm.reset();
     this.addServiceAccidentForm.updateValueAndValidity();
     this.addServiceAccidentForm.markAsUntouched();

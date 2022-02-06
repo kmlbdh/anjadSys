@@ -54,7 +54,7 @@ export interface SearchAccident {
   driverName?: string,
   driverIdentity?: number,
   regionId?: number,
-  csutomerId?: number,
+  customerId?: number,
   agentId?: number,
   carId?: number,
 }

@@ -260,7 +260,8 @@
           <div class="label-with-data">
             <label for="cost">التكلفة الأجمالية:</label>
           </div>
-          <input type="text" id="cost" name="cost" formControlName="cost" required formControlName="cost"/>
+          <input type="number" [value]="formContS('cost').value" disabled/>
+          <input class="hide" type="text" id="cost" name="cost" formControlName="cost" required/>
         </div>
 
         <div class="form-control-group">
