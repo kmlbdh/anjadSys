@@ -39,6 +39,13 @@ export class EditInsurancePolicyComponent implements OnInit {
   selectedCar: CarAPI | undefined;
   selectedService: ServiceAPI | undefined;
 
+  spinner = {
+    customer: false,
+    agent: false,
+    car: false,
+    supplier: false,
+  };
+
   private unsubscribe$ = new Subject<void>();
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
@@ -244,14 +251,7 @@ export class EditInsurancePolicyComponent implements OnInit {
   }
 
   deleteServicePolicy(index: number){
-    let deletedService = this.servicesPolicy.splice(index, 1)[0];
-    // for(let i = 0; i < this.services.length; i++){
-    //   console.log(i);
-    //   if(deletedService.Service.id ===  this.services[i].id){
-    //     this.services[i]['propertiesUI'] = {hide: false};
-    //     break;
-    //   }
-    // }
+    this.servicesPolicy.splice(index, 1);
     this.serviceShowStatusWhenMaintainPolicy();
     this.totalCostForAllServices();
   }
@@ -265,8 +265,11 @@ export class EditInsurancePolicyComponent implements OnInit {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.car = true;
       this.searchTextObj.searchCarText$.next(typeTxt);
+    }
+
   }
 
   searchAgent(event: Event){
@@ -278,8 +281,10 @@ export class EditInsurancePolicyComponent implements OnInit {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.agent = true;
       this.searchTextObj.searchAgentText$.next(typeTxt);
+    }
   }
 
   searchCustomer(event: Event): void{
@@ -292,8 +297,11 @@ export class EditInsurancePolicyComponent implements OnInit {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.customer = true;
       this.searchTextObj.searchCustomerText$.next(typeTxt);
+    }
+
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI | CarAPI{
@@ -307,8 +315,9 @@ export class EditInsurancePolicyComponent implements OnInit {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id}
-      else query =  { customerId: id}
+      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
+      else query =  { customerId: id, skipLoadingInterceptor: true}
+
       return this.adminService.showCars(query);
     }
     this.searchTextObj.searchCarText$.pipe(
@@ -326,16 +335,20 @@ export class EditInsurancePolicyComponent implements OnInit {
         if(response.data){
           this.cars = response.data;
         }
-          console.log(response);
+        this.spinner.car = false;
+        console.log(response);
       },
-      error: (err: any) => console.log(err)
+      error: (err: any) => {
+        this.spinner.car = false;
+        console.log(err);
+      }
     });
     // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, role: 'customer', agent: true } as SearchUser);
+      { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
@@ -347,16 +360,20 @@ export class EditInsurancePolicyComponent implements OnInit {
           if(response.data){
             this.customers = response.data;
           }
-            console.log(response);
+          this.spinner.customer = false;
+          console.log(response);
         },
-        error: (err: any) => console.log(err)
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
+        }
       });
     // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
   searchAgentAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, companyName: val, role: "agent" } as SearchUser);
+      { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -369,9 +386,13 @@ export class EditInsurancePolicyComponent implements OnInit {
           if(response.data){
             this.agents = response.data;
           }
-            console.log(response);
+          this.spinner.agent = false;
+          console.log(response);
         },
-        error: (err: any) => console.log(err)
+        error: (err: any) => {
+          this.spinner.agent = false;
+          console.log(err);
+        }
       });
     // this.sharedSearchAPI('agents', this.searchTextObj.searchAgentText$, callback);
   }
@@ -387,7 +408,7 @@ export class EditInsurancePolicyComponent implements OnInit {
         if(response.data){
           this[array] = response.data;
         }
-          console.log(response);
+        console.log(response);
       },
       error: (err: any) => console.log(err)
     })

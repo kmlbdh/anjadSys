@@ -81,6 +81,17 @@
         > div.form-control-group {
           justify-content: flex-start;
           margin-left: 25px;
+
+          .input-with-spinner{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+            > input, select, textarea{
+              flex-basis: 90%;
+            }
+          }
         }
       }
       .form-sec1 {
@@ -103,6 +114,22 @@
           font-size: 14px;
           font-weight: 600;
           margin-bottom: 10px;
+        }
+
+        .input-with-spinner{
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          align-items: center;
+          > .spinner{
+            margin-right: 5px;
+          }
+          > input, select, textarea{
+            flex-basis: 90%;
+            flex-grow: 12;
+            flex-shrink: 10;
+          }
         }
       }
 
@@ -136,6 +163,8 @@
         flex-wrap: nowrap;
         justify-content: space-between;
         align-items: center;
+        line-height: normal;
+        padding: 5.3px 12px;
 
         fa-icon {
           vertical-align: sub;

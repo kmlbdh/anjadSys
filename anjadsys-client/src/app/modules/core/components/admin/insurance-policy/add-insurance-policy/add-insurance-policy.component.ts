@@ -36,6 +36,13 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   selectedCar: CarAPI | undefined;
   selectedService: ServiceAPI | undefined;
 
+  spinner = {
+    customer: false,
+    agent: false,
+    car: false,
+    supplier: false,
+  };
+
   private unsubscribe$ = new Subject<void>();
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
@@ -112,47 +119,49 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   addServicePolicy = (ngform: FormGroupDirective) => {
-    console.log(this.addServicePolicyForm);
     if (this.addServicePolicyForm.invalid) return;
 
     let formObj = this.addServicePolicyForm.value;
-    // let keys = Object.keys(formObj);
-    // keys.forEach(k => {
-    //   if(formObj[k] === "") delete formObj[k]
-    // });
-    console.log(formObj);
-    let totalCost = 0;
+
     this.servicesPolicy.push(formObj);
+    this.serviceShowStatusWhenMaintainPolicy();
+    this.totalCostForAllServices();
+    this.resetServicePolicyForm(ngform);
+  }
+
+  serviceShowStatusWhenMaintainPolicy(){
     this.services.map((service) => {
-      service.propertiesUI!.hide = (service.id == this.addServicePolicyForm.get('serviceId')?.value);
+      let existService = this.servicesPolicy.some(servicePolicy => {
+        console.log(servicePolicy.serviceId);
+        return Number(servicePolicy.serviceId) === Number(service.id);
+      });
+      // console.log(service.id, existService);
+      service['propertiesUI'] = {hide: existService};
       return service;
     });
-    this.servicesPolicy.forEach((service) => {
-      totalCost += service.cost;
-    });
-    this.formCont('totalPrice').setValue(totalCost);
-    this.resetServicePolicyForm(ngform);
   }
 
   totalCoverageDays(serviceId: number): number{
     let serviceDefualtDays = Number(this.services.filter(service =>  service.id === Number(serviceId))[0].coverageDays);
     let serviceDays = Number(this.servicesPolicy.filter(service => service.serviceId === serviceId)[0].additionalDays);
-    console.log('totalCoverageDays');
+    // console.log('totalCoverageDays');
     return serviceDefualtDays + serviceDays;
   }
 
   serviceText(serviceId: number): string {
-    console.log('serviceText')
+    console.log('serviceText');
     return this.services.filter(service =>  service.id === Number(serviceId))[0].name;
   }
 
   supplierText(supplierId: string): string {
-    console.log('supplierText')
+    console.log('supplierText');
     return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].username;
   }
 
   deleteServicePolicy(index: number){
     this.servicesPolicy.splice(index, 1);
+    this.serviceShowStatusWhenMaintainPolicy();
+    this.totalCostForAllServices();
   }
 
   searchCar(event: Event){
@@ -164,8 +173,11 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.car = true;
       this.searchTextObj.searchCarText$.next(typeTxt);
+    }
+
   }
 
   searchAgent(event: Event){
@@ -177,8 +189,10 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.agent = true;
       this.searchTextObj.searchAgentText$.next(typeTxt);
+    }
   }
 
   searchCustomer(event: Event): void{
@@ -191,8 +205,11 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.customer = true;
       this.searchTextObj.searchCustomerText$.next(typeTxt);
+    }
+
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI | CarAPI{
@@ -206,8 +223,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id}
-      else query =  { customerId: id}
+      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
+      else query =  { customerId: id,  skipLoadingInterceptor: true}
       return this.adminService.showCars(query);
     }
     this.searchTextObj.searchCarText$.pipe(
@@ -225,16 +242,21 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         if(response.data){
           this.cars = response.data;
         }
-          console.log(response);
+        this.spinner.car = false;
+        console.log(response);
       },
-      error: (err: any) => console.log(err)
+      error: (err: any) => {
+        this.spinner.car = false;
+        console.log(err);
+      }
     });
     // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, role: 'customer', agent: true } as SearchUser);
+      { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
+
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
@@ -246,16 +268,20 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
           if(response.data){
             this.customers = response.data;
           }
-            console.log(response);
+          this.spinner.customer = false;
+          console.log(response);
         },
-        error: (err: any) => console.log(err)
+        error: (err: any) => {
+          console.log(err);
+          this.spinner.customer = false;
+        }
       });
     // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
   searchAgentAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, companyName: val, role: "agent" } as SearchUser);
+      { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -267,6 +293,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           if(response.data){
             this.agents = response.data;
+            this.spinner.agent = false;
           }
             console.log(response);
         },
@@ -324,12 +351,12 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.addServicePolicyForm.get('additionalDays')?.enable();
   }
 
-  calculateTotalCost(event: Event){
+  totalCostPerServicePolicy(event: Event){
     // if(!(event instanceof KeyboardEvent)) return;
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
     let cost = Number(this.selectedService?.cost);
     let coverageDays = this.selectedService?.coverageDays;
-    console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
+    // console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
     if(!(additionalDays >= 0) || !cost || !coverageDays) return;
 
     additionalDays = Number(additionalDays.toFixed(2));
@@ -338,8 +365,18 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     let perDayCost =  Number((cost / coverageDays).toFixed(2));
 
     let total = cost + (perDayCost * (additionalDays * 0.25));
-    console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
+    // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
+  }
+
+  totalCostForAllServices() {
+    let total = 0;
+    this.servicesPolicy.forEach((service) => {
+      total += service.cost;
+      // console.log('total',total);
+    });
+    this.addInsurancePolicyForm.get('totalPrice')?.setValue(total);
+
   }
 
   fillFieldsByCustomer(event: Event){

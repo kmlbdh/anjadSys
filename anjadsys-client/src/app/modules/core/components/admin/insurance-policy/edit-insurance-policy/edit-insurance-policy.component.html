@@ -9,18 +9,20 @@
       <div class="form-sec1">
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="customerId">الزبون:</label>
-          </div>
+          <label for="customerId">الزبون:</label>
           <div class="input" *ngIf="selectedCustomer">
             {{selectedCustomer.username}}
             <span (click)="cancelCustomerInput($event)">
               <fa-icon [icon]="cancelInput"></fa-icon>
             </span>
           </div>
-          <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
-            name="customerId" formControlName="customerId" (change)="fillFieldsByCustomer($event)" required/>
-          <datalist id="customerList">
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
+            (keyup)="searchCustomer($event)" list="customerList" name="customerId"
+            formControlName="customerId" (change)="fillFieldsByCustomer($event)" required/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+            <datalist id="customerList">
             <option *ngFor="let customer of customers;" [value]="customer.id">
                 {{customer.username}}
             </option>
@@ -33,17 +35,16 @@
         </div>
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="agentId">الوكيل:</label>
-          </div>
+          <label for="agentId">الوكيل:</label>
           <div class="input" *ngIf="selectedAgent">
             {{selectedAgent.companyName}}/{{selectedAgent.username}}
             <span (click)="cancelCustomerInput($event)">
               <fa-icon [icon]="cancelInput"></fa-icon>
             </span>
           </div>
-          <input [ngClass]="{'hide': selectedAgent}" id="agentId" type="text" (keyup)="searchCustomer($event)" list="agentList"
-            name="agentId" formControlName="agentId" required/>
+          <input [ngClass]="{'hide': selectedAgent}" id="agentId" type="text"
+          (keyup)="searchAgent($event)" list="agentList" name="agentId" formControlName="agentId"
+           required/>
           <datalist id="agentList">
             <option *ngFor="let agent of agents;" [value]="agent.id">
               {{agent.companyName}}/{{agent.username}}
@@ -57,9 +58,7 @@
         </div>
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="carId">رقم السيارة :</label>
-          </div>
+          <label for="carId">رقم السيارة :</label>
           <div class="input" *ngIf="selectedCar">
             {{selectedCar.carNumber}}
             <span (click)="cancelCarInput($event)">
@@ -116,9 +115,7 @@
       <div class="form-sec0 row">
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="serviceId">الخدمة:</label>
-          </div>
+          <label for="serviceId">الخدمة:</label>
           <select id="serviceId" type="text" name="serviceId" formControlName="serviceId"
             (change)="selectServicePolicy($event)">
             <ng-template [ngIf]="services">
@@ -139,9 +136,7 @@
         </div>
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
-          </div>
+          <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
           <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
             (keyup)="totalCostPerServicePolicy($event)" required/>
 
@@ -154,17 +149,13 @@
         </div>
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="cost">التكلفة الأجمالية:</label>
-          </div>
+          <label for="cost">التكلفة الأجمالية:</label>
           <input type="number" [value]="formContS('cost').value" disabled/>
           <input class="hide" type="number" id="cost" name="cost" formControlName="cost" required/>
         </div>
 
         <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="supplierId">المورد:</label>
-          </div>
+          <label for="supplierId">المورد:</label>
           <select id="supplierId" type="text" name="supplierId" formControlName="supplierId" required>
             <ng-template [ngIf]="services">
               <option>اختر مورد الخدمة من القائمة</option>
@@ -180,8 +171,8 @@
           </div>
           <div *ngIf="suppliers.length === 0" class="alert alert-danger">
            <div>
-             يجب اضافة المستخدم لاظهار الموردين
-           </div>
+            لاظهار الموردين، قم باضافة الزبون
+          </div>
          </div>
         </div>
 
@@ -191,8 +182,6 @@
           </button>
         </div>
       </div>
-      <!-- <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
-      <div class="success" *ngIf="successMsg">{{successMsg}}</div> -->
 
     </form>
     <ul class="responsive-table">
