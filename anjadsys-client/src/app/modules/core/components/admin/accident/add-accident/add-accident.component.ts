@@ -40,6 +40,13 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   selectedCar: CarAPI | undefined;
   selectedService: ServiceAPI | undefined;
 
+  spinner = {
+    customer: false,
+    agent: false,
+    car: false,
+    supplier: false,
+  };
+
   private unsubscribe$ = new Subject<void>();
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
@@ -54,7 +61,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     name: ['', [Validators.required]],
     accidentPlace: ['', Validators.required],
     accidentDate: ['', Validators.required],
-    registerAccidentDate: ['', Validators.required],
+    registerAccidentDate: [(new Date()).toISOString().substring(0,10), Validators.required],
     driverName: ['', Validators.required],
     driverIdentity: ['', Validators.required],
     accidentDescription: ['', Validators.required],
@@ -132,13 +139,22 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     let formObj: NewServiceAccident = this.addServiceAccidentForm.value;
 
     this.servicesAccident.push(formObj);
-    this.services.map((service) => {
-      service.propertiesUI!.hide = (service.id == this.addServiceAccidentForm.get('serviceId')?.value);
-      return service;
-    });
+    this.serviceShowStatusWhenMaintainPolicy();
     this.resetAccidentServiceForm(ngform);
     console.log(this.addServiceAccidentForm.value);
     console.log(formObj);
+  }
+
+  serviceShowStatusWhenMaintainPolicy(){
+    this.services.map((service) => {
+      let existService = this.servicesAccident.some(serviceAccident => {
+        console.log(serviceAccident.serviceId);
+        return Number(serviceAccident.serviceId) === Number(service.id);
+      });
+      // console.log(service.id, existService);
+      service['propertiesUI'] = {hide: existService};
+      return service;
+    });
   }
 
   totalCoverageDays(serviceId: number): number{
@@ -159,7 +175,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   deleteAccidentService(index: number){
-    this.servicesAccident.splice(index, 1);
+    const _arr = this.servicesAccident.splice(index, 1);
+    this.serviceShowStatusWhenMaintainPolicy();
   }
 
   searchCar(event: Event){
@@ -171,8 +188,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.car = true;
       this.searchTextObj.searchCarText$.next(typeTxt);
+    }
   }
 
   searchAgent(event: Event){
@@ -184,8 +203,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.agent = true;
       this.searchTextObj.searchAgentText$.next(typeTxt);
+    }
   }
 
   searchCustomer(event: Event): void{
@@ -198,8 +219,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== '')
+    if(typeTxt && typeTxt !== ''){
+      this.spinner.customer = true;
       this.searchTextObj.searchCustomerText$.next(typeTxt);
+    }
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI | CarAPI{
@@ -213,8 +236,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id}
-      else query =  { customerId: id}
+      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
+      else query =  { customerId: id, skipLoadingInterceptor: true}
       return this.adminService.showCars(query);
     }
     this.searchTextObj.searchCarText$.pipe(
@@ -232,16 +255,20 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
         if(response.data){
           this.cars = response.data;
         }
-          console.log(response);
+        this.spinner.car = false;
+        console.log(response);
       },
-      error: (err: any) => console.log(err)
+      error: (err: any) => {
+        this.spinner.car = false;
+        console.log(err);
+      }
     });
     // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, role: 'customer', agent: true } as SearchUser);
+      { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
@@ -253,16 +280,20 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
           if(response.data){
             this.customers = response.data;
           }
-            console.log(response);
+          this.spinner.customer = false;
+          console.log(response);
         },
-        error: (err: any) => console.log(err)
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
+        }
       });
     // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
   searchAgentAPI(){
     let callback = (val: string) => this.adminService.showUsers(
-      { username: val, companyName: val, role: "agent" } as SearchUser);
+      { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true } as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -275,9 +306,13 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
           if(response.data){
             this.agents = response.data;
           }
-            console.log(response);
+          this.spinner.agent = false;
+          console.log(response);
         },
-        error: (err: any) => console.log(err)
+        error: (err: any) => {
+          this.spinner.agent = false;
+          console.log(err);
+        }
       });
     // this.sharedSearchAPI('agents', this.searchTextObj.searchAgentText$, callback);
   }
@@ -293,7 +328,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
         if(response.data){
           this[array] = response.data;
         }
-          console.log(response);
+        console.log(response);
       },
       error: (err: any) => console.log(err)
     })
