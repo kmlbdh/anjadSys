@@ -51,6 +51,7 @@ export interface SearchCar {
   customerId?: string,
   serialNumber?: string,
   motorNumber?: string,
+  skipLoadingInterceptor?: boolean,
 }
 
 export interface CarsAPI{
