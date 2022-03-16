@@ -5,6 +5,7 @@ import { CarTypeAPI, updateCarModel } from 'src/app/modules/core/model/car';
 import { AdminService } from '../../../admin.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CarModelAPI } from '../../../../../model/car';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-car-model',
@@ -12,6 +13,8 @@ import { CarModelAPI } from '../../../../../model/car';
   styleUrls: ['./edit-car-model.component.scss']
 })
 export class EditCarModelComponent implements OnInit, OnDestroy {
+  cancelInput = faTimes;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
   selectedCarType: CarTypeAPI | undefined;
@@ -20,6 +23,7 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
   carModel!: CarModelAPI;
   private unsubscribe$ = new Subject<void>();
   private searchCarTypeText$ = new Subject<string>();
+  spinnerCarType: boolean = false;
 
   TIMEOUTMILISEC = 7000;
 
@@ -151,6 +155,14 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
 
   formCont(controlName: string): any{
     return this.editCarModelForm.controls[controlName];
+  }
+
+  cancelCarTypeInput(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectedCarType = undefined;
+    this.carTypeName = undefined;
+    this.formCont('carTypeId')?.setValue('');
   }
 
   // acceptNumbers(event: KeyboardEvent): Boolean | undefined{

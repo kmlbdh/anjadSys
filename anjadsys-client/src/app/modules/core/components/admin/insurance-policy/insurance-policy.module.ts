@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddInsurancePolicyComponent } from './add-insurance-policy/add-insurance-policy.component';
 import { EditInsurancePolicyComponent } from './edit-insurance-policy/edit-insurance-policy.component';
 import { ShowInsurancePolicyComponent } from './show-insurance-policy/show-insurance-policy.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ShowInsurancePolicyComponent } from './show-insurance-policy/show-insur
   ],
   imports: [
     CommonModule,
+    NgxPaginationModule,
     InsurancePolicyRoutingModule,
     FontAwesomeModule,
     ReactiveFormsModule,

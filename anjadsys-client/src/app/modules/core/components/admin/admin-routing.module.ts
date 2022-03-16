@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { CarModule } from './car/car.module';
 import { AccidentModule } from './accident/accident.module';
 import { InsurancePolicyModule } from './insurance-policy/insurance-policy.module';
+import { AccountModule } from './account/account.module';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
       {
         path: 'insurance-policy',
         loadChildren: () => InsurancePolicyModule
+      },
+      {
+        path: 'account',
+        loadChildren: () => AccountModule
       },
       {
         path: '',

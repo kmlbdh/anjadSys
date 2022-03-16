@@ -42,7 +42,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     car: false,
     supplier: false,
   };
-
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   private unsubscribe$ = new Subject<void>();
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
@@ -250,7 +250,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         console.log(err);
       }
     });
-    // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI(){
@@ -276,7 +275,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
           this.spinner.customer = false;
         }
       });
-    // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
   searchAgentAPI(){
@@ -299,24 +297,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         },
         error: (err: any) => console.log(err)
       });
-    // this.sharedSearchAPI('agents', this.searchTextObj.searchAgentText$, callback);
-  }
-
-  sharedSearchAPI(array: string, subjectName: Subject<string>, callback: any): void{
-    subjectName.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(([id, text]) => callback(id, text))
-    ).subscribe({
-      next: (response: any) => {
-        if(response.data){
-          this[array] = response.data;
-        }
-          console.log(response);
-      },
-      error: (err: any) => console.log(err)
-    })
   }
 
   getServices(): void{
@@ -409,6 +389,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.addServicePolicyForm.updateValueAndValidity();
     this.addServicePolicyForm.markAsUntouched();
     addServicePolicyFormDirective.resetForm();
+    this.serviceShowStatusWhenMaintainPolicy();
   }
 
   formCont(controlName: string): any{
@@ -419,13 +400,15 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     return this.addServicePolicyForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+ acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
   cancelCustomerInput(event: Event): void {

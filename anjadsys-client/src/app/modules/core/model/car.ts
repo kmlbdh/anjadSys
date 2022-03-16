@@ -44,6 +44,7 @@ export interface CarTypeAPI {
 }
 
 export interface SearchCar {
+  [index: string]: number | string | boolean | undefined,
   limit?: number,
   skip?: number,
   carId?: number,
@@ -56,6 +57,7 @@ export interface SearchCar {
 
 export interface CarsAPI{
   data:[CarAPI];
+  total: number;
 }
 
 export interface NewCar{ //CreateCarData
@@ -79,6 +81,7 @@ export interface NewCarType{
 export interface SearchCarType {
   name?: string;
   carTypeId?: number,
+  skipLoadingInterceptor?: boolean;
 }
 
 export interface updateCarType {
@@ -88,7 +91,8 @@ export interface updateCarType {
 }
 
 export interface CarTypeArrayAPI{
-  data: [CarTypeAPI]
+  data: [CarTypeAPI],
+  total: number,
 }
 
 export interface CarModelAPI {
@@ -114,9 +118,11 @@ export interface NewCarModel{
 export interface SearchCarModel {
   carModelId?: number,
   name?: string;
-  cartypeId?: number
+  carTypeId?: number,
+  skipLoadingInterceptor?: boolean,
 }
 
 export interface CarModelArrayAPI{
-  data: [CarModelAPI]
+  data: [CarModelAPI];
+  total: number;
 }

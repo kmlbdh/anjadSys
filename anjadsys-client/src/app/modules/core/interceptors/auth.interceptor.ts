@@ -29,11 +29,10 @@ export class AuthInterceptor implements HttpInterceptor {
     let newRq = request.clone({
       headers: request.headers.set('x-access-token', token)
     });
-    console.info(newRq);
     return next.handle(newRq).pipe(
       tap(evt =>{
         if (evt instanceof HttpResponse)
-          console.warn(evt)
+          console.warn(evt);
       } )
     );
   }

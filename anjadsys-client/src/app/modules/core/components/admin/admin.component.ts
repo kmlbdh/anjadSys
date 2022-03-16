@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faBars, faCarCrash, faCarSide, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { faUsers, faUserTie, faTruckLoading, faTaxi } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../../shared/components/nav/nav.component';
@@ -166,6 +166,19 @@ export class AdminComponent implements OnInit {
           id: 2,
           name: 'اضافة بوليصة تأمين جديدة ',
           link: 'insurance-policy/add'
+        }
+      ]
+    },
+    {
+      id: 7,
+      name: 'المالية',
+      faIcon: faFileInvoiceDollar,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار الحساب المالي ',
+          link: 'account/show'
         }
       ]
     },

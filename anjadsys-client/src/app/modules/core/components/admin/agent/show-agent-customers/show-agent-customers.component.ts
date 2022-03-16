@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, first, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, first, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { faTimes, faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faTrashAlt, faUserEdit, faUserMinus } from '@fortawesome/free-solid-svg-icons';
 import { SearchUser, updateUser, UserAPI } from 'src/app/modules/core/model/user';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 
@@ -15,6 +15,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   cancelInput = faTimes;
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
+  userMinus = faUserMinus;
 
   selectedAgentName: string | undefined;
   selectedAgent: UserAPI | undefined;
@@ -22,9 +23,17 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   customers: UserAPI[] = [];
   successMsg: string | undefined;
   errorMsg: string | undefined;
+  spinnerCustomer: boolean = false;
 
   TIMEOUTMILISEC = 7000;
   private searchUserText$ = new Subject<string>();
+  private  searchConditions: SearchUser = {} as SearchUser;
+
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
 
   allCustomers: UserAPI[] = [];
   selectedCustomer: UserAPI | undefined;
@@ -39,7 +48,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.loadCustomersById();
+    this.loadCustomersById(this.searchConditions);
     this.searchAPI();
   }
 
@@ -52,7 +61,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     return el.id;
   }
 
-  loadCustomersById(): void{
+  loadCustomersById(searchConditions: SearchUser): void{
     this.route.paramMap
     .pipe(first())
     .subscribe({
@@ -62,14 +71,15 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
           this.router.navigate(['admin/agent/show-agents']);
 
        this.selectedAgentName = params.get('fullname') || undefined;
-
-       this.adminService.showUsers({agentID: this.selectedAgent.id!})
+       searchConditions = {...searchConditions, agentID: this.selectedAgent.id!};
+       this.adminService.showUsers(searchConditions)
        .pipe(takeUntil(this.unsubscribe$))
        .subscribe({
          next: response => {
-           if(response.data)
-             this.customers = response.data;
-
+           if(response.data){
+            this.customers = response.data;
+            this.pagination.total = response.total;
+           }
            console.log(response.data);
          },
          error: err => console.log(err)
@@ -85,7 +95,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   deleteUser(user: UserAPI){
     if(!user) return;
 
-    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
+    const yes = confirm(`هل تريد حذف الزبون ${user.username} ورقم حسابه ${user.id} بشكل نهائي؟`);
     if(!yes) return;
 
     this.adminService.deleteUser(user.id)
@@ -95,10 +105,10 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
         if(response.data)
           this.successMsg = response.message;
 
-        this.loadCustomersById();
+        this.loadCustomersById(this.searchConditions);
       },
       error: err => console.log(err)
-    })
+    });
   }
 
   addCustomerToAgent = (form: FormGroupDirective): void => {
@@ -115,8 +125,41 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
           if(response.data){
             this.successMsg = response.message;
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-            this.loadCustomersById();
+            this.loadCustomersById(this.searchConditions);
             this.resetForm(form);
+          }
+          console.log(response);
+        },
+        error: (err) => {
+          console.error(err.error);
+          if(err?.error?.message){
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
+        }
+    });
+
+    console.log(formObj);
+  };
+
+  removeCustomerFromAgent(user: UserAPI){
+    if(!user) return;
+
+    const yes = confirm(`هل تريد ازالة الزبون ${user.username} ورقم حسابه ${user.id} من قائمة الزبائن للوكيل ${this.selectedAgentName}`);
+    if(!yes) return;
+
+    let formObj: updateUser = {} as updateUser;
+    formObj.id = user.id!;
+    formObj.agentId = null;
+
+    this.adminService.updateUser(formObj)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          if(response.data){
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.loadCustomersById(this.searchConditions);
           }
           console.log(response);
         },
@@ -145,7 +188,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
 
     let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if(carTypeTxt)
-      this.searchUserText$.next(carTypeTxt)
+      this.searchUserText$.next(carTypeTxt);
   }
 
   searchAPI(){
@@ -153,14 +196,20 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.showUsers({username: text, role: 'customer'} as SearchUser))
+      tap(() => this.spinnerCustomer = true),
+      switchMap(text => this.adminService.showUsers({username: text, role: 'customer', skipLoadingInterceptor: true} as SearchUser))
     ).subscribe({
       next: response =>{
-        if(response.data)
+        if(response.data){
           this.allCustomers = response.data;
-          console.log(response)
+        }
+        this.spinnerCustomer = false;
+        console.log(response)
       },
-      error: err => console.log(err)
+      error: err => {
+        this.spinnerCustomer = false;
+        console.log(err);
+      }
     })
   }
 
@@ -168,6 +217,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     this.addCustomerToAgentForm.reset();
     this.addCustomerToAgentForm.updateValueAndValidity();
     this.addCustomerToAgentForm.markAsUntouched();
+    this.selectedCustomer = undefined;
     ngform.resetForm();
   }
 
@@ -182,4 +232,11 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     this.formCont('customerId').setValue('');
   }
 
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchUser;
+    this.p = pageNumber;
+    this.loadCustomersById(this.searchConditions);
+    console.log(pageNumber);
+  }
 }

@@ -20,19 +20,32 @@ export interface UserAPI{
   fax: number | null;
   email: string | null,
   note: string | null;
+  blocked: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 export interface UsersAPI{
   data:[UserAPI];
+  total: number;
+}
+
+export interface UserLightAPI{
+  [index: string]: string;
+  id: string;
+  username: string;
+}
+
+export interface UsersLightAPI{
+  data:[UserLightAPI];
+  total: number;
 }
 
 export interface NewUser{ //CreateUserData
     identityNum: number,
     username: string;
     companyName?: string;
-    password: string;
-    confirmPassword: string;
+    password?: string;
+    confirmPassword?: string;
     roleId: number;
     regionId: number;
     jawwal1: number;
@@ -43,10 +56,11 @@ export interface NewUser{ //CreateUserData
     address?: string;
     note?: string;
     agentId?: string,
+    blocked: boolean;
 }
 
-export interface updateUser{ //updateUser
-  [index: string]: number | string | undefined;
+export interface updateUser{
+  [index: string]: number | string | boolean | undefined | null;
   id: string,
   identityNum: number,
   username: string;
@@ -62,7 +76,8 @@ export interface updateUser{ //updateUser
   email?: number;
   address?: string;
   note?: string;
-  agentId?: string,
+  agentId?: string | null;
+  blocked: boolean;
 }
 
 export interface SearchUser {
@@ -72,6 +87,8 @@ export interface SearchUser {
   role?: string;
   agentID?: string;
   companyName?: string;
+  username?: string;
   agent?: boolean;
   regionID?: number;
+  skipLoadingInterceptor?: boolean;
 }

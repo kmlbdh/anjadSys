@@ -38,7 +38,28 @@
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 12%) 0px 1px 1px 0px,
-  rgb(0 102 204) 0px 0px 0px 1px,
+  rgb(2 132 199) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px2, 132, 1992, 132, 1992, 132, 199
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
+%btn-success{
+  border: none;
+  background-color: $mainGreenColor;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(0, 204, 119) 0px 0px 0px 1px,
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(60 66 87 / 8%) 0px 2px 5px 0px
@@ -81,7 +102,7 @@
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 12%) 0px 1px 1px 0px,
-  rgb(254 93 112) 0px 0px 0px 1px,
+  rgb(254 93 112) 0px 0px 0px 1px,#0284c7
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(0 0 0 / 0%) 0px 0px 0px 0px,
   rgb(60 66 87 / 8%) 0px 2px 5px 0px
@@ -114,6 +135,13 @@
   }
 }
 
+@mixin button-success(){
+  @extend %btn-success;
+  span{
+    @extend %btn-primary-span
+  }
+}
+
 @mixin button-primary-disabled(){
   @extend %btn-primary-disabled;
   span{
@@ -140,6 +168,55 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+}
+
+@mixin pagination() {
+  .custom-pagination ::ng-deep .ngx-pagination {
+    text-align: center;
+    li {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      height: 30px;
+      width: 30px;
+
+      a {
+        margin: auto;
+        vertical-align: sub;
+        height: 30px;
+        width: 30px;
+      }
+      span:last-child{
+        vertical-align: middle;
+      }
+      &.pagination-next,
+      &.pagination-next.disabled
+      &.pagination-previous,
+      &.pagination-previous.disabled{
+        height: 30px;
+        width: 30px;
+        a::after{
+          vertical-align: middle;
+        }
+        a::before{
+          vertical-align: middle;
+        }
+      }
+      &.pagination-next.disabled::after,
+      &.pagination-previous.disabled::before{
+        vertical-align: middle;
+      }
+      &.pagination-previous a::before,
+      &.pagination-previous.disabled::before {
+        margin: auto;
+        vertical-align: middle;
+      }
+    }
+    .current {
+      background-color: $mainGreenColor;
+      color: white;
+      border-radius: 5px;
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { ServiceAPI } from '../../../../model/service';
+import { ServiceAPI, SearchService } from '../../../../model/service';
 
 @Component({
   selector: 'app-show-services',
@@ -14,8 +14,17 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
   services: ServiceAPI[] = [];
   private unsubscribe$ = new Subject<void>();
 
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
+
   trashIcon = faTrashAlt;
   editServiceIcon = faEdit;
+
+  searchConditions: SearchService = {} as SearchService;
+
   selectedAgentName: string | undefined;
   currency: string = "شيكل";
   day: string = "يوم";
@@ -25,11 +34,10 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
 
   constructor(
     private adminService: AdminService,
-    private router: Router,
-    private route: ActivatedRoute) { }
+    private router: Router) { }
 
   ngOnInit(): void {
-    this.loadServices();
+    this.loadServices(this.searchConditions);
   }
 
   ngOnDestroy(): void {
@@ -37,13 +45,14 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadServices(): void{
-    this.adminService.listServices()
+  loadServices(searchCondition: SearchService): void{
+    this.adminService.listServices(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
         if(response.data){
           this.services = response.data;
+          this.pagination.total = response.total;
         }
         console.log(response.data);
       },
@@ -60,7 +69,8 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     .subscribe({
       next: response => {
         if(response.data){
-          this.loadServices();
+          this.loadServices(this.searchConditions);
+          this.pagination.total = response.total;
         }
         console.log(response.data);
       },
@@ -74,5 +84,13 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
 
   goToEditService(service: ServiceAPI){
     this.router.navigate([`/admin/service/edit/${service.id}`]);
+  }
+
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchService;
+    this.p = pageNumber;
+    this.loadServices(this.searchConditions);
+    console.log(pageNumber);
   }
 }

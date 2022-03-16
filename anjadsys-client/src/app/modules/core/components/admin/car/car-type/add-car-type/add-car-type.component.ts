@@ -14,7 +14,7 @@ export class AddCarTypeComponent implements OnInit, OnDestroy {
 
   carTypes!: any[];
   carModels: any[] | undefined;
-
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   private unsubscribe$ = new Subject<void>();
 
   TIMEOUTMILISEC = 7000;
@@ -79,13 +79,15 @@ export class AddCarTypeComponent implements OnInit, OnDestroy {
     return this.addCarTypeForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
 }

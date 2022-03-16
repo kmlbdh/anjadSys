@@ -9,8 +9,8 @@ export interface InsurancePolicyAPI {
   totalPrice: number,
   note: string,
   ServicePolicies: ServicePolicyAPI[],
-  customerId?: number,
-  agentId?: number,
+  customerId?: string,
+  agentId?: string,
   carId?: number,
   Customer: UserAPI,
   Agent: UserAPI,
@@ -24,14 +24,15 @@ export interface updateInsurancePolicy {
   insurancePolicyId: number,
   totalPrice?: number,
   note?: string,
-  customerId?: number,
+  customerId?: string,
   services: updateServicePolicy[],
-  agentId?: number,
+  agentId?: string,
   carId?: number,
 }
 
 export interface InsurancePolicesAPI{
   data:[InsurancePolicyAPI];
+  total: number;
 }
 
 export interface NewInsurancePolicy{
@@ -39,15 +40,17 @@ export interface NewInsurancePolicy{
   totalCost: number,
   note: string,
   services: NewServicePolicy[],
-  customerId: number,
-  agentId: number,
+  customerId: string,
+  agentId: string,
   carId: number,
 }
 
 export interface SearchInsurancePolicy {
   [index: string]: number | string | Date | undefined,
   insurancePolicyId?: number,
-  customerId?: number,
-  agentId?: number,
-  carId?: number,
+  customerID?: string,
+  agentID?: string,
+  carID?: number,
+  skip?: number,
+  limit?: number,
 }

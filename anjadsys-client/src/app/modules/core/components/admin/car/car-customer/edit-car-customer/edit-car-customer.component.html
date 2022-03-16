@@ -47,8 +47,10 @@
 
           <div class="form-control-group">
             <label for="licenseType">نوع الترخيص</label>
-            <input id="licenseType" type="text" name="licenseType" formControlName="licenseType"
-            required/>
+            <select id="licenseType" name="licenseType" formControlName="licenseType">
+              <option value="">اختر نوع الترخيص</option>
+              <option *ngFor="let licenseType of licenseTypes" [value]="licenseType">{{licenseType}}</option>
+            </select>
 
             <div *ngIf="(form.submitted || formCont('licenseType')?.touched) &&
              formCont('licenseType')?.invalid" class="alert alert-danger">
@@ -100,12 +102,18 @@
           </div>
 
           <div class="form-control-group">
-            <div class="label-with-data">
-              <label for="customerId">الزبون:</label>
-              <span *ngIf="selectedCustomer"> {{selectedCustomer.username}} </span>
+            <label for="customerId">الزبون:</label>
+            <div class="input" *ngIf="selectedCustomer">
+              {{selectedCustomer.username}}
+              <span (click)="cancelCustomerInput($event)">
+                <fa-icon [icon]="cancelInput"></fa-icon>
+              </span>
             </div>
-            <input id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
-             name="customerId" formControlName="customerId" required/>
+            <div class="input-with-spinner">
+              <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
+              name="customerId" formControlName="customerId" required/>
+              <span *ngIf="spinner.customer" class="spinner"></span>
+            </div>
             <datalist id="customerList">
               <option *ngFor="let customer of customers;" [value]="customer.id">
                  {{customer.username}}
@@ -119,17 +127,18 @@
           </div>
 
           <div class="form-control-group">
-            <div class="label-with-data">
-              <label for="carTypeId">نوع السيارة :</label>
-              <span *ngIf="selectedCarType"> {{selectedCarType.name}} </span>
-            </div>
-            <input id="carTypeId" type="text" (keyup)="searchCarType($event)" (change)="toggleModel($event)"
-             list="carTypeList" name="carTypeId" formControlName="carTypeId" required/>
-            <datalist id="carTypeList">
-              <option *ngFor="let carType of carTypes;" [value]="carType.id">
-                 {{carType.name}}
-              </option>
-            </datalist>
+            <label for="carTypeId">نوع السيارة :</label>
+            <select id="carTypeId" type="text" name="carTypeId" formControlName="carTypeId"
+            (change)="toggleModel($event)" required>
+            <ng-template [ngIf]="carTypes">
+              <option>اختر نوع السيارة من القائمة</option>
+              <ng-container *ngFor="let carType of carTypes">
+                <option [value]="carType.id" [selected]="carType.id === selectedCarTypeId">
+                    {{ carType.name }}
+                </option>
+              </ng-container>
+            </ng-template>
+          </select>
 
             <div *ngIf="(form.submitted || formCont('carTypeId')?.touched) &&
               formCont('carTypeId')?.invalid" class="alert alert-danger">
@@ -138,33 +147,22 @@
            </div>
           </div>
 
-          <!-- <div class="form-control-group">
-            <label for="carTypeId">نوع السيارة</label>
-            <select id="carTypeId" formControlName="carTypeId" required>
-              <ng-template [ngIf]="carTypes">
-                <option value="">اختر نوع السيارة</option>
-                <option *ngFor="let carType of carTypes" [value]="carType.id">{{ carType.name }}</option>
-              </ng-template>
-            </select>
-
-            <div *ngIf="(form.submitted || formCont('carTypeId')?.touched)
-             && formCont('carTypeId')?.invalid" class="alert alert-danger">
-              <div *ngIf="formCont('carTypeId').hasError('required')">نوع السيارة مطلوب تعبئته</div>
-            </div>
-          </div> -->
-
           <div class="form-control-group">
-            <div class="label-with-data">
-              <label for="carModelId">موديل السيارة:</label>
-              <span *ngIf="selectedCarModel"> {{selectedCarModel.name}} </span>
+            <label for="carModelId">موديل السيارة:</label>
+            <div class="input-with-spinner">
+              <select id="carModelId" type="text" name="carModelId" formControlName="carModelId"
+               required>
+                <ng-template [ngIf]="carModels">
+                  <option [ngValue]="null">اختر موديل السيارة من القائمة</option>
+                  <ng-container *ngFor="let carModel of carModels">
+                    <option [value]="carModel.id" [selected]="selectedCarModel?.id === carModel.id">
+                        {{ carModel.name }}
+                    </option>
+                  </ng-container>
+                </ng-template>
+              </select>
+              <span *ngIf="spinner.carModel" class="spinner"></span>
             </div>
-            <input id="carModelId" type="text" (keyup)="searchCarModel($event)" list="carModelList"
-             name="carModelId" formControlName="carModelId" required/>
-            <datalist id="carModelList">
-              <option *ngFor="let carModel of carModels;" [value]="carModel.id">
-                 {{carModel.name}}
-              </option>
-            </datalist>
 
             <div *ngIf="(form.submitted || formCont('carModelId')?.touched)
              && formCont('carModelId')?.invalid" class="alert alert-danger">
@@ -182,8 +180,8 @@
         <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
         <div class="success" *ngIf="successMsg">{{successMsg}}</div>
         <div class="btn-container">
-          <button type="submit">
-            <span>حفظ</span>
+          <button type="submit" [disabled]="form.invalid">
+            <span>تحديث</span>
           </button>
         </div>
       </form>

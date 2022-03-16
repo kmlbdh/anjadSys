@@ -115,7 +115,7 @@
 
   <div class="page-content card">
     <form [formGroup]="addServicePolicyForm" #formS="ngForm" (ngSubmit)="addServicePolicy(formS)">
-      <div class="form-sec0 row">
+      <div class="form-sec0 custom-row">
 
         <div class="form-control-group">
           <div class="label-with-data">
@@ -197,12 +197,12 @@
     </form>
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">رقم الخدمة</div>
-        <div class="col col-2">الخدمة</div>
-        <div class="col col-3">اجمالي التكلفة</div>
-        <div class="col col-4">عدد ايام التغطية</div>
-        <div class="col col-5">المورد</div>
-        <div class="col col-6">التحكم</div>
+        <div class="col-custom col-custom-1">رقم الخدمة</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div class="col-custom col-custom-3">اجمالي التكلفة</div>
+        <div class="col-custom col-custom-4">عدد ايام التغطية</div>
+        <div class="col-custom col-custom-5">المورد</div>
+        <div class="col-custom col-custom-6">التحكم</div>
       </li>
       <ng-template [ngIf]="servicesPolicy.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -211,12 +211,12 @@
       </ng-template>
       <ng-template [ngIf]="servicesPolicy.length > 0">
         <li *ngFor="let servicePolicy of servicesPolicy; let i = index; trackBy: trackByServiceId" class="table-row">
-          <div class="col col-1" data-label="id">{{ i + 1 }}</div>
-          <div class="col col-2" data-label="Customer Number">{{serviceText(servicePolicy.serviceId)}}</div>
-          <div class="col col-3" data-label="Cost">{{servicePolicy.cost}} {{currency}}</div>
-          <div class="col col-4" data-label="Total Coverage Days">{{ totalCoverageDays(servicePolicy.serviceId) }} {{days}}</div>
-          <div class="col col-5" data-label="Car Registration Date Role">{{ supplierText(servicePolicy.supplierId) }}</div>
-          <div class="col col-6 control" data-label="Control">
+          <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Number">{{serviceText(servicePolicy.serviceId)}}</div>
+          <div class="col-custom col-custom-3" data-label="Cost">{{servicePolicy.cost}} {{currency}}</div>
+          <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ totalCoverageDays(servicePolicy.serviceId) }} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{ supplierText(servicePolicy.supplierId) }}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteServicePolicy(i)">
               <fa-icon [icon]="trashIcon"></fa-icon>
             </button>

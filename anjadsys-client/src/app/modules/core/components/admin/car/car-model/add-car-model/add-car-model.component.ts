@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../../admin.service';
 import { CarTypeAPI } from '../../../../../model/car';
 
@@ -11,6 +11,8 @@ import { CarTypeAPI } from '../../../../../model/car';
   styleUrls: ['./add-car-model.component.scss']
 })
 export class AddCarModelComponent implements OnInit, OnDestroy {
+  cancelInput = faTimes;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
   selectedCarType: CarTypeAPI | undefined;
@@ -18,6 +20,7 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
   carTypes: any[] = [];
   private unsubscribe$ = new Subject<void>();
   private searchCarTypeText$ = new Subject<string>();
+  spinnerCarType: boolean = false;
 
   TIMEOUTMILISEC = 7000;
 
@@ -90,8 +93,9 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
       this.carTypeName = undefined;
 
     let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(carTypeTxt)
-      this.searchCarTypeText$.next(carTypeTxt)
+    if(carTypeTxt){
+      this.searchCarTypeText$.next(carTypeTxt);
+    }
   }
 
   searchAPI(){
@@ -99,14 +103,20 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.listCarTypes({name: text}))
+      tap(() => this.spinnerCarType = true),
+      switchMap(text => this.adminService.listCarTypes({name: text, skipLoadingInterceptor: true}))
     ).subscribe({
       next: response =>{
-        if(response.data)
+        if(response.data){
           this.carTypes = response.data;
-          console.log(response)
+        }
+        this.spinnerCarType = false;
+        console.log(response)
       },
-      error: err => console.log(err)
+      error: err => {
+        this.spinnerCarType = false;
+        console.log(err);
+      }
     })
   }
 
@@ -119,6 +129,14 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
 
   formCont(controlName: string): any{
     return this.addCarModelForm.controls[controlName];
+  }
+
+  cancelCarTypeInput(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectedCarType = undefined;
+    this.carTypeName = undefined;
+    this.formCont('carTypeId')?.setValue('');
   }
 
   // acceptNumbers(event: KeyboardEvent): Boolean | undefined{

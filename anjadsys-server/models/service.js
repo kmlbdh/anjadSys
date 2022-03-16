@@ -32,12 +32,16 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     cost: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
     coverageDays: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
+    },
+    supplierPercentage: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
     note: {
       type: DataTypes.TEXT,

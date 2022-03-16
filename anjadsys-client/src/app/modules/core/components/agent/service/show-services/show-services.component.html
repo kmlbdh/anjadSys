@@ -1,0 +1,48 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اظهار جميع الخدمات</p>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">الخدمة</div>
+        <div class="col-custom col-custom-2">التغطية الاساسية</div>
+        <div class="col-custom col-custom-3">تكلفة التغطية</div>
+        <div class="col-custom col-custom-4">تاريخ الاضافة</div>
+        <!-- <div class="col-custom col-custom-5">التحكم</div> -->
+      </li>
+      <ng-template [ngIf]="services.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="services.length > 0">
+        <li *ngFor="let service of services | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="ID">{{service.name}}</div>
+          <div class="col-custom col-custom-2" data-label="Coverage Days">{{service.coverageDays}} {{day}}</div>
+          <div class="col-custom col-custom-3" data-label="Service Cost">{{service.cost}} {{currency}}</div>
+          <div class="col-custom col-custom-4" data-label="Service Addition Date">{{service.createdAt | date}}</div>
+          <!-- <div class="col-custom col-custom-5 control" data-label="Control">
+            <button class="btn-error" title="حذف الخدمة">
+              <fa-icon [icon]="trashIcon" (click)="deleteService(service)"></fa-icon>
+            </button>
+             <button class="btn-primary" title="تعديل بيانات الخدمة">
+              <fa-icon [icon]="editServiceIcon" (click)="goToEditService(service)"></fa-icon>
+             </button>
+          </div> -->
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

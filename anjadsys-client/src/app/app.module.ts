@@ -11,6 +11,8 @@ import { AuthInterceptor } from './modules/core/interceptors/auth.interceptor';
 import { AdminModule } from './modules/core/components/admin/admin.module';
 import { SharedModule } from './modules/shared/shared.module';
 import { LoaderInterceptor } from './modules/core/interceptors/loader.interceptor';
+import { AgentModule } from './modules/core/components/agent/agent.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -18,11 +20,13 @@ import { LoaderInterceptor } from './modules/core/interceptors/loader.intercepto
   ],
   imports: [
     BrowserModule,
+    NgbModule,
     AppRoutingModule,
     HttpClientModule,
     FontAwesomeModule,
     LoginModule,
     AdminModule,
+    AgentModule,
     BrowserAnimationsModule,
     SharedModule
   ],

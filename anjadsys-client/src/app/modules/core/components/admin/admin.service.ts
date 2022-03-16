@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { AgentLimitsArrayAPI, NewAgentLimits, SearchAgentLimits } from '../../model/agentlimits';
 import { NewPart } from '../../model/supplierparts';
-import { SearchUser, UsersAPI, NewUser, updateUser } from '../../model/user';
+import { SearchUser, UsersAPI, NewUser, updateUser, UsersLightAPI } from '../../model/user';
 import { SearchSuppliers } from '../../model/supplier';
 import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchAgent } from '../../model/agent';
@@ -13,6 +13,7 @@ import { CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, Car
 import { SearchAccident, AccidentsAPI, AccidentAPI, NewAccident } from '../../model/accident';
 import { RegionsAPI } from '../../model/general';
 import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
+import { AccountsAPI, SearchAccount } from '../../model/account';
 
 @Injectable()
 export class AdminService {
@@ -29,6 +30,12 @@ export class AdminService {
 
   showUsers(searchBy: SearchUser):Observable<UsersAPI>{
     return this.http.post<UsersAPI>(`${this.url}list-users`, searchBy).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listLightUsers(searchBy: SearchUser):Observable<UsersLightAPI>{
+    return this.http.post<UsersLightAPI>(`${this.url}list-light-users`, searchBy).pipe(
       catchError(this.handleError)
     );
   }
@@ -253,6 +260,12 @@ export class AdminService {
 
   deleteInsurancePolicy(id: number): Observable<any>{
     return this.http.post<any>(`${this.url}delete-insurance-policy`, {insurancePolicyId: id}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listAccounts(searchBy: SearchAccount):Observable<AccountsAPI>{
+    return this.http.post<AccountsAPI>(`${this.url}list-accounts`, searchBy).pipe(
       catchError(this.handleError)
     );
   }

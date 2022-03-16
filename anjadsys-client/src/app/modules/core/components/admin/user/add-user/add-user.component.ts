@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { Observable, takeUntil, Subject } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { RoleAPI, RegionAPI } from '../../../../model/general';
@@ -12,8 +11,6 @@ import { ConfirmedValidator } from '../confirm.validator';
   styleUrls: ['./add-user.component.scss']
 })
 export class AddUserComponent implements OnInit, OnDestroy {
-  trashIcon = faTrashAlt;
-  userEditIcon = faUserEdit;
   errorMsg: string | undefined;
   successMsg: string | undefined;
   removePassword: boolean = true;
@@ -23,6 +20,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   rolesAPI!: RoleAPI[];
   regionsAPI!: RegionAPI[];
+
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   roles:{
     [index: string]: string;
   } = {
@@ -35,20 +34,21 @@ export class AddUserComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   addUserForm = this.fb.group({
-    identityNum: ['', [Validators.required, Validators.minLength(9), Validators.pattern('[0-9]*')]],
+    identityNum: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]{9}')]],
     username: ['', Validators.required],
     companyName: [''],
     password: ['', Validators.required],
     confirmPassword: ['', [Validators.required]],
-    tel: [''],
-    fax: [''],
-    jawwal1: ['', Validators.required],
-    jawwal2: [''],
+    tel: ['', [Validators.minLength(7), Validators.maxLength(9)]],
+    fax: ['', [Validators.minLength(7), Validators.maxLength(9)]],
+    jawwal1: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(10)]],
+    jawwal2: ['', [Validators.minLength(9), Validators.maxLength(10)]],
     note: [''],
     address: [''],
-    email: [''],
+    email: ['', Validators.pattern('^([A-Za-z0-9-_.])+\@([A-Za-z0-9])+\.([A-Za-z]){2,3}$')],
     roleId: ['', Validators.required],
     regionId: ['', Validators.required],
+    blocked: [false, Validators.required],
   }, { validators: ConfirmedValidator('password', 'confirmPassword')}
   );
   constructor(
@@ -69,9 +69,10 @@ export class AddUserComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
-        if(response.data && response.data.regions && response.data.roles)
-        this.rolesAPI = response.data.roles;
-        this.regionsAPI = response.data.regions;
+        if(response.data && response.data.regions && response.data.roles){
+          this.rolesAPI = response.data.roles;
+          this.regionsAPI = response.data.regions;
+        }
       }
     });
   }
@@ -99,19 +100,19 @@ export class AddUserComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response) => {
-        if(response.data)
+        if(response.data){
           this.successMsg = response.message;
           setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        this.resetForm(ngform);
+          this.resetForm(ngform);
+        }
         console.log(response);
       },
       error: (err) => {
         console.error(err.error);
-        if(err?.error?.message)
+        if(err?.error?.message){
           this.errorMsg = err.error.message;
           setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-
+        }
       }
     });
     console.log(this.addUserForm.value);
@@ -124,7 +125,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     console.log('role', role, roleString);
     if(!roleString) return;
 
-    this.removePassword = !(roleString === "supplier");
+    this.removePassword = !(roleString === "supplier" || roleString === "customer");
     this.removeCompanyName = !(roleString === "customer");
     this.removeIdentityNum = !(roleString === "admin");
 
@@ -145,6 +146,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
     } else if(roleString === "customer"){
       companyName?.clearValidators();
       companyName?.setValue('');
+      pass?.clearValidators();
+      conPass?.clearValidators();
+      this.addUserForm.clearValidators();
+      pass?.setValue('');
+      conPass?.setValue('');
     } else {
       pass?.addValidators([Validators.required]);
       conPass?.addValidators([Validators.required]);
@@ -158,22 +164,25 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   resetForm(ngform: FormGroupDirective){
-    this.addUserForm.reset();
+    this.addUserForm.reset({blocked: false});
     this.addUserForm.updateValueAndValidity();
     this.addUserForm.markAsUntouched();
     ngform.resetForm();
+    this.formCont('blocked').setValue(false);
   }
 
   formCont(controlName: string): any{
     return this.addUserForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 }

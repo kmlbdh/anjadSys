@@ -46,7 +46,7 @@
             <input [ngClass]="{'hide': selectedAgent}" id="agentId" type="text"
             (keyup)="searchCustomer($event)" list="agentList" name="agentId" formControlName="agentId"
              required/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
+            <span *ngIf="spinner.agent" class="spinner"></span>
           </div>
           <datalist id="agentList">
             <option *ngFor="let agent of agents;" [value]="agent.id">
@@ -71,7 +71,7 @@
           <div class="input-with-spinner">
             <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="searchCar($event)"
             list="carList" name="carId" formControlName="carId" required/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
+            <span *ngIf="spinner.car" class="spinner"></span>
           </div>
           <datalist id="carList">
             <option *ngFor="let car of cars;" [value]="car.id">
@@ -103,13 +103,16 @@
 
         <div class="form-control-group">
           <label for="driverIdentity">رقم هوية السائق</label>
-          <input id="driverIdentity" type="text" name="driverIdentity" formControlName="driverIdentity"
-          required/>
+          <input id="driverIdentity" type="text" name="driverIdentity"
+           formControlName="driverIdentity" (keydown)="acceptNumbers($event)"
+           required/>
 
           <div *ngIf="(form.submitted || formCont('driverIdentity')?.touched) &&
             formCont('driverIdentity')?.invalid" class="alert alert-danger">
-
-            <div *ngIf="formCont('driverIdentity').hasError('required')">رقم هوية السائق السائق مطلوب تعبئته</div>
+            <div *ngIf="formCont('driverIdentity').hasError('minlength') || formCont('driverIdentity').hasError('maxlength')">
+              رقم الهوية الشخصية مكون من ٩ أرقام.</div>
+            <div *ngIf="formCont('driverIdentity').hasError('required')">
+              رقم هوية السائق السائق مطلوب تعبئته</div>
           </div>
         </div>
 
@@ -159,9 +162,9 @@
 
         <div class="form-control-group">
           <label for="accidentDate">تاريخ الحادث</label>
-          <input id="accidentDate" type="date" name="accidentDate" formControlName="accidentDate"
-            required/>
-
+          <input id="accidentDate" type="date" name="accidentDate"
+          formControlName="accidentDate" min="{{ firstDayOfYear | date: 'yyyy-MM-dd'}}"
+            max="{{ lastDayOfYear | date: 'yyyy-MM-dd'}}" required/>
           <div *ngIf="(form.submitted || formCont('accidentDate')?.touched)
             && formCont('accidentDate')?.invalid" class="alert alert-danger">
 
@@ -173,7 +176,8 @@
         <div class="form-control-group">
           <label for="registerAccidentDate">تاريخ تسجيل الحادث</label>
           <input id="registerAccidentDate" type="date" name="registerAccidentDate"
-            formControlName="registerAccidentDate" required/>
+            formControlName="registerAccidentDate" min="{{ firstDayOfYear | date: 'yyyy-MM-dd'}}"
+            max="{{ lastDayOfYear | date: 'yyyy-MM-dd'}}" required/>
 
           <div *ngIf="(form.submitted || formCont('registerAccidentDate')?.touched)
             && formCont('registerAccidentDate')?.invalid" class="alert alert-danger">
@@ -221,7 +225,7 @@
 
   <div class="page-content card">
     <form [formGroup]="addServiceAccidentForm" #formS="ngForm" (ngSubmit)="addServiceAccident(formS)">
-      <div class="form-sec0 row">
+      <div class="form-sec0 custom-row">
 
         <div class="form-control-group">
           <label for="serviceId">الخدمة:</label>
@@ -238,7 +242,7 @@
             </ng-template>
           </select>
 
-          <div *ngIf="(form.submitted || formContS('serviceId')?.touched)
+          <div *ngIf="(formS.submitted || formContS('serviceId')?.touched)
            && formContS('serviceId')?.invalid" class="alert alert-danger">
             <div *ngIf="formContS('serviceId').hasError('required')">الخدمة مطلوب تعبئته</div>
           </div>
@@ -249,7 +253,7 @@
           <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
             (keyup)="calculateTotalCost($event)" required/>
 
-          <div *ngIf="(form.submitted || formContS('additionalDays')?.touched)
+          <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
             && formContS('additionalDays')?.invalid" class="alert alert-danger">
             <div *ngIf="formContS('additionalDays').hasError('required')">
               عدد الايام مطلوب تعبئته
@@ -264,6 +268,13 @@
         </div>
 
         <div class="form-control-group">
+          <!-- <label for="supplierPercentage">نسبة المورد :</label> -->
+          <!-- <input type="number" [value]="formContS('supplierPercentage').value | percent: '2.0'" disabled/> -->
+          <input class="hide" type="text" id="supplierPercentage" name="supplierPercentage" formControlName="supplierPercentage"
+           required/>
+        </div>
+
+        <div class="form-control-group">
           <label for="supplierId">المورد:</label>
           <select id="supplierId" type="text" name="supplierId" formControlName="supplierId">
             <ng-template [ngIf]="services">
@@ -272,7 +283,7 @@
             </ng-template>
           </select>
 
-          <div *ngIf="(form.submitted || formContS('additionalDays')?.touched)
+          <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
            && formContS('additionalDays')?.invalid" class="alert alert-danger">
             <div *ngIf="formContS('additionalDays').hasError('required')">
               المورد مطلوب تعبئته
@@ -297,12 +308,12 @@
     </form>
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">رقم الخدمة</div>
-        <div class="col col-2">الخدمة</div>
-        <div class="col col-3">اجمالي التكلفة</div>
-        <div class="col col-4">عدد ايام التغطية</div>
-        <div class="col col-5">المورد</div>
-        <div class="col col-6">التحكم</div>
+        <div class="col-custom col-custom-1">رقم الخدمة</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div class="col-custom col-custom-3">اجمالي التكلفة</div>
+        <div class="col-custom col-custom-4">عدد ايام التغطية</div>
+        <div class="col-custom col-custom-5">المورد</div>
+        <div class="col-custom col-custom-6">التحكم</div>
       </li>
       <ng-template [ngIf]="servicesAccident.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -311,12 +322,12 @@
       </ng-template>
       <ng-template [ngIf]="servicesAccident.length > 0">
         <li *ngFor="let serviceAccident of servicesAccident; let i = index; trackBy: trackByServiceId" class="table-row">
-          <div class="col col-1" data-label="id">{{ i + 1 }}</div>
-          <div class="col col-2" data-label="Customer Number">{{serviceText(serviceAccident.serviceId)}}</div>
-          <div class="col col-3" data-label="Cost">{{serviceAccident.cost}} {{currency}}</div>
-          <div class="col col-4" data-label="Total Coverage Days">{{ totalCoverageDays(serviceAccident.serviceId) }} {{days}}</div>
-          <div class="col col-5" data-label="Car Registration Date Role">{{ supplierText(serviceAccident.supplierId) }}</div>
-          <div class="col col-6 control" data-label="Control">
+          <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Number">{{serviceText(serviceAccident.serviceId)}}</div>
+          <div class="col-custom col-custom-3" data-label="Cost">{{serviceAccident.cost}} {{currency}}</div>
+          <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ totalCoverageDays(serviceAccident.serviceId) }} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{ supplierText(serviceAccident.supplierId) }}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteAccidentService(i)">
               <fa-icon [icon]="trashIcon"></fa-icon>
             </button>

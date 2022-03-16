@@ -19,11 +19,13 @@ const listServicesLog = util.debuglog("controller.shared-listServices");
 const listAgentLimitsLog = util.debuglog("controller.shared-listAgentLimits");
 const deleteUserLog = util.debuglog("controller.shared-deleteUser");
 
+
 const User = db.User;
 const Role = db.Role;
 const Service = db.Service;
 const Accident = db.Accident;
 const Account = db.Account;
+const UserAccount = db.User_Account;
 const Car = db.Car;
 const CarModel = db.CarModel;
 const CarType = db.CarType;
@@ -33,8 +35,9 @@ const ServiceAccident = db.ServiceAccident;
 const ServicePolicy = db.ServicePolicy;
 
 const INTERR = 'INT_ERR';
-const NUM_OF_DOCS_RETRUN = 30;
-const DEFAULT_SKIP = 0;
+const LIMIT = 10;
+const SKIP = 0;
+
 const IdPrefixByRole = {
   admin: {
     shortPrefix: 'AD',
@@ -141,7 +144,7 @@ const shared = {
         errorHandler(res, error, "Failed! User isn't removed!");
       }
     },
-    listUsers: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN,
+    listUsers: async(res, query, skip, limit,
        requiredAgentJoin = false) => {
       try{
         query = { ...query, 
@@ -176,7 +179,7 @@ const shared = {
     },
   },
 
-  listServices: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
+  listServices: async(res, query, skip, limit) => {
     try{
       query = { ...query, 
         order: [['id', 'ASC' ]],
@@ -192,10 +195,16 @@ const shared = {
       errorHandler(res, error, "Failed! Can't get services!");
     }
   },
-  listAgentLimits: async(res, query, skip = DEFAULT_SKIP, limit = NUM_OF_DOCS_RETRUN) => {
+  listAgentLimits: async(res, query, skip, limit) => {
     try{
       query = { ...query, 
         order: [['id', 'ASC' ]],
+        include:[
+          {
+            model: UserAccount,
+            required: true
+          }
+        ],
         offset: skip,
         limit: limit,
       };

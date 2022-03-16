@@ -13,11 +13,16 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ShowCarTypesComponent implements OnInit, OnDestroy {
   carTypes: CarTypeAPI[] = [];
+
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
 
   private unsubscribe$ = new Subject<void>();
-
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
   errorMsg: string | undefined;
   successMsg: string | undefined;
   searchConditions: SearchCarType = {};
@@ -40,7 +45,12 @@ export class ShowCarTypesComponent implements OnInit, OnDestroy {
     this.adminService.listCarTypes(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
-      next: (response: CarTypeArrayAPI) => this.carTypes = response.data,
+      next: (response: CarTypeArrayAPI) => {
+        if(response.data){
+          this.carTypes = response.data;
+          this.pagination.total = response.total;
+        }
+      },
       error: (error) => console.log(error)
     })
   }
@@ -71,5 +81,13 @@ export class ShowCarTypesComponent implements OnInit, OnDestroy {
 
   trackById(index: number, el: any){
     return el.id;
+  }
+
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchCarType;
+    this.p = pageNumber;
+    this.getCarTypes(this.searchConditions);
+    console.log(pageNumber);
   }
 }

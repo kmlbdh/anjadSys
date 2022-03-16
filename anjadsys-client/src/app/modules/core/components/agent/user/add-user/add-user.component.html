@@ -1,0 +1,132 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اضافة زبون جديد</p>
+  </div>
+
+  <div class="page-content card">
+      <form [formGroup]="addUserForm" #form="ngForm" (ngSubmit)="addUser(form)">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="identityNum">رقم هوية الزبون</label>
+            <input id="identityNum" type="text" name="identityNum" formControlName="identityNum"
+              (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('identityNum')?.touched)
+              && formCont('identityNum')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('identityNum').hasError('required')">
+                رقم الهوية الشخصية مطلوب تعبئته</div>
+              <div *ngIf="formCont('identityNum').hasError('minlength') || formCont('identityNum').hasError('maxlength')">
+                رقم الهوية الشخصية مكون من ٩ أرقام.</div>
+              <div *ngIf="formCont('identityNum').hasError('pattern')">
+                رقم الهوية يجب ان يكون ارقام فقط.</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="username">اسم الزبون</label>
+            <input id="username" type="text" name="username" formControlName="username"/>
+
+            <div *ngIf="(form.submitted || formCont('username')?.touched) &&
+             formCont('username')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('username').hasError('required')">اسم الزبون مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="regionId">المنطقة</label>
+            <select id="regionId" formControlName="regionId">
+              <ng-template [ngIf]="regionsAPI">
+                <option value="">اختر المنطقة</option>
+                <option *ngFor="let region of regionsAPI" [value]="region.id">{{ region.name }}</option>
+              </ng-template>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('regionId')?.touched)
+             && formCont('regionId')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('regionId').hasError('required')">المنطقة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="address">العنوان</label>
+            <input id="address" type="text" name="address" formControlName="address"/>
+          </div>
+
+        </div>
+
+        <div class="form-sec2">
+          <div class="form-control-group">
+            <label for="jawwal1">رقم الجوال الاول</label>
+            <input id="jawwal1" type="text" name="jawwal1" formControlName="jawwal1"
+             (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('jawwal1')?.touched)
+             && formCont('jawwal1')?.invalid" class="alert alert-danger">
+             <div *ngIf="formCont('jawwal1').hasError('minlength') || formCont('jawwal1').hasError('maxlength')">
+              رقم  الجوال مكون من ٩-١٠ أرقام.</div>
+              <div *ngIf="formCont('jawwal1').hasError('required')">رقم الجوال الأول مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="jawwal2">رقم الجوال الثاني</label>
+            <input id="jawwal2" type="text" name="jawwal2" formControlName="jawwal2"
+             (keydown)="acceptNumbers($event)"/>
+
+             <div *ngIf="(form.submitted || formCont('jawwal2')?.touched)
+             && formCont('jawwal2')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('jawwal2').hasError('minlength') || formCont('jawwal2').hasError('maxlength')">
+              رقم  الجوال مكون من ٩-١٠ أرقام.</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="tel">رقم الهاتف</label>
+            <input id="tel" type="text" name="tel" formControlName="tel"
+              (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('tel')?.touched)
+              && formCont('tel')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('tel').hasError('minlength') || formCont('tel').hasError('maxlength')">
+               رقم  الهاتف مكون من ٧-٩ أرقام.</div>
+             </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="fax">رقم الفاكس</label>
+            <input id="fax" type="text" name="fax" formControlName="fax"
+              (keydown)="acceptNumbers($event)"/>
+
+            <div *ngIf="(form.submitted || formCont('fax')?.touched)
+              && formCont('fax')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('fax').hasError('minlength') || formCont('fax').hasError('maxlength')">
+               رقم  الهاتف مكون من ٧-٩ أرقام.</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="email">البريد الالكتروني</label>
+            <input id="email" type="text" name="email" formControlName="email"/>
+          </div>
+
+          <div class="form-control-group">
+            <label for="note">ملاحظات</label>
+            <textarea id="note" formControlName="note"></textarea>
+          </div>
+
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>حفظ</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first, Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { AgentLimitsAPI } from '../../../../model/agentlimits';
+import { AgentLimitsAPI, SearchAgentLimits } from '../../../../model/agentlimits';
 
 @Component({
   selector: 'app-show-agent-limits',
@@ -17,23 +17,23 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
   selectedAgentName: string | undefined;
   currency: string = "شيكل";
 
-  // userEditIcon = faUserEdit;
-  // addAgentLimitIcon = faFileInvoiceDollar;
-  // agentLimitsListIcon = faCopy;
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
-  // searchConditions: SearchUser = {};
+  searchConditions: SearchAgentLimits = {} as SearchAgentLimits;
 
-  // pageTitle!: string;
-  // activeAgentLimits: boolean = false;
   constructor(
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadAgentLimitsById();
+    this.loadAgentLimitsById(this.searchConditions);
   }
 
   ngOnDestroy(): void {
@@ -41,7 +41,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadAgentLimitsById(): void{
+  loadAgentLimitsById(searchAgentLimits: SearchAgentLimits): void{
     this.route.paramMap
     .pipe(first())
     .subscribe({
@@ -51,13 +51,14 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
        this.selectedAgentName = params.get('fullname') || undefined;
         console.log(this.selectedAgentName);
         if(!agentId || !this.selectedAgentName) this.router.navigate(['admin/show-agents']);
-
-        this.adminService.listAgentLimits({agentID: agentId?.toUpperCase()!, main: false})
+        searchAgentLimits = {...searchAgentLimits, agentID: agentId?.toUpperCase()!, main: false};
+        this.adminService.listAgentLimits(searchAgentLimits)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: response => {
             if(response.data){
               this.agentLimits = response.data;
+              this.pagination.total = response.total;
             }
             console.log(response.data);
           },
@@ -76,7 +77,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
     .subscribe({
       next: response => {
         if(response.data){
-          this.loadAgentLimitsById();
+          this.loadAgentLimitsById(this.searchConditions);
         }
         console.log(response.data);
       },
@@ -86,5 +87,13 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
 
   trackById(index: number, el: any): string{
     return el._id;
+  }
+
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchAgentLimits;
+    this.p = pageNumber;
+    this.loadAgentLimitsById(this.searchConditions);
+    console.log(pageNumber);
   }
 }

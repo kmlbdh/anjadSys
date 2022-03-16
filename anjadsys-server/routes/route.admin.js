@@ -8,7 +8,8 @@ const {
   carModelValidation,
   carValidation,
   accidentValidation,
-  insurancePolicyValidation
+  insurancePolicyValidation,
+  accountValidation
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -26,7 +27,8 @@ const {
   carModelActions,
   carActions,
   regionActions,
-  insurancePolicyActions
+  insurancePolicyActions,
+  accountActions
 } = require("../controller/controller.admin");
 
 module.exports = function(app){
@@ -64,6 +66,12 @@ module.exports = function(app){
     auth.isAdmin,
     userValidation.list,
   ], userActions.list);
+
+  app.post("/api/admin/list-light-users",[
+    auth.verifyToken,
+    auth.isAdmin,
+    userValidation.list,
+  ], userActions.lightList);
 
 /** #################### SUPPLIER  ########################*/
   app.post("/api/admin/create-supplier",[
@@ -261,8 +269,12 @@ module.exports = function(app){
     insurancePolicyValidation.list,
   ], insurancePolicyActions.list);
 
-  // app.post("/api/admin/verify-logged-in", [
-  //   auth.verifyToken,
-  //   auth.isAdmin
-  // ], verifyLoggedIn);
+/** #################### ACCOUNT  ########################*/
+
+app.post("/api/admin/list-accounts",[
+  auth.verifyToken,
+  auth.isAdmin,
+  accountValidation.list,
+], accountActions.list);
+
 };

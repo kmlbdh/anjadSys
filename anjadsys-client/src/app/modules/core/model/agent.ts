@@ -5,4 +5,5 @@ export interface SearchAgent{
   userID?: string;
   companyName?: string;
   username?: string;
+  skipLoadingInterceptor?: boolean;
 }

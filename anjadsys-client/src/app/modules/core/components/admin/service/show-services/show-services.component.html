@@ -6,11 +6,12 @@
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">الخدمة</div>
-        <div class="col col-2">التغطية الاساسية</div>
-        <div class="col col-3">تكلفة</div>
-        <div class="col col-4">تاريخ الاضافة</div>
-        <div class="col col-5">التحكم</div>
+        <div class="col-custom col-custom-1">الخدمة</div>
+        <div class="col-custom col-custom-2">التغطية الاساسية</div>
+        <div class="col-custom col-custom-3">تكلفة</div>
+        <div class="col-custom col-custom-4">نسبة الموردين</div>
+        <div class="col-custom col-custom-5">تاريخ الاضافة</div>
+        <div class="col-custom col-custom-6">التحكم</div>
       </li>
       <ng-template [ngIf]="services.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -18,12 +19,14 @@
         </li>
       </ng-template>
       <ng-template [ngIf]="services.length > 0">
-        <li *ngFor="let service of services; trackBy: trackById; let i = index;" class="table-row">
-          <div class="col col-1" data-label="ID">{{service.name}}</div>
-          <div class="col col-2" data-label="Coverage Days">{{service.coverageDays}} {{day}}</div>
-          <div class="col col-3" data-label="Service Cost">{{service.cost}} {{currency}}</div>
-          <div class="col col-4" data-label="Service Addition Date">{{service.createdAt | date}}</div>
-          <div class="col col-5 control" data-label="Control">
+        <li *ngFor="let service of services | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="ID">{{service.name}}</div>
+          <div class="col-custom col-custom-2" data-label="Coverage Days">{{service.coverageDays}} {{day}}</div>
+          <div class="col-custom col-custom-3" data-label="Service Cost">{{service.cost}} {{currency}}</div>
+          <div class="col-custom col-custom-4" data-label="Service Supplier Percentage">{{service.supplierPercentage | percent: '2.0'}}</div>
+          <div class="col-custom col-custom-5" data-label="Service Addition Date">{{service.createdAt | date}}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة">
               <fa-icon [icon]="trashIcon" (click)="deleteService(service)"></fa-icon>
             </button>
@@ -34,6 +37,13 @@
         </li>
       </ng-template>
     </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide]="true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
     <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
     <div class="success" *ngIf="successMsg">{{successMsg}}</div>
   </div>

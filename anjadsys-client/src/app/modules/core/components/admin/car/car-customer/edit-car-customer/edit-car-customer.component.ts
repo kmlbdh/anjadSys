@@ -1,13 +1,14 @@
-import { updateCar } from './../../../../../model/car';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { CarsAPI, updateCar } from './../../../../../model/car';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
+import { faTimes, faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { CarModelAPI, CarTypeAPI } from 'src/app/modules/core/model/car';
 import { UserAPI } from 'src/app/modules/core/model/user';
 import { AdminService } from '../../../admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CarAPI } from '../../../../../model/car';
+import { CarAPI, CarTypeArrayAPI } from '../../../../../model/car';
 
 @Component({
   selector: 'app-edit-car-customer',
@@ -15,29 +16,39 @@ import { CarAPI } from '../../../../../model/car';
   styleUrls: ['./edit-car-customer.component.scss']
 })
 export class EditCarCustomerComponent implements OnInit, OnDestroy {
-  [index: string]: any;
+  cancelInput = faTimes;
 
-  trashIcon = faTrashAlt;
-  userEditIcon = faUserEdit;
   errorMsg: string | undefined;
   successMsg: string | undefined;
 
   car!: CarAPI;
   carTypes!: any[];
   carModels: any[] | undefined;
-  customers: any[] | undefined;
+  customers: any[] = [];
   selectedCustomer: UserAPI | undefined;
   selectedCarType: CarTypeAPI | undefined;
   selectedCarModel: CarModelAPI | undefined;
+  selectedCarTypeId: number | undefined;
 
-  private unsubscribe$ = new Subject<void>();
-  private searchTextObj: {[index: string]: any} = {
-    searchCarTypeText$:  new Subject<string>(),
-    searchCarModelText$: new Subject<string>(),
-    searchCustomerText$: new Subject<string>()
+  licenseTypes = [
+    'خصوصي',
+    'مركبة موحدة',
+    'عمومي',
+    'مركبة ايجار',
+    'تعليم سواقة',
+    'شحن',
+    'اخرى'
+  ];
+
+  spinner = {
+    carType: false,
+    carModel: false,
+    customer: false,
   };
-  // rolesAPI!: RoleAPI[];
-  // regionsAPI!: RegionAPI[];
+
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private unsubscribe$ = new Subject<void>();
+  private searchCustomerText$ = new Subject<string>();
 
   TIMEOUTMILISEC = 7000;
 
@@ -63,8 +74,6 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getCarData();
-    this.searchCarTypeAPI();
-    this.searchCarModelAPI();
     this.searchCustomerAPI();
   }
 
@@ -115,70 +124,61 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
     console.log(formObj);
   }
 
-  searchCarType(event: Event): void{
-    console.log(event);
-    this.sharedSearch(event, 'selectedCarType', 'carTypes', 'carTypeId', 'searchCarTypeText$');
-  }
-
-  searchCarModel(event: Event): void{
-    console.log(event);
-    this.sharedSearch(event, 'selectedCarModel', 'carModels', 'carModelId', 'searchCarModelText$');
-  }
-
-  searchCustomer(event: Event): void{
-    console.log(event);
-    this.sharedSearch(event, 'selectedCustomer', 'customers', 'customerId', 'searchCustomerText$');
-  }
-
-  sharedSearch(event: Event, selected: string, array: string, controlName: string,
-     subjectName: string): void{
+  searchCustomer(event: Event){
     console.log(event);
     if(!(event instanceof KeyboardEvent)){
-      event.preventDefault();
-      event.stopPropagation();
-      this[selected] = this[array].filter((unit: any) =>
-         unit.id == this.formCont(controlName)?.value)[0];
-      // this.carTypeName = `${this.selectedCarType?.name}`;
+      const controlValue = this.formCont('customerId')?.value;
+      this.selectedCustomer = this.customers.filter((customer: any) => customer.id == controlValue)[0];
       return;
     }
-    // if(this.formCont('carTypeId')?.value === '')
-      // this.carTypeName = undefined;
 
-    let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(carTypeTxt)
-    this.searchTextObj[subjectName].next(carTypeTxt)
+    let customerText = ((event.target as HTMLInputElement).value)?.trim();
+    if(customerText && customerText !== ''){
+      this.spinner.customer = true;
+      this.searchCustomerText$.next(customerText);
+    }
   }
 
-  searchCarTypeAPI(): void{
-    this.sharedSearchAPI(
-      'listCarTypes', 'carTypes', 'searchCarTypeText$', {});
+  searchCarModelAPI(triggerBuildForm: boolean = false){
+    let carTypeId = this.selectedCarType?.id || this.selectedCarTypeId;
+    this.adminService.listCarModels({carTypeId: Number(carTypeId), skipLoadingInterceptor: true})
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: response => {
+        if(response.data && response.data.length > 0){
+          this.carModels = response.data;
+        } else{
+          this.carModels = [];
+        }
+        this.spinner.carModel = false;
+        if(triggerBuildForm) this.buildForm();
+      },
+      error: (err: any) => {
+        this.spinner.carModel = false;
+        console.log(err);
+      }
+    });
   }
 
-  searchCarModelAPI(): void{
-    this.sharedSearchAPI(
-      'listCarModels', 'carModels', 'searchCarModelText$', {carTypeId: this.selectedCarType?.id});
-  }
-
-  searchCustomerAPI(): void{
-    this.sharedSearchAPI(
-      'showUsers', 'customers', 'searchCustomerText$', {}, 'username');
-  }
-
-  sharedSearchAPI(API: any, array: string, subjectName: string, query: any = {},
-    searchQuery: string = 'name'): void{
-   this.searchTextObj[subjectName].pipe(
+  searchCustomerAPI(){
+    this.searchCustomerText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService[API]({...query, [searchQuery]: text}))
+      switchMap(text => this.adminService.showUsers({username: text, skipLoadingInterceptor: true}))
     ).subscribe({
       next: (response: any) =>{
-        if(response.data)
-          this[array] = response.data;
-          console.log(response);
+        if(response.data){
+          this.customers = response.data;
+        }
+        this.spinner.customer = false;
+        console.log(response);
       },
-      error: (err: any) => console.log(err)
-    })
+      error: (err: any) => {
+        this.spinner.customer = false;
+        console.log(err);
+      }
+    });
   }
 
   getCarData(): void{
@@ -189,18 +189,25 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
         if(!carId)
           this.redirect();
 
-          this.adminService.showCars({carId:  Number(carId!)})
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: response => {
-              if(response.data && !response.data.length)
-                this.redirect();
+        let car$ = this.adminService.showCars({carId:  Number(carId!)}) as Observable<CarsAPI>;
+        let carType$ = this.adminService.listCarTypes({}) as Observable<CarTypeArrayAPI>;
 
-              this.car = response.data[0];
-              this.buildForm();
-            },
-            error: err => console.log(err)
-          });
+        combineLatest([car$, carType$])
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: ([car, carType]) => {
+            if(!car.data || car.data.length < 0)
+              this.redirect();
+
+            this.car = car.data[0];
+            this.selectedCarType = this.car.CarType;
+            this.selectedCarModel = this.car.CarModel;
+            if(carType.data)
+              this.carTypes =  carType.data;
+
+            this.searchCarModelAPI(true);
+          }
+        })
       }
     });
   }
@@ -213,7 +220,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
       licenseType: this.car.licenseType,
       serialNumber: this.car.serialNumber,
       passengersCount: this.car.passengersCount,
-      productionYear: this.car.productionYear,
+      productionYear: new Date(this.car.productionYear).getFullYear(),
       note: this.car.note || '',
       customerId: this.car.User.id,
       carTypeId: this.car.CarType.id,
@@ -229,26 +236,38 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/car/car-customer/show']);
   }
 
+  cancelCustomerInput(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectedCustomer = undefined;
+    this.formCont('customerId').setValue('');
+  }
+
   formCont(controlName: string): any{
     return this.editCarForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
   toggleModel(event: Event){
-    if(this.formCont('carTypeId').value === ''){
-      this.formCont('carModelId').disable();
-      this.selectedCarType = undefined;
-    }
-    else
-      this.formCont('carModelId').enable();
-  }
-
+    this.selectedCarTypeId = this.formCont('carTypeId').value;
+    this.selectedCarModel = undefined;
+   if(!this.selectedCarTypeId)
+     this.formCont('carModelId').disable();
+   else{
+     this.formCont('carModelId').enable();
+     this.selectedCarType = undefined;
+     this.spinner.carModel = true;
+     this.searchCarModelAPI();
+   }
+ }
 }

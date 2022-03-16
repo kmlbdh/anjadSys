@@ -1,9 +1,9 @@
-import { AccidentAPI } from './accident';
-import { InsurancePolicyAPI } from './insurancepolicy';
 import { UserAPI } from './user';
 export interface SearchService {
   serviceName?: string;
   serviceID?: string;
+  skip?: number,
+  limit?: number,
 }
 
 export interface ServiceAPI {
@@ -12,10 +12,11 @@ export interface ServiceAPI {
   name: string;
   coverageDays: number;
   cost: number;
+  supplierPercentage: number;
   note: string;
   createdAt: Date;
   updatedAt: Date;
-  propertiesUI?: PropertiesUI
+  propertiesUI?: PropertiesUI;
 }
 
 interface PropertiesUI {
@@ -32,11 +33,13 @@ export interface NewService {
   coverageDays: number;
   cost: number;
   note: string;
-  propertiesUI?: PropertiesUI
+  supplierPercentage: number;
+  propertiesUI?: PropertiesUI;
 }
 
 export interface ServicesAPI {
   data: [ServiceAPI];
+  total: number;
 }
 
 /* ########################### SERVICE ACCIDENT ############################### */

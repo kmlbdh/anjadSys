@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchUser, UsersAPI, UserAPI, updateUser } from '../../../../model/user';
-import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit, faUserSlash, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
-import { FormBuilder, FormGroupDirective, Validators, NgForm } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-show-users',
@@ -17,10 +16,20 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   usersToBeAdded: UserAPI[] = [];
   trashIcon = faTrashAlt;
   userEditIcon = faEdit;
+  deactivateUserIcon = faUserSlash;
+  activateUserIcon = faUserCheck;
   addAgentLimitIcon = faMoneyBillAlt;
   agentLimitsListIcon = faCopy;
   customersIcon = faUsers;
   supplierPartsIcon = faPeopleCarry;
+
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
+
+  TIMEOUTMILISEC = 7000;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -68,7 +77,13 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.adminService.showUsers(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
-      next: (response: UsersAPI) => this.users = response.data,
+      next: (response: UsersAPI) => {
+        if(response.data){
+           this.users = response.data;
+           this.pagination.total = response.total;
+        }
+
+      },
       error: (error) => console.log(error)
     })
   }
@@ -82,15 +97,62 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.adminService.deleteUser(user.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
-      next: response => {
-        if(response.data)
+      next: (response) => {
+        if(response.data){
           this.successMsg = response.message;
-
-        this.getUsers(this.searchConditions);
+          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          this.getUsers(this.searchConditions);
+        }
         console.log(response);
       },
-      error: err => console.log(err)
-    })
+      error: (err) => {
+        console.error(err.error);
+        if(err?.error?.message){
+          this.errorMsg = err.error.message;
+          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+        }
+      }
+    });
+  }
+
+  unblockUser(user: UserAPI){
+    if(!user) return;
+
+    const yes = confirm(`هل تريد تفعيل حساب المستخدم ${user.username} ورقم حسابه ${user.id}`);
+    if(!yes) return;
+
+    this.sharedBlockUser(user, false);
+  }
+
+
+  blockUser(user: UserAPI) {
+    if(!user) return;
+
+    const yes = confirm(`هل تريد تعطيل حساب المستخدم ${user.username} ورقم حسابه ${user.id}`);
+    if(!yes) return;
+
+    this.sharedBlockUser(user, true);
+  }
+
+  sharedBlockUser(user: UserAPI, blocked: boolean){
+    this.adminService.updateUser({id: user.id, blocked: blocked} as updateUser)
+    .subscribe({
+      next: (response) => {
+        if(response.data){
+          this.successMsg = response.message;
+          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          this.getUsers(this.searchConditions);
+        }
+        console.log(response);
+      },
+      error: (err) => {
+        console.error(err.error);
+        if(err?.error?.message){
+          this.errorMsg = err.error.message;
+          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+        }
+      }
+    });
   }
 
   trackById(index: number, el: any){
@@ -116,9 +178,16 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.router.navigate([`admin/agent/show-agent-customers/${agent.id}`, {fullname}]);
   }
 
-  goToSupplierPartsList(supplier: UserAPI){
-    const fullname = `${supplier.username} | ${supplier.companyName}`;
-    this.router.navigate([`admin/list-supplier-parts/${supplier.id}`, { fullname }]);
-  }
+  // goToSupplierPartsList(supplier: UserAPI){
+  //   const fullname = `${supplier.username} | ${supplier.companyName}`;
+  //   this.router.navigate([`admin/list-supplier-parts/${supplier.id}`, { fullname }]);
+  // }
 
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchUser;
+    this.p = pageNumber;
+    this.getUsers(this.searchConditions);
+    console.log(pageNumber);
+  }
 }

@@ -33,12 +33,6 @@
 
           </div>
 
-          <!-- <div class="form-control-group">
-            <label for="dailyCost">تكلفة تغطية اليوم</label>
-            <input id="dailyCost" type="number" name="dailyCost"
-            (keyup)="calculateTotalCost($event)"
-            formControlName="dailyCost" required/>
-          </div> -->
           <div class="form-control-group">
             <label for="cost">التكلفة الاجمالية</label>
             <input id="cost" type="text" name="cost" formControlName="cost"
@@ -54,11 +48,28 @@
 
         </div>
 
+
         <div class="form-sec2">
+
+          <div class="form-control-group">
+            <label for="supplierPercentage">نسبة المورد</label>
+            <input id="supplierPercentage" type="text" name="supplierPercentage"
+            (keyup)="acceptNumbers($event)" placeholder="اضافة النسبة كمثال: 0.6 وهي 60%"
+            formControlName="supplierPercentage" required/>
+
+            <div *ngIf="(form.submitted || formCont('supplierPercentage')?.touched) &&
+            formCont('supplierPercentage')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('supplierPercentage').hasError('required')">نسبة المورد مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
           <div class="form-control-group">
             <label for="note">ملاحظات</label>
             <textarea id="note" formControlName="note"></textarea>
           </div>
+
         </div>
 
         <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>

@@ -18,10 +18,13 @@ export interface AgentLimitsAPI {
 }
 
 export interface AgentLimitsArrayAPI{
-  data: [AgentLimitsAPI]
+  data: [AgentLimitsAPI];
+  total: number;
 }
 
 export interface SearchAgentLimits {
   agentID: string;
   main: boolean;
+  skip?: number,
+  limit?: number,
 }

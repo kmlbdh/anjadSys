@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, first, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, first, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { UserAPI } from '../../../../model/user';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-agent-limits',
@@ -11,6 +12,8 @@ import { UserAPI } from '../../../../model/user';
   styleUrls: ['./add-agent-limits.component.scss']
 })
 export class AddAgentLimitsComponent implements OnInit, OnDestroy {
+  cancelInput = faTimes;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
   paramAgentId: string | undefined;
@@ -22,10 +25,13 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
   selectedAgent: UserAPI | undefined;
   fullname: string | undefined;
 
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   addAgentLimitsForm = this.fb.group({
     debit: ['', Validators.required],
     agentID: ['', Validators.required],
   });
+  spinnerAgent: boolean = false;
+
   TIMEOUTMILISEC = 7000;
 
   constructor(
@@ -89,7 +95,7 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
 
     let agentText = ((event.target as HTMLInputElement).value)?.trim();
     if(agentText)
-      this.searchAgentText$.next(agentText)
+      this.searchAgentText$.next(agentText);
   }
 
   searchAPI(){
@@ -97,15 +103,29 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.listAgents({username: text, companyName: text}))
+      tap(() => this.spinnerAgent = true),
+      switchMap(text => this.adminService.listAgents({username: text, companyName: text,  skipLoadingInterceptor: true}))
     ).subscribe({
       next: response =>{
         if(response.data)
           this.agents = response.data;
-          console.log(response)
+
+        this.spinnerAgent = false;
+        console.log(response)
       },
-      error: err => console.log(err)
+      error: err => {
+        this.spinnerAgent = false;
+        console.log(err);
+      }
     })
+  }
+
+  cancelAgentInput(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectedAgent = undefined;
+    this.fullname = undefined;
+    this.agentId?.setValue('');
   }
 
   get agentId(){
@@ -116,21 +136,14 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
     return this.addAgentLimitsForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean | undefined{
+  acceptNumbers(event: Event): Boolean{
     if(event instanceof KeyboardEvent){
       const code = event.key;
+      console.log(code);
       if(Number.isNaN(+code))
-        if(code.toLowerCase() !== 'backspace')
+        if(!this.keys.includes(code.toLowerCase()))
           return false;
-    } else {
-      setTimeout(() => {
-        const code = this.addAgentLimitsForm.get('debit')?.value;
-        console.log("code", code);
-        if(Number.isNaN(+code))
-          this.addAgentLimitsForm.get('debit')?.setValue('');
-      }, 0)
-
     }
-    return;
+    return true;
   }
 }

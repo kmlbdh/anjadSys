@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { combineLatestWith, Subject, takeUntil, Observable, take, first } from 'rxjs';
+import { Subject, takeUntil, Observable, first } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { UserAPI, updateUser, UsersAPI } from '../../../../model/user';
 import { RoleAPI, RegionAPI } from '../../../../model/general';
 import { ConfirmedValidator } from '../confirm.validator';
-import { combineLatest, combineLatestInit } from 'rxjs/internal/observable/combineLatest';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
 @Component({
   selector: 'app-edit-user',
@@ -24,6 +23,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
   user!: UserAPI;
   rolesAPI!: RoleAPI[];
   regionsAPI!: RegionAPI[];
+
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   roles:{
     [index: string]: string;
   } = {
@@ -36,20 +37,21 @@ export class EditUserComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   editUserForm = this.fb.group({
-    identityNum: ['', [Validators.required,Validators.minLength(9), Validators.pattern('[0-9]*')]],
+    identityNum: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]{9}')]],
     username: ['', Validators.required],
     companyName: [''],
     password: [''],
     confirmPassword: [''],
-    tel: [''],
-    fax: [''],
-    jawwal1: ['', Validators.required],
-    jawwal2: [''],
+    tel: ['', [Validators.minLength(7), Validators.maxLength(9)]],
+    fax: ['', [Validators.minLength(7), Validators.maxLength(9)]],
+    jawwal1: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(10)]],
+    jawwal2: ['', [Validators.minLength(9), Validators.maxLength(10)]],
     note: [''],
     address: [''],
-    email: [''],
+    email: ['', Validators.pattern('^([A-Za-z0-9-_.])+\@([A-Za-z0-9])+\.([A-Za-z]){2,3}$')],
     roleId: ['', Validators.required],
     regionId: ['', Validators.required],
+    blocked: ['', Validators.required],
   }, {validators: ConfirmedValidator('password', 'confirmPassword')});
 
   constructor(
@@ -159,6 +161,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
       address: this.user.address || '',
       roleId: this.user.Role.id,
       regionId: this.user.Region.id,
+      blocked: this.user.blocked,
     });
   }
 
@@ -174,7 +177,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     console.log('role', roleId, roleString);
     if(!roleString) return;
 
-    this.removePassword = !(roleString === "supplier");
+    this.removePassword = !(roleString === "supplier" || roleString === "customer");
     this.removeCompanyName = !(roleString === "customer");
     this.removeIdentityNum = !(roleString === "admin");
     const identityNum = this.editUserForm.get('identityNum');
@@ -195,13 +198,15 @@ export class EditUserComponent implements OnInit, OnDestroy {
     return this.editUserForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
 }

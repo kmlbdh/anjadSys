@@ -9,3 +9,72 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 .spinner{
   @include loader(30px, 30px, 5px);
 }
+
+.modal{
+  &.fade.show{
+    z-index: 99999999999999999 !important;
+  }
+}
+
+.clickable{
+  cursor: pointer;
+}
+
+.insurance-policy-modal{
+    .modal-content {
+    button.close{
+      @include button-primary;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+    }
+    .modal-body{
+      .main-data-section{
+        &.card{
+          @include card;
+        }
+        width: 100%;
+        .data-section{
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          height: 55px;
+          width: 100%;
+
+          &.for-table{
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            justify-content: space-between;
+            height: max-content;
+          }
+
+          .each-data{
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: stretch;
+
+            label{
+              font-size: 17px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+
+    .modal-footer{
+      justify-content: flex-start;
+      .button-primary{
+        @include button-primary;
+        width: fit-content;
+      }
+    }
+  }
+}
+

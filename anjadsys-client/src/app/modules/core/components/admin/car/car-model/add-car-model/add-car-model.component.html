@@ -6,25 +6,21 @@
   <div class="page-content card">
       <form [formGroup]="addCarModelForm" #form="ngForm" (ngSubmit)="addCarModel(form)">
         <div class="form-sec1">
-          <div class="form-control-group">
-            <label for="name">موديل السيارة</label>
-            <input id="name" type="text" name="name" formControlName="name" required/>
-
-            <div *ngIf="(form.submitted || formCont('name')?.touched)
-              && formCont('name')?.invalid" class="alert alert-danger">
-
-              <div *ngIf="formCont('name').hasError('required')">
-                نوع السيارة مطلوب تعبئته</div>
-            </div>
-          </div>
 
           <div class="form-control-group">
-            <div class="label-with-data">
-              <label for="carTypeId">نوع السيارة :</label>
-              <span *ngIf="carTypeName">{{carTypeName}}</span>
+            <label for="carTypeId">نوع السيارة :</label>
+            <div class="input" *ngIf="carTypeName">
+              {{ carTypeName }}
+              <span (click)="cancelCarTypeInput($event)">
+                <fa-icon [icon]="cancelInput"></fa-icon>
+              </span>
             </div>
-            <input id="carTypeId" type="text" (keyup)="searchCarType($event)" list="carTypeList"
-             name="carTypeId" formControlName="carTypeId" required/>
+            <div class="input-with-spinner">
+              <input [ngClass]="{'hide': carTypeName}" id="carTypeId" type="text" (keyup)="searchCarType($event)" list="carTypeList"
+              name="carTypeId" formControlName="carTypeId" required/>
+              <span *ngIf="spinnerCarType" class="spinner"></span>
+            </div>
+
             <datalist id="carTypeList">
               <option *ngFor="let carType of carTypes;" [value]="carType.id">
                  {{carType.name}}
@@ -36,6 +32,18 @@
 
              <div *ngIf="formCont('carTypeId').hasError('required')">نوع السيارة مطلوب تعبئته</div>
            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="name">موديل السيارة</label>
+            <input id="name" type="text" name="name" formControlName="name" required/>
+
+            <div *ngIf="(form.submitted || formCont('name')?.touched)
+              && formCont('name')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('name').hasError('required')">
+                نوع السيارة مطلوب تعبئته</div>
+            </div>
           </div>
 
         </div>

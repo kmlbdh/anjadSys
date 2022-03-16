@@ -15,7 +15,12 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
 
+  p: number = 1;
   private unsubscribe$ = new Subject<void>();
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -41,7 +46,12 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     this.adminService.listCarModels(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
-      next: (response: CarModelArrayAPI) => this.carModels = response.data,
+      next: (response: CarModelArrayAPI) =>{
+        if(response.data){
+          this.carModels = response.data;
+          this.pagination.total = response.total;
+        }
+      },
       error: (error) => console.log(error)
     })
   }
@@ -72,5 +82,13 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   trackById(index: number, el: any){
     return el.id;
+  }
+
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { skip: skip } as SearchCarModel;
+    this.p = pageNumber;
+    this.getCarModels(this.searchConditions);
+    console.log(pageNumber);
   }
 }

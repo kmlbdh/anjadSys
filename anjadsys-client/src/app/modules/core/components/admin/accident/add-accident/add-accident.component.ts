@@ -17,7 +17,6 @@ import { NewAccident } from '../../../../model/accident';
   styleUrls: ['./add-accident.component.scss']
 })
 export class AddAccidentComponent implements OnInit, OnDestroy {
-  [index: string]: any;
 
   cancelInput = faTimes;
   trashIcon = faTrashAlt;
@@ -47,6 +46,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     supplier: false,
   };
 
+  firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+  lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
+
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   private unsubscribe$ = new Subject<void>();
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
@@ -60,10 +63,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   addAccidentForm = this.fb.group({
     name: ['', [Validators.required]],
     accidentPlace: ['', Validators.required],
-    accidentDate: ['', Validators.required],
+    accidentDate: ['', [Validators.required]],
     registerAccidentDate: [(new Date()).toISOString().substring(0,10), Validators.required],
     driverName: ['', Validators.required],
-    driverIdentity: ['', Validators.required],
+    driverIdentity: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]{9}')]],
     accidentDescription: ['', Validators.required],
     expectedCost: ['', Validators.required],
     note: [''],
@@ -78,6 +81,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     additionalDays: [{value: '', disabled: true}, Validators.required],
     note: [''],
     cost: [0, Validators.required],
+    supplierPercentage: ['', Validators.required],
     supplierId: ['', Validators.required],
   });
 
@@ -236,8 +240,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
-      else query =  { customerId: id, skipLoadingInterceptor: true}
+      if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
+      else query =  { customerID: id, skipLoadingInterceptor: true}
       return this.adminService.showCars(query);
     }
     this.searchTextObj.searchCarText$.pipe(
@@ -263,7 +267,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
         console.log(err);
       }
     });
-    // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI(){
@@ -288,11 +291,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       });
-    // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.listLightUsers(
       { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true } as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
@@ -314,24 +316,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       });
-    // this.sharedSearchAPI('agents', this.searchTextObj.searchAgentText$, callback);
-  }
-
-  sharedSearchAPI(array: string, subjectName: Subject<string>, callback: any): void{
-    subjectName.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(([id, text]) => callback(id, text))
-    ).subscribe({
-      next: (response: any) => {
-        if(response.data){
-          this[array] = response.data;
-        }
-        console.log(response);
-      },
-      error: (err: any) => console.log(err)
-    })
   }
 
   getRegions(): void {
@@ -377,6 +361,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     let serviceId = ((event.target as HTMLInputElement).value)?.trim()
     this.selectedService = this.services.filter(service => service.id === Number(serviceId) )[0];
     this.addServiceAccidentForm.get('additionalDays')?.enable();
+    this.formContS('supplierPercentage').setValue(this.selectedService.supplierPercentage);
   }
 
   calculateTotalCost(event: Event){
@@ -426,6 +411,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.addServiceAccidentForm.updateValueAndValidity();
     this.addServiceAccidentForm.markAsUntouched();
     this.servicesAccident = [];
+    this.serviceShowStatusWhenMaintainPolicy();
+    this.formCont('registerAccidentDate').setValue((new Date()).toISOString().substring(0,10));
   }
 
   resetAccidentServiceForm(addAccidentServiceFormDirective: FormGroupDirective){
@@ -433,6 +420,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.addServiceAccidentForm.updateValueAndValidity();
     this.addServiceAccidentForm.markAsUntouched();
     addAccidentServiceFormDirective.resetForm();
+    this.serviceShowStatusWhenMaintainPolicy();
   }
 
   formCont(controlName: string): any{
@@ -443,13 +431,15 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     return this.addServiceAccidentForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
   cancelCustomerInput(event: Event): void {

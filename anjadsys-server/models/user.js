@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
+      User.hasMany(models.Agent_Account, { 
+        foreignKey: 'userId',
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+      });
       User.hasMany(models.ServicePolicy, { 
         foreignKey: 'supplierId',
         onDelete: 'RESTRICT',
@@ -98,6 +103,11 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     note: {
       type: DataTypes.TEXT,
+    }, 
+    blocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: 0,
+      allowNull: false
     }
   }, {
     sequelize,

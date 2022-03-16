@@ -7,6 +7,7 @@ import { EditAccidentComponent } from './edit-accident/edit-accident.component';
 import { ShowAccidentComponent } from './show-accident/show-accident.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
+    NgxPaginationModule,
     AccidentRoutingModule,
     FontAwesomeModule,
     ReactiveFormsModule,

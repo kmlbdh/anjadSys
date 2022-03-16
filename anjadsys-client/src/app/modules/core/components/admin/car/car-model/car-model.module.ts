@@ -7,6 +7,7 @@ import { EditCarModelComponent } from './edit-car-model/edit-car-model.component
 import { ShowCarModelsComponent } from './show-car-models/show-car-models.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ],
   imports: [
     CommonModule,
+    NgxPaginationModule,
     CarModelRoutingModule,
     ReactiveFormsModule,
     FontAwesomeModule,

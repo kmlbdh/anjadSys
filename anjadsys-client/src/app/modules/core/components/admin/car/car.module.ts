@@ -8,7 +8,7 @@ import { CarRoutingModule } from './car-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    CarRoutingModule
+    CarRoutingModule,
   ]
 })
 export class CarModule { }

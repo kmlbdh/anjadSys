@@ -8,7 +8,8 @@ const {
   carTypeSchema,
   carModelSchema,
   accidentSchema,
-  insurancePolicySchema
+  insurancePolicySchema,
+  accountSchema
 } = require("../schema/schema.validation.admin");
 
 const userValidation = {
@@ -59,6 +60,13 @@ const accidentValidation = {
  list: validation(accidentSchema.list, 'body'),
 };
 
+const accountValidation = {
+//  add: validation(accidentSchema.add, 'body'),
+//  update: validation(accidentSchema.update, 'body'),
+//  delete: validation(accidentSchema.delete, 'body'),
+ list: validation(accountSchema.list, 'body'),
+};
+
 const insurancePolicyValidation = {
  add: validation(insurancePolicySchema.add, 'body'),
  update: validation(insurancePolicySchema.update, 'body'),
@@ -78,5 +86,6 @@ module.exports = {
   carModelValidation,
   carValidation,
   accidentValidation,
-  insurancePolicyValidation
+  insurancePolicyValidation,
+  accountValidation
 };

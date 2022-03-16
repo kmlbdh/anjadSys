@@ -6,9 +6,9 @@
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">رقم النوع</div>
-        <div class="col col-2">نوع السيارة</div>
-        <div class="col col-3">التحكم</div>
+        <div class="col-custom col-custom-1">رقم النوع</div>
+        <div class="col-custom col-custom-2">نوع السيارة</div>
+        <div class="col-custom col-custom-3">التحكم</div>
       </li>
       <ng-template [ngIf]="carTypes.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -16,11 +16,10 @@
         </li>
       </ng-template>
       <ng-template [ngIf]="carTypes.length > 0">
-        <li *ngFor="let carType of carTypes; trackBy: trackById" class="table-row">
-          <div class="col col-1" data-label="Car Number">{{carType.id}}</div>
-          <div class="col col-2" data-label="Customer Name">{{carType.name}}</div>
-          <!-- <div class="col col-4" data-label="Car Registration Date Role">{{ (carType.createdAt | date) }}</div> -->
-          <div class="col col-3 control" data-label="Control">
+        <li *ngFor="let carType of carTypes | paginate:{ itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total}; trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Car Number">{{carType.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{carType.name}}</div>
+          <div class="col-custom col-custom-3 control" data-label="Control">
 
             <button class="btn-error" title="حذف نوع السيارة" (click)="deleteCarType(carType)">
               <fa-icon [icon]="trashIcon"></fa-icon>
@@ -29,26 +28,18 @@
             <button class="btn-primary" title="تعديل بيانات نوع السيارة" (click)="goToCarTypeEdit(carType.id)">
               <fa-icon [icon]="carEditIcon"></fa-icon>
             </button>
-<!--
-            <ng-template [ngIf]="activeAgentLimits">
-              <button class="btn-primary" title="اضافة سقف مالي للوكيل">
-                <fa-icon [icon]="addAgentLimitIcon" (click)="goToAddAgentLimits(user)"></fa-icon>
-              </button>
-
-              <button class="btn-primary" title="اظهار جميع عمليات الوكيل">
-                <fa-icon [icon]="agentLimitsListIcon" (click)="goToListAgentLimits(user)"></fa-icon>
-              </button>
-
-              <button class="btn-primary" title="زبائن الوكيل">
-                <fa-icon [icon]="customersIcon" (click)="goToListCustomers(user)"></fa-icon>
-              </button>
-
-            </ng-template> -->
 
           </div>
         </li>
       </ng-template>
     </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
     <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
     <div class="success" *ngIf="successMsg">{{successMsg}}</div>
   </div>

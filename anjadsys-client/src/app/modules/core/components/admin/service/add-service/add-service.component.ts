@@ -17,11 +17,12 @@ export class AddServiceComponent implements OnInit, OnDestroy{
   TIMEOUTMILISEC = 7000;
 
   private unsubscribe$ = new Subject<void>();
-
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   addServiceForm = this.fb.group({
     name: ['', Validators.required],
     coverageDays: ['', Validators.required],
     cost: ['', Validators.required],
+    supplierPercentage: ['', Validators.required],
     note: [''],
   });
   constructor(
@@ -74,13 +75,15 @@ export class AddServiceComponent implements OnInit, OnDestroy{
     return this.addServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
   // calculateTotalCost(event: Event){

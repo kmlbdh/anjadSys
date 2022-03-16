@@ -6,12 +6,12 @@
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">
-        <div class="col col-1">رقم المستخدم</div>
-        <div class="col col-2">اسم المستخدم</div>
-        <div class="col col-3">اسم الشركة</div>
-        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col col-4">النوع</div>
-        <div *ngIf="activeSuppliers || activeAgentLimits" class="col col-4">تاريخ الانضمام</div>
-        <div class="col col-5">التحكم</div>
+        <div class="col-custom col-custom-1">رقم المستخدم</div>
+        <div class="col-custom col-custom-2">اسم المستخدم</div>
+        <div class="col-custom col-custom-3">اسم الشركة</div>
+        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col-custom col-custom-4">النوع</div>
+        <div *ngIf="activeSuppliers || activeAgentLimits" class="col-custom col-custom-4">تاريخ الانضمام</div>
+        <div class="col-custom col-custom-5">التحكم</div>
       </li>
       <ng-template [ngIf]="users.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -19,15 +19,26 @@
         </li>
       </ng-template>
       <ng-template [ngIf]="users.length > 0">
-        <li *ngFor="let user of users; trackBy: trackById" class="table-row">
-          <div class="col col-1" data-label="Id">{{user.id}}</div>
-          <div class="col col-2" data-label="Customer Name">{{user.username}}</div>
-          <div class="col col-3" data-label="Customer Company">{{user.companyName}}</div>
-          <div class="col col-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date) : rolesLang[user.Role.name] }}</div>
-          <div class="col col-5 control" data-label="Control">
+        <li [ngClass]="{'blocked-user': user.blocked}" *ngFor="let user of users | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Id">{{user.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Company">{{user.companyName}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date) : rolesLang[user.Role.name] }}</div>
+          <div class="col-custom col-custom-5 control" data-label="Control">
 
             <button class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
               <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+            <button *ngIf="!user.blocked" class="btn-primary" title="تعطيل حساب المستخدم"
+             (click)="blockUser(user)">
+              <fa-icon [icon]="deactivateUserIcon"></fa-icon>
+            </button>
+
+            <button *ngIf="user.blocked" class="btn-primary" title="تفعيل حساب المستخدم"
+             (click)="unblockUser(user)">
+              <fa-icon [icon]="activateUserIcon"></fa-icon>
             </button>
 
             <button class="btn-primary" title="تعديل بيانات المستخدم" (click)="goToUserEdit(user.id)">
@@ -49,19 +60,24 @@
 
             </ng-template>
 
-            <ng-template [ngIf]="activeSuppliers">
+            <!-- <ng-template [ngIf]="activeSuppliers">
               <button class="btn-primary" title="اظهار قطع وخدمات المورد" (click)="goToSupplierPartsList(user)">
                 <fa-icon [icon]="supplierPartsIcon"></fa-icon>
               </button>
-            </ng-template>
+            </ng-template> -->
 
           </div>
         </li>
       </ng-template>
     </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
     <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
     <div class="success" *ngIf="successMsg">{{successMsg}}</div>
   </div>
-  <!-- <div style="border-bottom: 1px solid gray; width:100%; height: 2px;"></div> -->
-
 </div>

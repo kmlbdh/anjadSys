@@ -11,6 +11,11 @@ const routes: Routes = [
     path: 'admin',
     redirectTo: 'admin',
     pathMatch: 'full'
+  },
+  {
+    path: 'agent',
+    redirectTo: 'agent',
+    pathMatch: 'full'
   }
 ];
 

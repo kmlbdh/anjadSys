@@ -2,19 +2,19 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      Account.belongsTo(models.InsurancePolicy,  { 
-        foreignKey: 'insurancePolicyId',
+      Account.hasOne(models.InsurancePolicy_Account,  { 
+        foreignKey: 'accountId',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      Account.belongsTo(models.User,  { 
-        foreignKey: 'agentId',
+      Account.hasOne(models.Agent_Account,  { 
+        foreignKey: 'accountId',
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+      });
+      Account.hasOne(models.Supplier_Account,  { 
+        foreignKey: 'accountId',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });

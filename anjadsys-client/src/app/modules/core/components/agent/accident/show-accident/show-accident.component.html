@@ -1,0 +1,193 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>اظهار جميع بلاغات الحوادث</p>
+  </div>
+
+  <div class="card search-accident-container">
+    <form [formGroup]="searchAccidentForm" #form="ngForm" (ngSubmit)="searchAccident(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="accidentID">رقم بلاغ الحادث</label>
+          </div>
+          <input id="accidentID" type="text"
+           name="accidentID" formControlName="accidentID" placeholder="قم بالبحث عن الحادث بادخال رقمه"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="customerID">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)" list="customerList"
+            name="customerID" formControlName="customerID"/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+
+  <div class="page-content card  d-print-none">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم البلاغ</div>
+        <div class="col-custom col-custom-2">رقم السيارة</div>
+        <div class="col-custom col-custom-3">اسم صاحب السيارة</div>
+        <div class="col-custom col-custom-5">تاريخ البلاغ</div>
+        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+      </li>
+      <ng-template [ngIf]="accidents.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accidents.length > 0">
+        <li *ngFor="let accident of accidents | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1 clickable" data-label="Car Accident Id" (click)="open(accidentModal, accident.id)">{{accident.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Number">{{accident.Car.carNumber}}</div>
+          <div class="col-custom col-custom-3" data-label="Car Owner">{{accident.Customer.username}}</div>
+          <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{ (accident.registerAccidentDate | date) }}</div>
+          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
+
+            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+           <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)">
+            <button class="btn-primary" title="تعديل بيانات بلاع الحادث">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+          </div> -->
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>
+
+<ng-template #accidentModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{modalAccident.customer.Agent?.companyName}} - بلاغ حادث</h4>
+    <button type="button" class="close d-print-none" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="main-data-section card">
+      <div class="card-body">
+        <h5 class="card-title">بيانات الزبون</h5>
+        <div class="data-section">
+          <div class="each-data">
+            <label>رقم هوية الزبون</label>
+            <span>{{modalAccident.customer.identityNum}}</span>
+          </div>
+          <div class="each-data">
+            <label>اسم الزبون</label>
+            <span>{{modalAccident.customer.username}}</span>
+          </div>
+          <div class="each-data">
+            <label>عنوان الزبون</label>
+            <span>{{modalAccident.customer.Region.name}} / {{modalAccident.customer.address}}</span>
+          </div>
+          <div class="each-data">
+            <label>رقم الجوال</label>
+            <span>{{modalAccident.customer.jawwal1}} / {{modalAccident.customer.jawwal2}}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="main-data-section card">
+      <h5>بيانات السيارة</h5>
+      <div class="data-section">
+        <div class="each-data">
+          <label>رقم السيارة</label>
+          <span>{{modalAccident.accident.Car.carNumber}}</span>
+        </div>
+        <div class="each-data">
+          <label>نوع وموديل السيارة</label>
+          <span>{{modalAccident.accident.Car.CarType.name}}
+            / {{modalAccident.accident.Car.CarModel.name}}</span>
+        </div>
+        <div class="each-data">
+          <label>سنة التصنيع</label>
+          <span>{{modalAccident.accident.Car.productionYear}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم شصي السيارة</label>
+          <span>{{modalAccident.accident.Car.serialNumber}}</span>
+        </div>
+      </div>
+    </div>
+
+      <div class="main-data-section card">
+        <h5>بيانات الخدمات</h5>
+        <div class="data-section for-table">
+          <div>
+            <table class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th>الخدمة</th>
+                  <th>عدد ايام التغطية</th>
+                  <th>المورد</th>
+                  <th>تكلفة الخدمة</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let service of modalAccident.services;">
+                  <td>{{service.Service.name}}</td>
+                  <td>{{service.Service.coverageDays}}</td>
+                  <td>{{service.Supplier.companyName}}</td>
+                  <td>{{service.Service.cost}}</td>
+                </tr>
+              </tbody>
+              <!-- <tr>
+                <th colspan="3">التكلفة الاجمالية</th>
+                <td>{{modalAccident.totalPrice}} {{currency}}</td>
+              </tr> -->
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer d-print-none">
+    <button type="button" class="button-primary" (click)="printPage()">طباعة بلاغ الحادث</button>
+  </div>
+</ng-template>

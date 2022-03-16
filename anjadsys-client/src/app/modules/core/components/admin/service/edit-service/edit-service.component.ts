@@ -20,10 +20,12 @@ export class EditServiceComponent implements OnInit, OnDestroy {
   service!: Partial<ServiceAPI>;
   TIMEOUTMILISEC = 7000;
 
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
   editServiceForm = this.fb.group({
     name: ['', Validators.required],
     coverageDays: ['', Validators.required],
     cost: ['', Validators.required],
+    supplierPercentage: ['', Validators.required],
     note: [''],
   });
 
@@ -111,6 +113,7 @@ export class EditServiceComponent implements OnInit, OnDestroy {
       name: this.service.name,
       coverageDays: this.service.coverageDays,
       cost: this.service.cost,
+      supplierPercentage: this.service.supplierPercentage,
       note: this.service.note || ''
     });
   }
@@ -119,13 +122,15 @@ export class EditServiceComponent implements OnInit, OnDestroy {
     return this.editServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
 }

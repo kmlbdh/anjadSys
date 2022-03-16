@@ -20,10 +20,10 @@ export interface AccidentAPI {
   Agent: UserAPI,
   Region: RegionAPI,
   regionId?: number,
-  csutomerId?: number,
+  customerId?: number,
   agentId?: number,
   carId?: number,
-  services?: ServiceAccidentAPI[]
+  ServiceAccidents?: ServiceAccidentAPI[]
 }
 
 export interface NewAccident{
@@ -38,7 +38,7 @@ export interface NewAccident{
   expectedCost: number,
   note?: string,
   regionId: number,
-  csutomerId: number,
+  customerId: number,
   agentId: number,
   carId: number,
   services: NewServiceAccident[]
@@ -47,19 +47,22 @@ export interface NewAccident{
 
 export interface SearchAccident {
   [index: string]: number | string | Date | undefined,
-  accidentId?: number,
+  accidentID?: number,
   accidentPlace?: string,
   accidentDate?: Date,
   registerAccidentDate?: Date,
   driverName?: string,
   driverIdentity?: number,
-  regionId?: number,
-  customerId?: number,
-  agentId?: number,
-  carId?: number,
+  regionID?: number,
+  customerID?: number,
+  agentID?: number,
+  carID?: number,
+  skip?: number,
+  limit?: number,
 }
 
 export interface AccidentsAPI{
   data:[AccidentAPI];
+  total: number;
 }
 

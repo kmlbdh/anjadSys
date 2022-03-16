@@ -52,6 +52,7 @@ export class EditInsurancePolicyComponent implements OnInit {
     searchCustomerText$: new Subject<string>(),
     searchAgentText$: new Subject<string>()
   };
+  private keys = ['backspace', 'arrowleft', 'arrowright'];
 
   TIMEOUTMILISEC = 7000;
 
@@ -497,13 +498,15 @@ export class EditInsurancePolicyComponent implements OnInit {
     return this.addServicePolicyForm.controls[controlName];
   }
 
-  acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-    const code = event.key;
-    if(Number.isNaN(+code))
-      if(code.toLowerCase() !== 'backspace')
-        return false;
-
-    return;
+  acceptNumbers(event: Event): Boolean{
+    if(event instanceof KeyboardEvent){
+      const code = event.key;
+      console.log(code);
+      if(Number.isNaN(+code))
+        if(!this.keys.includes(code.toLowerCase()))
+          return false;
+    }
+    return true;
   }
 
   cancelCustomerInput(event: Event): void {

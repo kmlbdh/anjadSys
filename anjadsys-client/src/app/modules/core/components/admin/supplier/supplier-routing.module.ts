@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {role: 'supplier', title: 'اظهار جميع الموردين للشركة'}
+    data: {role: 'supplier', title: 'اظهار جميع الموردين'}
   },
   {
     path: 'list-supplier-parts/:id',

@@ -7,6 +7,7 @@ import { ShowServicesComponent } from './show-services/show-services.component';
 import { EditServiceComponent } from './edit-service/edit-service.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ],
   imports: [
     CommonModule,
+    NgxPaginationModule,
     ServiceRoutingModule,
     FontAwesomeModule,
     ReactiveFormsModule,

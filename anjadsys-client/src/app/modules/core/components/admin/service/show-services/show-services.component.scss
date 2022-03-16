@@ -9,6 +9,8 @@
   background-color:#f3f3f3;
   height: 100%;
 
+  @include pagination;
+
   .card{
     @include card;
   }
@@ -62,24 +64,27 @@
         background-color: #ffffff;
         @include box-shadow(0px 0px 9px 0px rgba(0,0,0,0.1));
       }
-      div[class*=col-]{
+      div[class*=col-custom-]{
         margin: auto;
         text-align: center;
       }
-      .col-1 {
+      .col-custom-1 {
         flex-basis: 20%;
       }
-      .col-2 {
-        flex-basis: 18%;
+      .col-custom-2 {
+        flex-basis: 16%;
       }
-      .col-3 {
-        flex-basis: 20%;
+      .col-custom-3 {
+        flex-basis: 11%;
       }
-      .col-4 {
-        flex-basis: 10%;
+      .col-custom-4 {
+        flex-basis: 12%;
       }
-      .col-5 {
-        flex-basis: 32%;
+      .col-custom-5 {
+        flex-basis: 16%;
+      }
+      .col-custom-6 {
+        flex-basis: 25%;
         text-align: center;
         &.control{
           display: flex;
@@ -128,10 +133,10 @@
         li {
           display: block;
         }
-        .col {
+        .col-custom {
           flex-basis: 100%;
         }
-        .col {
+        .col-custom {
           display: flex;
           padding: 10px 0;
           &:before {

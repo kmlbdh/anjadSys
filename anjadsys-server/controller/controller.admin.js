@@ -10,12 +10,16 @@ const {
   listAgentLimits: sharedListAgentLimits,
   userShared
   } = require("./controller.shared");
+const { accountSchema } = require("../schema/schema.validation.agent");
 
 const User = db.User;
 const Role = db.Role;
 const Service = db.Service;
 const Accident = db.Accident;
 const Account = db.Account;
+const SupplierAccount = db.Supplier_Account;
+const AgentAccount = db.Agent_Account;
+const InsurancePolicyAccount = db.InsurancePolicy_Account;
 const Car = db.Car;
 const CarModel = db.CarModel;
 const CarType = db.CarType;
@@ -26,6 +30,8 @@ const ServicePolicy = db.ServicePolicy;
 const sequelizeDB = db.sequelize;
 
 const INTERR = 'INT_ERR';
+const LIMIT = 10;
+const SKIP = 0;
 
 //debugging NOT FOR PRODUCTION
 const verifyLoggedInLog = util.debuglog("controller.admin-verifyLoggedIn");
@@ -39,9 +45,6 @@ const listServicesLog = util.debuglog("controller.admin-ListServices");
 const addAgentLimitsLog = util.debuglog("controller.admin-AddAgentLimits");
 const deleteAgentLimitsLog = util.debuglog("controller.admin-DeleteAgentLimits");
 const listAgentLimitsLog = util.debuglog("controller.admin-listAgentLimits");
-const addSupplierPartsLog = util.debuglog("controller.admin-addSupplierParts");
-const deleteSupplierPartsLog = util.debuglog("controller.admin-deleteSupplierParts");
-const listSupplierPartsLog = util.debuglog("controller.admin-ListSupplierParts");
 
 const verifyLoggedIn = async(req, res) => {
   try{
@@ -103,8 +106,8 @@ const userActions = {
       let query = {where: {
         [Op.or]:[]
       }};
-      const limit = req.body.limit;
-      const skip = req.body.skip;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
       if (req.body.role) query.where = ({'$Role.name$': req.body.role});
       if (req.body.agentID) query.where.agentId = req.body.agentID;
       if (req.body.regionID) query.where.regionId = req.body.regionID;
@@ -132,20 +135,71 @@ const userActions = {
       listUsersLog(error);
       errorHandler(res, error, "Failed! cant get Users!");
     }
-  }
+  },
+  lightList: async(req, res) => {
+    try {
+      let query = {where: {
+        [Op.or]: []
+      }};
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
+
+      if (req.body.role) query.where = {['$Role.name$']: req.body.role};
+
+      if (req.body.regionID) query.where.regionId = req.body.regionID;
+  
+      if (req.body.companyName && req.body.username){
+        query.where[Op.or] = [
+          {companyName:{[Op.substring]: req.body.companyName}},
+          {username:{[Op.substring]: req.body.username}}
+        ];
+      } else {
+        if (req.body.companyName && req.body.username)
+          query.where.companyName = {[Op.substring]: req.body.companyName};
+        if (req.body.username)
+          query.where.username = {[Op.substring]: req.body.username};
+      }
+
+      if (req.body.userID) query.where.id = req.body.userID;
+  
+      if(query.where[Op.or] && query.where[Op.or].length === 0) delete query.where[Op.or];
+      console.log((req.body.role ? { name: req.body.role} : {}));
+      query = { ...query, 
+        order: [['id', 'ASC' ]],
+        include: [
+        {
+          model: Role,
+          required: true,
+        }],
+        offset: skip,
+        limit: limit,
+        attributes: ['id', 'username', 'companyName']
+      };
+
+      listUsersLog(query);
+      const { count, rows: users } = await User.findAndCountAll(query);
+
+      res.status(200).json({data: users, total: count});
+
+    } catch(error) {
+      listUsersLog(error);
+      errorHandler(res, error, "Failed! cant get Users!");
+    }
+  },
 };
 
 const serviceActions = {
 
   add: async(req, res) => {
     try {
-      let {name, coverageDays, cost, note} = req.body;
+      let {name, coverageDays, cost, supplierPercentage, note} = req.body;
 
       const service = Service.build({
         name,
         coverageDays,
         cost,
-        note
+        note,
+        supplierPercentage
       });
 
       const savedService = await service.save();
@@ -156,7 +210,7 @@ const serviceActions = {
       res.status(200).json({message: "Service was added successfully!", data: savedService.toJSON()});
     } catch(error) {
       addServiceLog(error);
-      dublicationErrorHandler(error, res, "Failed! service wasn't added!");
+      errorHandler(res, error, "Failed! service wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -206,8 +260,8 @@ const serviceActions = {
   list: async(req, res) => {
     try{
       let query = {where:{}};
-      const limit = req.body.limit;
-      const skip = req.body.skip;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
   
       if (req.body.serviceName) 
         query.where.name = {[Op.substring]: req.body.serviceName};
@@ -230,34 +284,53 @@ const agentActions = {
     try {
       let { debit, agentID } = req.body;
       addAgentLimitsLog(req.body);
-
-      const agentLimits = Account.build({
-        debit,
-        agentId: agentID
-      });
-
-      const savedAgentLimits = await agentLimits.save();
-
-      if(!savedAgentLimits)
-        throw new customError("Failed! Agent limit wasn't added!", INTERR);
+      sequelizeDB.transaction( async t => {
+        const agentLimits = Account.build({
+          debit,
+        }, { isNewRecord: true, transaction: t });
   
-      res.status(200).json({message: "Agent limits was added successfully!", data: savedAgentLimits});
+        const savedAgentLimits = await agentLimits.save();
+  
+        if(!savedAgentLimits && !agentLimits.id)
+          throw new customError("Failed! Agent limit wasn't added!", INTERR);
+
+        const agentAccount = await AgentAccount.build({
+          accountId: agentLimits.id,
+          userId: agentID
+        }, { isNewRecord: true, transaction: t });
+    
+        const savedAgentAccount = await agentAccount.save();
+
+        if(!savedAgentAccount)
+          throw new customError("Failed! Agent limit wasn't added!", INTERR);
+
+        res.status(200).json({message: "Agent limits was added successfully!", data: {savedAgentLimits, savedAgentAccount}});
+      });
     } catch(error) {
       addServiceLog(error);
-      dublicationErrorHandler(error, res, "Failed! Agent limits wasn't added!");
+      errorHandler(res, error, "Failed! Agent limits wasn't added!");
     }
   },
   delete: async(req, res) => {
     try {
       let { agentLimitID } = req.body;
       deleteAgentLimitsLog(req.body);
+      sequelizeDB.transaction( async t => {
 
-      const agentLimits = await Account.destroy({ where: { id: agentLimitID }});
+        const agentAccount = await AgentAccount.destroy({ where: { accountId: agentLimitID }},
+           { transaction: t});  
+        
+        if(!agentAccount)
+          throw new customError("Failed! Agent limits wasn't deleted!", INTERR);
+        
+        const agentLimits = await Account.destroy({ where: { id: agentLimitID }},
+           { transaction: t});
+
+        if(!agentLimits)
+          throw new customError("Failed! Agent limits wasn't deleted!", INTERR);
   
-      if(!agentLimits)
-        throw new customError("Failed! Agent limits wasn't deleted!", INTERR);
-  
-      res.status(200).json({message: "Agent limits was deleted successfully!", data: agentLimits});
+        res.status(200).json({message: "Agent limits was deleted successfully!", data: {agentLimits, agentAccount}});
+      });
     } catch(error) {
       deleteAgentLimitsLog(error);
       errorHandler(res, error, "Failed! Agent limits wasn't deleted!");
@@ -267,12 +340,31 @@ const agentActions = {
     try {
       listAgentLimitsLog(req.body);
       let query = {where:{}};
-      const limit = req.body.limit;
-      const skip = req.body.skip;
-      if (req.body.agentID) query.where.agentId = req.body.agentID;
+
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
+
       if (req.body.main) query.where.debit = { [Op.ne]: null };
   
-      await sharedListAgentLimits(res, query, skip, limit);
+      query = { ...query, 
+        order: [['id', 'ASC' ]],
+        include:[
+          {
+            model: AgentAccount,
+            required: true
+          }
+        ],
+        offset: skip,
+        limit: limit,
+      };
+
+      if (req.body.agentID) query.include[0].where = {userId: req.body.agentID};
+
+
+      const { count, rows: agentLimits } = await Account.findAndCountAll(query);
+  
+      listAgentLimitsLog(agentLimits);
+      res.status(200).json({data: agentLimits, count});
     } catch(error) {
       listAgentLimitsLog(error);
       errorHandler(res, error, "Failed! can't list agent limits!");
@@ -323,25 +415,51 @@ const accidentActions = {
         if(!savedAccident || !accident.id)
           throw new customError("Failed! Accident wasn't added!", INTERR);
 
-        let serviceAccidentObj = [];
+        const serviceAccidentObj = new Set();
+        const supplierAccountObj = new Set();
 
         services.forEach((service, i) => {
-          serviceAccidentObj[i] = {
+          serviceAccidentObj.add({
             cost: service.cost,
             additionalDays: service.additionalDays,
             note: service.note,
             serviceId: service.serviceId,
             supplierId: service.supplierId,
-            accidentId: accident.id
-          };
+            accidentId: accident.id,
+            supplierPercentage: service.supplierPercentage,
+          });
+          supplierAccountObj.add({
+            debit: service.cost,
+          });
         });
 
-        const serviceAccidents = await ServiceAccident.bulkCreate(serviceAccidentObj,
+        const serviceAccidents = await ServiceAccident.bulkCreate([...serviceAccidentObj],
           { transaction: t});
-          addServiceLog(serviceAccidents);
+        addServiceLog(serviceAccidents);
 
         if(serviceAccidents.length === 0)
           throw new customError("Failed! Accident wasn't added!", INTERR);
+
+        //Account is here to be added!!
+        const suppliersAccounts = await Account.bulkCreate([...supplierAccountObj],
+          { transaction: t});
+        addServiceLog(supplierAccountObj);
+        addServiceLog(suppliersAccounts);
+
+        if(suppliersAccounts.length === 0)
+          throw new customError("Failed! Accident Account wasn't added!", INTERR);
+        
+        let supplier_account = [...suppliersAccounts.map((supAcc, index) => {
+          let currentServiceAccident = serviceAccidents[index];
+          return {serviceAccidentId: currentServiceAccident.id, accountId: supAcc.id, supplierPercentage: [...serviceAccidentObj][index].supplierPercentage}
+        })];
+
+        let supplierAccountTable = await SupplierAccount.bulkCreate(supplier_account,
+           { transaction: t});
+        addServiceLog(supplierAccountTable);
+
+        if(supplierAccountTable.length === 0)
+          throw new customError("Failed! Accident Account wasn't added!", INTERR);
 
         res.status(200).json({
           message: "Accident was added successfully!",
@@ -350,7 +468,7 @@ const accidentActions = {
       });
     } catch(error) {
       addServiceLog(error);
-      dublicationErrorHandler(error, res, "Failed! Accident wasn't added!");
+      errorHandler(res, error, "Failed! Accident wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -457,9 +575,9 @@ const accidentActions = {
   },
   list: async(req, res) => {
     try{
-      let query = {};
-      const limit = req.body.limit || 20;
-      const skip = req.body.skip || 0;
+      let query = { where: {} };
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
  
       if (req.body.accidentId) 
         query.where.id = req.body.accidentId;
@@ -487,9 +605,24 @@ const accidentActions = {
 
       query = { ...query, 
         order: [['id', 'ASC' ]],
-        include: [{
+        include: [
+        {
           model: ServiceAccident,
           required: true,
+          separate: true,
+          include: [
+            {
+              model: Service,
+              required: true,
+              attributes: ['id', 'name', 'cost', 'coverageDays']
+            },
+            {
+              model: User,
+              as: 'Supplier',
+              required: true,
+              attributes: ['id', 'username', 'companyName']
+            }
+          ]
         },
         {
           model: User,
@@ -526,6 +659,16 @@ const accidentActions = {
         {
           model: Car,
           required: true,
+          include: [
+            {
+              model: CarType,
+              require: true,
+            },
+            {
+              model: CarModel,
+              require: true,
+            }
+          ]
         },
         {
           model: Region,
@@ -547,6 +690,301 @@ const accidentActions = {
     } catch(error) {
       listServicesLog(error);
       errorHandler(res, error, "Failed! can't get Accidents!");
+    }
+  },
+};
+
+const accountActions = {
+  // add: async(req, res) => {
+  //   try {
+  //     let {
+  //       totalPrice,
+  //       note,
+  //       customerId,
+  //       agentId,
+  //       carId,
+  //       services
+  //     } = req.body;
+
+  //    await sequelizeDB.transaction( async t => {
+
+  //       const insurancePolicy = InsurancePolicy.build({
+  //         totalPrice,
+  //         note,
+  //         customerId,
+  //         agentId,
+  //         carId,
+  //       }, { isNewRecord: true, transaction: t });
+
+  //       const savedInsurancePolicy = await insurancePolicy.save();
+
+  //       if(!savedInsurancePolicy || !insurancePolicy.id)
+  //         throw new customError("Failed! Insurance Policy wasn't added!", INTERR);
+
+  //       let servicePolicyArray = [];
+
+  //       services.forEach((service, i) => {
+  //         servicePolicyArray[i] = {
+  //           cost: service.cost,
+  //           additionalDays: service.additionalDays,
+  //           note: service.note,
+  //           serviceId: service.serviceId,
+  //           supplierId: service.supplierId,
+  //           insurancePolicyId: insurancePolicy.id
+  //         };
+  //       });
+
+  //       const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
+  //         { transaction: t});
+  //         addServiceLog(servicesPolicy);
+
+  //       if(servicesPolicy.length === 0)
+  //         throw new customError("Failed! Services Policy wasn't added!", INTERR);
+
+  //       const account = Account.build({
+  //         insurancePolicyId: insurancePolicy.id,
+  //         credit: totalPrice,
+  //       }, { isNewRecord: true, transaction: t });
+    
+  //       const savedAccount = await account.save();
+
+  //       if(!savedAccount)
+  //         throw new customError("Failed! Account wasn't added!", INTERR);
+
+  //       res.status(200).json({
+  //         message: "Insurance Policy was added successfully!",
+  //         data: {insurancePolicy: savedInsurancePolicy.toJSON(), servicesPolicy: servicesPolicy}
+  //       });
+  //     });
+  //   } catch(error) {
+  //     addServiceLog(error);
+ //      errorHandler(res, error, "Failed! Insurance Policy wasn't added!");
+  //   }
+  // },
+  // delete: async(req, res) => {
+  //   try {
+  //     let { insurancePolicyId } = req.body;
+
+  //     await sequelizeDB.transaction( async t => {
+  //       const deletedServicesPolicy = await ServicePolicy.destroy({ where: 
+  //         { insurancePolicyId: insurancePolicyId }}, 
+  //         { transaction: t });
+
+  //       if(!deletedServicesPolicy)
+  //         throw new customError("Failed! Services Policy isn't deleted!", INTERR);
+
+  //       const deletedInsurancePolicy = await InsurancePolicy.destroy({ where: { id: insurancePolicyId }}, 
+  //         {transaction: t});
+
+  //       if(!deletedInsurancePolicy)
+  //         throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
+
+  //       const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
+  //         {transaction: t});
+    
+  //       if(!deletedAccount)
+  //         throw new customError("Failed! Account wasn't deleted!", INTERR);
+    
+  //       res.status(200).json({
+  //         message: "Insurance Policy was deleted successfully!",
+  //         data: {insurancePolicy: deletedInsurancePolicy, servicesPolicy: deletedServicesPolicy}
+  //       });
+  //     });
+
+  //   } catch(error) {
+  //     deleteServiceLog(error);
+  //     errorHandler(res, error, "Failed! Insurance Policy isn't deleted!");
+  //   }
+  // },
+  // update: async(req, res) => {
+  //   try {
+  //     let {
+  //       insurancePolicyId,
+  //       services
+  //      } = req.body;
+  
+  //     if(!insurancePolicyId) 
+  //       throw new customError("Failed! Insurance Policy data isn't provided!", INTERR);
+  
+  //     await sequelizeDB.transaction( async t => {
+  //       const query = { where: {id: insurancePolicyId} };
+  //       const updateData = {};
+
+  //       Object.entries(req.body).forEach((val, ind) => {
+  //         updateServiceLog(val[0], val[1])
+  //         if(val && val.length > 0 && val[0] !== 'insurancePolicyId' && val[0] !== 'services')
+  //           updateData[val[0]] = val[1];
+  //       });
+
+  //       updateServiceLog(updateData);
+  //       const updatedInsurancePolicy = await InsurancePolicy.update(updateData, query);
+        
+  //       if(updatedInsurancePolicy[0]!== 1) 
+  //         throw new customError("Failed! Insurance Policy isn't updated!", INTERR);
+
+  //       let servicePolicyArray = [];
+  //       let servAPolicyIds = [];
+
+  //       services.forEach((service, i) => {
+  //         if(service.id)
+  //           servAPolicyIds.push(service.id);
+
+  //           servicePolicyArray[i] = {
+  //             id: service.id,
+  //             cost: service.cost,
+  //             additionalDays: service.additionalDays,
+  //             note: service.note,
+  //             serviceId: service.serviceId,
+  //             supplierId: service.supplierId,
+  //             insurancePolicyId: insurancePolicyId
+  //           };
+  //       });
+
+  //       //delete services that are not provided by ids
+  //       const deletedServicePolicy = await ServicePolicy.destroy({ 
+  //         where: {
+  //           [Op.and]: {
+  //             id:{ [Op.notIn]: [...servAPolicyIds] },
+  //             insurancePolicyId: insurancePolicyId
+  //           }
+  //         }
+  //       },
+  //       { transaction: t});
+
+  //       //update exist one and add the new services
+  //       const updateServicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
+  //         { updateOnDuplicate: ["id"] , transaction: t});
+          
+  //       const updatedAccount = await Account.update({credit: totalPrice}, {where: {insurancePolicyId: insurancePolicyId}}, { transaction: t});
+    
+  //       if(!updatedAccount)
+  //         throw new customError("Failed! Account wasn't updated!", INTERR);
+        
+    
+  //       updateServiceLog(deletedServicePolicy);
+  //       res.status(200).json({
+  //         message: "Insurance Policy was updated successfully!", 
+  //         data: {
+  //           insurancePolicy: updatedInsurancePolicy[0],
+  //           servicesPolicy: updateServicesPolicy[0],
+  //           deletedServicesPolicy: deletedServicePolicy
+  //         }
+  //       });
+  //     });
+      
+  //   } catch(error) {
+  //     updateServiceLog(error);
+  //     errorHandler(res, error, "Failed! Insurance Policy wasn't updated!");
+  //   }
+  // },
+  list: async(req, res) => {
+    try{
+      let query = {where:{}};
+      let query2 = {where:{}};
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
+ 
+      if (req.body.accountId){
+        query.where.id = req.body.accountId;
+        query2.where.id = req.body.accountId;
+      }
+
+      // if (req.body.insurancePolicyId) 
+      //   query.where.insurancePolicyId = req.body.insurancePolicyId;
+
+      // if (req.body.agentID)
+      //   query.where.agentId = req.body.agentID;
+
+      // if (req.body.customerID)
+      //   query.where.customerID = req.body.customerID;
+        
+      if(Object.keys(query.where) === 0 ) delete query.where;
+      if(Object.keys(query2.where) === 0 ) delete query2.where;
+
+
+      if(req.body.insurancePolicyId){
+        query = { ...query,
+          order: [['id', 'ASC' ]],
+          include: [{
+            model: InsurancePolicyAccount,
+            required: true,
+            where: {insurancePolicyId: req.body.insurancePolicyId}
+          },
+          {
+            model: InsurancePolicy,
+            required: true,
+          }],
+          offset: skip,
+          limit: limit,
+          // attributes: { exclude: ['carId', 'customerId', 'agentId']}
+        };
+      }  
+      else if(req.body.agentID){
+        query = { ...query,
+          order: [['id', 'ASC' ]],
+          include: [
+            {
+              model: InsurancePolicyAccount,
+              required: true,
+              include:[
+                {
+                  model: InsurancePolicy,
+                  required: true,
+                  where: { agentId: req.body.agentID },
+                }
+              ]
+            }
+          ],
+          offset: skip,
+          limit: limit,
+        };     
+        query2 = { ...query2,
+          order: [['id', 'ASC' ]],
+          include: [
+            {
+              model: AgentAccount,
+              required: true,
+              where: {userId: req.body.agentID},
+              attributes: { exclude: ['passowrd']}
+            },
+          ],
+          offset: skip,
+          limit: limit,
+        };
+      }
+      else if(req.body.supplierID){
+        query = { ...query,
+          order: [['id', 'ASC' ]],
+          include: [
+            {
+              model: SupplierAccount,
+              required: true,
+              include: [
+                {
+                  model: ServiceAccident,
+                  required: true,
+                  where: {supplierId: req.body.supplierID}
+                }
+              ],
+            },
+          ],
+          offset: skip,
+          limit: limit,
+        };
+      }
+      if(req.body.agentID){
+        var { count, rows: accounts } = await Account.findAndCountAll(query);
+        var { count2, rows: accounts2 } = await Account.findAndCountAll(query2);
+        count = count + count2;
+        accounts = [...accounts, ...accounts2];
+      } else
+        var { count, rows: accounts } = await Account.findAndCountAll(query);
+  
+      listServicesLog(query);
+      res.status(200).json({data: accounts, total: count});
+    } catch(error) {
+      listServicesLog(error);
+      errorHandler(res, error, "Failed! can't get Accounts!");
     }
   },
 };
@@ -578,10 +1016,10 @@ const insurancePolicyActions = {
         if(!savedInsurancePolicy || !insurancePolicy.id)
           throw new customError("Failed! Insurance Policy wasn't added!", INTERR);
 
-        let servicePolicyObj = [];
-
+        let servicePolicyArray = [];
+        let supplierAccountArray = [];
         services.forEach((service, i) => {
-          servicePolicyObj[i] = {
+          servicePolicyArray[i] = {
             cost: service.cost,
             additionalDays: service.additionalDays,
             note: service.note,
@@ -589,23 +1027,57 @@ const insurancePolicyActions = {
             supplierId: service.supplierId,
             insurancePolicyId: insurancePolicy.id
           };
+
+          supplierAccountArray.push({
+            debit: service.cost,
+            userId: service.supplierId,
+            supplierPercentage: service.supplierPercentage,
+            insurancePolicyId: insurancePolicy.id
+          });
         });
 
-        const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyObj,
+        const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
           { transaction: t});
-          addServiceLog(servicesPolicy);
+        
+        addServiceLog(servicesPolicy);
 
         if(servicesPolicy.length === 0)
           throw new customError("Failed! Services Policy wasn't added!", INTERR);
 
+        const account = Account.build({
+          insurancePolicyId: insurancePolicy.id,
+          credit: totalPrice,
+        }, { 
+          isNewRecord: true,
+          transaction: t 
+        });
+    
+        const savedAccount = await account.save();
+
+        if(!savedAccount)
+          throw new customError("Failed! Account wasn't added!", INTERR);
+
+        const savedSupplierAccount = await Account.bulkCreate(supplierAccountArray, {
+          // isNewRecord: true,
+          transaction: t
+        });
+
+        addServiceLog(savedSupplierAccount);
+
+        if(savedSupplierAccount.length === 0)
+          throw new customError("Failed! Suppliers Accounts weren't added!", INTERR);
+
         res.status(200).json({
           message: "Insurance Policy was added successfully!",
-          data: {insurancePolicy: savedInsurancePolicy.toJSON(), servicesPolicy: servicesPolicy}
+          data: {
+            insurancePolicy: savedInsurancePolicy.toJSON(),
+            servicesPolicy: servicesPolicy
+          }
         });
       });
     } catch(error) {
       addServiceLog(error);
-      dublicationErrorHandler(error, res, "Failed! Insurance Policy wasn't added!");
+      errorHandler(res, error, "Failed! Insurance Policy wasn't added!");
     }
   },
   delete: async(req, res) => {
@@ -625,6 +1097,18 @@ const insurancePolicyActions = {
 
         if(!deletedInsurancePolicy)
           throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
+
+        const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
+          {transaction: t});
+    
+        if(!deletedAccount)
+          throw new customError("Failed! Account wasn't deleted!", INTERR);
+
+        const deletedSupplierAccount = await Account.destroy({ where: { userId: insurancePolicyId }}, 
+          {transaction: t});
+    
+        if(!deletedAccount)
+          throw new customError("Failed! Account wasn't deleted!", INTERR);
     
         res.status(200).json({
           message: "Insurance Policy was deleted successfully!",
@@ -663,14 +1147,14 @@ const insurancePolicyActions = {
         if(updatedInsurancePolicy[0]!== 1) 
           throw new customError("Failed! Insurance Policy isn't updated!", INTERR);
 
-        let servicePolicyObj = [];
+        let servicePolicyArray = [];
         let servAPolicyIds = [];
 
         services.forEach((service, i) => {
           if(service.id)
             servAPolicyIds.push(service.id);
 
-            servicePolicyObj[i] = {
+            servicePolicyArray[i] = {
               id: service.id,
               cost: service.cost,
               additionalDays: service.additionalDays,
@@ -693,8 +1177,13 @@ const insurancePolicyActions = {
         { transaction: t});
 
         //update exist one and add the new services
-        const updateServicesPolicy = await ServicePolicy.bulkCreate(servicePolicyObj,
-          { updateOnDuplicate: ["id"] , transaction: t});     
+        const updateServicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
+          { updateOnDuplicate: ["id"] , transaction: t});
+          
+        const updatedAccount = await Account.update({credit: totalPrice}, {where: {insurancePolicyId: insurancePolicyId}}, { transaction: t});
+    
+        if(!updatedAccount)
+          throw new customError("Failed! Account wasn't updated!", INTERR);
         
     
         updateServiceLog(deletedServicePolicy);
@@ -716,8 +1205,8 @@ const insurancePolicyActions = {
   list: async(req, res) => {
     try{
       let query = {where:{}};
-      const limit = req.body.limit || 20;
-      const skip = req.body.skip || 0;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
  
       if (req.body.insurancePolicyId) 
         query.where.id = req.body.insurancePolicyId;
@@ -732,7 +1221,7 @@ const insurancePolicyActions = {
         query.where.agentId = req.body.agentID;
 
       if (req.body.customerID)
-        query.where.customerID = req.body.csutomerID;
+        query.where.customerID = req.body.customerID;
         
         if(Object.keys(query.where) === 0 ) delete query.where;
       query = { ...query,
@@ -790,6 +1279,16 @@ const insurancePolicyActions = {
         {
           model: Car,
           required: true,
+          include: [
+            {
+              model: CarType,
+              require: true,
+            },
+            {
+              model: CarModel,
+              require: true,
+            }
+          ]
         }
       ],
         offset: skip,
@@ -904,8 +1403,8 @@ const carActions = {
   list: async(req, res) => {
     try{
       let query = { where: {} };
-      const limit = req.body.limit || 20;
-      const skip = req.body.skip || 0;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
         
       if (req.body.carId) 
         query.where.id = req.body.carId;
@@ -1036,8 +1535,8 @@ const carTypeActions = {
   list: async(req, res) => {
     try{
       let query = { where: {} };
-      const limit = req.body.limit || 20;
-      const skip = req.body.skip || 0;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
         
       if (req.body.name) 
         query.where.name = {[Op.substring]: req.body.name}
@@ -1135,8 +1634,8 @@ const carModelActions = {
   list: async(req, res) => {
     try{
       let query = { where: {} };
-      const limit = req.body.limit || 20;
-      const skip = req.body.skip || 0;
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
         
       if (req.body.name) 
         query.where.name = {[Op.substring]: req.body.name}
@@ -1206,17 +1705,6 @@ const sharedActions = {
   },
 }
 
-const dublicationErrorHandler = (error, res, generalErrorText) => {
-  if(error.parent.code === 'ER_DUP_ENTRY'){
-    let keys = Object.keys(error.fields);
-    addServiceLog(error.fields[keys[0]]);
-    let values = [];
-    keys.forEach(k => values.push(error.fields[k]));
-    errorHandler(res, error, "البيانات التالية مكررة: " + values.toString());
-  } else
-    errorHandler(res, error, generalErrorText);
-    
-}
 module.exports = {
   userActions,
   serviceActions,
@@ -1228,4 +1716,5 @@ module.exports = {
   carActions,
   regionActions,
   insurancePolicyActions,
+  accountActions,
 };

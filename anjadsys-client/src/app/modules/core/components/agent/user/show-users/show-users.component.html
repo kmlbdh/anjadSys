@@ -1,0 +1,43 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p>جميع الزبائن</p>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الزبون</div>
+        <div class="col-custom col-custom-2">اسم الزبون</div>
+        <div class="col-custom col-custom-3">رقم الجوال</div>
+        <div class="col-custom col-custom-4">العنوان</div>
+        <div class="col-custom col-custom-5">تاريخ الانضمام</div>
+        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+      </li>
+      <ng-template [ngIf]="users.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="users.length > 0">
+        <li [ngClass]="{'blocked-user': user.blocked}" *ngFor="let user of users | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Id">{{user.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Jawwal">{{user.jawwal1}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Address">{{user.Region.name}} - {{user.address}}</div>
+          <div class="col-custom col-custom-5" data-label="Customer Role">{{ user.createdAt | date }}</div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>
