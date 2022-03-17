@@ -14,7 +14,7 @@ import { AccountModule } from './account/account.module';
 
 const routes: Routes = [
   {
-    path: 'admin',
+    path: '',
     component: AdminComponent,
     children: [
       {

@@ -11,7 +11,7 @@ import { AccountModule } from './account/account.module';
 
 const routes: Routes = [
   {
-    path: 'agent',
+    path: '',
     component: AgentComponent,
     children: [
       {

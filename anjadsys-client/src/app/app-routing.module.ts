@@ -9,13 +9,13 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    redirectTo: 'admin',
-    pathMatch: 'full'
+    loadChildren: () => import('./modules/core/components/admin/admin.module')
+      .then(m => m.AdminModule),
   },
   {
     path: 'agent',
-    redirectTo: 'agent',
-    pathMatch: 'full'
+    loadChildren: () => import('./modules/core/components/agent/agent.module')
+      .then(m => m.AgentModule),
   }
 ];
 
