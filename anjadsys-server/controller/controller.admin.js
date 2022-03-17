@@ -901,7 +901,6 @@ const accountActions = {
       if(Object.keys(query.where) === 0 ) delete query.where;
       if(Object.keys(query2.where) === 0 ) delete query2.where;
 
-
       if(req.body.insurancePolicyId){
         query = { ...query,
           order: [['id', 'ASC' ]],
@@ -971,7 +970,35 @@ const accountActions = {
           offset: skip,
           limit: limit,
         };
+      } else {
+        query = { ...query,
+          order: [['id', 'ASC' ]],
+          include: [
+            {
+              model: AgentAccount,
+              required: false,
+              attributes: { exclude: ['passowrd']}
+            },
+            {
+              model: SupplierAccount,
+              required: false,
+              include: [
+                {
+                  model: ServiceAccident,
+                  required: true,
+                }
+              ],
+            },
+            {
+              model: InsurancePolicyAccount,
+              required: false,
+            }
+          ],
+          offset: skip,
+          limit: limit,
+        };
       }
+      
       if(req.body.agentID){
         var { count, rows: accounts } = await Account.findAndCountAll(query);
         var { count2, rows: accounts2 } = await Account.findAndCountAll(query2);

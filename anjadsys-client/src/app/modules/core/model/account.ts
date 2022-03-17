@@ -21,6 +21,7 @@ export interface AccountAPI {
   agentId: number,
   Agent: UserAPI,
   InsurancePolicy?: InsurancePolicyAPI,
+  InsurancePolicy_Account: any,
   Supplier_Account?: SupplierAccountAPI,
   createdAt: Date,
   updatedAt: Date,
