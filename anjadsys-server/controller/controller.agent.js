@@ -15,6 +15,8 @@ const Role = db.Role;
 const Service = db.Service;
 const Accident = db.Accident;
 const Account = db.Account;
+const AgentAccount = db.Agent_Account;
+const InsurancePolicyAccount = db.InsurancePolicy_Account;
 const Car = db.Car;
 const CarModel = db.CarModel;
 const CarType = db.CarType;
@@ -529,18 +531,24 @@ const accountActions = {
         query = { ...query,
           order: [['id', 'ASC' ]],
           include: [
-          {
-            model: User,
-            as: 'Agent',
-            required: false,
-            where: {id: req.agent.id},
-            attributes: { exclude: ['passowrd']}
-          },
-          {
-            model: InsurancePolicy,
-            required: false,
-            where: { agentId: req.agent.id }
-          }],
+            {
+              model: AgentAccount,
+              required: false,
+              where: {userId: req.agent.id},
+              attributes: { exclude: ['passowrd']}
+            },
+            {
+              model: InsurancePolicyAccount,
+              required: false,
+              include: [
+                {
+                  model: InsurancePolicy,
+                  required: true,
+                  where: { agentId: req.agent.id}
+                }
+              ]
+            }
+          ],
           offset: skip,
           limit: limit,
         };

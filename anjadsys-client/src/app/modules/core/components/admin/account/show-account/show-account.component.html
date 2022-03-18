@@ -111,7 +111,7 @@
           </div>
           <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
           <div class="col-custom col-custom-4" data-label=" Date">{{ (account.createdAt| date) }}</div>
-          <div class="col-custom col-custom-5" data-label="Insurance Policy Number">
+          <div class="col-custom col-custom-5" data-label="Account Transaction Type">
             <ng-container *ngIf="account['InsurancePolicy_Account']">
               بوليصة تأمين
             </ng-container>
@@ -122,9 +122,13 @@
               بدل خدمة
             </ng-container>
             <!-- {{account | json}} -->
-            <div *ngIf="account['InsurancePolicy_Account']" (click)="open(insurancePolicyModal, account.InsurancePolicy_Account.insurancePolicyId)">{{ account.insurancePolicyId }}</div>
+            <div *ngIf="account['InsurancePolicy_Account']" (click)="open(insurancePolicyModal, account.InsurancePolicy_Account.insurancePolicyId)">
+              {{ account.InsurancePolicy_Account.insurancePolicyId }}
+            </div>
             <div *ngIf="account['Supplier_Account']"
-             (click)="openAccident(accidentModal, account.Supplier_Account.ServiceAccident?.accidentId!)">{{ account.insurancePolicyId }}</div>
+             (click)="openAccident(accidentModal, account.Supplier_Account.ServiceAccident?.accidentId!)">
+             {{ account.Supplier_Account.ServiceAccident?.accidentId! }}
+            </div>
           </div>
         </li>
       </ng-template>
