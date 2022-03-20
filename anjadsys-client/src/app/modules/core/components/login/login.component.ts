@@ -28,6 +28,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
   onLogin() {
+    this.errorMsg = undefined;
+    if (this.loginForm.invalid) return;
     this.loginService.login(this.loginForm.value)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -43,5 +45,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.errorMsg = err.error.message;
         }
       });
+  }
+
+  formCont(controlName: string): any{
+    return this.loginForm.controls[controlName];
   }
 }

@@ -1,14 +1,29 @@
 <div id="main-container">
+  <app-loader></app-loader>
   <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <form [formGroup]="loginForm" #form="ngForm" (ngSubmit)="onLogin()">
       <h3>Injad Logistics</h3>
       <div>
-        <label for="username">اسم المستخدم/ رقم الحساب</label>
+        <label for="username">رقم الحساب</label>
         <input id="username" type="text" name="username" formControlName="username" required/>
+        <div *ngIf="form.submitted && formCont('username')?.invalid" class="alert alert-danger">
+
+          <div *ngIf="formCont('username').hasError('required')">
+            رقم الحساب مطلوب تعبئته
+          </div>
+          <div *ngIf="formCont('username').hasError('minlength')">
+            رقم الحساب خاطئ
+          </div>
+        </div>
       </div>
       <div>
           <label for="password">كلمة المرور</label>
           <input id="password" type="password" name="password" formControlName="password" required/>
+          <div *ngIf="(form.submitted) && formCont('password')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('password').hasError('required')">
+              كلمة المرور مطلوب تعبئتها</div>
+          </div>
       </div>
       <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
       <div class="btn-container">
