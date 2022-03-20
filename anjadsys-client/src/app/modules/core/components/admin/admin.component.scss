@@ -52,9 +52,47 @@
         flex-grow: 11;
         flex-basis: 0;
         height: 100%;
-        padding: 5px;
+        padding: 0;
+        position: relative;
 
-        .profile-section{
+        .custom-dropdown-menu{
+          position: absolute;
+          top: 56px;
+          left: 10px;
+          color: #fff;
+          width: 0;
+          background-color: $mainBlueColor;
+          /* z-index: 9999999; */
+          border-color: $mainBlueColor;
+          border-style: solid;
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          border-top-color: lightgray;
+          border-width: 0;
+          max-height: 0;
+          overflow-y: hidden;
+          @include prefix(transition, moz webkit o, max-height width border-width 0.5s ease-in-out);
+          &.open {
+            max-height: 70px;
+            width: 170px;
+            border-width: 1px;
+          }
+
+          > ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li{
+              padding: 10px;
+              font-size: 14px;
+              text-align: center;
+              color: #fff;
+            }
+          }
+        }
+
+        .nav-profile-section{
           flex-grow: 11;
           flex-basis: 0;
           display: flex;
@@ -62,22 +100,41 @@
           flex-wrap: nowrap;
           align-items: center;
           justify-content: flex-end;
-          height: 88%;
-          padding: 0 10px;
+          height: 100%;
 
-          img{
-            border-radius: 20%;
-            height: 40px;
-            width: 40px;
-            margin-left:10px;
-          }
+          .profile-section{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            flex-wrap: nowrap;
+            align-items: center;
 
-          p{
-            margin:0;
-            padding:0;
-            color: #000;
-            &.username{
-              font-size: .875em;
+            height: 100%;
+            width: 170px;
+            padding: 5px 10px;
+            margin-left: 10px;
+
+            &.open-profile{
+              background-color: $mainBlueColor;
+              color: #fff;
+              p{
+                color: #fff;
+              }
+            }
+            img{
+              border-radius: 20%;
+              height: 40px;
+              width: 40px;
+              margin-left: 10px;
+            }
+
+            p{
+              margin:0;
+              padding:0;
+              color: #000;
+              &.username{
+                font-size: .875em;
+              }
             }
           }
         }

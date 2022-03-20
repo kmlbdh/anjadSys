@@ -14,6 +14,7 @@ import { NavInput } from '../../../shared/components/nav/nav.component';
 export class AdminComponent implements OnInit {
   faBars = faBars;
   user!: UserLoggedInAPI;
+  openDropdownMenu = false;
 
   navData: NavInput[] = [
     {
@@ -198,6 +199,11 @@ export class AdminComponent implements OnInit {
 
   profilePop(){
 
+  }
+
+  logout(){
+    localStorage.removeItem('user');
+    this.router.navigate(['login']);
   }
 
   verifyLoggedInAdmin(user: UserLoggedInAPI){

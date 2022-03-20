@@ -10,10 +10,19 @@
         </a>
       </div>
       <div class="navbar-container">
-        <div class="profile-section">
-          <img src="../../../../../../assets/profile.png" alt="صورة المستخدم"/>
-          <p class="username">{{user.username}}</p>
+        <div class="nav-profile-section">
+          <div class="profile-section" [class.open-profile]="openDropdownMenu" (click)="openDropdownMenu = !openDropdownMenu">
+            <img src="../../../../../../assets/profile.png" alt="صورة المستخدم"/>
+            <p class="username">{{user.username}}</p>
+          </div>
         </div>
+
+        <div [class.open]="openDropdownMenu" class="custom-dropdown-menu">
+          <ul>
+            <li class="clickable" (click)="logout()">تسجيل الخروج</li>
+          </ul>
+        </div>
+
       </div>
     </div>
   </nav>
