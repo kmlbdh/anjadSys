@@ -13,6 +13,7 @@ import { AgentService } from './agent.service';
 export class AgentComponent implements OnInit {
   faBars = faBars;
   user!: UserLoggedInAPI;
+  openDropdownMenu = false;
 
   navData: NavInput[] = [
     {
@@ -147,6 +148,11 @@ export class AgentComponent implements OnInit {
 
   profilePop(){
 
+  }
+
+  logout(){
+    localStorage.removeItem('user');
+    this.router.navigate(['login']);
   }
 
   verifyLoggedInAdmin(user: UserLoggedInAPI){
