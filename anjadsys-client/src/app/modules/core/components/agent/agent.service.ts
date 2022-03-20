@@ -13,6 +13,8 @@ import { AccountsAPI, SearchAccount } from '../../model/account';
 @Injectable()
 export class AgentService {
   private url = "http://localhost:4200/api/agent/";
+  // private url = "https://injad.albayraq.net/api/agent/";
+
   constructor(private http: HttpClient) { }
 
   [index: string]: any;

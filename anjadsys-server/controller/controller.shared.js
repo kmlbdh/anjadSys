@@ -237,11 +237,10 @@ const shared = {
       if(!user)
         throw new customError("User not found!", INTERR);
   
-      loginLog(user);
-  
       let validPassword = bcrypt.compareSync(password, user.password);
+
       if(!validPassword)
-        throw new customError("wrong password!", INTERR);
+        throw new customError("Failed! Wrong Password!", INTERR);
   
       loginLog(validPassword);
 
@@ -269,7 +268,7 @@ const createUniqueRefId = async (roleId, roleName) => {
   createUniqueRefIdLog("roleName" + roleName);
   const prefix = IdPrefixByRole[roleName];
   if(!prefix)
-    throw new customError('Failed! can\'t get prefix', INTERR);
+    throw new customError("Failed! can't get prefix", INTERR);
 
   const lastUserId = await getUserLastId(roleId);
 

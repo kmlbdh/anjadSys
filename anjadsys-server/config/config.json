@@ -15,10 +15,11 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "albayraq_injad_user",
+    "password": "injad@123",
+    "database": "albayraq_injaddb",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }
+

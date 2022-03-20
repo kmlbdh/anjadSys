@@ -30,7 +30,7 @@ export class LoaderInterceptor implements HttpInterceptor {
     }
     this.requests.push(request);
 
-    console.log("No of requests---> " + this.requests.length);
+    // console.log("No of requests---> " + this.requests.length);
 
     this.loaderService.loading.next(true);
 
@@ -45,7 +45,7 @@ export class LoaderInterceptor implements HttpInterceptor {
           },
           error: err => {
             this.removeRequest(request);
-            observer.next(err);
+            observer.error(err);
           },
           complete: () => {
             this.removeRequest(request);

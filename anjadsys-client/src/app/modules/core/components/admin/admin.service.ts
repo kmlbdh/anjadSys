@@ -18,6 +18,8 @@ import { AccountsAPI, SearchAccount } from '../../model/account';
 @Injectable()
 export class AdminService {
   private url = "http://localhost:4200/api/admin/";
+  // private url = "https://injad.albayraq.net/api/admin/";
+
   constructor(private http: HttpClient) { }
 
   [index: string]: any;

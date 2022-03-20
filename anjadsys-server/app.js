@@ -10,6 +10,7 @@ db.sequelize.sync({force: false}).then( () => {
 });
 
 const corsOptions = {
+  // origin: "https://injad.albayraq.net"
   origin: "http://localhost:3033"
 };
 
