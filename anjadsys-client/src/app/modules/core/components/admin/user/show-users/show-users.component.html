@@ -9,7 +9,7 @@
         <div class="col-custom col-custom-1">رقم المستخدم</div>
         <div class="col-custom col-custom-2">اسم المستخدم</div>
         <div class="col-custom col-custom-3">اسم الشركة</div>
-        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col-custom col-custom-4">النوع</div>
+        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col-custom col-custom-4">صلاحيات المستخدم</div>
         <div *ngIf="activeSuppliers || activeAgentLimits" class="col-custom col-custom-4">تاريخ الانضمام</div>
         <div class="col-custom col-custom-5">التحكم</div>
       </li>
@@ -27,7 +27,7 @@
           <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date) : rolesLang[user.Role.name] }}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
 
-            <button class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
+            <button *ngIf="user.Role.name !== 'admin'" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
               <fa-icon [icon]="trashIcon"></fa-icon>
             </button>
 
@@ -60,11 +60,11 @@
 
             </ng-template>
 
-            <!-- <ng-template [ngIf]="activeSuppliers">
-              <button class="btn-primary" title="اظهار قطع وخدمات المورد" (click)="goToSupplierPartsList(user)">
+            <ng-template [ngIf]="activeSuppliers">
+              <button class="btn-primary" title="اظهار حساب المورد" (click)="goToSupplierAccount(user)">
                 <fa-icon [icon]="supplierPartsIcon"></fa-icon>
               </button>
-            </ng-template> -->
+            </ng-template>
 
           </div>
         </li>

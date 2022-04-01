@@ -88,7 +88,7 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchService;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchService;
     this.p = pageNumber;
     this.loadServices(this.searchConditions);
     console.log(pageNumber);

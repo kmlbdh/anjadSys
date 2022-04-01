@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ShowUsersComponent } from '../user/show-users/show-users.component';
-import { ListSupplierPartsComponent } from './list-supplier-parts/list-supplier-parts.component';
+import { SupplierAccountComponent } from './supplier-account/supplier-account.component';
 
 const routes: Routes = [
   {
@@ -10,8 +10,8 @@ const routes: Routes = [
     data: {role: 'supplier', title: 'اظهار جميع الموردين'}
   },
   {
-    path: 'list-supplier-parts/:id',
-    component: ListSupplierPartsComponent
+    path: 'account/:id',
+    component: SupplierAccountComponent
   },
 ];
 

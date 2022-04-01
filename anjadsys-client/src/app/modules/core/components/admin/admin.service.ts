@@ -6,11 +6,11 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { AgentLimitsArrayAPI, NewAgentLimits, SearchAgentLimits } from '../../model/agentlimits';
 import { NewPart } from '../../model/supplierparts';
 import { SearchUser, UsersAPI, NewUser, updateUser, UsersLightAPI } from '../../model/user';
-import { SearchSuppliers } from '../../model/supplier';
+import { SearchSuppliers, SearchSupplierAccount } from '../../model/supplier';
 import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchAgent } from '../../model/agent';
 import { CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
-import { SearchAccident, AccidentsAPI, AccidentAPI, NewAccident } from '../../model/accident';
+import { SearchAccident, AccidentsAPI, NewAccident } from '../../model/accident';
 import { RegionsAPI } from '../../model/general';
 import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
 import { AccountsAPI, SearchAccount } from '../../model/account';
@@ -268,6 +268,18 @@ export class AdminService {
 
   listAccounts(searchBy: SearchAccount):Observable<AccountsAPI>{
     return this.http.post<AccountsAPI>(`${this.url}list-accounts`, searchBy).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  statisticsForMainPage():Observable<any>{
+    return this.http.get<any>(`${this.url}statistics`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  listSupplierAccount(searchBy: SearchSupplierAccount):Observable<any>{
+    return this.http.post<any>(`${this.url}supplier-account`, searchBy).pipe(
       catchError(this.handleError)
     );
   }

@@ -17,3 +17,7 @@ export interface SearchSuppliers{
   username?: string;
 }
 
+export interface SearchSupplierAccount{
+  supplierID: string;
+}
+

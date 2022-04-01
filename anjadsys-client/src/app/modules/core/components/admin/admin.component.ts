@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
-import { faUsers, faUserTie, faTruckLoading, faTaxi } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../../shared/components/nav/nav.component';
 
 @Component({
@@ -12,7 +11,10 @@ import { NavInput } from '../../../shared/components/nav/nav.component';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
-  faBars = faBars;
+  faBarsIcon = faBars;
+  angelDownIcon = faAngleDown;
+  angelUpIcon = faAngleUp;
+
   user!: UserLoggedInAPI;
   openDropdownMenu = false;
 
@@ -56,7 +58,7 @@ export class AdminComponent implements OnInit {
     {
       id: 2,
       name: 'الموردين',
-      faIcon: faTruckLoading,
+      faIcon: faTruckMoving,
       hide: true,
       children: [
         {

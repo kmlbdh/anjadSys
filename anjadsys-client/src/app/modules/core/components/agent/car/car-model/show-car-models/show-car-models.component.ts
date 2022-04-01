@@ -58,7 +58,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchCarModel;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarModel;
     this.p = pageNumber;
     this.getCarModels(this.searchConditions);
     console.log(pageNumber);

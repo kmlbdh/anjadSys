@@ -22,7 +22,9 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
   unsubscribe$ = new Subject<void>();
   customers: UserAPI[] = [];
   successMsg: string | undefined;
+  successMsgForAddUser: string | undefined;
   errorMsg: string | undefined;
+  errorMsgForAddUser: string | undefined;
   spinnerCustomer: boolean = false;
 
   TIMEOUTMILISEC = 7000;
@@ -123,8 +125,8 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
       .subscribe({
         next: (response) => {
           if(response.data){
-            this.successMsg = response.message;
-            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.successMsgForAddUser = response.message;
+            setTimeout(() => this.successMsgForAddUser = undefined, this.TIMEOUTMILISEC);
             this.loadCustomersById(this.searchConditions);
             this.resetForm(form);
           }
@@ -133,8 +135,8 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
         error: (err) => {
           console.error(err.error);
           if(err?.error?.message){
-            this.errorMsg = err.error.message;
-            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+            this.errorMsgForAddUser = err.error.message;
+            setTimeout(() => this.errorMsgForAddUser = undefined, this.TIMEOUTMILISEC);
           }
         }
     });
@@ -234,7 +236,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchUser;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchUser;
     this.p = pageNumber;
     this.loadCustomersById(this.searchConditions);
     console.log(pageNumber);

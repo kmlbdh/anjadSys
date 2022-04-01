@@ -32,6 +32,8 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
+  agentName = JSON.parse(localStorage.getItem('user') || '');
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
   searchConditions: SearchAccident = {};
@@ -75,7 +77,9 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     private agentService: AgentService,
     private router: Router,
     private modalService: NgbModal
-    ) { }
+    ) {
+      this.agentName = this.agentName.companyName;
+    }
 
   ngOnInit(): void {
     this.getAccidents(this.searchConditions);
@@ -235,7 +239,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchAccident;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccident;
     this.p = pageNumber;
     this.getAccidents(this.searchConditions);
     console.log(pageNumber);

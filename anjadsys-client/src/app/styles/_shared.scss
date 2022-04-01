@@ -22,7 +22,7 @@
   padding: 1rem 1.25rem 1.25rem 1.25rem;
 }
 
-%share-alert{
+@mixin share-alert{
   color: #fff;
   padding: 9px;
   flex-basis: 80%;
@@ -31,7 +31,7 @@
   margin: 5px 0;
 }
 
-%btn-primary{
+@mixin btn-primary(){
   border: none;
   background-color: $mainBlueColor;
   @include box-shadow(
@@ -52,7 +52,7 @@
   font-size: 17px;
 }
 
-%btn-success{
+@mixin btn-success{
   border: none;
   background-color: $mainGreenColor;
   @include box-shadow(
@@ -73,8 +73,8 @@
   font-size: 17px;
 }
 
-%btn-primary-disabled{
-  @extend %btn-primary;
+@mixin btn-primary-disabled{
+  @include btn-primary;
   border: none;
   background-color: $mainGrayColorDisabled;
   @include box-shadow(
@@ -95,7 +95,7 @@
   font-size: 17px;
 }
 
-%btn-error{
+@mixin btn-error{
   border: none;
   background-color: $mainRedColor;
   @include box-shadow(
@@ -116,7 +116,7 @@
   font-size: 17px;
 }
 
-%btn-primary-span{
+@mixin btn-primary-span{
   height: 100%;
   margin: auto;
   width: 100%;
@@ -124,35 +124,35 @@
 }
 
 @mixin messageBox($color) {
-  @extend %share-alert;
+  @include share-alert;
   background-color: $color;
 }
 
 @mixin button-primary(){
-  @extend %btn-primary;
+  @include btn-primary;
   span{
-    @extend %btn-primary-span
+    @include btn-primary-span
   }
 }
 
 @mixin button-success(){
-  @extend %btn-success;
+  @include btn-success;
   span{
-    @extend %btn-primary-span
+    @include btn-primary-span
   }
 }
 
 @mixin button-primary-disabled(){
-  @extend %btn-primary-disabled;
+  @include btn-primary-disabled;
   span{
-    @extend %btn-primary-span;
+    @include btn-primary-span;
   }
 }
 
 @mixin button-error(){
-  @extend %btn-error;
+  @include btn-error;
   span{
-    @extend %btn-primary-span
+    @include btn-primary-span
   }
 }
 

@@ -1,0 +1,60 @@
+<div id="main-container" class="print">
+  <div class="page-header card">
+    <p>حساب المورد</p>
+    <p style="margin-top: 10px">
+      <span style="font-weight: 400;">{{selectedSupplier}}</span>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">الرقم</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div class="col-custom col-custom-3 clickable" (click)="showPercentage = !showPercentage">
+          <ng-container *ngIf="showPercentage">
+            المبلغ مع النسبة (له)
+          </ng-container>
+          <ng-container *ngIf="!showPercentage">
+            المبلغ (له)
+          </ng-container>
+        </div>
+        <div class="col-custom col-custom-4">ايام التغطية الاضافية</div>
+        <div class="col-custom col-custom-5">تاريخ الحركة</div>
+        <!-- <div class="col-custom col-custom-5">الخدمة</div> -->
+        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+      </li>
+      <ng-template [ngIf]="accounts.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accounts.length > 0">
+        <li *ngFor="let account of accounts; trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="الرقم">{{account.id || i+1}}</div>
+          <div class="col-custom col-custom-2" data-label="الخدمة">{{account.Service.name}}</div>
+          <div class="col-custom col-custom-3" data-label="المبلغ مع النسبة (له)">
+            <ng-container *ngIf="showPercentage">
+              {{(account.cost * (account.supplierPercentage || 1)) || 0}}
+            </ng-container>
+            <ng-container *ngIf="!showPercentage">
+              {{account.cost || 0}}
+            </ng-container>
+            {{currency}}
+          </div>
+          <div class="col-custom col-custom-4" data-label="ايام التغطية الاضافية">{{account.additionalDays}} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date}}</div>
+          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
+             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
+              <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(account.id)"></fa-icon>
+          </div> -->
+        </li>
+
+        <div class="d-print-none">
+          <button type="button" class="btn-primary" (click)="printPage()">طباعة حساب المورد</button>
+        </div>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

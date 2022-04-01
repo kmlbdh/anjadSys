@@ -23,10 +23,10 @@
 
       .navbar-logo{
         background-color: $mainBlueColor;
-        flex-grow: 1;
-        flex-basis: 160px;
+        flex-basis: 256px;
+        flex-grow: 0;
+        flex-shrink: 0;
         padding: 5px;
-        width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -120,6 +120,9 @@
               p{
                 color: #fff;
               }
+              fa-icon {
+                color: #fff;
+              }
             }
             img{
               border-radius: 20%;
@@ -135,6 +138,12 @@
               &.username{
                 font-size: .875em;
               }
+            }
+
+            fa-icon {
+              color: #000;
+              font-size: .875em;
+              margin-right: -4%;
             }
           }
         }

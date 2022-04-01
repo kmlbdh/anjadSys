@@ -2,7 +2,7 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { CarsAPI, updateCar } from './../../../../../model/car';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { faTimes, faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { CarModelAPI, CarTypeAPI } from 'src/app/modules/core/model/car';
 import { UserAPI } from 'src/app/modules/core/model/user';

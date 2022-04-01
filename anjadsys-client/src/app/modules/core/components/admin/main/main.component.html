@@ -1,5 +1,50 @@
 <div id="main-container">
-  <div class="page-content card">
+  <!-- <div class="page-content card">
     <h2>اهلا وسهلا بك في لوحة التحكم</h2>
+  </div> -->
+  <div class="page-content card">
+    <div class="counter">
+      <p>الزبائن</p>
+      <h4>{{customers}}</h4>
+    </div>
+    <div class="circle-icon">
+      <fa-icon [icon]="customersIcon"></fa-icon>
+    </div>
+  </div>
+  <div class="page-content card">
+    <div class="counter">
+      <p>الموردين</p>
+      <h4>{{suppliers}}</h4>
+    </div>
+    <div class="circle-icon">
+      <fa-icon style="font-size: 1.6rem;" [icon]="suppliersIcon"></fa-icon>
+    </div>
+  </div>
+  <div class="page-content card">
+    <div class="counter">
+      <p>الوكلاء</p>
+      <h4>{{agents}}</h4>
+    </div>
+    <div class="circle-icon" >
+      <fa-icon style="left: 24%" [icon]="agentsIcon"></fa-icon>
+    </div>
+  </div>
+  <div class="page-content card">
+    <div class="counter">
+      <p>بوليصات التأمين</p>
+      <h4>{{insurancePolicies}}</h4>
+    </div>
+    <div class="circle-icon" >
+      <fa-icon style="left: 10%" [icon]="insurancePoliciesIcon"></fa-icon>
+    </div>
+  </div>
+  <div class="page-content card">
+    <div class="counter">
+      <p>الحوادث</p>
+      <h4>{{accidents}}</h4>
+    </div>
+    <div class="circle-icon">
+      <fa-icon style="left: 10%" [icon]="insurancePoliciesIcon"></fa-icon>
+    </div>
   </div>
 </div>

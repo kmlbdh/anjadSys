@@ -30,6 +30,16 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
 
   TIMEOUTMILISEC = 7000;
 
+  licenseTypes = [
+    'خصوصي',
+    'مركبة موحدة',
+    'عمومي',
+    'مركبة ايجار',
+    'تعليم سواقة',
+    'شحن',
+    'اخرى'
+  ];
+
   spinner = {
     carType: false,
     carModel: false,
@@ -37,8 +47,8 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   };
 
   addCarForm = this.fb.group({
-    carNumber: ['', [Validators.required]],
-    motorNumber: ['', Validators.required],
+    carNumber: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
+    motorNumber: ['', Validators.required, Validators.minLength(8), Validators.maxLength(8)],
     motorPH: ['', Validators.required],
     licenseType: ['', Validators.required],
     serialNumber: ['', Validators.required],
@@ -108,16 +118,15 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
 
     let customerText = ((event.target as HTMLInputElement).value)?.trim();
     if(customerText && customerText !== ''){
+      this.spinner.customer = true;
       this.searchCustomerText$.next(customerText);
     }
   }
 
   getCarTypes(){
+    this.spinner.carType = true;
     this.agentService.listCarTypes({skipLoadingInterceptor: true})
-    .pipe(
-      takeUntil(this.unsubscribe$),
-      tap(() => this.spinner.carType = true),
-    )
+    .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
         if(response.data && response.data.length){
@@ -133,13 +142,11 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCarModelAPI(){
-    this.agentService.listCarModels(
-      {carTypeId: Number(this.selectedCarTypeId), skipLoadingInterceptor: true}
-    )
-    .pipe(
-      takeUntil(this.unsubscribe$),
-      tap(() => this.spinner.carModel = true),
-    )
+    this.agentService.listCarModels({
+        carTypeId: Number(this.selectedCarTypeId),
+        skipLoadingInterceptor: true
+      })
+    .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
         if(response.data && response.data.length){
@@ -215,6 +222,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     if(!this.selectedCarTypeId)
       this.formCont('carModelId').disable();
     else{
+      this.formCont('carModelId').enable();
       this.spinner.carModel = true;
       this.searchCarModelAPI();
     }

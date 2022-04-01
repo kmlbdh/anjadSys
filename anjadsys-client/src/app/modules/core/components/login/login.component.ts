@@ -29,7 +29,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
   onLogin() {
     this.errorMsg = undefined;
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid){
+      this.validationMessageOnSubmit();
+      return;
+    }
     this.loginService.login(this.loginForm.value)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -37,7 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           localStorage.setItem('user', JSON.stringify(response.data));
           const route = response.data?.role || '';
           this.router.navigate([route]);
-          console.log(response);
+          // console.log(response);
         },
         error: (err) => {
           console.error(err);
@@ -45,6 +48,14 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.errorMsg = err.error.message;
         }
       });
+  }
+
+  validationMessageOnSubmit(){
+    if(this.formCont('username').hasError('required') || this.formCont('password').hasError('required')){
+      this.errorMsg = 'يجب تعبئة الحقول';
+    } else if(this.formCont('username').hasError('minlength')){
+      this.errorMsg = 'رقم الحساب خاطئ';
+    }
   }
 
   formCont(controlName: string): any{

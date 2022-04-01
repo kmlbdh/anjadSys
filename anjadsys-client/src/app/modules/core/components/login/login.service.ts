@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface LoginUser{
   data: {

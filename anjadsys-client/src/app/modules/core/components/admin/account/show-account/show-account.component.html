@@ -16,7 +16,7 @@
         <div class="form-control-group">
           <label for="insurancePolicyId">رقم البوليصة</label>
           <input id="insurancePolicyId" type="text"
-           name="accouinsurancePolicyIdntId" formControlName="insurancePolicyId" placeholder="قم بالبحث عن الحركة المالية بادخال رقم البوليصة"/>
+           name="insurancePolicyId" formControlName="insurancePolicyId" placeholder="قم بالبحث عن الحركة المالية بادخال رقم البوليصة"/>
         </div>
 
         <div class="form-control-group">
@@ -59,6 +59,16 @@
           </datalist>
         </div>
 
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
+
       </div>
 
 
@@ -79,14 +89,7 @@
     <ul class="responsive-table">
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم الحركة</div>
-        <div class="col-custom col-custom-2 clickable" (click)="showPercentage = !showPercentage">
-          <ng-container *ngIf="showPercentage">
-            المبلغ مع النسبة (له)
-          </ng-container>
-          <ng-container *ngIf="!showPercentage">
-            المبلغ (له)
-          </ng-container>
-        </div>
+        <div class="col-custom col-custom-2">المبلغ (له)</div>
         <div class="col-custom col-custom-3">المبلغ (عليه)</div>
         <div class="col-custom col-custom-4">تاريخ الحركة</div>
         <div class="col-custom col-custom-5">نوع الحركة</div>
@@ -101,33 +104,19 @@
         <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
           <div class="col-custom col-custom-1 clickable" data-label="Account Id">{{account.id}}</div>
-          <div class="col-custom col-custom-2" data-label="Debit With Percentage">
-            <ng-container *ngIf="showPercentage">
-              {{(account.debit * (account.Supplier_Account?.supplierPercentage || 1)) || 0}}
-            </ng-container>
-            <ng-container *ngIf="!showPercentage">
-              {{account.debit || 0}}
-            </ng-container>
-          </div>
+          <div class="col-custom col-custom-2" data-label="Debit With Percentage">{{account.debit || 0}}</div>
           <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
           <div class="col-custom col-custom-4" data-label=" Date">{{ (account.createdAt| date) }}</div>
           <div class="col-custom col-custom-5" data-label="Account Transaction Type">
-            <ng-container *ngIf="account['InsurancePolicy_Account']">
+            <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
             </ng-container>
-            <ng-container *ngIf="account['Agent_Account']">
+            <ng-container *ngIf="account.agentId">
              سقف مالي
             </ng-container>
-            <ng-container *ngIf="account['Supplier_Account']">
-              بدل خدمة
-            </ng-container>
             <!-- {{account | json}} -->
-            <div *ngIf="account['InsurancePolicy_Account']" (click)="open(insurancePolicyModal, account.InsurancePolicy_Account.insurancePolicyId)">
-              {{ account.InsurancePolicy_Account.insurancePolicyId }}
-            </div>
-            <div *ngIf="account['Supplier_Account']"
-             (click)="openAccident(accidentModal, account.Supplier_Account.ServiceAccident?.accidentId!)">
-             {{ account.Supplier_Account.ServiceAccident?.accidentId! }}
+            <div *ngIf="account.insurancePolicyId" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
+              {{ account.insurancePolicyId }}
             </div>
           </div>
         </li>
@@ -238,7 +227,7 @@
   </div>
 </ng-template>
 
-<ng-template #accidentModal let-modal>
+<!-- <ng-template #accidentModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">{{modalAccident.customer.Agent?.companyName}} - بلاغ حادث</h4>
     <button type="button" class="close d-print-none" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -316,10 +305,10 @@
                   <td>{{service.Service.cost}}</td>
                 </tr>
               </tbody>
-              <!-- <tr>
+              <tr>
                 <th colspan="3">التكلفة الاجمالية</th>
                 <td>{{modalAccident.totalPrice}} {{currency}}</td>
-              </tr> -->
+              </tr>
             </table>
           </div>
         </div>
@@ -328,4 +317,4 @@
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة بلاغ الحادث</button>
   </div>
-</ng-template>
+</ng-template> -->

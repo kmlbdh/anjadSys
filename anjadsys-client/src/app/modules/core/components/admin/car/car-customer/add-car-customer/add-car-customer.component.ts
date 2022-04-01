@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../../admin.service';
 import { CarModelAPI } from '../../../../../model/car';
 import { UserAPI } from '../../../../../model/user';
@@ -47,8 +47,8 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   };
 
   addCarForm = this.fb.group({
-    carNumber: ['', [Validators.required]],
-    motorNumber: ['', Validators.required],
+    carNumber: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
+    motorNumber: ['', Validators.required, Validators.minLength(8), Validators.maxLength(8)],
     motorPH: ['', Validators.required],
     licenseType: ['', Validators.required],
     serialNumber: ['', Validators.required],
@@ -142,7 +142,10 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCarModelAPI(){
-    this.adminService.listCarModels({carTypeId: Number(this.selectedCarTypeId), skipLoadingInterceptor: true})
+    this.adminService.listCarModels({
+      carTypeId: Number(this.selectedCarTypeId),
+      skipLoadingInterceptor: true
+    })
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -152,6 +155,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
           this.carModels = [];
         }
         this.spinner.carModel = false;
+        this.formCont('carModelId').enable();
       },
       error: (err: any) => {
         this.spinner.carModel = false;
@@ -165,6 +169,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
+      tap(() => this.spinner.customer = true),
       switchMap(text => this.adminService.showUsers({username: text, skipLoadingInterceptor: true}))
     ).subscribe({
       next: (response: any) =>{

@@ -51,8 +51,8 @@
        <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
      </div>
 
-      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
-      <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+      <div class="error" *ngIf="errorMsg || errorMsgForAddUser">{{errorMsg || errorMsgForAddUser}}</div>
+      <div class="success" *ngIf="successMsg || successMsgForAddUser">{{successMsg || successMsgForAddUser}}</div>
     </form>
 
   </div>

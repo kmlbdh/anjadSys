@@ -178,14 +178,14 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.router.navigate([`admin/agent/show-agent-customers/${agent.id}`, {fullname}]);
   }
 
-  // goToSupplierPartsList(supplier: UserAPI){
-  //   const fullname = `${supplier.username} | ${supplier.companyName}`;
-  //   this.router.navigate([`admin/list-supplier-parts/${supplier.id}`, { fullname }]);
-  // }
+  goToSupplierAccount(supplier: UserAPI){
+    const fullname = `${supplier.username} | ${supplier.companyName}`;
+    this.router.navigate([`admin/supplier/account/${supplier.id}`, { fullname }]);
+  }
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchUser;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchUser;
     this.p = pageNumber;
     this.getUsers(this.searchConditions);
     console.log(pageNumber);

@@ -6,7 +6,7 @@
           <img src="../../../../../assets/logo-injad.png" alt="logo" width="160">
         </a>
         <a (click)="profilePop()">
-          <fa-icon [icon]="faBars"></fa-icon>
+          <fa-icon [icon]="faBarsIcon"></fa-icon>
         </a>
       </div>
       <div class="navbar-container">
@@ -14,6 +14,7 @@
           <div class="profile-section" [class.open-profile]="openDropdownMenu" (click)="openDropdownMenu = !openDropdownMenu">
             <img src="../../../../../../assets/profile.png" alt="صورة المستخدم"/>
             <p class="username">{{user.username}}</p>
+            <fa-icon [icon]="openDropdownMenu ? angelUpIcon : angelDownIcon"></fa-icon>
           </div>
         </div>
 

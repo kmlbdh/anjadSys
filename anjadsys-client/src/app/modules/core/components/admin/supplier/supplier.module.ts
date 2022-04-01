@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 import { SupplierRoutingModule } from './supplier-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ListSupplierPartsComponent } from './list-supplier-parts/list-supplier-parts.component';
+import { SupplierAccountComponent } from './supplier-account/supplier-account.component';
 
 
 @NgModule({
   declarations: [
-    ListSupplierPartsComponent
+    SupplierAccountComponent
   ],
   imports: [
     CommonModule,

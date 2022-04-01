@@ -31,6 +31,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelInput = faTimes;
 
   private unsubscribe$ = new Subject<void>();
+  agentName = JSON.parse(localStorage.getItem('user') || '');
 
   p: number = 1;
   pagination = {
@@ -69,7 +70,9 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private agentService: AgentService,
     private modalService: NgbModal
-    ) {}
+    ) {
+      this.agentName = this.agentName.companyName;
+    }
 
   ngOnInit(): void {
     this.getInsurancePolices(this.searchConditions);
@@ -229,7 +232,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchInsurancePolicy;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchInsurancePolicy;
     this.p = pageNumber;
     this.getInsurancePolices(this.searchConditions);
     console.log(pageNumber);

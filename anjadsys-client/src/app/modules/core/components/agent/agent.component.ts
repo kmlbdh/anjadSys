@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTaxi, faTruckLoading, faUsers, faUserTie, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTaxi, faUsers, faWrench, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from 'src/app/modules/shared/components/nav/nav.component';
 import { UserLoggedInAPI } from '../../model/general';
 import { AgentService } from './agent.service';
@@ -11,7 +11,10 @@ import { AgentService } from './agent.service';
   styleUrls: ['./agent.component.scss']
 })
 export class AgentComponent implements OnInit {
-  faBars = faBars;
+  faBarsIcon = faBars;
+  angelDownIcon = faAngleDown;
+  angelUpIcon = faAngleUp;
+
   user!: UserLoggedInAPI;
   openDropdownMenu = false;
 

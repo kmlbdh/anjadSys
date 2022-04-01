@@ -74,37 +74,22 @@
       <ng-template [ngIf]="accounts.length > 0">
         <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1 clickable" data-label="Account Id">{{account.id}}</div>
+          <div [ngClass]="{'clickable': account.insurancePolicyId}" class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
           <div class="col-custom col-custom-2" data-label="Debit">{{account.debit || 0}}</div>
           <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
           <!-- <div class="col-custom col-custom-4" data-label="Car Registration Date Role">{{ accident.Agent.username }}/{{ accident.Agent.companyName }}</div> -->
           <div class="col-custom col-custom-5" data-label=" Date">{{ (account.createdAt| date) }}</div>
           <div class="col-custom col-custom-6" data-label="Account Transaction Type">
-            <ng-container *ngIf="account['InsurancePolicy_Account']">
+            <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
             </ng-container>
-            <ng-container *ngIf="account['Agent_Account']">
+            <ng-container *ngIf="account.agentId">
              سقف مالي
             </ng-container>
-            <ng-container *ngIf="account['Supplier_Account']">
-              بدل خدمة
-            </ng-container>
-            <div *ngIf="account['InsurancePolicy_Account']" (click)="open(insurancePolicyModal, account.InsurancePolicy_Account.insurancePolicyId)">
-              {{ account.InsurancePolicy_Account.insurancePolicyId }}
+            <div *ngIf="account.insurancePolicyId" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
+              {{ account.insurancePolicyId }}
             </div>
           </div>
-          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
-
-            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
-            </button>
-
-             <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)">
-            <button class="btn-primary" title="تعديل بيانات بلاع الحادث">
-              <fa-icon [icon]="carEditIcon"></fa-icon>
-            </button>
-
-          </div> -->
         </li>
       </ng-template>
     </ul>

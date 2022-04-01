@@ -42,6 +42,8 @@ export interface SearchAccount {
   insurancePolicyId?: number,
   customerID?: number,
   agentID?: number,
+  startDate?: Date,
+  endDate?: Date,
   skip?: number,
   limit?: number,
 }

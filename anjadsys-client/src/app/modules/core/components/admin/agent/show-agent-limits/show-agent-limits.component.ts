@@ -91,7 +91,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchAgentLimits;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAgentLimits;
     this.p = pageNumber;
     this.loadAgentLimitsById(this.searchConditions);
     console.log(pageNumber);

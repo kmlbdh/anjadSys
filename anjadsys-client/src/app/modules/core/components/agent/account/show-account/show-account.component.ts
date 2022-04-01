@@ -239,7 +239,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchAccount;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccount;
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);

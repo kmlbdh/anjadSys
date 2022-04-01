@@ -287,7 +287,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchInsurancePolicy;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchInsurancePolicy;
     this.p = pageNumber;
     this.getInsurancePolices(this.searchConditions);
     console.log(pageNumber);

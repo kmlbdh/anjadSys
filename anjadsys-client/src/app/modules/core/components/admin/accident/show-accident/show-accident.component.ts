@@ -291,7 +291,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchAccident;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccident;
     this.p = pageNumber;
     this.getAccidents(this.searchConditions);
     console.log(pageNumber);

@@ -64,6 +64,7 @@ export interface NewServiceAccident {
   accidentId?: number,
   serviceId: number,
   supplierId: string,
+  supplierPercentage: number
 }
 
 /* ########################### SERVICE POLICY ############################### */

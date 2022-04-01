@@ -22,10 +22,15 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   selectedSupplier: UserAPI | undefined;
   agents: UserAPI[] = [];
   suppliers: UserAPI[] = [];
-  showPercentage = true;
+
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
   cancelInput = faTimes;
+
+  private currentDate = new Date();
+
+  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -90,6 +95,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     insurancePolicyId: [''],
     agentID: [''],
     supplierID: [''],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
   });
 
   constructor(
@@ -327,7 +334,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { skip: skip } as SearchAccount;
+    this.searchConditions = {...this.searchConditions, skip: skip } as SearchAccount;
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);

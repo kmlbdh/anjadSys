@@ -122,7 +122,10 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     if (this.addServicePolicyForm.invalid) return;
 
     let formObj = this.addServicePolicyForm.value;
-
+    // console.log(formObj);
+    let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
+    formObj.supplierPercentage = currentService.supplierPercentage;
+    // console.log(formObj);
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.totalCostForAllServices();
@@ -223,8 +226,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
-      else query =  { customerId: id,  skipLoadingInterceptor: true}
+      if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
+      else query =  { customerID: id,  skipLoadingInterceptor: true}
       return this.adminService.showCars(query);
     }
     this.searchTextObj.searchCarText$.pipe(
@@ -235,7 +238,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         of(this.selectedCustomer?.id!),
         of(text)
       ])),
-      tap(([id, text]) => console.log('meeeeeeeeeeeeeee', id, text)),
       switchMap(([id, text]) => callback(id, text))
     ).subscribe({
       next: (response: any) => {
@@ -364,9 +366,10 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.addInsurancePolicyForm.get('agentId')?.setValue(this.selectedCustomer?.Agent?.id);
-      this.getSuppliers(Number(this.selectedCustomer?.Region.id))
+      this.getSuppliers(Number(this.selectedCustomer?.Region.id));
+      this.searchTextObj.searchCarText$.next('');
     }, 0);
-    this.searchTextObj.searchCarText$.next('');
+
   }
 
   resetInsurancePolicyForm(addInsurancePolicyFormDirective: FormGroupDirective){

@@ -6,6 +6,22 @@
   <div class="page-content card">
       <form [formGroup]="addUserForm" #form="ngForm" (ngSubmit)="addUser(form)">
         <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="roleId">نوع المستخدم</label>
+           <select id="roleId" formControlName="roleId" (change)="changeForm($event.target)">
+              <option value="">اختر نوع المستخدم</option>
+              <ng-template [ngIf]="rolesAPI">
+                <option *ngFor="let role of rolesAPI" [value]="role.id">{{roles[role.name]}}</option>
+              </ng-template>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('roleId')?.touched)
+             && formCont('roleId')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('roleId').hasError('required')">نوع المستخدم مطلوب تعبئته</div>
+            </div>
+          </div>
+
           <div class="form-control-group" *ngIf="removeIdentityNum">
             <label for="identityNum">رقم هوية المستخدم</label>
             <input id="identityNum" type="text" name="identityNum" formControlName="identityNum"
@@ -62,22 +78,6 @@
                 تأكيد كلمة المرور مطلوب تعبئته</div>
               <div *ngIf="formCont('confirmPassword').hasError('mismatch')">
                 حقل تأكيد كلمة المرور لا يطابق حقل كلمة المرور</div>
-            </div>
-          </div>
-
-          <div class="form-control-group">
-            <label for="roleId">نوع المستخدم</label>
-           <select id="roleId" formControlName="roleId" (change)="changeForm($event.target)">
-              <option value="">اختر نوع المستخدم</option>
-              <ng-template [ngIf]="rolesAPI">
-                <option *ngFor="let role of rolesAPI" [value]="role.id">{{roles[role.name]}}</option>
-              </ng-template>
-            </select>
-
-            <div *ngIf="(form.submitted || formCont('roleId')?.touched)
-             && formCont('roleId')?.invalid" class="alert alert-danger">
-
-              <div *ngIf="formCont('roleId').hasError('required')">نوع المستخدم مطلوب تعبئته</div>
             </div>
           </div>
 
