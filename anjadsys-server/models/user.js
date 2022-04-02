@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      User.hasMany(models.Agent_Account, { 
-        foreignKey: 'userId',
+      User.hasMany(models.Account, { 
+        foreignKey: 'agentId',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });

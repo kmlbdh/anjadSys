@@ -19,11 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      ServicePolicy.hasOne(models.Supplier_Account, { 
-        foreignKey: 'servicePolicyId',
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT'
-      });
     }
   }
   ServicePolicy.init({

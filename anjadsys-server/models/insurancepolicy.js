@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      InsurancePolicy.hasOne(models.InsurancePolicy_Account, { 
+      InsurancePolicy.hasOne(models.Account, { 
         foreignKey: 'insurancePolicyId',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'

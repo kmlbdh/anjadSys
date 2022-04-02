@@ -19,11 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      ServiceAccident.hasOne(models.Supplier_Account, { 
-        foreignKey: 'serviceAccidentId',
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT'
-      });
     }
   }
   ServiceAccident.init({
@@ -38,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     additionalDays: {
       type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    },
+    supplierPercentage: {
+      type: DataTypes.FLOAT.UNSIGNED,
       allowNull: false
     },
     note: {

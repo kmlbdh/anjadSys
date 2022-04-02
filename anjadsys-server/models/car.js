@@ -39,12 +39,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     carNumber: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.STRING(10),
       allowNull: false,
       unique: true,
     },
     motorNumber: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(8),
       unique: true,
       allowNull: false
     },
@@ -52,11 +52,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
     },
     licenseType: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(12),
       allowNull: false
     },
     serialNumber: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(17),
     },
     passengersCount: {
       type: DataTypes.TINYINT.UNSIGNED

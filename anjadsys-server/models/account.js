@@ -3,18 +3,15 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
     static associate(models) {
-      Account.hasOne(models.InsurancePolicy_Account,  { 
-        foreignKey: 'accountId',
+      Account.belongsTo(models.InsurancePolicy,  { 
+        foreignKey: 'insurancePolicyId',
+        allowNull: true,
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      Account.hasOne(models.Agent_Account,  { 
-        foreignKey: 'accountId',
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT'
-      });
-      Account.hasOne(models.Supplier_Account,  { 
-        foreignKey: 'accountId',
+      Account.belongsTo(models.User,  { 
+        foreignKey: 'agentId',
+        allowNull: true,
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });

@@ -15,8 +15,6 @@ const Role = db.Role;
 const Service = db.Service;
 const Accident = db.Accident;
 const Account = db.Account;
-const AgentAccount = db.Agent_Account;
-const InsurancePolicyAccount = db.InsurancePolicy_Account;
 const Car = db.Car;
 const CarModel = db.CarModel;
 const CarType = db.CarType;
@@ -32,7 +30,6 @@ const LIMIT = 10;
 const SKIP = 0;
 
 //debugging NOT FOR PRODUCTION
-const verifyLoggedInLog = util.debuglog("controller.agent-verifyLoggedIn");
 const listUsersLog = util.debuglog("controller.agent-ListUsers");
 const lightListUsersLog = util.debuglog("controller.agent-LightListUsers");
 const createUserLog = util.debuglog("controller.agent-CreateUser");
@@ -372,6 +369,7 @@ const accidentActions = {
             note: service.note,
             serviceId: service.serviceId,
             supplierId: service.supplierId,
+            supplierPercentage: service.supplierPercentage,
             accidentId: accident.id
           };
         });
@@ -521,7 +519,7 @@ const accountActions = {
           include: [{
             model: InsurancePolicy,
             required: true,
-            where: { agentId : req.agent.id }
+            where: { agentId : req.agent.id, id: req.body.insurancePolicyId }
           },
         ],
           offset: skip,
@@ -532,21 +530,15 @@ const accountActions = {
           order: [['id', 'ASC' ]],
           include: [
             {
-              model: AgentAccount,
+              model: User,
               required: false,
-              where: {userId: req.agent.id},
+              where: {agentId: req.agent.id},
               attributes: { exclude: ['passowrd']}
             },
             {
-              model: InsurancePolicyAccount,
+              model: InsurancePolicy,
               required: false,
-              include: [
-                {
-                  model: InsurancePolicy,
-                  required: true,
-                  where: { agentId: req.agent.id}
-                }
-              ]
+              where: { agentId: req.agent.id}
             }
           ],
           offset: skip,
@@ -669,7 +661,7 @@ const insurancePolicyActions = {
             {
               model: Service,
               required: true,
-              attributes: ['id', 'name', 'cost', 'coverageDays']
+              attributes: ['id', 'name', 'cost', 'coverageDays', 'supplierPercentage']
             },
             {
               model: User,
@@ -840,8 +832,8 @@ const checkLimits = async (req) => {
     group: ['InsurancePolicy.agentId']
   });
 
-  let totalDebitVal = Number(totalDebit[0].debit),
-      totalCreditVal = Number(totalCredit[0].credit),
+  let totalDebitVal = Number(totalDebit[0]?.debit || 0),
+      totalCreditVal = Number(totalCredit[0]?.credit || 0),
       totalPricePolicy = Number(req.body.totalPrice);
 
     let finalAccount = ((totalDebitVal - (totalCreditVal + totalPricePolicy)) > 0);

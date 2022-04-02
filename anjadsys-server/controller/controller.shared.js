@@ -6,7 +6,6 @@ const AutoID = require("auto-id-builder");
 const util = require("util");
 const customError = require("../classes/customError");
 const errorHandler = require("../classes/errorhandler");
-const { query } = require("express");
 
 //debugging NOT FOR PRODUCTION 
 const createUserLog = util.debuglog("controller.shared-createUser");
@@ -23,20 +22,9 @@ const deleteUserLog = util.debuglog("controller.shared-deleteUser");
 const User = db.User;
 const Role = db.Role;
 const Service = db.Service;
-const Accident = db.Accident;
-const Account = db.Account;
-const UserAccount = db.User_Account;
-const Car = db.Car;
-const CarModel = db.CarModel;
-const CarType = db.CarType;
-const InsurancePolicy = db.InsurancePolicy;
 const Region = db.Region;
-const ServiceAccident = db.ServiceAccident;
-const ServicePolicy = db.ServicePolicy;
 
 const INTERR = 'INT_ERR';
-const LIMIT = 10;
-const SKIP = 0;
 
 const IdPrefixByRole = {
   admin: {
@@ -117,10 +105,17 @@ const shared = {
     },
     updateUser: async(res, query, update) => {
       try{
+        updateUserLog(update);
+        if(update.password){
+          update.password = bcrypt.hashSync(update.password);
+          delete update.confirmPassword;
+        }
+
+
         const updatedUser = await User.update(update, query);
         updateUserLog(updatedUser[0]);
 
-        if(updatedUser[0]!== 1) 
+        if(updatedUser[0] !== 1) 
           throw new customError("Failed! user isn't updated!", INTERR);
   
         res.status(200).json({message: "User was updated successfully!", data: updatedUser[0]});
@@ -195,29 +190,6 @@ const shared = {
       errorHandler(res, error, "Failed! Can't get services!");
     }
   },
-  listAgentLimits: async(res, query, skip, limit) => {
-    try{
-      query = { ...query, 
-        order: [['id', 'ASC' ]],
-        include:[
-          {
-            model: UserAccount,
-            required: true
-          }
-        ],
-        offset: skip,
-        limit: limit,
-      };
-
-      const { count, rows: agentLimits } = await Account.findAndCountAll(query);
-  
-      listAgentLimitsLog(agentLimits);
-      res.status(200).json({data: agentLimits, count});
-    } catch(error){
-      listAgentLimitsLog(error);
-      errorHandler(res, error, "Failed! Can't get agent limits!");
-    }
-  },
   login: async(req, res) => {
     try{
       const { username: loginUsername, password } = req.body;
@@ -225,7 +197,8 @@ const shared = {
 
       const user = await User.scope('withPassword').findOne({ where: 
         {
-          id: loginUsername
+          id: loginUsername,
+          blocked: false
         },
         include: [{
           model: Role,

@@ -7,7 +7,7 @@ module.exports = {
         name: 'Dodge'
       },
       {
-        name: 'Jeep'
+        name: 'جيب'
       },
       {
         name: 'أفيكو'

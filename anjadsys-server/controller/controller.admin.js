@@ -7,19 +7,14 @@ const { Op } = sequelize;
 
 const { 
   listServices: sharedlistServices,
-  listAgentLimits: sharedListAgentLimits,
   userShared
   } = require("./controller.shared");
-const { accountSchema } = require("../schema/schema.validation.agent");
 
 const User = db.User;
 const Role = db.Role;
 const Service = db.Service;
 const Accident = db.Accident;
 const Account = db.Account;
-const SupplierAccount = db.Supplier_Account;
-const AgentAccount = db.Agent_Account;
-const InsurancePolicyAccount = db.InsurancePolicy_Account;
 const Car = db.Car;
 const CarModel = db.CarModel;
 const CarType = db.CarType;
@@ -93,6 +88,7 @@ const userActions = {
         if(val && val.length > 0 && val[0] !== 'id')
           updateData[val[0]] = val[1];
       });
+
       updateUserLog(updateData, query);
       await userShared.updateUser(res, query, updateData);
     } catch(error) {
@@ -139,7 +135,8 @@ const userActions = {
   lightList: async(req, res) => {
     try {
       let query = {where: {
-        [Op.or]: []
+        [Op.or]: [],
+        blocked: false
       }};
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
@@ -285,26 +282,17 @@ const agentActions = {
       let { debit, agentID } = req.body;
       addAgentLimitsLog(req.body);
       sequelizeDB.transaction( async t => {
-        const agentLimits = Account.build({
+        const account = Account.build({
           debit,
+          agentId: agentID
         }, { isNewRecord: true, transaction: t });
   
-        const savedAgentLimits = await agentLimits.save();
+        const savedAccount = await account.save();
   
-        if(!savedAgentLimits && !agentLimits.id)
+        if(!savedAccount && !account.id)
           throw new customError("Failed! Agent limit wasn't added!", INTERR);
 
-        const agentAccount = await AgentAccount.build({
-          accountId: agentLimits.id,
-          userId: agentID
-        }, { isNewRecord: true, transaction: t });
-    
-        const savedAgentAccount = await agentAccount.save();
-
-        if(!savedAgentAccount)
-          throw new customError("Failed! Agent limit wasn't added!", INTERR);
-
-        res.status(200).json({message: "Agent limits was added successfully!", data: {savedAgentLimits, savedAgentAccount}});
+        res.status(200).json({message: "Agent limits was added successfully!", data: savedAccount});
       });
     } catch(error) {
       addServiceLog(error);
@@ -316,12 +304,6 @@ const agentActions = {
       let { agentLimitID } = req.body;
       deleteAgentLimitsLog(req.body);
       sequelizeDB.transaction( async t => {
-
-        const agentAccount = await AgentAccount.destroy({ where: { accountId: agentLimitID }},
-           { transaction: t});  
-        
-        if(!agentAccount)
-          throw new customError("Failed! Agent limits wasn't deleted!", INTERR);
         
         const agentLimits = await Account.destroy({ where: { id: agentLimitID }},
            { transaction: t});
@@ -329,7 +311,7 @@ const agentActions = {
         if(!agentLimits)
           throw new customError("Failed! Agent limits wasn't deleted!", INTERR);
   
-        res.status(200).json({message: "Agent limits was deleted successfully!", data: {agentLimits, agentAccount}});
+        res.status(200).json({message: "Agent limits was deleted successfully!", data: agentLimits});
       });
     } catch(error) {
       deleteAgentLimitsLog(error);
@@ -348,18 +330,11 @@ const agentActions = {
   
       query = { ...query, 
         order: [['id', 'ASC' ]],
-        include:[
-          {
-            model: AgentAccount,
-            required: true
-          }
-        ],
         offset: skip,
         limit: limit,
       };
 
-      if (req.body.agentID) query.include[0].where = {userId: req.body.agentID};
-
+      if (req.body.agentID) query.where = {agentId: req.body.agentID};
 
       const { count, rows: agentLimits } = await Account.findAndCountAll(query);
   
@@ -416,7 +391,6 @@ const accidentActions = {
           throw new customError("Failed! Accident wasn't added!", INTERR);
 
         const serviceAccidentObj = new Set();
-        const supplierAccountObj = new Set();
 
         services.forEach((service, i) => {
           serviceAccidentObj.add({
@@ -428,9 +402,6 @@ const accidentActions = {
             accidentId: accident.id,
             supplierPercentage: service.supplierPercentage,
           });
-          supplierAccountObj.add({
-            debit: service.cost,
-          });
         });
 
         const serviceAccidents = await ServiceAccident.bulkCreate([...serviceAccidentObj],
@@ -439,27 +410,6 @@ const accidentActions = {
 
         if(serviceAccidents.length === 0)
           throw new customError("Failed! Accident wasn't added!", INTERR);
-
-        //Account is here to be added!!
-        const suppliersAccounts = await Account.bulkCreate([...supplierAccountObj],
-          { transaction: t});
-        addServiceLog(supplierAccountObj);
-        addServiceLog(suppliersAccounts);
-
-        if(suppliersAccounts.length === 0)
-          throw new customError("Failed! Accident Account wasn't added!", INTERR);
-        
-        let supplier_account = [...suppliersAccounts.map((supAcc, index) => {
-          let currentServiceAccident = serviceAccidents[index];
-          return {serviceAccidentId: currentServiceAccident.id, accountId: supAcc.id, supplierPercentage: [...serviceAccidentObj][index].supplierPercentage}
-        })];
-
-        let supplierAccountTable = await SupplierAccount.bulkCreate(supplier_account,
-           { transaction: t});
-        addServiceLog(supplierAccountTable);
-
-        if(supplierAccountTable.length === 0)
-          throw new customError("Failed! Accident Account wasn't added!", INTERR);
 
         res.status(200).json({
           message: "Accident was added successfully!",
@@ -539,7 +489,8 @@ const accidentActions = {
           note: service.note,
           serviceId: service.serviceId,
           supplierId: service.supplierId,
-          accidentId: accidentID
+          accidentId: accidentID,
+          supplierPercentage: service.supplierPercentage,
         };
       });
 
@@ -684,7 +635,10 @@ const accidentActions = {
       //   query.include[2].where.agentId = req.body.customerID;
 
       const { count, rows: Accidents } = await Accident.findAndCountAll(query);
-  
+
+      if(count == null || Accidents == null) 
+        throw new customError("Failed! Accident data isn't retrieved!", INTERR);
+      
       listServicesLog(query);
       res.status(200).json({data: Accidents, total: count});
     } catch(error) {
@@ -880,18 +834,19 @@ const accountActions = {
   list: async(req, res) => {
     try{
       let query = {where:{}};
-      let query2 = {where:{}};
+      // let query2 = {where:{}};
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
  
       if (req.body.accountId){
         query.where.id = req.body.accountId;
-        query2.where.id = req.body.accountId;
       }
 
-      // if (req.body.insurancePolicyId) 
-      //   query.where.insurancePolicyId = req.body.insurancePolicyId;
-
+      if (req.body.startDate && req.body.endDate){
+        query.where.createdAt = {
+          [Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+        };
+      } 
       // if (req.body.agentID)
       //   query.where.agentId = req.body.agentID;
 
@@ -899,113 +854,79 @@ const accountActions = {
       //   query.where.customerID = req.body.customerID;
         
       if(Object.keys(query.where) === 0 ) delete query.where;
-      if(Object.keys(query2.where) === 0 ) delete query2.where;
 
       if(req.body.insurancePolicyId){
         query = { ...query,
           order: [['id', 'ASC' ]],
-          include: [{
-            model: InsurancePolicyAccount,
-            required: true,
-            where: {insurancePolicyId: req.body.insurancePolicyId}
-          },
-          {
-            model: InsurancePolicy,
-            required: true,
-          }],
-          offset: skip,
-          limit: limit,
-          // attributes: { exclude: ['carId', 'customerId', 'agentId']}
-        };
-      }  
-      else if(req.body.agentID){
-        query = { ...query,
-          order: [['id', 'ASC' ]],
           include: [
             {
-              model: InsurancePolicyAccount,
+              model: InsurancePolicy,
               required: true,
-              include:[
-                {
-                  model: InsurancePolicy,
-                  required: true,
-                  where: { agentId: req.body.agentID },
-                }
-              ]
+              where: {id: req.body.insurancePolicyId}
             }
           ],
           offset: skip,
           limit: limit,
-        };     
-        query2 = { ...query2,
-          order: [['id', 'ASC' ]],
-          include: [
-            {
-              model: AgentAccount,
-              required: true,
-              where: {userId: req.body.agentID},
-              attributes: { exclude: ['passowrd']}
-            },
-          ],
-          offset: skip,
-          limit: limit,
         };
-      }
-      else if(req.body.supplierID){
-        query = { ...query,
-          order: [['id', 'ASC' ]],
-          include: [
-            {
-              model: SupplierAccount,
-              required: true,
-              include: [
-                {
-                  model: ServiceAccident,
-                  required: true,
-                  where: {supplierId: req.body.supplierID}
-                }
-              ],
-            },
-          ],
-          offset: skip,
-          limit: limit,
-        };
+      } else if(req.body.agentID){
+          query = { ...query,
+            order: [['id', 'ASC' ]],
+            include: [
+              {
+                model: InsurancePolicy,
+                required: false,
+                where: { agentId: req.body.agentID },
+              },
+              {
+                model: User,
+                required: false,
+                where: { id: req.body.agentID },
+                attributes: { exclude: ['passowrd']}
+              },
+            ],
+            offset: skip,
+            limit: limit,
+          };     
+        // query2 = { ...query2,
+        //   order: [['id', 'ASC' ]],
+        //   include: [
+        //     {
+        //       model: User,
+        //       required: true,
+        //       where: { agentId: req.body.agentID },
+        //       attributes: { exclude: ['passowrd']}
+        //     },
+        //   ],
+        //   offset: skip,
+        //   limit: limit,
+        // };
       } else {
         query = { ...query,
           order: [['id', 'ASC' ]],
           include: [
             {
-              model: AgentAccount,
+              model: InsurancePolicy,
+              required: false,
+            },
+            {
+              model: User,
               required: false,
               attributes: { exclude: ['passowrd']}
             },
-            {
-              model: SupplierAccount,
-              required: false,
-              include: [
-                {
-                  model: ServiceAccident,
-                  required: true,
-                }
-              ],
-            },
-            {
-              model: InsurancePolicyAccount,
-              required: false,
-            }
           ],
           offset: skip,
           limit: limit,
-        };
+        };     
       }
       
-      if(req.body.agentID){
+      // if(req.body.insurancePolicyId){
         var { count, rows: accounts } = await Account.findAndCountAll(query);
-        var { count2, rows: accounts2 } = await Account.findAndCountAll(query2);
-        count = count + count2;
-        accounts = [...accounts, ...accounts2];
-      } else
-        var { count, rows: accounts } = await Account.findAndCountAll(query);
+      // } else{
+      //   var { count, rows: accounts } = await Account.findAndCountAll(query);
+      //   var { count2, rows: accounts2 } = await Account.findAndCountAll(query2);
+      //   count = count + count2;
+      //   accounts = [...accounts, ...accounts2];
+      // }
   
       listServicesLog(query);
       res.status(200).json({data: accounts, total: count});
@@ -1014,6 +935,37 @@ const accountActions = {
       errorHandler(res, error, "Failed! can't get Accounts!");
     }
   },
+};
+
+const SupplierActions = {
+  list: async(req, res) => {
+    try {
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
+
+      const { count, rows: accountSupplier } = await ServiceAccident.findAndCountAll({
+        where: {supplierId: req.body.supplierID},
+        include: [
+          {
+            model: Service,
+            required: true,
+          }
+        ],
+        offset: skip,
+        limit: limit,
+      });
+
+      if(count == null || accountSupplier == null) 
+        throw new customError("Failed! Account for Supplier isn't retrieved!", INTERR);
+
+      listServicesLog(accountSupplier);
+      res.status(200).json({data: accountSupplier, total: count});
+    } catch(error){
+      addServiceLog(error);
+      errorHandler(res, error, "Failed! Account for Supplier wasn't retrieved!");
+    }
+  }
+
 };
 
 const insurancePolicyActions = {
@@ -1044,7 +996,7 @@ const insurancePolicyActions = {
           throw new customError("Failed! Insurance Policy wasn't added!", INTERR);
 
         let servicePolicyArray = [];
-        let supplierAccountArray = [];
+        // let supplierAccountArray = [];
         services.forEach((service, i) => {
           servicePolicyArray[i] = {
             cost: service.cost,
@@ -1054,13 +1006,6 @@ const insurancePolicyActions = {
             supplierId: service.supplierId,
             insurancePolicyId: insurancePolicy.id
           };
-
-          supplierAccountArray.push({
-            debit: service.cost,
-            userId: service.supplierId,
-            supplierPercentage: service.supplierPercentage,
-            insurancePolicyId: insurancePolicy.id
-          });
         });
 
         const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
@@ -1083,16 +1028,6 @@ const insurancePolicyActions = {
 
         if(!savedAccount)
           throw new customError("Failed! Account wasn't added!", INTERR);
-
-        const savedSupplierAccount = await Account.bulkCreate(supplierAccountArray, {
-          // isNewRecord: true,
-          transaction: t
-        });
-
-        addServiceLog(savedSupplierAccount);
-
-        if(savedSupplierAccount.length === 0)
-          throw new customError("Failed! Suppliers Accounts weren't added!", INTERR);
 
         res.status(200).json({
           message: "Insurance Policy was added successfully!",
@@ -1126,12 +1061,6 @@ const insurancePolicyActions = {
           throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
 
         const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
-          {transaction: t});
-    
-        if(!deletedAccount)
-          throw new customError("Failed! Account wasn't deleted!", INTERR);
-
-        const deletedSupplierAccount = await Account.destroy({ where: { userId: insurancePolicyId }}, 
           {transaction: t});
     
         if(!deletedAccount)
@@ -1237,9 +1166,6 @@ const insurancePolicyActions = {
  
       if (req.body.insurancePolicyId) 
         query.where.id = req.body.insurancePolicyId;
-     
-      // if (req.body.carNumber) 
-      //   query.where.carNumber = req.body.carNumber; 
       
       if (req.body.carID) 
         query.where.carId = req.body.carID;
@@ -1248,9 +1174,10 @@ const insurancePolicyActions = {
         query.where.agentId = req.body.agentID;
 
       if (req.body.customerID)
-        query.where.customerID = req.body.customerID;
+        query.where.customerId = req.body.customerID;
         
-        if(Object.keys(query.where) === 0 ) delete query.where;
+      if(Object.keys(query.where) === 0 ) delete query.where;
+      
       query = { ...query,
         order: [['id', 'ASC' ]],
         include: [{
@@ -1707,7 +1634,40 @@ const regionActions = {
         message: "Regions were reterived successfully!",
         data: regions
       });   
-    } catch(err){
+    } catch(error){
+      errorHandler(res, error, "Failed! can't get data!!");
+    }
+  },
+}
+
+const statisticsActions = {
+  list: async(req, res) => {
+    try {
+      const agents = await User.count({ where: {roleId: 2}});
+      const customers = await User.count({ where: {roleId: 3}});
+      const suppliers = await User.count({ where: {roleId: 4}});
+      const insurancePolicies = await InsurancePolicy.count();
+      const accidents = await Accident.count();
+  
+      if(agents == null ||
+          customers == null ||
+          suppliers == null ||
+          insurancePolicies == null ||
+          accidents == null) 
+        throw new customError("Failed! can't get Statistics!");
+
+      res.status(200).json({
+        message: "Statistics were reterived successfully!",
+        data: {
+          agents,
+          customers,
+          suppliers,
+          insurancePolicies,
+          accidents
+        }
+      });   
+    } catch(error){
+      listServicesLog(error);
       errorHandler(res, error, "Failed! can't get data!!");
     }
   },
@@ -1744,4 +1704,6 @@ module.exports = {
   regionActions,
   insurancePolicyActions,
   accountActions,
+  statisticsActions,
+  SupplierActions,
 };

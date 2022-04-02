@@ -9,7 +9,8 @@ const {
   carValidation,
   accidentValidation,
   insurancePolicyValidation,
-  accountValidation
+  accountValidation,
+  validatSupplierAccount
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -28,7 +29,9 @@ const {
   carActions,
   regionActions,
   insurancePolicyActions,
-  accountActions
+  accountActions,
+  statisticsActions,
+  SupplierActions
 } = require("../controller/controller.admin");
 
 module.exports = function(app){
@@ -276,5 +279,20 @@ app.post("/api/admin/list-accounts",[
   auth.isAdmin,
   accountValidation.list,
 ], accountActions.list);
+
+/** #################### STATISTICS  ########################*/
+
+app.get("/api/admin/statistics",[
+  auth.verifyToken,
+  auth.isAdmin,
+], statisticsActions.list);
+
+/** #################### SUPPLIER  ########################*/
+
+app.post("/api/admin/supplier-account",[
+  auth.verifyToken,
+  auth.isAdmin,
+  validatSupplierAccount,
+], SupplierActions.list);
 
 };
