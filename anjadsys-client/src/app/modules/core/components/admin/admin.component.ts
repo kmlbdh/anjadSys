@@ -162,7 +162,7 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار بوليصات التأمين',
+          name: 'اظهار بوالص التأمين',
           link: 'insurance-policy/show'
         },
         {
