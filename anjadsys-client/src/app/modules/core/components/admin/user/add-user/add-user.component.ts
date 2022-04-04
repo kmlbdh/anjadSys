@@ -115,8 +115,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
         }
       }
     });
-    console.log(this.addUserForm.value);
-    console.log(formObj);
+    // console.log(this.addUserForm.value);
+    // console.log(formObj);
   }
 
   changeForm(roleFormControl: any) {

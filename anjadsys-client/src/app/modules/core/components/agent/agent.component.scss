@@ -1,5 +1,12 @@
 @import 'shared';
 
+:host {
+  app-nav{
+      flex-grow: 1;
+    flex-basis: 257px;
+  }
+}
+
 #main-container{
   width: 100%;
   height: 100%;

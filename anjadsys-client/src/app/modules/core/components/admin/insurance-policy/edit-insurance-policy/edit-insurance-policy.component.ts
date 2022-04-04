@@ -2,14 +2,14 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, filter, forkJoin, mergeMap, of, Subject, switchMap, takeUntil, tap, Observable, skip } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, forkJoin, mergeMap, of, Subject, switchMap, takeUntil, Observable, tap } from 'rxjs';
 import { CarAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { ServiceAPI } from 'src/app/modules/core/model/service';
 import { SearchUser, UserAPI, UsersAPI } from 'src/app/modules/core/model/user';
 import { AdminService } from '../../admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InsurancePolicesAPI, InsurancePolicyAPI, updateInsurancePolicy } from '../../../../model/insurancepolicy';
-import { updateServicePolicy, ServicePolicyAPI, ServicesAPI, NewServicePolicy } from '../../../../model/service';
+import { updateServicePolicy, ServicePolicyAPI, ServicesAPI } from '../../../../model/service';
 
 @Component({
   selector: 'app-edit-insurance-policy',
@@ -57,7 +57,8 @@ export class EditInsurancePolicyComponent implements OnInit {
   TIMEOUTMILISEC = 7000;
 
   editInsurancePolicyForm = this.fb.group({
-    totalPrice: ['', [Validators.required]],
+    totalPrice: ['', Validators.required],
+    expireDate: ['', Validators.required],
     note: [''],
     customerId: ['', Validators.required],
     agentId: ['', Validators.required],
@@ -65,7 +66,7 @@ export class EditInsurancePolicyComponent implements OnInit {
   });
 
   addServicePolicyForm = this.fb.group({
-    serviceId: ['', [Validators.required]],
+    serviceId: ['', Validators.required],
     additionalDays: [{value: '', disabled: true}, Validators.required],
     note: [''],
     cost: [0 , Validators.required],
@@ -107,24 +108,6 @@ export class EditInsurancePolicyComponent implements OnInit {
     // let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
     let insurancePolicy$ = this.adminService.listInsurancePolicy({insurancePolicyId: Number(insurancePolicyID)}) as Observable<InsurancePolicesAPI>;
     let services$ = this.adminService.listServices() as Observable<ServicesAPI>;
-    // .pipe(takeUntil(this.unsubscribe$))
-    // .subscribe({
-    //   next: response => {
-        // if(response.data){
-        //   response.data.forEach(service => service['propertiesUI'] = {hide: false});
-        //   this.services = response.data;
-        // }
-    //     console.log(response.data);
-    //   },
-    //   error: err => console.log(err)
-    // })
-    // let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
-    // this.adminService.showUsers(searchConditions)
-    // .pipe(takeUntil(this.unsubscribe$))
-    // .subscribe({
-    //   next: (response: UsersAPI) => this.suppliers = response.data,
-    //   error: (error) => console.log(error)
-    // })
     combineLatest([insurancePolicy$, services$])
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
@@ -156,6 +139,7 @@ export class EditInsurancePolicyComponent implements OnInit {
   buildForm(): void{
     this.editInsurancePolicyForm.setValue({
       totalPrice: this.insurancePolicy.totalPrice,
+      expireDate: this.insurancePolicy.expireDate,
       note: this.insurancePolicy.note || '',
       customerId: this.insurancePolicy.Customer.id,
       agentId: this.insurancePolicy.Agent.id,
@@ -215,6 +199,8 @@ export class EditInsurancePolicyComponent implements OnInit {
     if (this.addServicePolicyForm.invalid) return;
 
     let formObj = this.addServicePolicyForm.value;
+    let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
+    formObj.supplierPercentage = currentService.supplierPercentage;
 
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
@@ -267,7 +253,6 @@ export class EditInsurancePolicyComponent implements OnInit {
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if(typeTxt && typeTxt !== ''){
-      this.spinner.car = true;
       this.searchTextObj.searchCarText$.next(typeTxt);
     }
 
@@ -329,7 +314,7 @@ export class EditInsurancePolicyComponent implements OnInit {
         of(this.selectedCustomer?.id!),
         of(text)
       ])),
-      tap(([id, text]) => console.log('meeeeeeeeeeeeeee', id, text)),
+      tap(() => this.spinner.car = true),
       switchMap(([id, text]) => callback(id, text))
     ).subscribe({
       next: (response: any) => {

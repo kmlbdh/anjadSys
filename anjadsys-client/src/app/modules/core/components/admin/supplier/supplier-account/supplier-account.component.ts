@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { first, Subject, takeUntil } from 'rxjs';
-import { partAPI } from '../../../../model/supplierparts';
+import { FormBuilder, Validators } from '@angular/forms';
+import { SearchSupplierAccount } from '../../../../model/supplier';
 
 @Component({
   selector: 'app-supplier-account',
@@ -21,13 +22,28 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   showPercentage = true;
+  searchConditions: SearchSupplierAccount = {flag: 'accident'} as SearchSupplierAccount;
+
+  p: number = 1;
+  pagination = {
+    total: 0,
+    itemsPerPage: 10,
+  };
+
+  searchSupplierAccountForm = this.fb.group({
+    flag: ['accident', Validators.required],
+    startDate: [''],
+    endDate: [''],
+  });
+
   constructor(
+    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadSupplierPartsById();
+    this.loadSupplierAccountId();
   }
 
   ngOnDestroy(): void {
@@ -35,7 +51,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadSupplierPartsById(): void{
+  loadSupplierAccountId(): void{
     this.route.paramMap
     .pipe(first())
     .subscribe({
@@ -46,35 +62,51 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
         console.log(this.selectedSupplier);
         if(!supplierId || !this.selectedSupplier) this.router.navigate(['admin/supplier/show']);
 
-        this.adminService.listSupplierAccount({supplierID: supplierId?.toUpperCase()!})
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: response => {
-            if(response.data)
-              this.accounts = response.data;
-            console.log(response.data);
-          },
-          error: err => console.log(err)
-        })
+        this.searchConditions.supplierID = supplierId?.toUpperCase()!;
+        this.listSupplierAccountAPI();
       }
     });
   }
 
-  deletePart(part: partAPI): void{
-    const yes = confirm(`هل تريد حذف القطعة "${part.partNo || ''} | ${part.partName}"  للمورد؟`);
-    if(!yes) return;
+  searchSupplierAccount = () => {
+   if(this.searchSupplierAccountForm.invalid) return;
 
-    this.adminService.deleteSupplierPart(part._id)
+   let formObj = this.searchSupplierAccountForm.value;
+   let keys = Object.keys(formObj);
+  //  console.log('formObj 1', formObj)
+
+   keys.forEach( (key: any) => {
+    if(formObj[key] == null || formObj[key] === '') delete formObj[key]
+   });
+   let supplierID = this.searchConditions.supplierID
+  //  console.log('formObj 2', formObj)
+  //  console.log('searchConditions 1', this.searchConditions)
+   this.searchConditions = {...formObj, supplierID};
+  //  console.log('searchConditions 2', this.searchConditions)
+   this.listSupplierAccountAPI();
+  }
+
+  listSupplierAccountAPI = () => {
+    this.adminService.listSupplierAccount(this.searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
         if(response.data){
-          this.loadSupplierPartsById();
+          this.accounts = response.data;
+          this.pagination.total = response.total;
         }
-        console.log(response.data);
+        // console.log(response.data);
       },
       error: err => console.log(err)
     })
+  }
+
+  getPage(pageNumber: number){
+    let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchSupplierAccount;
+    this.p = pageNumber;
+    this.listSupplierAccountAPI();
+    // console.log(pageNumber);
   }
 
   trackById(index: number, el: any): string{
@@ -107,6 +139,9 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           margin-bottom: 30px;
           text-align: right;
           font-weight: 700;
+        }
+        .card.search-supplier-container{
+          display: none;
         }
         .page-header p {
           margin: 0;
@@ -196,5 +231,9 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     newWin.close();
 
     // window.print()
+  }
+
+  formCont(controlName: string): any {
+    return this.searchSupplierAccountForm.controls[controlName];
   }
 }

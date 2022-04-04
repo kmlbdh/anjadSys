@@ -5,6 +5,44 @@
       <span style="font-weight: 400;">{{selectedSupplier}}</span>
   </div>
 
+  <div class="card search-supplier-container">
+    <form [formGroup]="searchSupplierAccountForm" #form="ngForm" (ngSubmit)="searchSupplierAccount()">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="flag">اظهار الحساب/الخدمات حسب:</label>
+          <select id="flag" formControlName="flag">
+            <option value="accident">ابلاغات الحوادث</option>
+            <option value="policy">بوالص التأمين</option>
+          </select>
+        </div>
+
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">
@@ -29,12 +67,13 @@
         </li>
       </ng-template>
       <ng-template [ngIf]="accounts.length > 0">
-        <li *ngFor="let account of accounts; trackBy: trackById; let i = index;" class="table-row">
+        <li *ngFor="let account of accounts| paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+          trackBy: trackById; let i = index;" class="table-row">
           <div class="col-custom col-custom-1" data-label="الرقم">{{account.id || i+1}}</div>
           <div class="col-custom col-custom-2" data-label="الخدمة">{{account.Service.name}}</div>
           <div class="col-custom col-custom-3" data-label="المبلغ مع النسبة (له)">
             <ng-container *ngIf="showPercentage">
-              {{(account.cost * (account.supplierPercentage || 1)) || 0}}
+              {{((account.cost * (account.supplierPercentage || 1)) || 0) | number: '1.0-0'}}
             </ng-container>
             <ng-container *ngIf="!showPercentage">
               {{account.cost || 0}}
@@ -54,6 +93,13 @@
         </div>
       </ng-template>
     </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
     <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
     <div class="success" *ngIf="successMsg">{{successMsg}}</div>
   </div>

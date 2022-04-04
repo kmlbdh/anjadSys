@@ -1,13 +1,58 @@
+@import 'shared';
+
 :host {
   flex-grow: 11;
 }
 #main-container{
   padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 33px;
   .page-content{
-    width: 100%;
-    min-height: 80%;
-    h2{
-      text-align: right;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 200px;
+    height: 100px;
+    padding: 5px 8px;
+    border: none;
+    background-color: $mainBlueColor;
+    color: #fff;
+
+    .counter{
+      display: flex;
+      flex-direction: column;
+      p{
+        text-align: right;
+        color: #fff;
+        font-weight: 600;
+        // margin-bottom: 0.4rem;
+      }
+
+      h4{
+        padding: 0 8px;
+        font-size: 2rem;
+      }
+    }
+    .circle-icon{
+      background-color: rgb(187, 187, 187);
+      border-radius: 50%;
+      height: 50px;
+      width: 50px;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+
+      fa-icon{
+        color: #fff;
+        font-size: 1.8rem;
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
     }
   }
 }

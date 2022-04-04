@@ -18,6 +18,11 @@ export interface SearchSuppliers{
 }
 
 export interface SearchSupplierAccount{
-  supplierID: string;
+  flag: string,
+  supplierID: string,
+  startDate?: Date,
+  endDate?: Date,
+  limit?: number;
+  skip?: number;
 }
 

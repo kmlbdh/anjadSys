@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../../admin.service';
-import { CarTypeAPI } from '../../../../../model/car';
+import { CarTypeAPI, SearchCarType, CarTypeArrayAPI } from '../../../../../model/car';
 
 @Component({
   selector: 'app-add-car-model',
@@ -35,7 +35,7 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
     private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.searchAPI();
+    this.getCarTypes({limit: 999999999999999});
   }
 
   ngOnDestroy(): void {
@@ -76,47 +76,17 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
     console.log(formObj);
   }
 
-  searchCarType(event: Event){
-    console.log(event);
-    if(!(event instanceof KeyboardEvent)){
-      event.preventDefault();
-      event.stopPropagation();
-      this.selectedCarType = this.carTypes.filter(carType => {
-        console.log(this.formCont('carTypeId')?.value);
-        console.log(carType.id);
-        return carType.id === Number(this.formCont('carTypeId')?.value)
-      })[0];
-      this.carTypeName = `${this.selectedCarType?.name}`;
-      return;
-    }
-    if(this.formCont('carTypeId')?.value === '')
-      this.carTypeName = undefined;
-
-    let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(carTypeTxt){
-      this.searchCarTypeText$.next(carTypeTxt);
-    }
-  }
-
-  searchAPI(){
-    this.searchCarTypeText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.spinnerCarType = true),
-      switchMap(text => this.adminService.listCarTypes({name: text, skipLoadingInterceptor: true}))
-    ).subscribe({
-      next: response =>{
+  getCarTypes(searchConditions: SearchCarType){
+    this.adminService.listCarTypes(searchConditions)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (response: CarTypeArrayAPI) => {
         if(response.data){
           this.carTypes = response.data;
+          // this.pagination.total = response.total;
         }
-        this.spinnerCarType = false;
-        console.log(response)
       },
-      error: err => {
-        this.spinnerCarType = false;
-        console.log(err);
-      }
+      error: (error) => console.log(error)
     })
   }
 
@@ -138,13 +108,5 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
     this.carTypeName = undefined;
     this.formCont('carTypeId')?.setValue('');
   }
-
-  // acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-  //   const code = event.key;
-  //   if(Number.isNaN(+code))
-  //     return false;
-
-  //   return;
-  // }
 
 }

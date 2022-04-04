@@ -7,6 +7,7 @@ export interface InsurancePolicyAPI {
   [index: string]: number | string | Date | undefined | UserAPI | CarAPI | ServicePolicyAPI[],
   id: number,
   totalPrice: number,
+  expireDate: Date,
   note: string,
   ServicePolicies: ServicePolicyAPI[],
   customerId?: string,
@@ -23,6 +24,7 @@ export interface updateInsurancePolicy {
   [index: string]: number | string | Date | CarAPI | UserAPI | updateServicePolicy[] | undefined,
   insurancePolicyId: number,
   totalPrice?: number,
+  expireDate?: Date,
   note?: string,
   customerId?: string,
   services: updateServicePolicy[],
@@ -38,6 +40,7 @@ export interface InsurancePolicesAPI{
 export interface NewInsurancePolicy{
   [index: string]: number | string | Date | NewServicePolicy[],
   totalCost: number,
+  expireDate: Date,
   note: string,
   services: NewServicePolicy[],
   customerId: string,
@@ -46,11 +49,12 @@ export interface NewInsurancePolicy{
 }
 
 export interface SearchInsurancePolicy {
-  [index: string]: number | string | Date | undefined,
+  [index: string]: number | string | Date | boolean | undefined,
   insurancePolicyId?: number,
   customerID?: string,
   agentID?: string,
   carID?: number,
+  filterOutValid?: boolean,
   skip?: number,
   limit?: number,
 }

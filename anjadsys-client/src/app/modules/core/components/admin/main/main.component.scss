@@ -41,14 +41,17 @@
       border-radius: 50%;
       height: 50px;
       width: 50px;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
 
       fa-icon{
         color: #fff;
         font-size: 1.8rem;
-        position: absolute;
-        top: 18%;
-        left: 15%;
+        flex-grow: 0;
+        flex-shrink: 0;
       }
     }
   }

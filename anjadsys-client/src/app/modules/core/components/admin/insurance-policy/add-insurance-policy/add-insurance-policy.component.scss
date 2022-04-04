@@ -33,6 +33,9 @@
         @include button-primary-disabled;
         width: fit-content;
       }
+      &.mg-top39{
+        margin-top: 39%;
+      }
     }
   }
 
@@ -341,7 +344,9 @@
         }
       }
     }
-
+    div.error{
+      @include messageBox($mainRedColor);
+    }
     div.success{
       @include messageBox($mainGreenColor);
     }

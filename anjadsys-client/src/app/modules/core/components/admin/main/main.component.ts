@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faCarCrash, faTruckLoading, faTruckMoving, faUsers, faUserTie } from '@fortawesome/free-solid-svg-icons';
-import { pipe, takeUntil, Subject } from 'rxjs';
+import { faCarCrash, faFileContract, faTruckMoving, faUsers, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { takeUntil, Subject } from 'rxjs';
 import { AdminService } from '../admin.service';
 
 @Component({
@@ -18,7 +18,8 @@ export class MainComponent implements OnInit, OnDestroy {
   customersIcon = faUsers;
   agentsIcon = faUserTie;
   suppliersIcon = faTruckMoving;
-  insurancePoliciesIcon = faCarCrash;
+  accidentIcon = faCarCrash;
+  insurancePoliciesIcon = faFileContract;
 
   private unsubscribe$ = new Subject<void>();
 

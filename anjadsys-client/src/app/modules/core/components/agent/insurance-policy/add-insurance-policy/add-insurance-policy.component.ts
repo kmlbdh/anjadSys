@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { catchError, debounceTime, distinctUntilChanged, filter, forkJoin, mergeMap, of, Subject, switchMap, takeUntil, tap, throwError } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, forkJoin, mergeMap, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { CarAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { NewInsurancePolicy } from 'src/app/modules/core/model/insurancepolicy';
 import { NewServicePolicy, ServiceAPI } from 'src/app/modules/core/model/service';
@@ -48,7 +48,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   addInsurancePolicyForm = this.fb.group({
-    totalPrice: ['', [Validators.required]],
+    totalPrice: ['', Validators.required],
+    expireDate: ['', Validators.required],
     note: [''],
     customerId: ['', Validators.required],
     carId: ['', Validators.required],
@@ -89,43 +90,34 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     });
     formObj.services = this.servicesPolicy;
     this.agentService.addInsurancePolicy(formObj)
-    .pipe(
-      takeUntil(this.unsubscribe$),
-      catchError(err => {
-        console.log('errrorrrrr', err);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-        }
-      return throwError(() => err);
-    }))
+    .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+        next: (response) => {
+          if(response.data)
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
 
-        this.resetInsurancePolicyForm(ngform);
-        console.log(response);
-      },
-      error: (err: any) => {
-        console.error('error is here ', err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          this.resetInsurancePolicyForm(ngform);
+          console.log(response);
+        },
+        error: (err: any) => {
+          console.error(err.error);
+          if(err?.error?.message){
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
-
-      }
     });
-    console.log(formObj);
-    console.log(this.addServicePolicyForm.value);
+    // console.log(formObj);
+    // console.log(this.addServicePolicyForm.value);
   }
 
   addServicePolicy = (ngform: FormGroupDirective) => {
     if (this.addServicePolicyForm.invalid) return;
 
     let formObj = this.addServicePolicyForm.value;
-
+    let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
+    formObj.supplierPercentage = currentService.supplierPercentage;
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.totalCostForAllServices();
@@ -328,9 +320,9 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.addInsurancePolicyForm.get('agentId')?.setValue(this.selectedCustomer?.Agent?.id);
-      this.getSuppliers(Number(this.selectedCustomer?.Region.id))
+      this.getSuppliers(Number(this.selectedCustomer?.Region.id));
+      this.searchTextObj.searchCarText$.next('');
     }, 0);
-    this.searchTextObj.searchCarText$.next('');
   }
 
   resetInsurancePolicyForm(addInsurancePolicyFormDirective: FormGroupDirective){
@@ -341,7 +333,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.selectedCustomer = undefined;
     this.selectedService = undefined;
     this.selectedCar = undefined;
-    // this.selectedAgent = undefined;
     this.addServicePolicyForm.reset();
     this.addServicePolicyForm.updateValueAndValidity();
     this.addServicePolicyForm.markAsUntouched();
@@ -354,6 +345,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.addServicePolicyForm.updateValueAndValidity();
     this.addServicePolicyForm.markAsUntouched();
     addServicePolicyFormDirective.resetForm();
+    this.serviceShowStatusWhenMaintainPolicy();
   }
 
   formCont(controlName: string): any{
@@ -364,7 +356,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     return this.addServicePolicyForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
+ acceptNumbers(event: Event): Boolean{
     if(event instanceof KeyboardEvent){
       const code = event.key;
       console.log(code);
@@ -379,10 +371,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.selectedCustomer = undefined;
-    // this.selectedAgent = undefined;
     this.selectedCar = undefined;
     this.formCont('carId').setValue('');
-    // this.formCont('agentId').setValue('');
     this.formCont('customerId').setValue('');
   }
 

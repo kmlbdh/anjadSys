@@ -122,6 +122,12 @@ export class AgentService {
     );
   }
 
+  statisticsForMainPage():Observable<any>{
+    return this.http.get<any>(`${this.url}statistics`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.

@@ -5,6 +5,7 @@ import { SupplierRoutingModule } from './supplier-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SupplierAccountComponent } from './supplier-account/supplier-account.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { SupplierAccountComponent } from './supplier-account/supplier-account.co
   ],
   imports: [
     CommonModule,
+    NgxPaginationModule,
     SupplierRoutingModule,
     ReactiveFormsModule,
     FontAwesomeModule

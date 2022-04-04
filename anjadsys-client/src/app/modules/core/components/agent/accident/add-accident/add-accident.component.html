@@ -79,9 +79,12 @@
             </option>
           </datalist>
 
-          <div *ngIf="(form.submitted || formCont('insurancePolicyId')?.touched) &&
+          <div *ngIf="!insurancePolicyNotValidMsg && (form.submitted || formCont('insurancePolicyId')?.touched) &&
             formCont('insurancePolicyId')?.invalid" class="alert alert-danger">
             <div *ngIf="formCont('insurancePolicyId').hasError('required')">رقم البوليصة مطلوب تعبئته</div>
+          </div>
+          <div *ngIf="insurancePolicyNotValidMsg" class="alert alert-danger">
+            <div>{{insurancePolicyNotValidMsg}}</div>
           </div>
         </div>
 
@@ -247,27 +250,12 @@
           </div>
         </div>
 
-        <div class="form-control-group">
-          <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
-          <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
-            (keyup)="calculateTotalCost($event)" required/>
+        <input class="hide" type="text" id="additionalDays" name="additionalDays" formControlName="additionalDays"
+          (keydown)="acceptNumbers($event)" required/>
 
-          <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
-            && formContS('additionalDays')?.invalid" class="alert alert-danger">
-            <div *ngIf="formContS('additionalDays').hasError('required')">
-              عدد الايام مطلوب تعبئته
-            </div>
-          </div>
-        </div>
+        <input class="hide" type="text" id="cost" name="cost" formControlName="cost"/>
+        <input class="hide" type="number" id="supplierPercentage" name="supplierPercentage" formControlName="supplierPercentage"/>
 
-        <div class="form-control-group">
-          <label for="cost">التكلفة الأجمالية:</label>
-          <input type="number" [value]="formContS('cost').value" disabled/>
-          <input class="hide" type="text" id="cost" name="cost" formControlName="cost" required/>
-        </div>
-
-        <input class="hide" type="number" id="supplierPercentage" name="supplierPercentage" formControlName="supplierPercentage"
-          [value]="formContS('supplierPercentage').value"/>
 
         <div class="form-control-group">
           <label for="supplierId">المورد:</label>
@@ -292,7 +280,7 @@
         </div>
 
         <div class="btn-container center">
-          <button type="submit" [disabled]="formS.invalid">
+          <button class="mg-top39" type="submit" [disabled]="formS.invalid">
             <span><fa-icon [icon]="addServiceBtnIcon"></fa-icon></span>
           </button>
         </div>

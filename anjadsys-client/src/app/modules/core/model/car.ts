@@ -82,6 +82,8 @@ export interface SearchCarType {
   name?: string;
   carTypeId?: number,
   skipLoadingInterceptor?: boolean;
+  limit?: number,
+  skip?: number,
 }
 
 export interface updateCarType {

@@ -4,6 +4,7 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { CarModelAPI, CarModelArrayAPI, SearchCarModel } from 'src/app/modules/core/model/car';
 import { AdminService } from '../../../admin.service';
+import { SearchCarType, CarTypeArrayAPI, CarTypeAPI } from '../../../../../model/car';
 
 @Component({
   selector: 'app-show-car-models',
@@ -11,9 +12,11 @@ import { AdminService } from '../../../admin.service';
   styleUrls: ['./show-car-models.component.scss']
 })
 export class ShowCarModelsComponent implements OnInit, OnDestroy {
-  carModels: CarModelAPI[] = [];
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
+
+  carModels: CarModelAPI[] = [];
+  carTypes: CarTypeAPI[] = [];
 
   p: number = 1;
   private unsubscribe$ = new Subject<void>();
@@ -32,14 +35,22 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit(): void {
-    this.getCarModels(this.searchConditions);
+    this.getCarTypes({limit: 999999999999999})
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  searchCarModel(event: Event){
+    console.log(event);
+    // if(event == null || event.target?.value == null) return;
+    let carTypeId = Number(((event.target) as HTMLInputElement).value);
+    // let formObj = this.searchCarModelForm.value;
+    this.searchConditions = {carTypeId};
+
+    this.getCarModels(this.searchConditions);
   }
 
   getCarModels(searchConditions: SearchCarModel){
@@ -76,6 +87,19 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     })
   }
 
+  getCarTypes(searchConditions: SearchCarType){
+    this.adminService.listCarTypes(searchConditions)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (response: CarTypeArrayAPI) => {
+        if(response.data){
+          this.carTypes = response.data;
+        }
+      },
+      error: (error) => console.log(error)
+    })
+  }
+
   goToCarModelEdit(id: number){
     this.router.navigate(['admin/car/car-model/edit', id]);
   }
@@ -89,6 +113,6 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarModel;
     this.p = pageNumber;
     this.getCarModels(this.searchConditions);
-    console.log(pageNumber);
+    // console.log(pageNumber);
   }
 }

@@ -24,6 +24,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   addServiceBtnIcon = faPlus;
   errorMsg: string | undefined;
   successMsg: string | undefined;
+  insurancePolicyNotValidMsg: string | undefined;
   days = 'يوم';
   currency = 'شيكل';
 
@@ -181,7 +182,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
   supplierText(supplierId: string): string {
     // console.log('supplierText')
-    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].username;
+    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
   }
 
   deleteAccidentService(index: number){
@@ -194,7 +195,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     if(!(event instanceof KeyboardEvent)){
       const controlValue = this.formCont('carId')?.value;
       this.selectedCar = this.mouseEventOnSearch(event, this.cars!, controlValue) as CarAPI;
-      this.getInsurancePolices(this.selectedCustomer?.id!, this.selectedCar.id);
+      this.getInsurancePolicies(this.selectedCustomer?.id!, this.selectedCar.id);
       return;
     }
 
@@ -218,6 +219,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   loadInsurancePolicyServices(insurancePolicy: InsurancePolicyAPI): void {
     this.services = insurancePolicy.ServicePolicies.map(servicePolicy => {
       let service = servicePolicy.Service;
+      service.cost = servicePolicy.cost;
+      service['additionalDays'] = servicePolicy.additionalDays;
       service['propertiesUI'] = {hide: false};
       return service;
     });
@@ -382,9 +385,10 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     })
   }
 
-  getInsurancePolices(customerId: string, carId: number){
+  getInsurancePolicies(customerId: string, carId: number){
     this.spinner.insurancePolicy = true;
-    let searchConditions: SearchInsurancePolicy = { customerID: customerId, carID: carId}
+    this.insurancePolicyNotValidMsg = undefined;
+    let searchConditions: SearchInsurancePolicy = { customerID: customerId, carID: carId, filterOutValid: true}
     this.adminService.listInsurancePolicy(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
@@ -395,6 +399,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
         this.spinner.insurancePolicy = false;
       },
       error: (error: any) => {
+        if(error.error.message)
+          this.insurancePolicyNotValidMsg = error.error.message;
         this.spinner.insurancePolicy = false;
         console.log(error);
       }
@@ -407,6 +413,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.selectedService = this.services.filter(service => service.id === Number(serviceId) )[0];
     this.addServiceAccidentForm.get('additionalDays')?.enable();
     this.formContS('supplierPercentage').setValue(this.selectedService.supplierPercentage);
+    this.formContS('additionalDays').setValue(this.selectedService['additionalDays']);
+    this.formContS('cost').setValue(this.selectedService.cost);
   }
 
   calculateTotalCost(event: Event){
@@ -507,6 +515,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.formCont('carId').setValue('');
 
     this.cancelInsurancePolicyInput(event);
+
+    this.insurancePolicyNotValidMsg = undefined;
   }
 
   cancelInsurancePolicyInput(event: Event): void {
