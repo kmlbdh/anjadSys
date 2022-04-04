@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
+    supplierPercentage: {
+      type: DataTypes.FLOAT.UNSIGNED,
+      allowNull: false
+    },
     additionalDays: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false

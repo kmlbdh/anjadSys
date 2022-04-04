@@ -844,9 +844,20 @@ const accountActions = {
 
       if (req.body.startDate && req.body.endDate){
         query.where.createdAt = {
-          [Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+          [Op.between]: [
+            new Date(req.body.startDate).setHours(0, 0, 0, 0),
+            new Date(req.body.endDate).setHours(23, 59 , 59, 59)
+          ]
         };
-      } 
+      } else if(req.body.startDate){
+        query.where.createdAt = {
+          [Op.gte]: new Date(req.body.startDate).setHours(0, 0, 0, 0),
+        };
+      } else if(req.body.endDate){
+        query.where.createdAt = {
+          [Op.lte]: new Date(req.body.endDate).setHours(23, 59 , 59, 59),
+        };
+      }
       // if (req.body.agentID)
       //   query.where.agentId = req.body.agentID;
 
@@ -939,12 +950,36 @@ const accountActions = {
 
 const SupplierActions = {
   list: async(req, res) => {
+    let flag = {
+      'accident': ServiceAccident,
+      'policy': ServicePolicy
+    };
+
     try {
+      let query = { where: {supplierId: req.body.supplierID}};
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
 
-      const { count, rows: accountSupplier } = await ServiceAccident.findAndCountAll({
-        where: {supplierId: req.body.supplierID},
+      if(req.body.startDate && req.body.endDate){
+         query.where.createdAt = {
+          [Op.between]: [
+            new Date(req.body.startDate).setHours(0, 0, 0, 0),
+            new Date(req.body.endDate).setHours(23, 59 , 59, 59)
+          ]
+        };
+      } else if(req.body.startDate){
+        query.where.createdAt = {
+          [Op.gte]: new Date(req.body.startDate).setHours(0, 0, 0, 0),
+        };
+      } else if(req.body.endDate){
+        query.where.createdAt = {
+          [Op.lte]: new Date(req.body.endDate).setHours(23, 59 , 59, 59),
+        };
+      }
+       
+
+      query = {
+        ...query,
         include: [
           {
             model: Service,
@@ -953,7 +988,9 @@ const SupplierActions = {
         ],
         offset: skip,
         limit: limit,
-      });
+      };
+
+      const { count, rows: accountSupplier } = await flag[req.body.flag].findAndCountAll(query);
 
       if(count == null || accountSupplier == null) 
         throw new customError("Failed! Account for Supplier isn't retrieved!", INTERR);
@@ -974,16 +1011,23 @@ const insurancePolicyActions = {
       let {
         totalPrice,
         note,
+        expireDate,
         customerId,
         agentId,
         carId,
         services
       } = req.body;
 
+      let availableLimit = await checkLimits(req);
+
+      if(!availableLimit)
+        throw new customError("لا يوجد رصيد كافي لاجراء هذه العملية!", INTERR);
+
      await sequelizeDB.transaction( async t => {
 
         const insurancePolicy = InsurancePolicy.build({
           totalPrice,
+          expireDate,
           note,
           customerId,
           agentId,
@@ -1004,7 +1048,8 @@ const insurancePolicyActions = {
             note: service.note,
             serviceId: service.serviceId,
             supplierId: service.supplierId,
-            insurancePolicyId: insurancePolicy.id
+            insurancePolicyId: insurancePolicy.id,
+            supplierPercentage: service.supplierPercentage
           };
         });
 
@@ -1081,6 +1126,7 @@ const insurancePolicyActions = {
     try {
       let {
         insurancePolicyId,
+        totalPrice,
         services
        } = req.body;
   
@@ -1117,7 +1163,8 @@ const insurancePolicyActions = {
               note: service.note,
               serviceId: service.serviceId,
               supplierId: service.supplierId,
-              insurancePolicyId: insurancePolicyId
+              insurancePolicyId: insurancePolicyId,
+              supplierPercentage: service.supplierPercentage
             };
         });
 
@@ -1141,7 +1188,6 @@ const insurancePolicyActions = {
         if(!updatedAccount)
           throw new customError("Failed! Account wasn't updated!", INTERR);
         
-    
         updateServiceLog(deletedServicePolicy);
         res.status(200).json({
           message: "Insurance Policy was updated successfully!", 
@@ -1175,6 +1221,10 @@ const insurancePolicyActions = {
 
       if (req.body.customerID)
         query.where.customerId = req.body.customerID;
+
+      if(req.body.filterOutValid){
+        query.where.expireDate = {[Op.gte]: new Date().setHours(0, 0, 0, 0)}
+      }
         
       if(Object.keys(query.where) === 0 ) delete query.where;
       
@@ -1188,7 +1238,7 @@ const insurancePolicyActions = {
             {
               model: Service,
               required: true,
-              attributes: ['id', 'name', 'cost', 'coverageDays']
+              attributes: ['id', 'name', 'cost', 'coverageDays', 'supplierPercentage']
             },
             {
               model: User,
@@ -1254,8 +1304,13 @@ const insurancePolicyActions = {
       // if (req.body.agentID)
       //   query.include[2].where.agentId = req.body.agentID;
 
-      const { count, rows: insurancePolices } = await InsurancePolicy.findAndCountAll(query);
-  
+      let { count, rows: insurancePolices } = await InsurancePolicy.findAndCountAll(query);
+
+      if(req.body.filterOutValid){
+        if(count === 0)
+          throw new customError("لا يوجد بوليصة تأمين متاحة او غير منتهية", INTERR);
+      }
+
       listServicesLog(query);
       res.status(200).json({data: insurancePolices, total: count});
     } catch(error) {
@@ -1691,6 +1746,53 @@ const sharedActions = {
     }
   },
 }
+
+/* ######################### Internal Method ##################### */
+
+const checkLimits = async (req) => {
+  const totalDebit = await Account.findAll({
+    where: { agentId: req.body.agentId },
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('debit')), 'debit'],
+    ],
+    group: ['agentId']
+  });
+
+  const totalCredit = await Account.findAll({
+    include:[
+      {
+        model: InsurancePolicy,
+        require: true,
+        where: { agentId: req.body.agentId },
+        attributes: []
+      }
+    ],
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('credit')), 'credit'],
+    ],
+    group: ['InsurancePolicy.agentId']
+  });
+
+  let totalDebitVal = Number(totalDebit[0]?.debit || 0),
+      totalCreditVal = Number(totalCredit[0]?.credit || 0),
+      totalPricePolicy = Number(req.body.totalPrice);
+
+    let finalAccount = ((totalDebitVal - (totalCreditVal + totalPricePolicy)) > 0);
+    return finalAccount;
+}
+
+// const filterInsurancePolicy = async(insurancePolices) => {
+//   let validInsurancePolicies = [];
+//   console.log('here is me ', insurancePolices);
+//   insurancePolices.forEach(insuPol => {
+//     if ((new Date(insuPol.expireDate)).setHours(0,0,0,0) >= (new Date()).setHours(0,0,0,0))
+//       validInsurancePolicies.push(insuPol)
+//   });
+//   return validInsurancePolicies;
+// }
+
+/* ######################### Internal Method ##################### */
+
 
 module.exports = {
   userActions,

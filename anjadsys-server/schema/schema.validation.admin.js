@@ -315,6 +315,7 @@ module.exports = {
   insurancePolicySchema: {
     add: Joi.object().keys({
       totalPrice: Joi.number().required(),
+      expireDate: Joi.date().required(),
       note: Joi.any().optional(),
       services: Joi.array().items(ServicePolicy).required(),
       customerId: Joi.string().required(),
@@ -324,6 +325,7 @@ module.exports = {
     update: Joi.object().keys({
       insurancePolicyId: Joi.number().required(),
       totalPrice: Joi.number().optional(),
+      expireDate: Joi.date().optional(),
       note: Joi.any().optional(),
       services: Joi.array().items(ServicePolicy).optional(),
       customerId: Joi.string().optional(),
@@ -337,6 +339,7 @@ module.exports = {
       carID: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
+      filterOutValid: Joi.boolean().optional(),
     }),
     delete: Joi.object().keys({
       insurancePolicyId: Joi.number().required()
@@ -370,5 +373,15 @@ module.exports = {
     // delete: Joi.object().keys({
     //   insurancePolicyId: Joi.number().required()
     // }),
+  },
+  supplierSchema:{
+    list: Joi.object().keys({
+      flag: Joi.string().trim().required(),
+      supplierID: Joi.string().trim().required(),
+      startDate: Joi.date().optional(),
+      endDate: Joi.date().optional(),
+      skip: Joi.number().optional(),
+      limit: Joi.number().optional(),
+    }),
   }
 };

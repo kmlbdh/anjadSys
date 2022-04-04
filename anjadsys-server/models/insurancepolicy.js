@@ -47,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
+    expireDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
     note: {
       type: DataTypes.TEXT,
     }
