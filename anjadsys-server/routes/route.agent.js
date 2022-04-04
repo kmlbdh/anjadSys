@@ -26,6 +26,7 @@ const {
   regionActions,
   insurancePolicyActions,
   accountActions,
+  statisticsActions
 } = require("../controller/controller.agent");
 
 module.exports = function(app){
@@ -141,6 +142,13 @@ module.exports = function(app){
     auth.isAgent,
     insurancePolicyValidation.list,
   ], insurancePolicyActions.list);
+
+/** #################### STATISTICS  ########################*/
+
+app.get("/api/agent/statistics",[
+  auth.verifyToken,
+  auth.isAgent,
+], statisticsActions.list);
 
 /** #################### ACCOUNT  ########################*/
 

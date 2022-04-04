@@ -8,6 +8,18 @@ const ServicePolicy = Joi.object().keys({
   serviceId: Joi.number().required(),
   supplierId: Joi.string().optional(),
   insurancePolicyId: Joi.number().optional(),
+  supplierPercentage: Joi.number().required(),
+});
+
+const ServiceAccident = Joi.object().keys({
+  id: Joi.number().optional(),
+  cost: Joi.number().required(),
+  additionalDays: Joi.number().required(),
+  note: Joi.any().optional(),
+  serviceId: Joi.number().required(),
+  supplierId: Joi.string().optional(),
+  accidentId: Joi.number().optional(),
+  supplierPercentage: Joi.number().required(),
 });
 
 module.exports = {
@@ -117,7 +129,7 @@ module.exports = {
       accidentDescription: Joi.string().trim().required(),
       expectedCost: Joi.number().required(),
       note: Joi.any().optional(),
-      services: Joi.array().required(),
+      services: Joi.array().items(ServiceAccident).required(),
       regionId: Joi.number().required(),
       customerId: Joi.string().required(),
       carId: Joi.number().required(),
@@ -140,6 +152,7 @@ module.exports = {
   insurancePolicySchema: {
     add: Joi.object().keys({
       totalPrice: Joi.number().required(),
+      expireDate: Joi.date().required(),
       note: Joi.any().optional(),
       services: Joi.array().items(ServicePolicy).required(),
       customerId: Joi.string().required(),
@@ -153,6 +166,7 @@ module.exports = {
       carID: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
+      filterOutValid: Joi.boolean().optional(),
     }),
   },
   accountSchema: {

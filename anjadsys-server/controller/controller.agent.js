@@ -563,6 +563,7 @@ const insurancePolicyActions = {
       let {
         totalPrice,
         note,
+        expireDate,
         customerId,
         carId,
         services
@@ -577,6 +578,7 @@ const insurancePolicyActions = {
 
         const insurancePolicy = InsurancePolicy.build({
           totalPrice,
+          expireDate,
           note,
           customerId,
           agentId: req.agent.id,
@@ -597,7 +599,8 @@ const insurancePolicyActions = {
             note: service.note,
             serviceId: service.serviceId,
             supplierId: service.supplierId,
-            insurancePolicyId: insurancePolicy.id
+            insurancePolicyId: insurancePolicy.id,
+            supplierPercentage: service.supplierPercentage
           };
         });
 
@@ -621,7 +624,10 @@ const insurancePolicyActions = {
 
         res.status(200).json({
           message: "Insurance Policy was added successfully!",
-          data: {insurancePolicy: savedInsurancePolicy.toJSON(), servicesPolicy: servicesPolicy}
+          data: {
+            insurancePolicy: savedInsurancePolicy.toJSON(),
+            servicesPolicy: servicesPolicy
+          }
         });
       });
     } catch(error) {
@@ -649,6 +655,10 @@ const insurancePolicyActions = {
 
       if (req.body.customerID)
         query.where.customerID = req.body.customerID;
+
+      if(req.body.filterOutValid){
+        query.where.expireDate = {[Op.gte]: new Date().setHours(0, 0, 0, 0)}
+      }
       
       query = { ...query,
         order: [['id', 'ASC' ]],
@@ -708,7 +718,12 @@ const insurancePolicyActions = {
       };
 
       const { count, rows: insurancePolices } = await InsurancePolicy.findAndCountAll(query);
-  
+      
+      if(req.body.filterOutValid){
+        if(count === 0)
+          throw new customError("لا يوجد بوليصة تأمين متاحة او غير منتهية", INTERR);
+      }
+      
       listInsurancePoliciesLog(query);
       res.status(200).json({data: insurancePolices, total: count});
     } catch(error) {
@@ -806,6 +821,31 @@ const regionActions = {
   },
 }
 
+const statisticsActions = {
+  list: async(req, res) => {
+    try {
+      const customers = await User.count({ where: {roleId: 3, agentId: req.agent.id}});
+      const insurancePolicies = await InsurancePolicy.count({ where: {agentId: req.agent.id}});
+      const accidents = await Accident.count({ where: { agentId: req.agent.id}});
+  
+      if(customers == null || insurancePolicies == null || accidents == null) 
+        throw new customError("Failed! can't get Statistics!");
+
+      res.status(200).json({
+        message: "Statistics were reterived successfully!",
+        data: {
+          customers,
+          insurancePolicies,
+          accidents
+        }
+      });   
+    } catch(error){
+      listServicesLog(error);
+      errorHandler(res, error, "Failed! can't get data!!");
+    }
+  },
+}
+
 /* ######################### Internal Method ##################### */
 
 const checkLimits = async (req) => {
@@ -851,5 +891,6 @@ module.exports = {
   carTypeActions,
   accidentActions,
   insurancePolicyActions,
-  accountActions
+  accountActions,
+  statisticsActions
 };
