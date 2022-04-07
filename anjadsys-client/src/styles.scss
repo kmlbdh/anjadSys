@@ -29,18 +29,29 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       height: 35px;
     }
     .modal-body{
+      .card-body{
+        padding: 0 !important;
+      }
       .main-data-section{
         width: 100%;
         &.card{
           @include card;
         }
-        .policy-header-section{
+        .header-section{
           margin-bottom: 15px;
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
           justify-content: space-between;
           align-items: center;
+          background-color: lightgray;
+          padding: 10px 5px;
+          border-radius: 2px;
+
+          h1, h2, h3, h4, h5, h6{
+            margin: 0;
+          }
+
           .expire-date{
             display: flex;
             flex-direction: row;
@@ -48,9 +59,11 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             justify-content: flex-start;
             align-items: flex-start;
             column-gap: 5px;
+
             h6{
-              font-weight: 600
+              font-weight: 600;
             }
+
             span{
               line-height: 1.2;
             }
@@ -90,6 +103,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             label{
               font-size: 17px;
               font-weight: 700;
+            }
+            span{
+              margin: 0.2rem 0.4rem;
             }
           }
         }

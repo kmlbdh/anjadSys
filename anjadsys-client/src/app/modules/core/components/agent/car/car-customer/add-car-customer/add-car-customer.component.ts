@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { CarModelAPI, CarTypeAPI } from 'src/app/modules/core/model/car';
+import { CarModelAPI } from 'src/app/modules/core/model/car';
 import { UserAPI } from 'src/app/modules/core/model/user';
 import { AgentService } from '../../../agent.service';
 

@@ -502,14 +502,30 @@ const accountActions = {
       if (req.body.accountId) 
         query.where.id = req.body.accountId;
 
-      if (req.body.insurancePolicyId) 
-        query.where.insurancePolicyId = req.body.insurancePolicyId;
+      if (req.body.startDate && req.body.endDate){
+        query.where.createdAt = {
+          [Op.between]: [
+            new Date(req.body.startDate).setHours(0, 0, 0, 0),
+            new Date(req.body.endDate).setHours(23, 59 , 59, 59)
+          ]
+        };
+      } else if(req.body.startDate){
+        query.where.createdAt = {
+          [Op.gte]: new Date(req.body.startDate).setHours(0, 0, 0, 0),
+        };
+      } else if(req.body.endDate){
+        query.where.createdAt = {
+          [Op.lte]: new Date(req.body.endDate).setHours(23, 59 , 59, 59),
+        };
+      }
+
+      // if (req.body.insurancePolicyId) 
+      //   query.where.insurancePolicyId = req.body.insurancePolicyId;
 
       // if (req.body.customerID)
       //   query.where.customerID = req.body.customerID;
         
       if(Object.keys(query.where) === 0 ) delete query.where;
-
 
       if(req.body.insurancePolicyId){
         query = { ...query,
@@ -528,20 +544,19 @@ const accountActions = {
           order: [['id', 'ASC' ]],
           include: [
             {
-              model: User,
-              required: false,
-              where: {agentId: req.agent.id},
-              attributes: { exclude: ['passowrd']}
-            },
-            {
               model: InsurancePolicy,
               required: false,
               where: { agentId: req.agent.id}
-            }
+            },
+            {
+              model: User,
+              required: false,
+              attributes: { exclude: ['passowrd']}
+            },
           ],
           offset: skip,
           limit: limit,
-        };
+        };     
       }
 
       const { count, rows: accounts } = await Account.findAndCountAll(query);

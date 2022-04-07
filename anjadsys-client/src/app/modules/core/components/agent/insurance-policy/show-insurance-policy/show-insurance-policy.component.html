@@ -101,7 +101,9 @@
   <div class="modal-body">
     <div class="main-data-section card">
       <div class="card-body">
-        <h5 class="card-title">بيانات الزبون</h5>
+        <div class="header-section">
+          <h5>بيانات الزبون</h5>
+        </div>
         <div class="data-section">
           <div class="each-data">
             <label>رقم هوية الزبون</label>
@@ -125,7 +127,9 @@
     </div>
 
     <div class="main-data-section card">
-      <h5>بيانات السيارة</h5>
+      <div class="header-section">
+        <h5>بيانات السيارة</h5>
+      </div>
       <div class="data-section">
         <div class="each-data">
           <label>رقم السيارة</label>
@@ -148,14 +152,13 @@
     </div>
 
       <div class="main-data-section card">
-        <div class="policy-header-section">
+        <div class="header-section">
           <h5>بيانات البوليصة</h5>
           <div class="expire-date">
             <h6>تاريخ انتهاء البوليصة:</h6>
             <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
           </div>
         </div>
-
         <div class="data-section for-table">
           <div>
             <table class="table">

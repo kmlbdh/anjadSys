@@ -39,7 +39,8 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: flex-end;
-      height: 130px;
+      min-height: 130px;
+      row-gap: 10px;
 
       .form-sec1,
       .form-sec2 {
@@ -48,16 +49,17 @@
       .form-sec1{
         display: flex;
         flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         align-items: center;
+        row-gap: 10px;
       }
       .form-sec2 {
         flex-basis: 100%;
       }
 
       div.form-control-group {
-        width: 100%;
+        width: 30%;
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
@@ -201,58 +203,16 @@
         flex-basis: 12%;
       }
       .col-custom-2 {
-        flex-basis: 12%;
+        flex-basis: 22%;
       }
       .col-custom-3 {
-        flex-basis: 15%;
+        flex-basis: 22%;
       }
       .col-custom-4 {
-        flex-basis: 16%;
+        flex-basis: 22%;
       }
       .col-custom-5 {
-        flex-basis: 15%;
-      }
-      .col-custom-6 {
-        flex-basis: 30%;
-        text-align: center;
-        &.control{
-          display: flex;
-          flex-direction: row;
-          justify-content: space-evenly;
-          align-items: center;
-
-          button{
-            margin-left: 14px;
-            margin-right: 14px;
-            $btnWidth: 50px;
-
-            fa-icon{
-              cursor: pointer;
-              // margin-left: 10px;
-              font-size: 20px;
-              margin: auto;
-              display: flex;
-              flex-direction: row;
-              flex-wrap: nowrap;
-              justify-content: space-evenly;
-              justify-content: center;
-              align-items: stretch;
-              margin: 6px;
-            }
-
-            &.btn-error{
-              @include button-error;
-              width: $btnWidth;
-              margin: 0;
-            }
-
-            &.btn-primary{
-              @include button-primary;
-              width: $btnWidth;
-              margin: 0;
-            }
-          }
-        }
+        flex-basis: 22%;
       }
 
       @media all and (max-width: 767px) {
@@ -282,6 +242,9 @@
       }
     }
 
+    div.error{
+      @include messageBox($mainRedColor);
+    }
     div.success{
       @include messageBox($mainGreenColor);
     }

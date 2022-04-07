@@ -1,19 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-
-interface ChildNav{
-    id: number,
-    name: string,
-    link: string
-}
-
-export interface NavInput{
-    id: number,
-    name: string,
-    faIcon: any,
-    hide: boolean,
-    children: ChildNav[]
-}
+import { NavInput } from '../../models/nav';
+export * from '../../models/nav';
 
 @Component({
   selector: 'app-nav',

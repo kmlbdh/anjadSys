@@ -24,7 +24,7 @@
           <div class="col-custom col-custom-1" data-label="Id">{{user.id}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
           <div class="col-custom col-custom-3" data-label="Customer Company">{{user.companyName}}</div>
-          <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date) : rolesLang[user.Role.name] }}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date: 'dd-MM-yyyy') : rolesLang[user.Role.name] }}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
 
             <button *ngIf="user.Role.name !== 'admin'" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { SearchUser, UserAPI, UsersAPI } from 'src/app/modules/core/model/user';

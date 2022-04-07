@@ -645,192 +645,10 @@ const accidentActions = {
 };
 
 const accountActions = {
-  // add: async(req, res) => {
-  //   try {
-  //     let {
-  //       totalPrice,
-  //       note,
-  //       customerId,
-  //       agentId,
-  //       carId,
-  //       services
-  //     } = req.body;
-
-  //    await sequelizeDB.transaction( async t => {
-
-  //       const insurancePolicy = InsurancePolicy.build({
-  //         totalPrice,
-  //         note,
-  //         customerId,
-  //         agentId,
-  //         carId,
-  //       }, { isNewRecord: true, transaction: t });
-
-  //       const savedInsurancePolicy = await insurancePolicy.save();
-
-  //       if(!savedInsurancePolicy || !insurancePolicy.id)
-  //         throw new customError("Failed! Insurance Policy wasn't added!", INTERR);
-
-  //       let servicePolicyArray = [];
-
-  //       services.forEach((service, i) => {
-  //         servicePolicyArray[i] = {
-  //           cost: service.cost,
-  //           additionalDays: service.additionalDays,
-  //           note: service.note,
-  //           serviceId: service.serviceId,
-  //           supplierId: service.supplierId,
-  //           insurancePolicyId: insurancePolicy.id
-  //         };
-  //       });
-
-  //       const servicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
-  //         { transaction: t});
-  //         addServiceLog(servicesPolicy);
-
-  //       if(servicesPolicy.length === 0)
-  //         throw new customError("Failed! Services Policy wasn't added!", INTERR);
-
-  //       const account = Account.build({
-  //         insurancePolicyId: insurancePolicy.id,
-  //         credit: totalPrice,
-  //       }, { isNewRecord: true, transaction: t });
-    
-  //       const savedAccount = await account.save();
-
-  //       if(!savedAccount)
-  //         throw new customError("Failed! Account wasn't added!", INTERR);
-
-  //       res.status(200).json({
-  //         message: "Insurance Policy was added successfully!",
-  //         data: {insurancePolicy: savedInsurancePolicy.toJSON(), servicesPolicy: servicesPolicy}
-  //       });
-  //     });
-  //   } catch(error) {
-  //     addServiceLog(error);
- //      errorHandler(res, error, "Failed! Insurance Policy wasn't added!");
-  //   }
-  // },
-  // delete: async(req, res) => {
-  //   try {
-  //     let { insurancePolicyId } = req.body;
-
-  //     await sequelizeDB.transaction( async t => {
-  //       const deletedServicesPolicy = await ServicePolicy.destroy({ where: 
-  //         { insurancePolicyId: insurancePolicyId }}, 
-  //         { transaction: t });
-
-  //       if(!deletedServicesPolicy)
-  //         throw new customError("Failed! Services Policy isn't deleted!", INTERR);
-
-  //       const deletedInsurancePolicy = await InsurancePolicy.destroy({ where: { id: insurancePolicyId }}, 
-  //         {transaction: t});
-
-  //       if(!deletedInsurancePolicy)
-  //         throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
-
-  //       const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
-  //         {transaction: t});
-    
-  //       if(!deletedAccount)
-  //         throw new customError("Failed! Account wasn't deleted!", INTERR);
-    
-  //       res.status(200).json({
-  //         message: "Insurance Policy was deleted successfully!",
-  //         data: {insurancePolicy: deletedInsurancePolicy, servicesPolicy: deletedServicesPolicy}
-  //       });
-  //     });
-
-  //   } catch(error) {
-  //     deleteServiceLog(error);
-  //     errorHandler(res, error, "Failed! Insurance Policy isn't deleted!");
-  //   }
-  // },
-  // update: async(req, res) => {
-  //   try {
-  //     let {
-  //       insurancePolicyId,
-  //       services
-  //      } = req.body;
-  
-  //     if(!insurancePolicyId) 
-  //       throw new customError("Failed! Insurance Policy data isn't provided!", INTERR);
-  
-  //     await sequelizeDB.transaction( async t => {
-  //       const query = { where: {id: insurancePolicyId} };
-  //       const updateData = {};
-
-  //       Object.entries(req.body).forEach((val, ind) => {
-  //         updateServiceLog(val[0], val[1])
-  //         if(val && val.length > 0 && val[0] !== 'insurancePolicyId' && val[0] !== 'services')
-  //           updateData[val[0]] = val[1];
-  //       });
-
-  //       updateServiceLog(updateData);
-  //       const updatedInsurancePolicy = await InsurancePolicy.update(updateData, query);
-        
-  //       if(updatedInsurancePolicy[0]!== 1) 
-  //         throw new customError("Failed! Insurance Policy isn't updated!", INTERR);
-
-  //       let servicePolicyArray = [];
-  //       let servAPolicyIds = [];
-
-  //       services.forEach((service, i) => {
-  //         if(service.id)
-  //           servAPolicyIds.push(service.id);
-
-  //           servicePolicyArray[i] = {
-  //             id: service.id,
-  //             cost: service.cost,
-  //             additionalDays: service.additionalDays,
-  //             note: service.note,
-  //             serviceId: service.serviceId,
-  //             supplierId: service.supplierId,
-  //             insurancePolicyId: insurancePolicyId
-  //           };
-  //       });
-
-  //       //delete services that are not provided by ids
-  //       const deletedServicePolicy = await ServicePolicy.destroy({ 
-  //         where: {
-  //           [Op.and]: {
-  //             id:{ [Op.notIn]: [...servAPolicyIds] },
-  //             insurancePolicyId: insurancePolicyId
-  //           }
-  //         }
-  //       },
-  //       { transaction: t});
-
-  //       //update exist one and add the new services
-  //       const updateServicesPolicy = await ServicePolicy.bulkCreate(servicePolicyArray,
-  //         { updateOnDuplicate: ["id"] , transaction: t});
-          
-  //       const updatedAccount = await Account.update({credit: totalPrice}, {where: {insurancePolicyId: insurancePolicyId}}, { transaction: t});
-    
-  //       if(!updatedAccount)
-  //         throw new customError("Failed! Account wasn't updated!", INTERR);
-        
-    
-  //       updateServiceLog(deletedServicePolicy);
-  //       res.status(200).json({
-  //         message: "Insurance Policy was updated successfully!", 
-  //         data: {
-  //           insurancePolicy: updatedInsurancePolicy[0],
-  //           servicesPolicy: updateServicesPolicy[0],
-  //           deletedServicesPolicy: deletedServicePolicy
-  //         }
-  //       });
-  //     });
-      
-  //   } catch(error) {
-  //     updateServiceLog(error);
-  //     errorHandler(res, error, "Failed! Insurance Policy wasn't updated!");
-  //   }
-  // },
   list: async(req, res) => {
     try{
       let query = {where:{}};
-      // let query2 = {where:{}};
+
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
  
@@ -894,19 +712,6 @@ const accountActions = {
             offset: skip,
             limit: limit,
           };     
-        // query2 = { ...query2,
-        //   order: [['id', 'ASC' ]],
-        //   include: [
-        //     {
-        //       model: User,
-        //       required: true,
-        //       where: { agentId: req.body.agentID },
-        //       attributes: { exclude: ['passowrd']}
-        //     },
-        //   ],
-        //   offset: skip,
-        //   limit: limit,
-        // };
       } else {
         query = { ...query,
           order: [['id', 'ASC' ]],
@@ -926,14 +731,7 @@ const accountActions = {
         };     
       }
       
-      // if(req.body.insurancePolicyId){
-        var { count, rows: accounts } = await Account.findAndCountAll(query);
-      // } else{
-      //   var { count, rows: accounts } = await Account.findAndCountAll(query);
-      //   var { count2, rows: accounts2 } = await Account.findAndCountAll(query2);
-      //   count = count + count2;
-      //   accounts = [...accounts, ...accounts2];
-      // }
+      var { count, rows: accounts } = await Account.findAndCountAll(query);
   
       listServicesLog(query);
       res.status(200).json({data: accounts, total: count});

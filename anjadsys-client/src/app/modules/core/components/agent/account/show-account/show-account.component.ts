@@ -3,7 +3,7 @@ import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { AccountAPI, SearchAccount, AccountsAPI } from '../../../../model/account';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AgentService } from '../../agent.service';
 import { Router } from '@angular/router';
@@ -23,6 +23,11 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
   cancelInput = faTimes;
+
+  private currentDate = new Date();
+
+  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -60,6 +65,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     insurancePolicy: {} as InsurancePolicyAPI,
     services: [] as ServicePolicyAPI[]
   };
+
+  // modalAccident: {
   //   customer: UserAPI,
   //   accident: AccidentAPI,
   //   services: ServiceAccidentAPI[]
@@ -72,7 +79,9 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   searchAccountForm = this.fb.group({
     accountId: [''],
     insurancePolicyId: [''],
-    // customerID: [''],
+    customerID: [''],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
   });
 
   constructor(
@@ -103,6 +112,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() => this.spinner.customer = true),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
@@ -129,7 +139,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if(typeTxt && typeTxt !== ''){
-      this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
@@ -146,7 +155,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.selectedCustomer = undefined;
-    this.formCont('customerId').setValue('');
+    this.formCont('customerID').setValue('');
   }
 
   searchAccount(form: FormGroupDirective){
@@ -242,7 +251,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccount;
+    this.searchConditions = {...this.searchConditions, skip: skip } as SearchAccount;
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);

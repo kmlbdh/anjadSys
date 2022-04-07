@@ -75,7 +75,7 @@
           <div class="col-custom col-custom-1" data-label="Car Number">{{car.carNumber}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Name">{{car.User.username}}</div>
           <div class="col-custom col-custom-3" data-label="Car Type/Model">{{car.CarType.name}}/{{car.CarModel.name}}</div>
-          <div class="col-custom col-custom-4" data-label="Car Registration Date Role">{{ (car.createdAt | date) }}</div>
+          <div class="col-custom col-custom-4" data-label="Car Registration Date">{{ car.createdAt | date: 'dd-MM-yyyy' }}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
 
             <button class="btn-error" title="حذف السيارة" (click)="deleteCar(car)">

@@ -62,7 +62,6 @@
         <div class="col-custom col-custom-2">اسم صاحب السيارة</div>
         <div class="col-custom col-custom-3">نوع/موديل السيارة</div>
         <div class="col-custom col-custom-4">تاريخ تسجيل السيارة</div>
-        <!-- <div class="col-custom col-custom-5">التحكم</div> -->
       </li>
       <ng-template [ngIf]="cars.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -75,14 +74,7 @@
           <div class="col-custom col-custom-1" data-label="Car Number">{{car.carNumber}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Name">{{car.User.username}}</div>
           <div class="col-custom col-custom-3" data-label="Car Type/Model">{{car.CarType.name}}/{{car.CarModel.name}}</div>
-          <div class="col-custom col-custom-4" data-label="Car Registration Date Role">{{ (car.createdAt | date) }}</div>
-          <!-- <div class="col-custom col-custom-5 control" data-label="Control">
-
-            <button class="btn-error" title="حذف السيارة" (click)="deleteCar(car)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
-            </button>
-
-          </div> -->
+          <div class="col-custom col-custom-4" data-label="Car Registration Date">{{ (car.createdAt | date: 'dd-MM-yyyy') }}</div>
         </li>
       </ng-template>
     </ul>

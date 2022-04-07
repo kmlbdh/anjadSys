@@ -10,16 +10,16 @@
         <div class="form-control-group">
           <label for="accountId">رقم الحركة المالية</label>
           <input id="accountId" type="text"
-           name="accountId" formControlName="accountId" placeholder="قم بالبحث عن الحركة المالية بادخال رقمها"/>
+           name="accountId" formControlName="accountId"/>
         </div>
 
         <div class="form-control-group">
           <label for="insurancePolicyId">رقم البوليصة</label>
           <input id="insurancePolicyId" type="text"
-           name="accouinsurancePolicyIdntId" formControlName="insurancePolicyId" placeholder="قم بالبحث عن الحركة المالية بادخال رقم البوليصة"/>
+           name="insurancePolicyId" formControlName="insurancePolicyId"/>
         </div>
 
-        <!-- <div class="form-control-group">
+        <div class="form-control-group">
           <label for="customerID">الزبون:</label>
           <div class="input" *ngIf="selectedCustomer">
             {{selectedCustomer.username}}
@@ -37,7 +37,17 @@
                 {{customer.username}}
             </option>
           </datalist>
-        </div> -->
+        </div>
+
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
 
       </div>
 
@@ -55,16 +65,14 @@
 
   </div>
 
-  <div class="page-content card  d-print-none">
+  <div class="page-content card dont-print">
     <ul class="responsive-table">
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم الحركة</div>
         <div class="col-custom col-custom-2">المبلغ (له)</div>
         <div class="col-custom col-custom-3">المبلغ (عليه)</div>
-        <!-- <div class="col-custom col-custom-4">اسم الوكيل</div> -->
-        <div class="col-custom col-custom-5">تاريخ الحركة</div>
-        <div class="col-custom col-custom-6">نوع الحركة</div>
-        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+        <div class="col-custom col-custom-4">تاريخ الحركة</div>
+        <div class="col-custom col-custom-5">نوع الحركة</div>
       </li>
       <ng-template [ngIf]="accounts.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -74,21 +82,20 @@
       <ng-template [ngIf]="accounts.length > 0">
         <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div [ngClass]="{'clickable': account.insurancePolicyId}" class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
+          <div class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
           <div class="col-custom col-custom-2" data-label="Debit">{{account.debit || 0}}</div>
           <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
-          <!-- <div class="col-custom col-custom-4" data-label="Car Registration Date Role">{{ accident.Agent.username }}/{{ accident.Agent.companyName }}</div> -->
-          <div class="col-custom col-custom-5" data-label=" Date">{{ (account.createdAt| date) }}</div>
-          <div class="col-custom col-custom-6" data-label="Account Transaction Type">
+          <div class="col-custom col-custom-4" data-label="Date">{{ account.createdAt| date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
             <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
+              <p style="text-decoration: underline;" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
+                 رقم: {{ account.insurancePolicyId }}
+              </p>
             </ng-container>
             <ng-container *ngIf="account.agentId">
              سقف مالي
             </ng-container>
-            <div *ngIf="account.insurancePolicyId" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
-              {{ account.insurancePolicyId }}
-            </div>
           </div>
         </li>
       </ng-template>
@@ -116,7 +123,9 @@
   <div class="modal-body">
     <div class="main-data-section card">
       <div class="card-body">
-        <h5 class="card-title">بيانات الزبون</h5>
+        <div class="header-section">
+          <h5>بيانات الزبون</h5>
+        </div>
         <div class="data-section">
           <div class="each-data">
             <label>رقم هوية الزبون</label>
@@ -140,7 +149,9 @@
     </div>
 
     <div class="main-data-section card">
-      <h5>بيانات السيارة</h5>
+      <div class="header-section">
+        <h5>بيانات السيارة</h5>
+      </div>
       <div class="data-section">
         <div class="each-data">
           <label>رقم السيارة</label>
@@ -153,7 +164,7 @@
         </div>
         <div class="each-data">
           <label>سنة التصنيع</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.productionYear}}</span>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
         </div>
         <div class="each-data">
           <label>رقم شصي السيارة</label>
@@ -163,7 +174,7 @@
     </div>
 
       <div class="main-data-section card">
-        <div class="policy-header-section">
+        <div class="header-section">
           <h5>بيانات البوليصة</h5>
           <div class="expire-date">
             <h6>تاريخ انتهاء البوليصة:</h6>

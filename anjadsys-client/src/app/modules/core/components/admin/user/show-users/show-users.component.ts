@@ -12,8 +12,6 @@ import { Subject, takeUntil } from 'rxjs';
 })
 
 export class ShowUsersComponent implements OnInit, OnDestroy {
-  users: UserAPI[] = [];
-  usersToBeAdded: UserAPI[] = [];
   trashIcon = faTrashAlt;
   userEditIcon = faEdit;
   deactivateUserIcon = faUserSlash;
@@ -22,6 +20,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   agentLimitsListIcon = faCopy;
   customersIcon = faUsers;
   supplierPartsIcon = faPeopleCarry;
+
+  users: UserAPI[] = [];
+  usersToBeAdded: UserAPI[] = [];
 
   p: number = 1;
   pagination = {

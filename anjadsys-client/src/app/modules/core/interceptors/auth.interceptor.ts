@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(newRq)
+    return next.handle(newRq);
       // .pipe(
       //   tap(evt => {
       //     console.log(evt)

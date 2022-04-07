@@ -93,7 +93,7 @@
           <div class="col-custom col-custom-2" data-label="Car Number">{{accident.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Car Owner">{{accident.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Agent Name">{{ accident.Agent.username }}/{{ accident.Agent.companyName }}</div>
-          <div class="col-custom col-custom-5" data-label="Accident Registration Date">{{ (accident.registerAccidentDate | date) }}</div>
+          <div class="col-custom col-custom-5" data-label="Car Accident Registration Date">{{ accident.registerAccidentDate | date: 'dd-MM-yyyy' }}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
 
             <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
@@ -132,7 +132,9 @@
   <div class="modal-body">
     <div class="main-data-section card">
       <div class="card-body">
-        <h5 class="card-title">بيانات الزبون</h5>
+        <div class="header-section">
+          <h5>بيانات الزبون</h5>
+        </div>
         <div class="data-section">
           <div class="each-data">
             <label>رقم هوية الزبون</label>
@@ -156,7 +158,9 @@
     </div>
 
     <div class="main-data-section card">
-      <h5>بيانات السيارة</h5>
+      <div class="header-section">
+        <h5>بيانات السيارة</h5>
+      </div>
       <div class="data-section">
         <div class="each-data">
           <label>رقم السيارة</label>
@@ -178,32 +182,34 @@
       </div>
     </div>
 
-      <div class="main-data-section card">
+    <div class="main-data-section card">
+      <div class="header-section">
         <h5>بيانات الخدمات</h5>
-        <div class="data-section for-table">
-          <div>
-            <table class="table">
-              <thead class="thead-light">
-                <tr>
-                  <th>الخدمة</th>
-                  <th>عدد ايام التغطية</th>
-                  <th>المورد</th>
-                  <!-- <th>تكلفة الخدمة</th> -->
-                </tr>
-              </thead>
+      </div>
+      <div class="data-section for-table">
+        <div>
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th>الخدمة</th>
+                <th>عدد ايام التغطية</th>
+                <th>المورد</th>
+                <!-- <th>تكلفة الخدمة</th> -->
+              </tr>
+            </thead>
 
-              <tbody>
-                <tr *ngFor="let service of modalAccident.services;">
-                  <td>{{service.Service.name}}</td>
-                  <td>{{service.Service.coverageDays}}</td>
-                  <td>{{service.Supplier.companyName}}</td>
-                  <!-- <td>{{service.Service.cost}}</td> -->
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <tbody>
+              <tr *ngFor="let service of modalAccident.services;">
+                <td>{{service.Service.name}}</td>
+                <td>{{service.Service.coverageDays}}</td>
+                <td>{{service.Supplier.companyName}}</td>
+                <!-- <td>{{service.Service.cost}}</td> -->
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
   </div>
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة بلاغ الحادث</button>

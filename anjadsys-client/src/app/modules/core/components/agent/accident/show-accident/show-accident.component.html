@@ -51,7 +51,7 @@
 
   </div>
 
-  <div class="page-content card  d-print-none">
+  <div class="page-content card dont-print">
     <ul class="responsive-table">
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم البلاغ</div>
@@ -68,9 +68,9 @@
         <li *ngFor="let accident of accidents | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
           <div class="col-custom col-custom-1 clickable" data-label="Car Accident Id" (click)="open(accidentModal, accident.id)">{{accident.id}}</div>
-          <div class="col-custom col-custom-2" data-label="Customer Number">{{accident.Car.carNumber}}</div>
+          <div class="col-custom col-custom-2" data-label="Car Number">{{accident.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Car Owner">{{accident.Customer.username}}</div>
-          <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{ (accident.registerAccidentDate | date) }}</div>
+          <div class="col-custom col-custom-5" data-label="Car Accident Registration Date">{{ accident.registerAccidentDate | date: 'dd-MM-yyyy' }}</div>
         </li>
       </ng-template>
     </ul>
@@ -97,7 +97,9 @@
   <div class="modal-body">
     <div class="main-data-section card">
       <div class="card-body">
-        <h5 class="card-title">بيانات الزبون</h5>
+        <div class="header-section">
+          <h5>بيانات الزبون</h5>
+        </div>
         <div class="data-section">
           <div class="each-data">
             <label>رقم هوية الزبون</label>
@@ -121,7 +123,9 @@
     </div>
 
     <div class="main-data-section card">
-      <h5>بيانات السيارة</h5>
+      <div class="header-section">
+        <h5>بيانات السيارة</h5>
+      </div>
       <div class="data-section">
         <div class="each-data">
           <label>رقم السيارة</label>
@@ -144,7 +148,9 @@
     </div>
 
       <div class="main-data-section card">
-        <h5>بيانات الخدمات</h5>
+        <div class="header-section">
+          <h5>بيانات الخدمات</h5>
+        </div>
         <div class="data-section for-table">
           <div>
             <table class="table">

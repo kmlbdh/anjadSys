@@ -281,6 +281,9 @@
       }
     }
 
+    div.error{
+      @include messageBox($mainRedColor);
+    }
     div.success{
       @include messageBox($mainGreenColor);
     }

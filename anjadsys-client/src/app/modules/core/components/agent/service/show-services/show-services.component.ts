@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ServiceAPI } from 'src/app/modules/core/model/service';
 import { AgentService } from '../../agent.service';

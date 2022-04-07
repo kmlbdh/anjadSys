@@ -344,33 +344,17 @@ module.exports = {
     }),
   },
   accountSchema: {
-    // add: Joi.object().keys({
-    //   totalPrice: Joi.number().required(),
-    //   note: Joi.any().optional(),
-    //   services: Joi.array().items(ServicePolicy).required(),
-    //   customerId: Joi.string().required(),
-    //   carId: Joi.number().required(),
-    // }),
-    // update: Joi.object().keys({
-    //   insurancePolicyId: Joi.number().required(),
-    //   totalPrice: Joi.number().optional(),
-    //   note: Joi.any().optional(),
-    //   services: Joi.array().items(ServicePolicy).optional(),
-    //   customerId: Joi.string().optional(),
-    //   carId: Joi.number().optional(),
-    // }),
     list: Joi.object().keys({
       accountId: Joi.number().optional(),
       insurancePolicyId: Joi.number().optional(),
       customerID: Joi.string().optional(),
       supplierID: Joi.string().optional(),
       agentID: Joi.string().trim().optional(),
+      startDate: Joi.date().optional(),
+      endDate: Joi.date().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
     }),
-    // delete: Joi.object().keys({
-    //   insurancePolicyId: Joi.number().required()
-    // }),
   },
   supplierSchema:{
     list: Joi.object().keys({

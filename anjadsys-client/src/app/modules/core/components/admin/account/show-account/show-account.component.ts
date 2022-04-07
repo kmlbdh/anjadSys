@@ -5,12 +5,10 @@ import { UserAPI, SearchUser } from '../../../../model/user';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime, Subject, takeUntil, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
 import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
-import { ServiceAccidentAPI, ServicePolicyAPI } from '../../../../model/service';
+import { ServicePolicyAPI } from '../../../../model/service';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router } from '@angular/router';
-import { AccidentAPI, AccidentsAPI, SearchAccident } from 'src/app/modules/core/model/accident';
-
 @Component({
   selector: 'app-show-account',
   templateUrl: './show-account.component.html',
@@ -70,17 +68,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     services: [] as ServicePolicyAPI[]
   };
 
-
-  modalAccident: {
-    customer: UserAPI,
-    accident: AccidentAPI,
-    services: ServiceAccidentAPI[]
-  } = {
-    customer: {} as UserAPI,
-    accident: {} as AccidentAPI,
-    services: [] as ServiceAccidentAPI[]
-  };
-
+  // modalAccident: {
   //   customer: UserAPI,
   //   accident: AccidentAPI,
   //   services: ServiceAccidentAPI[]
@@ -272,28 +260,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         if(response.data){
           this.accounts = response.data;
           this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
-  }
-
-  openAccident(content: any, accidentId: number) {
-    let searchCondition: SearchAccident = { accidentID: accidentId };
-    this.adminService.listAccidents(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: AccidentsAPI) => {
-        if(response.data){
-          this.modalAccident.customer = response.data[0].Customer;
-          this.modalAccident.accident = response.data[0];
-          this.modalAccident.services = response.data[0].ServiceAccidents!;
-
-          this.modalService.open(content, this.modalOptions).result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
         }
       },
       error: (error: any) => console.log(error)

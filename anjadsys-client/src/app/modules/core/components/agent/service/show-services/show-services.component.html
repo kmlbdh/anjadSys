@@ -10,7 +10,6 @@
         <div class="col-custom col-custom-2">التغطية الاساسية</div>
         <div class="col-custom col-custom-3">تكلفة التغطية</div>
         <div class="col-custom col-custom-4">تاريخ الاضافة</div>
-        <!-- <div class="col-custom col-custom-5">التحكم</div> -->
       </li>
       <ng-template [ngIf]="services.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -23,15 +22,7 @@
           <div class="col-custom col-custom-1" data-label="ID">{{service.name}}</div>
           <div class="col-custom col-custom-2" data-label="Coverage Days">{{service.coverageDays}} {{day}}</div>
           <div class="col-custom col-custom-3" data-label="Service Cost">{{service.cost}} {{currency}}</div>
-          <div class="col-custom col-custom-4" data-label="Service Addition Date">{{service.createdAt | date}}</div>
-          <!-- <div class="col-custom col-custom-5 control" data-label="Control">
-            <button class="btn-error" title="حذف الخدمة">
-              <fa-icon [icon]="trashIcon" (click)="deleteService(service)"></fa-icon>
-            </button>
-             <button class="btn-primary" title="تعديل بيانات الخدمة">
-              <fa-icon [icon]="editServiceIcon" (click)="goToEditService(service)"></fa-icon>
-             </button>
-          </div> -->
+          <div class="col-custom col-custom-4" data-label="Service Addition Date">{{service.createdAt | date: 'dd-MM-yyyy'}}</div>
         </li>
       </ng-template>
     </ul>

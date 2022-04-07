@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
 import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from 'src/app/modules/core/model/insurancepolicy';
