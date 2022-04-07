@@ -13,13 +13,11 @@ const ServicePolicy = Joi.object().keys({
 
 const ServiceAccident = Joi.object().keys({
   id: Joi.number().optional(),
-  cost: Joi.number().required(),
-  additionalDays: Joi.number().required(),
+  coverageDays: Joi.number().required(),
   note: Joi.any().optional(),
   serviceId: Joi.number().required(),
   supplierId: Joi.string().optional(),
   accidentId: Joi.number().optional(),
-  supplierPercentage: Joi.number().required(),
 });
 
 module.exports = {

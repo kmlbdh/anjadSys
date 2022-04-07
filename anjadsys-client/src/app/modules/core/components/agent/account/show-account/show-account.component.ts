@@ -32,6 +32,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   };
 
   private unsubscribe$ = new Subject<void>();
+  agentName = JSON.parse(localStorage.getItem('user') || '');
 
   currency = 'شيكل';
   errorMsg: string | undefined;
@@ -79,7 +80,9 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     private agentService: AgentService,
     private router: Router,
     private modalService: NgbModal
-    ) { }
+    ) {
+      this.agentName = this.agentName.companyName;
+     }
 
   ngOnInit(): void {
     this.getAccount(this.searchConditions);

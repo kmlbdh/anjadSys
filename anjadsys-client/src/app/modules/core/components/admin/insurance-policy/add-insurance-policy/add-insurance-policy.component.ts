@@ -159,7 +159,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   supplierText(supplierId: string): string {
     // console.log('supplierText');
-    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].username;
+    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
   }
 
   deleteServicePolicy(index: number){
@@ -339,12 +339,12 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
     let cost = Number(this.selectedService?.cost);
     let coverageDays = this.selectedService?.coverageDays;
-    // console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
-    if(!(additionalDays >= 0) || !cost || !coverageDays) return;
+    console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
+    if(!(additionalDays >= 0) || !cost) return;
 
     additionalDays = Number(additionalDays.toFixed(2));
     cost = Number(cost.toFixed(2));
-    coverageDays = Number(coverageDays.toFixed(2));
+    coverageDays = Number(coverageDays!.toFixed(2)) || 1;
     let perDayCost =  Number((cost / coverageDays).toFixed(2));
 
     let total = cost + (perDayCost * (additionalDays * 0.25));
