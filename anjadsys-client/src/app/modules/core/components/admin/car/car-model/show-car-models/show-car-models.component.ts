@@ -18,8 +18,9 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   carModels: CarModelAPI[] = [];
   carTypes: CarTypeAPI[] = [];
 
-  p: number = 1;
   private unsubscribe$ = new Subject<void>();
+
+  p: number = 1;
   pagination = {
     total: 0,
     itemsPerPage: 10,

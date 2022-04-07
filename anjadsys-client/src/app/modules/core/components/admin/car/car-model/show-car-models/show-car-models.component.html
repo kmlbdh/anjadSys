@@ -50,12 +50,12 @@
       </ng-template>
     </ul>
     <pagination-controls
-    class="custom-pagination"
-    (pageChange)="getPage($event)"
-    [autoHide] = "true"
-    previousLabel = ""
-    nextLabel = ""
-  ></pagination-controls>
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
     <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
     <div class="success" *ngIf="successMsg">{{successMsg}}</div>
   </div>

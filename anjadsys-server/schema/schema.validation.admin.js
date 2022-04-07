@@ -13,13 +13,11 @@ const ServicePolicy = Joi.object().keys({
 
 const ServiceAccident = Joi.object().keys({
   id: Joi.number().optional(),
-  cost: Joi.number().required(),
-  additionalDays: Joi.number().required(),
+  coverageDays: Joi.number().required(),
   note: Joi.any().optional(),
   serviceId: Joi.number().required(),
   supplierId: Joi.string().optional(),
   accidentId: Joi.number().optional(),
-  supplierPercentage: Joi.number().required(),
 });
 
 module.exports = {
@@ -32,10 +30,10 @@ module.exports = {
       .allow(null),
       username: Joi.string().trim().required().min(3),
       companyName: Joi.string().trim().min(3).optional().allow(null),
-      password: Joi.string().trim().required().label('password'),
+      password: Joi.string().trim().optional().label('password'),
       confirmPassword: Joi.any()
         .equal(Joi.ref('password'))
-        .required()
+        .optional()
         .strip() //remove it from body after validation
         .label("Confirm password")
         .options({ messages: { 'any.only': '{{#label}} doesn\'t match' } })
@@ -136,16 +134,16 @@ module.exports = {
   }),
   serviceSchema: {
     add: Joi.object().keys({
-      name: Joi.string().trim().min(5).required(),
-      coverageDays: Joi.number().min(1).required(),
+      name: Joi.string().trim().min(2).required(),
+      coverageDays: Joi.number().required(),
       cost: Joi.number().min(1).required(),
       note: Joi.any().optional(),
       supplierPercentage: Joi.number().required(),
     }),
     update: Joi.object().keys({
       serviceID: Joi.number().required(),
-      name: Joi.string().trim().min(5).optional(),
-      coverageDays: Joi.number().min(1).optional(),
+      name: Joi.string().trim().min(2).optional(),
+      coverageDays: Joi.number().optional(),
       cost: Joi.number().min(1).optional(),
       note: Joi.any().optional(),
       supplierPercentage: Joi.number().optional(),

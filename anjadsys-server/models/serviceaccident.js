@@ -27,16 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    cost: {
+    coverageDays: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
-    additionalDays: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
-    supplierPercentage: {
-      type: DataTypes.FLOAT.UNSIGNED,
       allowNull: false
     },
     note: {

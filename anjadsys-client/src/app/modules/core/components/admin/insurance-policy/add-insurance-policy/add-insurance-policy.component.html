@@ -127,6 +127,12 @@
 
   <div class="page-content card">
     <form [formGroup]="addServicePolicyForm" #formS="ngForm" (ngSubmit)="addServicePolicy(formS)">
+      <div *ngIf="suppliers.length === 0" class="alert alert-danger" style="width:100%">
+        <div>
+          اختر الزبون لاظهار الموردين
+        </div>
+      </div>
+
       <div class="form-sec0 custom-row">
 
         <div class="form-control-group">
@@ -182,7 +188,7 @@
           <select id="supplierId" type="text" name="supplierId" formControlName="supplierId" required>
             <ng-template [ngIf]="services">
               <option>اختر مورد الخدمة من القائمة</option>
-              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}/{{ supplier.username }}</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}</option>
             </ng-template>
           </select>
 
@@ -192,11 +198,6 @@
               المورد مطلوب تعبئته
             </div>
           </div>
-          <div *ngIf="suppliers.length === 0" class="alert alert-danger">
-           <div>
-            لاظهار الموردين، قم باضافة الزبون
-          </div>
-         </div>
         </div>
 
         <div class="btn-container center">

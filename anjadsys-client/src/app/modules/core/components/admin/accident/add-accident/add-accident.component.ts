@@ -8,7 +8,7 @@ import { UserAPI, UsersAPI } from 'src/app/modules/core/model/user';
 import { AdminService } from '../../admin.service';
 import { SearchUser } from '../../../../model/user';
 import { SearchCar } from '../../../../model/car';
-import { NewServiceAccident, ServiceAPI } from '../../../../model/service';
+import { NewServiceAccident, ServicePolicyAPI } from '../../../../model/service';
 import { NewAccident } from '../../../../model/accident';
 import { InsurancePolicyAPI, SearchInsurancePolicy, InsurancePolicesAPI } from '../../../../model/insurancepolicy';
 
@@ -22,15 +22,17 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   cancelInput = faTimes;
   trashIcon = faTrashAlt;
   addServiceBtnIcon = faPlus;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
   insurancePolicyNotValidMsg: string | undefined;
+
   days = 'يوم';
   currency = 'شيكل';
 
-  services!: ServiceAPI[];
+  servicesPolicies!: ServicePolicyAPI[];
   servicesAccident: NewServiceAccident[] = [];
-  insurancePolices: InsurancePolicyAPI[] = [];
+  insurancePolicies: InsurancePolicyAPI[] = [];
   cars: CarAPI[] = [];
   agents: UserAPI[] = [];
   customers: UserAPI[] = [];
@@ -40,8 +42,9 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   selectedAgent: UserAPI | undefined | null;
   selectedRegion: RegionAPI | undefined;
   selectedCar: CarAPI | undefined;
-  selectedService: ServiceAPI | undefined;
   selectedInsurancePolicy: InsurancePolicyAPI | undefined;
+  selectedServicePolicy: ServicePolicyAPI | undefined;
+  maxDays: number = 0;
 
   firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
   lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
@@ -83,12 +86,12 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   });
 
   addServiceAccidentForm = this.fb.group({
-    serviceId: ['', [Validators.required]],
-    additionalDays: [{value: '', disabled: true}, Validators.required],
-    note: [''],
-    cost: [0, Validators.required],
-    supplierPercentage: ['', Validators.required],
-    supplierId: ['', Validators.required],
+    serviceId: [{value: '', disabled: true}, Validators.required],
+    coverageDays: [{value: '', disabled: true}, Validators.required],
+    // note: [''],
+    // cost: [0, Validators.required],
+    // supplierPercentage: ['', Validators.required],
+    supplierId: [{value: '', disabled: true}, Validators.required],
   });
 
   constructor(
@@ -97,7 +100,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getRegions();
-    // this.getServices();
 
     this.searchCarAPI();
     this.searchCustomerAPI();
@@ -116,29 +118,37 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     let formObj: NewAccident = this.addAccidentForm.value;
     let keys = Object.keys(formObj);
     keys.forEach(k => {
-      if(formObj[k] === "") delete formObj[k]
+      if(formObj[k] === "" || k === 'insurancePolicyId') delete formObj[k]
     });
-    formObj.services = this.servicesAccident;
-    delete formObj['insurancePolicyId'];
+
+    formObj.services = [];
+    this.servicesAccident.forEach(serviceAccident => {
+      delete serviceAccident['Service'];
+      formObj.services.push(serviceAccident);
+    });
+
+    // formObj.services = this.servicesAccident;
+    // delete formObj['insurancePolicyId'];
+
     this.adminService.addAccident(formObj)
-   .pipe(takeUntil(this.unsubscribe$))
-   .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+        next: (response) => {
+          if(response.data)
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
 
-        this.resetAccientForm(ngform);
-        // console.log(response);
-      },
-      error: (err: any) => {
-        console.error(err.error);
-        if(err?.error?.message)
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          this.resetAccientForm(ngform);
+          // console.log(response);
+        },
+        error: (err: any) => {
+          console.error(err.error);
+          if(err?.error?.message)
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
 
-      }
-    });
+        }
+      });
     // console.log(this.addAccidentForm.value);
     // console.log(formObj);
   }
@@ -149,40 +159,59 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
     let formObj: NewServiceAccident = this.addServiceAccidentForm.value;
 
+    let currentService: ServicePolicyAPI = this.getServicePolicyById(Number(formObj.serviceId));
+    let {
+      Service: { name},
+      Supplier: { companyName }
+    } = currentService;
+    formObj.coverageDays = Number(formObj.coverageDays) || 0;
+    formObj = {
+      ...formObj,
+      //temp fields
+      Service: {
+        name,
+        supplierText: companyName!
+      }
+     }
+
     this.servicesAccident.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.resetAccidentServiceForm(ngform);
     // console.log(this.addServiceAccidentForm.value);
-    // console.log(formObj);
+    // console.log('formObj',formObj);
   }
 
-  serviceShowStatusWhenMaintainPolicy(){
-    this.services.map((service) => {
-      let existService = this.servicesAccident.some(serviceAccident => {
-        // console.log(serviceAccident.serviceId);
-        return Number(serviceAccident.serviceId) === Number(service.id);
+  serviceShowStatusWhenMaintainPolicy(): void{
+    this.servicesPolicies.map((servicePolicy:ServicePolicyAPI): ServicePolicyAPI => {
+      let existService = this.servicesAccident.some( (serviceAccident: NewServiceAccident): Boolean => {
+        return Number(serviceAccident.serviceId) === Number(servicePolicy.serviceId);
       });
-      // console.log(service.id, existService);
-      service['propertiesUI'] = {hide: existService};
-      return service;
+      servicePolicy.propertiesUI = { hide: existService };
+      return servicePolicy;
     });
   }
 
-  totalCoverageDays(serviceId: number): number{
-    let serviceDefualtDays = Number(this.services.filter(service =>  service.id === Number(serviceId))[0].coverageDays);
-    let serviceDays = Number(this.servicesAccident.filter(service => service.serviceId === serviceId)[0].additionalDays);
-    // console.log('totalCoverageDays');
+  totalCoverageDays(serviceId: number): number {
+    let currentServicePolicy = this.getServicePolicyById(Number(serviceId));
+    let serviceDefualtDays = Number(currentServicePolicy.Service.coverageDays) || 0;
+    let serviceDays = Number(currentServicePolicy.additionalDays) || 0;
+
     return serviceDefualtDays + serviceDays;
   }
 
-  serviceText(serviceId: number): string {
-    // console.log('serviceText')
-    return this.services.filter(service =>  service.id === Number(serviceId))[0].name;
-  }
+  // serviceText(serviceId: number): string {
+  //   let selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
+  //   return selectedServicePolicy.Service.name;
+  // }
 
-  supplierText(supplierId: string): string {
-    // console.log('supplierText')
-    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
+  // supplierText(supplierId: string): string {
+  //   return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
+  // }
+
+  getServicePolicyById(serviceId: number): ServicePolicyAPI{
+    let servicePolicy = this.servicesPolicies.filter(servicePolicy => servicePolicy.serviceId === Number(serviceId));
+    console.log('servicePolicy',servicePolicy);
+    return servicePolicy.length === 1 ? servicePolicy[0] : {} as ServicePolicyAPI
   }
 
   deleteAccidentService(index: number){
@@ -206,24 +235,28 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   selectInsurancePolicy(event: Event){
-    console.log('change', event);
+    // console.log('change', event);
     if(event.type === 'change'){
       const controlValue = this.formCont('insurancePolicyId')?.value;
-      this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolices!, controlValue) as InsurancePolicyAPI;
-      console.log(this.selectedInsurancePolicy);
+      this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
+      // console.log(this.selectedInsurancePolicy);
       this.loadInsurancePolicyServices(this.selectedInsurancePolicy);
+      setTimeout(()=>{
+        this.addServiceAccidentForm.get('supplierId')?.enable();
+        this.addServiceAccidentForm.get('serviceId')?.enable();
+      }, 0);
       return;
     }
   }
 
   loadInsurancePolicyServices(insurancePolicy: InsurancePolicyAPI): void {
-    this.services = insurancePolicy.ServicePolicies.map(servicePolicy => {
-      let service = servicePolicy.Service;
-      service.cost = servicePolicy.cost;
-      service['additionalDays'] = servicePolicy.additionalDays;
-      service['propertiesUI'] = {hide: false};
-      return service;
+    this.servicesPolicies = insurancePolicy.ServicePolicies.map(servicePolicy => {
+      let newServicePolicy: ServicePolicyAPI = servicePolicy;
+      newServicePolicy.propertiesUI = {hide: false};
+      return newServicePolicy;
     });
+
+    // console.log('servicesPolicies', this.servicesPolicies)
   }
 
   searchAgent(event: Event){
@@ -360,21 +393,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
      });
   }
 
-  getServices(): void{
-    this.adminService.listServices()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          response.data.forEach(service => service['propertiesUI'] = {hide: false});
-          this.services = response.data;
-        }
-        // console.log(response.data);
-      },
-      error: err => console.log(err)
-    })
-  }
-
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
     this.adminService.showUsers(searchConditions)
@@ -394,7 +412,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
-          this.insurancePolices = response.data;
+          this.insurancePolicies = response.data;
         }
         this.spinner.insurancePolicy = false;
       },
@@ -405,33 +423,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     });
-  }
-
-  selectAccidentService(event: Event){
-    // console.log(event, event.target)
-    let serviceId = ((event.target as HTMLInputElement).value)?.trim()
-    this.selectedService = this.services.filter(service => service.id === Number(serviceId) )[0];
-    this.addServiceAccidentForm.get('additionalDays')?.enable();
-    this.formContS('supplierPercentage').setValue(this.selectedService.supplierPercentage);
-    this.formContS('additionalDays').setValue(this.selectedService['additionalDays']);
-    this.formContS('cost').setValue(this.selectedService.cost);
-  }
-
-  calculateTotalCost(event: Event){
-    // if(!(event instanceof KeyboardEvent)) return;
-    let additionalDays = Number((event.target as HTMLInputElement)?.value);
-    let cost = Number(this.selectedService?.cost);
-    let coverageDays = this.selectedService?.coverageDays;
-    if(!(additionalDays >= 0) || !cost || !coverageDays) return;
-
-    additionalDays = Number(additionalDays.toFixed(2));
-    cost = Number(cost.toFixed(2));
-    coverageDays = Number(coverageDays.toFixed(2));
-    let perDayCost =  Number((cost / coverageDays).toFixed(2));
-
-    let total = cost + (perDayCost * (additionalDays * 0.25));
-    this.addServiceAccidentForm.get('cost')?.setValue(total);
-    // this.addServiceAccidentForm.get('cost')?.enable;
   }
 
   fillFieldsByCustomer(event: Event){
@@ -446,13 +437,22 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.searchTextObj.searchCarText$.next('');
   }
 
+  selectAccidentService(event: Event){
+    // console.log(event, event.target)
+    let serviceId = ((event.target as HTMLInputElement).value)?.trim()
+    this.selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
+    this.maxDays = Number(this.selectedServicePolicy.additionalDays) +  Number(this.selectedServicePolicy.Service.coverageDays);
+    this.addServiceAccidentForm.get('coverageDays')?.enable();
+    this.addServiceAccidentForm.get('coverageDays')?.setValidators(Validators.max(this.maxDays));
+    this.addServiceAccidentForm.updateValueAndValidity();
+  }
+
   resetAccientForm(addAccidentFormDirective: FormGroupDirective){
     this.addAccidentForm.reset();
     this.addAccidentForm.updateValueAndValidity();
     this.addAccidentForm.markAsUntouched();
     addAccidentFormDirective.resetForm();
     this.selectedCustomer = undefined;
-    this.selectedService = undefined;
     this.selectedCar = undefined;
     this.selectedAgent = undefined;
     this.selectedRegion = undefined;
@@ -470,6 +470,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.addServiceAccidentForm.markAsUntouched();
     addAccidentServiceFormDirective.resetForm();
     this.serviceShowStatusWhenMaintainPolicy();
+    this.maxDays = 0;
   }
 
   formCont(controlName: string): any{
@@ -523,7 +524,21 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.selectedInsurancePolicy = undefined;
+    this.servicesPolicies = [];
     this.formCont('insurancePolicyId').setValue('');
+
+    this.resetAccidentServiceFormToEmpty();
+  }
+
+  resetAccidentServiceFormToEmpty(){
+    this.maxDays = 0;
+    this.addServiceAccidentForm.get('coverageDays')?.setValue(null);
+    this.addServiceAccidentForm.get('supplierId')?.setValue(null);
+    this.addServiceAccidentForm.get('serviceId')?.setValue(null);
+
+    this.addServiceAccidentForm.get('supplierId')?.disable();
+    this.addServiceAccidentForm.get('serviceId')?.disable();
+    this.addServiceAccidentForm.get('coverageDays')?.disable();
   }
 
   trackById(_index: number, el: any){

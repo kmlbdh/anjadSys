@@ -89,7 +89,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     let dataAPI$!: Observable<any>;
     console.log("here is ", this.removePassword);
 
-    if(this.removePassword){
+    if(Number(formObj.roleId) !== 4){
       dataAPI$ = this.adminService.addUser(formObj);
     } else {
       delete formObj['role'];

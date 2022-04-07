@@ -394,13 +394,11 @@ const accidentActions = {
 
         services.forEach((service, i) => {
           serviceAccidentObj.add({
-            cost: service.cost,
-            additionalDays: service.additionalDays,
+            coverageDays: service.coverageDays,
             note: service.note,
             serviceId: service.serviceId,
             supplierId: service.supplierId,
             accidentId: accident.id,
-            supplierPercentage: service.supplierPercentage,
           });
         });
 
@@ -484,13 +482,11 @@ const accidentActions = {
 
         serviceAccidentObj[i] = {
           id: service.id,
-          cost: service.cost,
-          additionalDays: service.additionalDays,
+          coverageDays: service.coverageDays,
           note: service.note,
           serviceId: service.serviceId,
           supplierId: service.supplierId,
           accidentId: accidentID,
-          supplierPercentage: service.supplierPercentage,
         };
       });
 

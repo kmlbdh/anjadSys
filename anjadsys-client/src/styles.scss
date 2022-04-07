@@ -78,3 +78,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   }
 }
 
+@media print {
+  .dont-print{
+    display: none !important;
+  }
+}

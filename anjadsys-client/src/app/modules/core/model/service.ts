@@ -46,8 +46,7 @@ export interface ServicesAPI {
 export interface ServiceAccidentAPI {
   [index: string]: string | number | ServiceAPI | UserAPI | undefined;
   id: number,
-  cost: number,
-  additionalDays: number,
+  coverageDays: number,
   note: string,
   accidentId?: number,
   serviceId?: number,
@@ -57,19 +56,17 @@ export interface ServiceAccidentAPI {
   Supplier: UserAPI
 }
 export interface NewServiceAccident {
-  [index: string]: string | number | undefined;
-  cost: number,
-  additionalDays: number,
+  [index: string]: string | number | any | undefined;
+  coverageDays: number,
   note?: string,
   accidentId?: number,
   serviceId: number,
   supplierId: string,
-  supplierPercentage: number
 }
 
 /* ########################### SERVICE POLICY ############################### */
 export interface ServicePolicyAPI {
-  [index: string]: string | number | Date | ServiceAPI | UserAPI | undefined ;
+  [index: string]: string | number | Date | ServiceAPI | UserAPI | PropertiesUI | undefined ;
   id: number,
   cost: number,
   additionalDays: number,
@@ -77,15 +74,19 @@ export interface ServicePolicyAPI {
   insurancePolicyId?: number,
   serviceId?: number,
   supplierId?: string,
+  supplierPercentage: number,
   Service: ServiceAPI,
   Supplier: UserAPI,
   createdAt: Date,
   updatedAt: Date,
+  propertiesUI?: PropertiesUI;
 }
+
 export interface NewServicePolicy {
   [index: string]: string | number | undefined;
   cost: number,
   additionalDays: number,
+  supplierPercentage: number,
   note?: string,
   serviceId: number,
   supplierId: string,
@@ -97,6 +98,7 @@ export interface updateServicePolicy {
   id?: number,
   cost: number,
   additionalDays: number,
+  supplierPercentage: number,
   note?: string,
   serviceId: number,
   supplierId: string,

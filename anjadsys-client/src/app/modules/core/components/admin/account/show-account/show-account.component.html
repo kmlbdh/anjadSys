@@ -85,7 +85,7 @@
 
   </div>
 
-  <div class="page-content card  d-print-none">
+  <div class="page-content card dont-print">
     <ul class="responsive-table">
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم الحركة</div>
@@ -103,21 +103,22 @@
       <ng-template [ngIf]="accounts.length > 0">
         <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1 clickable" data-label="Account Id">{{account.id}}</div>
+          <div class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
           <div class="col-custom col-custom-2" data-label="Debit With Percentage">{{account.debit || 0}}</div>
           <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
           <div class="col-custom col-custom-4" data-label=" Date">{{ (account.createdAt| date) }}</div>
-          <div class="col-custom col-custom-5" data-label="Account Transaction Type">
+          <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
             <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
+              <p (click)="open(insurancePolicyModal, account.insurancePolicyId)">
+                 رقم: {{ account.insurancePolicyId }}
+              </p>
             </ng-container>
             <ng-container *ngIf="account.agentId">
              سقف مالي
             </ng-container>
             <!-- {{account | json}} -->
-            <div *ngIf="account.insurancePolicyId" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
-              {{ account.insurancePolicyId }}
-            </div>
+
           </div>
         </li>
       </ng-template>
@@ -137,7 +138,7 @@
 
 <ng-template #insurancePolicyModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">بوليصة التأمين</h4>
+    <h4 class="modal-title" id="modal-basic-title">بوليصة التأمين - {{modalInsurancePolicy.insurancePolicy.Agent?.companyName}}</h4>
     <button type="button" class="close d-print-none" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
