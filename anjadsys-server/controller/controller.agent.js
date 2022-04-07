@@ -556,7 +556,7 @@ const accountActions = {
           ],
           offset: skip,
           limit: limit,
-        };     
+        };
       }
 
       const { count, rows: accounts } = await Account.findAndCountAll(query);

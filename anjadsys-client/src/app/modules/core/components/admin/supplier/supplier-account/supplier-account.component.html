@@ -56,7 +56,7 @@
             المبلغ (له)
           </ng-container>
         </div>
-        <div class="col-custom col-custom-4">ايام التغطية الاضافية</div>
+        <div class="col-custom col-custom-4">ايام التغطية</div>
         <div class="col-custom col-custom-5">تاريخ الحركة</div>
         <!-- <div class="col-custom col-custom-5">الخدمة</div> -->
         <!-- <div class="col-custom col-custom-6">التحكم</div> -->
@@ -80,8 +80,8 @@
             </ng-container>
             {{currency}}
           </div>
-          <div class="col-custom col-custom-4" data-label="ايام التغطية الاضافية">{{account.additionalDays}} {{days}}</div>
-          <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date}}</div>
+          <div class="col-custom col-custom-4" data-label="ايام التغطية الاضافية">{{account.coverageDays}} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date: 'dd-MM-yyyy'}}</div>
           <!-- <div class="col-custom col-custom-6 control" data-label="Control">
              <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
               <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(account.id)"></fa-icon>

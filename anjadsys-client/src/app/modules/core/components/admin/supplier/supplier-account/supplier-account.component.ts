@@ -30,10 +30,15 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
+  private currentDate = new Date();
+
+  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+
   searchSupplierAccountForm = this.fb.group({
     flag: ['accident', Validators.required],
-    startDate: [''],
-    endDate: [''],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
   });
 
   constructor(
