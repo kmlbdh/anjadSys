@@ -59,7 +59,7 @@
         <div class="col-custom col-custom-3">اسم صاحب السيارة</div>
         <div class="col-custom col-custom-4">تكلفة البوليصة</div>
         <div class="col-custom col-custom-5">تاريخ البوليصة</div>
-        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+        <div class="col-custom col-custom-6">تاريخ انتهاء البوليصة</div>
       </li>
       <ng-template [ngIf]="insurancePolices.length === 0">
         <li class="no-data" style="width: 100%;">
@@ -73,14 +73,8 @@
           <div class="col-custom col-custom-2" data-label="Car Number">{{insurancePolicy.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Customer">{{insurancePolicy.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Total Cost">{{ insurancePolicy.totalPrice }} {{ currency }}</div>
-          <div class="col-custom col-custom-5" data-label="Insurance Policy Date">{{ (insurancePolicy.createdAt | date) }}</div>
-          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
-
-            <button class="btn-error" title="حذف بوليصة التأمين" (click)="deleteInsurancePolicy(insurancePolicy)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
-            </button>
-
-          </div> -->
+          <div class="col-custom col-custom-5" data-label="Insurance Policy Date">{{ (insurancePolicy.createdAt | date: 'dd-MM-yyyy') }}</div>
+          <div class="col-custom col-custom-6" data-label="Insurance Policy Expire Date">{{ (insurancePolicy.expireDate | date: 'dd-MM-yyyy') }}</div>
         </li>
       </ng-template>
     </ul>
@@ -154,7 +148,14 @@
     </div>
 
       <div class="main-data-section card">
-        <h5>بيانات البوليصة</h5>
+        <div class="policy-header-section">
+          <h5>بيانات البوليصة</h5>
+          <div class="expire-date">
+            <h6>تاريخ انتهاء البوليصة:</h6>
+            <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
+          </div>
+        </div>
+
         <div class="data-section for-table">
           <div>
             <table class="table">
@@ -175,7 +176,7 @@
                   <td>{{service.Service.cost}}</td>
                 </tr>
               </tbody>
-              <tr>
+              <tr class="total-cost">
                 <th colspan="3">التكلفة الاجمالية</th>
                 <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
               </tr>

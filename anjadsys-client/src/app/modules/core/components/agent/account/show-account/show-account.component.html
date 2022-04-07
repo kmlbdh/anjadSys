@@ -163,7 +163,13 @@
     </div>
 
       <div class="main-data-section card">
-        <h5>بيانات البوليصة</h5>
+        <div class="policy-header-section">
+          <h5>بيانات البوليصة</h5>
+          <div class="expire-date">
+            <h6>تاريخ انتهاء البوليصة:</h6>
+            <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
+          </div>
+        </div>
         <div class="data-section for-table">
           <div>
             <table class="table">
@@ -184,7 +190,7 @@
                   <td>{{service.Service.cost}}</td>
                 </tr>
               </tbody>
-              <tr>
+              <tr class="total-cost">
                 <th colspan="3">التكلفة الاجمالية</th>
                 <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
               </tr>
