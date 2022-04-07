@@ -293,7 +293,12 @@
         </div>
 
         <div class="btn-container center">
-          <button class="mg-top39" type="submit" [disabled]="formS.invalid">
+          <button class="mg-top39" type="submit"
+            [disabled]="formS.invalid
+            || formContS('coverageDays').disabled
+            || formContS('supplierId').disabled
+            || formContS('serviceId').disabled
+            ">
             <span><fa-icon [icon]="addServiceBtnIcon"></fa-icon></span>
           </button>
         </div>
