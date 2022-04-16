@@ -1,4 +1,3 @@
-const config = require("../config/config.auth");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
 const bcrypt = require("bcryptjs");
@@ -218,7 +217,7 @@ const shared = {
       loginLog(validPassword);
 
       const { id, username, companyName, Role: { name: role }} = user;
-      const accessToken = jwt.sign({id}, config.secret, {expiresIn: 86400});
+      const accessToken = jwt.sign({id}, process.env.TOKEN_SECRET, {expiresIn: 86400});
 
       loginLog(accessToken);
 

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/config.auth");
 const db = require("../models");
 const util = require("util");
 const customError = require("../classes/customError");
@@ -16,6 +15,8 @@ const INTERR = "INT_ERR";
 //debugging NOT FOR PRODUCTION
 const verifyTokenLog = util.debuglog("middleware.auth-VerifyToken");
 const isAdminLog = util.debuglog("middleware.auth-isAdmin");
+const isAgentLog = util.debuglog("middleware.auth-isAgent");
+const isCustomerLog = util.debuglog("middleware.auth-isCustomer");
 const checkRoleLog = util.debuglog("middleware.checkRole");
 const checkDuplicateLog = util.debuglog("middleware.auth-checkDuplicateUsernameOrNickname");
 
@@ -30,7 +31,7 @@ const auth = {
         throw new customError("Unauthorized!", INTERR);
       } 
     } catch(error){
-      console.log(error);
+      isAdminLog(error);
       errorHandler(res, error, "Failed! can't get admin privilege!", errorCode);
     }
   },
@@ -44,7 +45,7 @@ const auth = {
         throw new customError("Unauthorized!", INTERR);
       } 
     } catch(error){
-      console.log(error);
+      isAgentLog(error);
       errorHandler(res, error, "Failed! can't get agent privilege!", errorCode);
     }
   },
@@ -58,7 +59,7 @@ const auth = {
         throw new customError("Unauthorized!", INTERR);
       }
     } catch(error){
-      console.log(error);
+      isCustomerLog(error);
       errorHandler(res, error, "Failed! can't get customer privilege!", errorCode);
     }
   },
@@ -73,14 +74,14 @@ const auth = {
         throw new customError("No token provided!", INTERR);
       }
       
-      jwt.verify(token, config.secret, (error, decoded) => {
-      if(error){
-        errorCode = 401;
-        throw new customError("Unauthorized!", INTERR);
-      }
-    
-          req.id = decoded.id;
-          next();
+      jwt.verify(token, process.env.TOKEN_SECRET, (error, decoded) => {
+        if(error){
+          errorCode = 401;
+          throw new customError("Unauthorized!", INTERR);
+        }
+      
+        req.id = decoded.id;
+        next();
       });
     } catch(error){
       verifyTokenLog(error);
@@ -117,9 +118,6 @@ const verifyLogin =  validation(login, 'body');
 
 const checkRole = async(roleName, req, res) => {
   try{
-    // checkRoleLog(roleName);
-    // checkRoleLog(req.id);
-
     const user = await User.findOne({
       where: { id: req.id },
       include: [{
@@ -131,8 +129,6 @@ const checkRole = async(roleName, req, res) => {
       }]
     });
 
-    // checkRoleLog(user);
-
     if(!user || !user.Role || user.Role.name !== roleName)
       throw new customError(`Require ${roleName} Role!`, INTERR);
     
@@ -140,11 +136,9 @@ const checkRole = async(roleName, req, res) => {
  
     if(roleName === 'admin'){
       req.admin = { id, username, companyName, role};
-    }
-    else if(roleName === 'agent'){
+    } else if(roleName === 'agent'){
       req.agent = { id, username, companyName, role};
     }
-    // checkRoleLog(req.admin, req.agent);
 
     return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
   } catch(error){
