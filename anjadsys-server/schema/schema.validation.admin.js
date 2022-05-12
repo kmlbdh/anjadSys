@@ -181,14 +181,14 @@ module.exports = {
       carTypeId: Joi.number().required(),
       name: Joi.string().trim().required(),
     }),
+    delete: Joi.object().keys({
+      carTypeId: Joi.number().required()
+    }),
     list: Joi.object().keys({
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
-    }),
-    delete: Joi.object().keys({
-      carTypeId: Joi.number().required()
     }),
   }, 
   carModelSchema: {
@@ -201,15 +201,15 @@ module.exports = {
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
     }),
+    delete: Joi.object().keys({
+      carModelId: Joi.number().required()
+    }),
     list: Joi.object().keys({
       carModelId: Joi.number().optional(),
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
-    }),
-    delete: Joi.object().keys({
-      carModelId: Joi.number().required()
     }),
   }, 
   carSchema: {
@@ -240,6 +240,9 @@ module.exports = {
       carModelId: Joi.number().optional(),
       customerId: Joi.string().optional(),
     }),
+    delete: Joi.object().keys({
+      carId: Joi.number().required()
+    }),
     list: Joi.object().keys({
       carId: Joi.number().optional(),
       carNumber: Joi.string().trim().optional(),
@@ -252,9 +255,6 @@ module.exports = {
       customerID: Joi.string().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
-    }),
-    delete: Joi.object().keys({
-      carId: Joi.number().required()
     }),
   },
   accidentSchema: {
@@ -291,6 +291,9 @@ module.exports = {
       agentId: Joi.string().optional(),
       carId: Joi.number().optional(),
     }),
+    delete: Joi.object().keys({
+      accidentID: Joi.number().required()
+    }),
     list: Joi.object().keys({
       accidentID: Joi.number().optional(),
       carNumber: Joi.number().optional(),
@@ -305,9 +308,6 @@ module.exports = {
       carID: Joi.number().optional(),
       skip: Joi.number().optional(),
       limit: Joi.number().optional(),
-    }),
-    delete: Joi.object().keys({
-      accidentID: Joi.number().required()
     }),
   },
   insurancePolicySchema: {
@@ -330,6 +330,9 @@ module.exports = {
       agentId: Joi.string().optional(),
       carId: Joi.number().optional(),
     }),
+    delete: Joi.object().keys({
+      insurancePolicyId: Joi.number().required()
+    }),
     list: Joi.object().keys({
       insurancePolicyId: Joi.number().optional(),
       customerID: Joi.string().optional(),
@@ -339,14 +342,12 @@ module.exports = {
       limit: Joi.number().optional(),
       filterOutValid: Joi.boolean().optional(),
     }),
-    delete: Joi.object().keys({
-      insurancePolicyId: Joi.number().required()
-    }),
   },
   accountSchema: {
     list: Joi.object().keys({
       accountId: Joi.number().optional(),
       insurancePolicyId: Joi.number().optional(),
+      otherServiceId: Joi.number().optional(),
       customerID: Joi.string().optional(),
       supplierID: Joi.string().optional(),
       agentID: Joi.string().trim().optional(),

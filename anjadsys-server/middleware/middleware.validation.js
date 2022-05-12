@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const util = require('util');
+
 const log = util.debuglog("middleware.validation");
 
 const validation = (schema, property) => {

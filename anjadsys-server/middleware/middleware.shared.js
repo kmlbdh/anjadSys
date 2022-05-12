@@ -16,53 +16,32 @@ const INTERR = "INT_ERR";
 const verifyTokenLog = util.debuglog("middleware.auth-VerifyToken");
 const isAdminLog = util.debuglog("middleware.auth-isAdmin");
 const isAgentLog = util.debuglog("middleware.auth-isAgent");
+const isUserTypeLog = util.debuglog("middleware.auth-isUserType");
 const isCustomerLog = util.debuglog("middleware.auth-isCustomer");
 const checkRoleLog = util.debuglog("middleware.checkRole");
 const checkDuplicateLog = util.debuglog("middleware.auth-checkDuplicateUsernameOrNickname");
 
+const isUserType = (roleName) => {
+  return async (req, res, next) => {
+    let errorCode;
+    try{
+      const done = await checkRole(roleName, req, res);
+      if(done) next();
+      else{
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      } 
+    } catch(error){
+      isUserTypeLog(error);
+      errorHandler(res, error, `Failed! can't get ${roleName} privilege!`, errorCode);
+    }
+  }
+}
+
 const auth = {
-  isAdmin: async (req, res, next) => {
-    let errorCode;
-    try{
-      const done = await checkRole('admin', req, res);
-      if(done) next();
-      else{
-        errorCode = 401;
-        throw new customError("Unauthorized!", INTERR);
-      } 
-    } catch(error){
-      isAdminLog(error);
-      errorHandler(res, error, "Failed! can't get admin privilege!", errorCode);
-    }
-  },
-  isAgent: async (req, res, next) => {
-    let errorCode;
-    try{
-      const done = await checkRole('agent', req, res);
-      if(done) next();
-      else{
-        errorCode = 401;
-        throw new customError("Unauthorized!", INTERR);
-      } 
-    } catch(error){
-      isAgentLog(error);
-      errorHandler(res, error, "Failed! can't get agent privilege!", errorCode);
-    }
-  },
-  isCustomer: async (req, res, next) => {
-    let errorCode;
-    try{
-      const done = await checkRole('customer', req, res);;
-      if(done) next();
-      else{
-        errorCode = 401;
-        throw new customError("Unauthorized!", INTERR);
-      }
-    } catch(error){
-      isCustomerLog(error);
-      errorHandler(res, error, "Failed! can't get customer privilege!", errorCode);
-    }
-  },
+  isAdmin: isUserType('admin'),
+  isAgent: isUserType('agent'),
+  isCustomer: isUserType('customer'),
   verifyToken: (req, res, next) => {
     let errorCode;
     try{

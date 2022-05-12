@@ -3,14 +3,14 @@ const {
   userValidation,
   serviceValidation,
   agentLimitsValidation,
-  validateAddSupplier,
   carTypeValidation,
   carModelValidation,
   carValidation,
   accidentValidation,
   insurancePolicyValidation,
   accountValidation,
-  validatSupplierAccount
+  supplierValidation,
+  supplierAccountValidation,
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -77,10 +77,11 @@ module.exports = function(app){
   ], userActions.lightList);
 
 /** #################### SUPPLIER  ########################*/
+
   app.post("/api/admin/create-supplier",[
     auth.verifyToken,
     auth.isAdmin,
-    validateAddSupplier,
+    supplierValidation.create,
     checkDuplicateUsernameOrNickname
   ], userActions.create);
 
@@ -292,7 +293,7 @@ app.get("/api/admin/statistics",[
 app.post("/api/admin/supplier-account",[
   auth.verifyToken,
   auth.isAdmin,
-  validatSupplierAccount,
+  supplierAccountValidation.list,
 ], SupplierActions.list);
 
 };

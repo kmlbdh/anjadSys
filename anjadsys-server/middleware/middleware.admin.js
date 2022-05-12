@@ -20,6 +20,10 @@ const userValidation = {
   delete: validation(userSchema.delete, 'body'),
 };
 
+const supplierValidation = {
+  create: validation(createSupplier, 'body'),
+}
+
 const serviceValidation = {
    add: validation(serviceSchema.add, 'body'),
    delete: validation(serviceSchema.delete, 'body'),
@@ -68,6 +72,10 @@ const accountValidation = {
  list: validation(accountSchema.list, 'body'),
 };
 
+const supplierAccountValidation = {
+  list: validation(supplierSchema.list, 'body'),
+}
+
 const insurancePolicyValidation = {
  add: validation(insurancePolicySchema.add, 'body'),
  update: validation(insurancePolicySchema.update, 'body'),
@@ -75,14 +83,13 @@ const insurancePolicyValidation = {
  list: validation(insurancePolicySchema.list, 'body'),
 };
 
-const validateAddSupplier = validation(createSupplier, 'body');
-const validatSupplierAccount = validation(supplierSchema.list, 'body');
+// const validateAddSupplier = validation(createSupplier, 'body');
+// const validatSupplierAccount = validation(supplierSchema.list, 'body');
 
 
 module.exports = { 
   userValidation,
   serviceValidation,
-  validateAddSupplier,
   agentLimitsValidation,
   carTypeValidation,
   carModelValidation,
@@ -90,5 +97,6 @@ module.exports = {
   accidentValidation,
   insurancePolicyValidation,
   accountValidation,
-  validatSupplierAccount
+  supplierValidation,
+  supplierAccountValidation,
 };
