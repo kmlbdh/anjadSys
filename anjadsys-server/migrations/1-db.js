@@ -13,8 +13,9 @@ var Sequelize = require('sequelize');
  * createTable "Users", deps: [Regions, Roles, Users]
  * createTable "Cars", deps: [Users, CarTypes, CarModels]
  * createTable "InsurancePolicies", deps: [Cars, Users, Users]
- * createTable "Accidents", deps: [Users, Users, Cars]
- * createTable "Accounts", deps: [InsurancePolicies, Users]
+ * createTable "Accidents", deps: [Users, Users, Cars, Regions]
+ * createTable "OtherServices", deps: [Users]
+ * createTable "Accounts", deps: [InsurancePolicies, Users, OtherServices]
  * createTable "ServiceAccidents", deps: [Accidents, Services, Users]
  * createTable "ServicePolicies", deps: [InsurancePolicies, Services, Users]
  *
@@ -23,7 +24,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "db",
-    "created": "2022-01-27T21:34:40.250Z",
+    "created": "2022-04-27T13:28:26.713Z",
     "comment": ""
 };
 
@@ -105,18 +106,24 @@ var migrationCommands = [{
                     "allowNull": false
                 },
                 "cost": {
-                    "type": Sequelize.STRING(100),
+                    "type": Sequelize.INTEGER.UNSIGNED,
                     "field": "cost",
-                    "allowNull": false,
-                    "unique": true
+                    "allowNull": false
                 },
                 "coverageDays": {
                     "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "coverageDays"
+                    "field": "coverageDays",
+                    "allowNull": false
+                },
+                "supplierPercentage": {
+                    "type": Sequelize.FLOAT,
+                    "field": "supplierPercentage",
+                    "allowNull": false
                 },
                 "note": {
                     "type": Sequelize.TEXT,
-                    "field": "note"
+                    "field": "note",
+                    "allowNull": true
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
@@ -146,6 +153,7 @@ var migrationCommands = [{
                 "name": {
                     "type": Sequelize.STRING(20),
                     "field": "name",
+                    "unique": true,
                     "allowNull": false
                 },
                 "carTypeId": {
@@ -226,17 +234,21 @@ var migrationCommands = [{
                     "type": Sequelize.TEXT,
                     "field": "note"
                 },
+                "blocked": {
+                    "type": Sequelize.BOOLEAN,
+                    "field": "blocked",
+                    "allowNull": false,
+                    "defaultValue": 0
+                },
                 "createdAt": {
                     "type": Sequelize.DATE,
                     "field": "createdAt",
-                    "allowNull": false,
-                    "defaultValue": Sequelize.literal("CURRENT_TIMESTAMP")
+                    "allowNull": false
                 },
                 "updatedAt": {
                     "type": Sequelize.DATE,
                     "field": "updatedAt",
-                    "allowNull": false,
-                    "defaultValue": Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+                    "allowNull": false
                 },
                 "regionId": {
                     "type": Sequelize.TINYINT.UNSIGNED,
@@ -280,15 +292,22 @@ var migrationCommands = [{
         params: [
             "Cars",
             {
-                "carNumber": {
-                    "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "carNumber",
+                "id": {
+                    "type": Sequelize.INTEGER,
+                    "field": "id",
                     "primaryKey": true,
+                    "autoIncrement": true,
+                    "unique": true,
+                    "allowNull": false
+                },
+                "carNumber": {
+                    "type": Sequelize.STRING(10),
+                    "field": "carNumber",
                     "unique": true,
                     "allowNull": false
                 },
                 "motorNumber": {
-                    "type": Sequelize.STRING(100),
+                    "type": Sequelize.STRING(8),
                     "field": "motorNumber",
                     "allowNull": false,
                     "unique": true
@@ -298,12 +317,12 @@ var migrationCommands = [{
                     "field": "motorPH"
                 },
                 "licenseType": {
-                    "type": Sequelize.TINYINT.UNSIGNED,
+                    "type": Sequelize.STRING(12),
                     "field": "licenseType",
                     "allowNull": false
                 },
                 "serialNumber": {
-                    "type": Sequelize.STRING(100),
+                    "type": Sequelize.STRING(17),
                     "field": "serialNumber"
                 },
                 "passengersCount": {
@@ -381,6 +400,11 @@ var migrationCommands = [{
                     "field": "totalPrice",
                     "allowNull": false
                 },
+                "expireDate": {
+                    "type": Sequelize.DATEONLY,
+                    "field": "expireDate",
+                    "allowNull": false
+                },
                 "note": {
                     "type": Sequelize.TEXT,
                     "field": "note"
@@ -395,14 +419,14 @@ var migrationCommands = [{
                     "field": "updatedAt",
                     "allowNull": false
                 },
-                "carNumber": {
-                    "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "carNumber",
+                "carId": {
+                    "type": Sequelize.INTEGER,
+                    "field": "carId",
                     "onUpdate": "RESTRICT",
                     "onDelete": "RESTRICT",
                     "references": {
                         "model": "Cars",
-                        "key": "carNumber"
+                        "key": "id"
                     },
                     "allowNull": true
                 },
@@ -514,14 +538,86 @@ var migrationCommands = [{
                     },
                     "allowNull": true
                 },
-                "carNumber": {
-                    "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "carNumber",
+                "carId": {
+                    "type": Sequelize.INTEGER,
+                    "field": "carId",
                     "onUpdate": "RESTRICT",
                     "onDelete": "RESTRICT",
                     "references": {
                         "model": "Cars",
-                        "key": "carNumber"
+                        "key": "id"
+                    },
+                    "allowNull": true
+                },
+                "regionId": {
+                    "type": Sequelize.TINYINT.UNSIGNED,
+                    "field": "regionId",
+                    "onUpdate": "RESTRICT",
+                    "onDelete": "RESTRICT",
+                    "references": {
+                        "model": "Regions",
+                        "key": "id"
+                    },
+                    "allowNull": true
+                }
+            },
+            {}
+        ]
+    },
+    {
+        fn: "createTable",
+        params: [
+            "OtherServices",
+            {
+                "id": {
+                    "type": Sequelize.INTEGER.UNSIGNED,
+                    "field": "id",
+                    "primaryKey": true,
+                    "autoIncrement": true
+                },
+                "name": {
+                    "type": Sequelize.STRING(200),
+                    "field": "name",
+                    "allowNull": false
+                },
+                "serviceKind": {
+                    "type": Sequelize.STRING(100),
+                    "field": "serviceKind",
+                    "allowNull": false
+                },
+                "fileStatus": {
+                    "type": Sequelize.STRING(10),
+                    "field": "fileStatus",
+                    "allowNull": false
+                },
+                "description": {
+                    "type": Sequelize.TEXT,
+                    "field": "description",
+                    "allowNull": false
+                },
+                "cost": {
+                    "type": Sequelize.FLOAT,
+                    "field": "cost",
+                    "allowNull": false
+                },
+                "createdAt": {
+                    "type": Sequelize.DATE,
+                    "field": "createdAt",
+                    "allowNull": false
+                },
+                "updatedAt": {
+                    "type": Sequelize.DATE,
+                    "field": "updatedAt",
+                    "allowNull": false
+                },
+                "customerId": {
+                    "type": Sequelize.STRING(10),
+                    "field": "customerId",
+                    "onUpdate": "RESTRICT",
+                    "onDelete": "RESTRICT",
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
                     },
                     "allowNull": true
                 }
@@ -583,6 +679,17 @@ var migrationCommands = [{
                         "key": "id"
                     },
                     "allowNull": true
+                },
+                "otherServiceId": {
+                    "type": Sequelize.INTEGER.UNSIGNED,
+                    "field": "otherServiceId",
+                    "onUpdate": "RESTRICT",
+                    "onDelete": "RESTRICT",
+                    "references": {
+                        "model": "OtherServices",
+                        "key": "id"
+                    },
+                    "allowNull": true
                 }
             },
             {}
@@ -599,14 +706,9 @@ var migrationCommands = [{
                     "primaryKey": true,
                     "autoIncrement": true
                 },
-                "cost": {
+                "coverageDays": {
                     "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "cost",
-                    "allowNull": false
-                },
-                "additionalDays": {
-                    "type": Sequelize.INTEGER.UNSIGNED,
-                    "field": "additionalDays",
+                    "field": "coverageDays",
                     "allowNull": false
                 },
                 "note": {
@@ -674,6 +776,11 @@ var migrationCommands = [{
                 "cost": {
                     "type": Sequelize.INTEGER.UNSIGNED,
                     "field": "cost",
+                    "allowNull": false
+                },
+                "supplierPercentage": {
+                    "type": Sequelize.FLOAT.UNSIGNED,
+                    "field": "supplierPercentage",
                     "allowNull": false
                 },
                 "additionalDays": {

@@ -80,16 +80,27 @@
                     "field": "agentId",
                     "seqType": "Sequelize.STRING(10)"
                 },
-                "carNumber": {
+                "carId": {
                     "allowNull": true,
                     "references": {
                         "model": "Cars",
-                        "key": "carNumber"
+                        "key": "id"
                     },
                     "onDelete": "RESTRICT",
                     "onUpdate": "RESTRICT",
-                    "field": "carNumber",
-                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                    "field": "carId",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "regionId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Regions",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "regionId",
+                    "seqType": "Sequelize.TINYINT.UNSIGNED"
                 }
             },
             "indexes": []
@@ -146,6 +157,17 @@
                     "onUpdate": "RESTRICT",
                     "field": "agentId",
                     "seqType": "Sequelize.STRING(10)"
+                },
+                "otherServiceId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "OtherServices",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "otherServiceId",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
                 }
             },
             "indexes": []
@@ -153,18 +175,25 @@
         "Cars": {
             "tableName": "Cars",
             "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
                 "carNumber": {
                     "allowNull": false,
                     "unique": true,
-                    "primaryKey": true,
                     "field": "carNumber",
-                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                    "seqType": "Sequelize.STRING(10)"
                 },
                 "motorNumber": {
                     "unique": true,
                     "allowNull": false,
                     "field": "motorNumber",
-                    "seqType": "Sequelize.STRING(100)"
+                    "seqType": "Sequelize.STRING(8)"
                 },
                 "motorPH": {
                     "field": "motorPH",
@@ -173,11 +202,11 @@
                 "licenseType": {
                     "allowNull": false,
                     "field": "licenseType",
-                    "seqType": "Sequelize.TINYINT.UNSIGNED"
+                    "seqType": "Sequelize.STRING(12)"
                 },
                 "serialNumber": {
                     "field": "serialNumber",
-                    "seqType": "Sequelize.STRING(100)"
+                    "seqType": "Sequelize.STRING(17)"
                 },
                 "passengersCount": {
                     "field": "passengersCount",
@@ -248,6 +277,7 @@
                 },
                 "name": {
                     "allowNull": false,
+                    "unique": true,
                     "field": "name",
                     "seqType": "Sequelize.STRING(20)"
                 },
@@ -296,6 +326,11 @@
                     "field": "totalPrice",
                     "seqType": "Sequelize.INTEGER.UNSIGNED"
                 },
+                "expireDate": {
+                    "allowNull": false,
+                    "field": "expireDate",
+                    "seqType": "Sequelize.DATEONLY"
+                },
                 "note": {
                     "field": "note",
                     "seqType": "Sequelize.TEXT"
@@ -310,16 +345,16 @@
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
                 },
-                "carNumber": {
+                "carId": {
                     "allowNull": true,
                     "references": {
                         "model": "Cars",
-                        "key": "carNumber"
+                        "key": "id"
                     },
                     "onDelete": "RESTRICT",
                     "onUpdate": "RESTRICT",
-                    "field": "carNumber",
-                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                    "field": "carId",
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "customerId": {
                     "allowNull": true,
@@ -341,6 +376,64 @@
                     "onDelete": "RESTRICT",
                     "onUpdate": "RESTRICT",
                     "field": "agentId",
+                    "seqType": "Sequelize.STRING(10)"
+                }
+            },
+            "indexes": []
+        },
+        "OtherServices": {
+            "tableName": "OtherServices",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING(200)"
+                },
+                "serviceKind": {
+                    "allowNull": false,
+                    "field": "serviceKind",
+                    "seqType": "Sequelize.STRING(100)"
+                },
+                "fileStatus": {
+                    "allowNull": false,
+                    "field": "fileStatus",
+                    "seqType": "Sequelize.STRING(10)"
+                },
+                "description": {
+                    "allowNull": false,
+                    "field": "description",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "cost": {
+                    "allowNull": false,
+                    "field": "cost",
+                    "seqType": "Sequelize.FLOAT"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "customerId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "RESTRICT",
+                    "onUpdate": "RESTRICT",
+                    "field": "customerId",
                     "seqType": "Sequelize.STRING(10)"
                 }
             },
@@ -396,16 +489,22 @@
                     "seqType": "Sequelize.STRING(100)"
                 },
                 "cost": {
-                    "unique": true,
                     "allowNull": false,
                     "field": "cost",
-                    "seqType": "Sequelize.STRING(100)"
+                    "seqType": "Sequelize.INTEGER.UNSIGNED"
                 },
                 "coverageDays": {
+                    "allowNull": false,
                     "field": "coverageDays",
                     "seqType": "Sequelize.INTEGER.UNSIGNED"
                 },
+                "supplierPercentage": {
+                    "allowNull": false,
+                    "field": "supplierPercentage",
+                    "seqType": "Sequelize.FLOAT"
+                },
                 "note": {
+                    "allowNull": true,
                     "field": "note",
                     "seqType": "Sequelize.TEXT"
                 },
@@ -431,14 +530,9 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER.UNSIGNED"
                 },
-                "cost": {
+                "coverageDays": {
                     "allowNull": false,
-                    "field": "cost",
-                    "seqType": "Sequelize.INTEGER.UNSIGNED"
-                },
-                "additionalDays": {
-                    "allowNull": false,
-                    "field": "additionalDays",
+                    "field": "coverageDays",
                     "seqType": "Sequelize.INTEGER.UNSIGNED"
                 },
                 "note": {
@@ -504,6 +598,11 @@
                     "allowNull": false,
                     "field": "cost",
                     "seqType": "Sequelize.INTEGER.UNSIGNED"
+                },
+                "supplierPercentage": {
+                    "allowNull": false,
+                    "field": "supplierPercentage",
+                    "seqType": "Sequelize.FLOAT.UNSIGNED"
                 },
                 "additionalDays": {
                     "allowNull": false,
@@ -620,6 +719,14 @@
                 "note": {
                     "field": "note",
                     "seqType": "Sequelize.TEXT"
+                },
+                "blocked": {
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "allowNull": false,
+                    "field": "blocked",
+                    "seqType": "Sequelize.BOOLEAN"
                 },
                 "createdAt": {
                     "allowNull": false,
