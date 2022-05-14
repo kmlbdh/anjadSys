@@ -192,42 +192,44 @@
       </div>
     </div>
 
-      <div class="main-data-section card">
-        <div class="header-section">
-          <h5>بيانات البوليصة</h5>
-          <div class="expire-date">
-            <h6>تاريخ انتهاء البوليصة:</h6>
-            <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
-          </div>
-        </div>
-        <div class="data-section for-table">
-          <div>
-            <table class="table">
-              <thead class="thead-light">
-                <tr>
-                  <th>الخدمة</th>
-                  <th>عدد ايام التغطية</th>
-                  <th>المورد</th>
-                  <th>تكلفة الخدمة</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr *ngFor="let service of modalInsurancePolicy.services;">
-                  <td>{{service.Service.name}}</td>
-                  <td>{{service.Service.coverageDays}}</td>
-                  <td>{{service.Supplier.companyName}}</td>
-                  <td>{{service.Service.cost}}</td>
-                </tr>
-              </tbody>
-              <tr class="total-cost">
-                <th colspan="3">التكلفة الاجمالية</th>
-                <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
-              </tr>
-            </table>
-          </div>
+    <div class="main-data-section card">
+      <div class="header-section">
+        <h5>بيانات البوليصة</h5>
+        <div class="expire-date">
+          <h6>تاريخ انتهاء البوليصة:</h6>
+          <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
         </div>
       </div>
+      <div class="data-section for-table">
+        <div>
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th>الخدمة</th>
+                <th>عدد ايام التغطية</th>
+                <th>المورد</th>
+                <th>تكلفة الخدمة</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let service of modalInsurancePolicy.services;">
+                <td>{{service.Service.name}}</td>
+                <td>{{service.Service.coverageDays}}</td>
+                <td>{{service.Supplier.companyName}}</td>
+                <td>{{service.Service.cost}}</td>
+              </tr>
+            </tbody>
+            <tr class="total-cost">
+              <th colspan="3">التكلفة الاجمالية</th>
+              <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p class="condition">* شروط الوثائق مع الكتيب المرفق</p>
   </div>
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة البوليصة</button>

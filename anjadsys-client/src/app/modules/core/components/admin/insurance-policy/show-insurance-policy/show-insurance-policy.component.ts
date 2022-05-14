@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
 import { SearchInsurancePolicy, InsurancePolicyAPI, InsurancePolicesAPI } from '../../../../model/insurancepolicy';
 import { AdminService } from '../../admin.service';
@@ -28,6 +28,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   customers: UserAPI[] = [];
   agents: UserAPI[] = [];
 
+  openIcon = faEnvelopeOpenText;
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
   cancelInput = faTimes;

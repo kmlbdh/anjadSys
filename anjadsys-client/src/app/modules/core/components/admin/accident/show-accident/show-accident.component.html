@@ -89,20 +89,23 @@
       <ng-template [ngIf]="accidents.length > 0">
         <li *ngFor="let accident of accidents | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1 clickable" data-label="Car Accident Id" (click)="open(accidentModal, accident.id)">{{accident.id}}</div>
+          <div class="col-custom col-custom-1" data-label="Car Accident Id">{{accident.id}}</div>
           <div class="col-custom col-custom-2" data-label="Car Number">{{accident.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Car Owner">{{accident.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Agent Name">{{ accident.Agent.username }}/{{ accident.Agent.companyName }}</div>
           <div class="col-custom col-custom-5" data-label="Car Accident Registration Date">{{ accident.registerAccidentDate | date: 'dd-MM-yyyy' }}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
 
-            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
+            <button class="btn-primary" title="ملف الحادث" (click)="open(accidentModal, accident.id)">
+              <fa-icon [icon]="openIcon"></fa-icon>
             </button>
 
-            <!-- <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)"> -->
-            <button class="btn-primary" title="تعديل بيانات بلاع الحادث">
+            <!-- <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)">
               <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button> -->
+
+            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
             </button>
 
           </div>
@@ -210,6 +213,8 @@
         </div>
       </div>
     </div>
+
+    <p class="condition">* شروط الوثائق مع الكتيب المرفق</p>
   </div>
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة بلاغ الحادث</button>

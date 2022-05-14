@@ -226,6 +226,8 @@
           </div>
         </div>
       </div>
+
+      <p class="condition">* شروط الوثائق مع الكتيب المرفق</p>
   </div>
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة البوليصة</button>
@@ -291,33 +293,35 @@
       </div>
     </div>
 
-      <div class="main-data-section card">
-        <div class="header-section">
-          <h5>بيانات الخدمة</h5>
+    <div class="main-data-section card">
+      <div class="header-section">
+        <h5>بيانات الخدمة</h5>
+      </div>
+      <div class="data-section-2">
+        <div class="each-data">
+          <label>نوع الخدمة</label>
+          <span>{{modalOtherService.otherService.serviceKind}}</span>
         </div>
-        <div class="data-section-2">
-          <div class="each-data">
-            <label>نوع الخدمة</label>
-            <span>{{modalOtherService.otherService.serviceKind}}</span>
-          </div>
-          <div class="each-data">
-            <label>حالة الملف</label>
-            <span>{{modalOtherService.otherService.fileStatus}}</span>
-          </div>
-          <div class="each-data">
-            <label>تاريخ الخدمة:</label>
-            <span>{{modalOtherService.otherService.createdAt | date:'dd-MM-yyyy'}}</span>
-          </div>
-          <div class="each-data" style="width: 100%">
-            <label>افادة الزبون</label>
-            <span>{{modalOtherService.otherService.descCustomer}}</span>
-          </div>
-          <div class="each-data" style="width: 100%">
-            <label>افادة المفتش</label>
-            <span>{{modalOtherService.otherService.description}}</span>
-          </div>
+        <div class="each-data">
+          <label>حالة الملف</label>
+          <span>{{modalOtherService.otherService.fileStatus}}</span>
+        </div>
+        <div class="each-data">
+          <label>تاريخ الخدمة:</label>
+          <span>{{modalOtherService.otherService.createdAt | date:'dd-MM-yyyy'}}</span>
+        </div>
+        <div class="each-data" style="width: 100%">
+          <label>افادة الزبون</label>
+          <span>{{modalOtherService.otherService.descCustomer}}</span>
+        </div>
+        <div class="each-data" style="width: 100%">
+          <label>افادة المفتش</label>
+          <span>{{modalOtherService.otherService.description}}</span>
         </div>
       </div>
+    </div>
+
+    <p class="condition">* شروط الوثائق مع الكتيب المرفق</p>
   </div>
   <div class="modal-footer d-print-none">
     <button type="button" class="button-primary" (click)="printPage()">طباعة الخدمة</button>
