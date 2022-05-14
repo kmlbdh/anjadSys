@@ -21,6 +21,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 }
 
 .insurance-policy-modal{
+  -webkit-print-color-adjust: exact;
     .modal-content {
     button.close{
       @include button-primary;
@@ -69,7 +70,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             }
           }
         }
-        .data-section{
+        .data-section,
+        .data-section-2 {
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
@@ -108,6 +110,14 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
               margin: 0.2rem 0.4rem;
             }
           }
+        }
+
+        .data-section-2{
+          justify-content: flex-start;
+          height: max-content;
+          width: 100%;
+          column-gap: 20%;
+          row-gap: 21px;
         }
       }
     }

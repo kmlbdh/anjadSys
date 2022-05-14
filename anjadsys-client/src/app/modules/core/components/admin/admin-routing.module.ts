@@ -11,6 +11,7 @@ import { CarModule } from './car/car.module';
 import { AccidentModule } from './accident/accident.module';
 import { InsurancePolicyModule } from './insurance-policy/insurance-policy.module';
 import { AccountModule } from './account/account.module';
+import { OtherServicesModule } from './other-services/other-services.module';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: 'service',
         loadChildren: () => ServiceModule
+      },
+      {
+        path: 'otherservices',
+        loadChildren: () => OtherServicesModule
       },
       {
         path: 'car',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { NavInput } from '../../../shared/components/nav/nav.component';
 
@@ -56,7 +56,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 2,
+      id: 3,
       name: 'الموردين',
       faIcon: faTruckMoving,
       hide: true,
@@ -73,7 +73,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 3,
+      id: 4,
       name: 'الخدمات',
       faIcon: faWrench,
       hide: true,
@@ -91,7 +91,25 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 4,
+      id: 5,
+      name: 'خدمات اخرى',
+      faIcon: faClipboardList,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار الخدمات الأخرى',
+          link: 'otherservices/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة خدمة اخرى',
+          link: 'otherservices/add'
+        },
+      ]
+    },
+    {
+      id: 6,
       name: 'السيارات',
       faIcon: faTaxi,
       hide: true,
@@ -109,7 +127,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 5,
+      id: 7,
       name: 'نوع وموديل السيارات',
       faIcon: faCarSide,
       hide: true,
@@ -137,7 +155,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 6,
+      id: 8,
       name: 'بلاغات الحوادث',
       faIcon: faCarCrash,
       hide: true,
@@ -155,7 +173,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 7,
+      id: 9,
       name: 'بوليصة التأمين',
       faIcon: faCarCrash,
       hide: true,
@@ -173,7 +191,7 @@ export class AdminComponent implements OnInit {
       ]
     },
     {
-      id: 7,
+      id: 10,
       name: 'المالية',
       faIcon: faFileInvoiceDollar,
       hide: true,

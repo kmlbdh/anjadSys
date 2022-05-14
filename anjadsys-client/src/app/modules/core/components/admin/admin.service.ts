@@ -14,6 +14,7 @@ import { SearchAccident, AccidentsAPI, NewAccident } from '../../model/accident'
 import { RegionsAPI } from '../../model/general';
 import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
 import { AccountsAPI, SearchAccount } from '../../model/account';
+import { SearchOtherServices, OtherServiceAPI, NewOtherService, updateOtherService } from '../../model/otherservices';
 
 @Injectable()
 export class AdminService {
@@ -282,6 +283,29 @@ export class AdminService {
     return this.http.post<any>(`${this.url}supplier-account`, searchBy).pipe(
       catchError(this.handleError)
     );
+  }
+
+  OtherServicesAPIs = {
+    delete: (id: string): Observable<any> => {
+      return this.http.post<any>(`${this.url}delete-other-service`, {otherServiceID: id}).pipe(
+        catchError(this.handleError)
+      );
+    },
+    show: (searchBy: SearchOtherServices):Observable<OtherServiceAPI> => {
+      return this.http.post<OtherServiceAPI>(`${this.url}list-other-services`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (otherServiceData: NewOtherService): Observable<any> => {
+      return this.http.post<any>(`${this.url}add-other-service`, otherServiceData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (otherServiceData: updateOtherService): Observable<any> => {
+      return this.http.post<any>(`${this.url}update-other-service`, otherServiceData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
