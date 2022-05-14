@@ -2,6 +2,7 @@ const validation = require("./middleware.validation");
 const { 
   userSchema,
   serviceSchema,
+  otherServiceSchema,
   agentLimitsSchema,
   createSupplier,
   carSchema,
@@ -29,6 +30,13 @@ const serviceValidation = {
    delete: validation(serviceSchema.delete, 'body'),
    update: validation(serviceSchema.update, 'body'),
    list: validation(serviceSchema.list, 'body'),
+};
+
+const otherServiceValidation = {
+   add: validation(otherServiceSchema.add, 'body'),
+   delete: validation(otherServiceSchema.delete, 'body'),
+   update: validation(otherServiceSchema.update, 'body'),
+   list: validation(otherServiceSchema.list, 'body'),
 };
 
 const agentLimitsValidation = {
@@ -90,6 +98,7 @@ const insurancePolicyValidation = {
 module.exports = { 
   userValidation,
   serviceValidation,
+  otherServiceValidation,
   agentLimitsValidation,
   carTypeValidation,
   carModelValidation,

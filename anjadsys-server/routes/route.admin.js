@@ -2,6 +2,7 @@ const {
   verifyLoggedIn,
   userValidation,
   serviceValidation,
+  otherServiceValidation,
   agentLimitsValidation,
   carTypeValidation,
   carModelValidation,
@@ -21,6 +22,7 @@ const {
 const {
   userActions,
   serviceActions,
+  otherServiceActions,
   agentActions,
   sharedActions,
   accidentActions,
@@ -111,6 +113,32 @@ module.exports = function(app){
     auth.isAdmin,
     serviceValidation.list,
   ], serviceActions.list);
+  
+/** #################### OTHER SERVICE  ########################*/
+
+  app.post("/api/admin/add-other-service",[
+    auth.verifyToken,
+    auth.isAdmin,
+    otherServiceValidation.add,
+  ], otherServiceActions.add);
+
+  app.post("/api/admin/delete-other-service",[
+    auth.verifyToken,
+    auth.isAdmin,
+    otherServiceValidation.delete,
+  ], otherServiceActions.delete);
+
+  app.post("/api/admin/update-other-service",[
+    auth.verifyToken,
+    auth.isAdmin,
+    otherServiceValidation.update,
+  ], otherServiceActions.update);
+
+  app.post("/api/admin/list-other-services",[
+    auth.verifyToken,
+    auth.isAdmin,
+    otherServiceValidation.list,
+  ], otherServiceActions.list);
 
 /** #################### AGENT LIMITS  ########################*/
 

@@ -13,6 +13,7 @@ const {
 const User = db.User;
 const Role = db.Role;
 const Service = db.Service;
+const OtherServices = db.OtherServices;
 const Accident = db.Accident;
 const Account = db.Account;
 const Car = db.Car;
@@ -36,6 +37,10 @@ const createUserLog = util.debuglog("controller.admin-CreateUser");
 const addServiceLog = util.debuglog("controller.admin-AddService");
 const deleteServiceLog = util.debuglog("controller.admin-DeleteService");
 const updateServiceLog = util.debuglog("controller.admin-UpdateService");
+const addOtherServiceLog = util.debuglog("controller.admin-AddOtherService");
+const deleteOtherServiceLog = util.debuglog("controller.admin-DeleteOtherService");
+const listOtherServiceLog = util.debuglog("controller.admin-ListOtherService");
+const updateOtherServiceLog = util.debuglog("controller.admin-UpdateOtherService");
 const listServicesLog = util.debuglog("controller.admin-ListServices");
 const addAgentLimitsLog = util.debuglog("controller.admin-AddAgentLimits");
 const deleteAgentLimitsLog = util.debuglog("controller.admin-DeleteAgentLimits");
@@ -272,6 +277,156 @@ const serviceActions = {
     } catch(error) {
       listServicesLog(error);
       errorHandler(res, error, "Failed! can't get services!");
+    }
+  },
+};
+
+const otherServiceActions = {
+
+  add: async(req, res) => {
+    try {
+
+      let { 
+        name,
+        serviceKind,
+        fileStatus,
+        descCustomer,
+        description,
+        cost,
+        insurancePolicyId,
+        customerId 
+      } = req.body;
+
+      const otherService = OtherServices.build({
+        name,
+        serviceKind,
+        fileStatus,
+        descCustomer,
+        description,
+        cost,
+        customerId,
+        insurancePolicyId
+      });
+
+      const savedOtherService = await otherService.save();
+
+      if(!savedOtherService)
+        throw new customError("Failed! Other Service wasn't added!", INTERR);
+  
+      res.status(200).json({message: "Other Service was added successfully!", data: savedOtherService.toJSON()});
+    } catch(error) {
+      addOtherServiceLog(error);
+      errorHandler(res, error, "Failed! Other Service wasn't added!");
+    }
+  },
+  delete: async(req, res) => {
+    try {
+      let { otherServiceID } = req.body;
+      
+      const deletedOtherService = await OtherServices.destroy({ where: { id: otherServiceID }});
+
+      if(!deletedOtherService)
+        throw new customError("Failed! Other Service isn't deleted!", INTERR);
+  
+      res.status(200).json({message: "Other Service was added successfully!", data: deletedOtherService});
+    } catch(error) {
+      deleteOtherServiceLog(error);
+      errorHandler(res, error, "Failed! Other Service isn't deleted!");
+    }
+  },
+  update: async(req, res) => {
+    try {
+      let { otherServiceID } = req.body;
+  
+      if(!otherServiceID) 
+        throw new customError("Failed! other service data isn't provided!", INTERR);
+  
+      const query = { where: {id: otherServiceID} };
+      const updateData = {};
+
+      Object.entries(req.body).forEach((val, ind) => {
+        updateServiceLog(val[0], val[1])
+        if(val && val.length > 0 && val[0] !== 'otherServiceID')
+          updateData[val[0]] = val[1];
+      });
+
+      updateOtherServiceLog(updateData);
+      const updatedOtherService = await OtherServices.update(updateData, query);
+      updateOtherServiceLog(updatedOtherService);
+
+      if(updatedOtherService[0] !== 1) 
+        throw new customError("Failed! Other Service isn't updated!", INTERR);
+  
+      res.status(200).json({message: "Other Service was updated successfully!", data: updatedOtherService[0]});
+    } catch(error) {
+      updateServiceLog(error);
+      errorHandler(res, error, "Failed! Other Service wasn't registered!");
+    }
+  },
+  list: async(req, res) => {
+    try{
+      let query = {where:{}};
+      const limit = req.body.limit || LIMIT;
+      const skip = req.body.skip || SKIP;
+  
+      if (req.body.fileStatus) 
+        query.where.fileStatus = {[Op.substring]: req.body.fileStatus}; 
+
+      if (req.body.customerID) 
+        query.where.customerId = req.body.customerID;
+        
+      if (req.body.insurancePolicyID) 
+        query.where.insurancePolicyId = req.body.insurancePolicyID;
+      
+      if (req.body.otherServiceID)
+        query.where.id = req.body.otherServiceID;
+
+      if (req.body.startDate && req.body.endDate){
+        query.where.createdAt = {
+          [Op.between]: [
+            new Date(req.body.startDate).setHours(0, 0, 0, 0),
+            new Date(req.body.endDate).setHours(23, 59 , 59, 59)
+          ]
+        };
+      } else if(req.body.startDate){
+        query.where.createdAt = {
+          [Op.gte]: new Date(req.body.startDate).setHours(0, 0, 0, 0),
+        };
+      } else if(req.body.endDate){
+        query.where.createdAt = {
+          [Op.lte]: new Date(req.body.endDate).setHours(23, 59 , 59, 59),
+        };
+      }
+      
+      listOtherServiceLog(query);
+      query = { ...query, 
+        order: [['id', 'ASC' ]],
+        include: [
+          {
+            model: User,
+            as: 'Customer',
+            required: true,
+            attributes: ['id', 'username', 'identityNum', 'address', 'jawwal1', 'jawwal2'],
+            include:[
+              {
+                model: Region,
+                required: true,
+                attributes: ['name']
+              }
+            ]
+          }
+        ],
+        offset: skip,
+        limit: limit,
+      };
+      const { count , rows: otherServices} = await OtherServices.findAndCountAll(query);
+  
+      listOtherServiceLog(otherServices);
+      res.status(200).json({data: otherServices, total: count});
+  
+    } catch(error) {
+      listOtherServiceLog(error);
+      errorHandler(res, error, "Failed! can't get other services!");
     }
   },
 };
@@ -1591,6 +1746,7 @@ const checkLimits = async (req) => {
 module.exports = {
   userActions,
   serviceActions,
+  otherServiceActions,
   agentActions,
   sharedActions,
   accidentActions,

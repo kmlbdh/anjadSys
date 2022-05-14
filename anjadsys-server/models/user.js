@@ -55,6 +55,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
+      User.hasMany(models.OtherServices, {
+        foreignKey: 'customerId',
+        onDelete: 'RESRICT',
+        onUpdate: 'RESTRICT'
+      });
     }
   }
   User.init({
