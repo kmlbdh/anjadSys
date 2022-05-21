@@ -1,5 +1,4 @@
 const { 
-  verifyLoggedIn,
   userValidation,
   serviceValidation,
   otherServiceValidation,
@@ -11,7 +10,6 @@ const {
   insurancePolicyValidation,
   accountValidation,
   supplierValidation,
-  supplierAccountValidation,
  } = require("../middleware/middleware.admin");
 
 const { 
@@ -35,6 +33,19 @@ const {
   statisticsActions,
   SupplierActions
 } = require("../controller/controller.admin");
+const express = require("express");
+
+generalRoute = express.Router();
+userRoute = express.Router();
+supplierRoute = express.Router();
+serviceRoute = express.Router();
+agentLimitsRoute = express.Router();
+carRoute = express.Router();
+carTypeRoute = express.Router();
+carModelRoute = express.Router();
+accidentRoute = express.Router();
+insurancePolicyRoute = express.Router();
+otherServiceRoute = express.Router();
 
 module.exports = function(app){
   app.use((_req, res, next) => {
@@ -44,284 +55,208 @@ module.exports = function(app){
     );
     next();
   });
+
+  app.use('/api/admin/*', [
+    auth.verifyToken,
+    auth.isAdmin
+  ]);
   
 /** #################### USER  ########################*/
 
-  app.post("/api/admin/create-user",[
-    auth.verifyToken,
-    auth.isAdmin,
+  userRoute.post("/create",[
     userValidation.create,
     checkDuplicateUsernameOrNickname
   ], userActions.create);
 
-  app.post("/api/admin/edit-user",[
-    auth.verifyToken,
-    auth.isAdmin,
-    userValidation.update,
-  ], userActions.update);
+  userRoute.route("/:userID")
+    .all(userValidation.createParam)
+    .delete(userActions.delete)
+    .put([
+      userValidation.update,
+    ], userActions.update);
 
-  app.post("/api/admin/delete-user",[
-    auth.verifyToken,
-    auth.isAdmin,
-    userValidation.delete,
-  ], userActions.delete);
+  userRoute.route("/list*")
+  .all(userValidation.list);
 
-  app.post("/api/admin/list-users",[
-    auth.verifyToken,
-    auth.isAdmin,
-    userValidation.list,
-  ], userActions.list);
+  userRoute.post("/list", userActions.list);
+  
+  userRoute.post("/list-light", userActions.lightList);
 
-  app.post("/api/admin/list-light-users",[
-    auth.verifyToken,
-    auth.isAdmin,
-    userValidation.list,
-  ], userActions.lightList);
+  app.use('/api/admin/user', userRoute);
 
 /** #################### SUPPLIER  ########################*/
 
-  app.post("/api/admin/create-supplier",[
-    auth.verifyToken,
-    auth.isAdmin,
+  supplierRoute.post("/create",[
     supplierValidation.create,
     checkDuplicateUsernameOrNickname
   ], userActions.create);
 
+  supplierRoute.post("/account",[
+    supplierValidation.listAccount,
+  ], SupplierActions.list);
+
+  app.use('/api/admin/supplier', supplierRoute);
   
 /** #################### SERVICE  ########################*/
 
-  app.post("/api/admin/add-service",[
-    auth.verifyToken,
-    auth.isAdmin,
+  serviceRoute.post("/add",[
     serviceValidation.add,
   ], serviceActions.add);
 
-  app.post("/api/admin/delete-service",[
-    auth.verifyToken,
-    auth.isAdmin,
-    serviceValidation.delete,
-  ], serviceActions.delete);
-
-  app.post("/api/admin/update-service",[
-    auth.verifyToken,
-    auth.isAdmin,
-    serviceValidation.update,
-  ], serviceActions.update);
-
-  app.post("/api/admin/list-services",[
-    auth.verifyToken,
-    auth.isAdmin,
+  serviceRoute.post("/list",[
     serviceValidation.list,
   ], serviceActions.list);
   
+  serviceRoute.route("/:serviceID")
+    .all(serviceValidation.serviceID)
+    .delete(serviceActions.delete)
+    .put([
+      serviceValidation.update,
+    ], serviceActions.update);
+  
+  app.use('/api/admin/service', serviceRoute);
+
 /** #################### OTHER SERVICE  ########################*/
 
-  app.post("/api/admin/add-other-service",[
-    auth.verifyToken,
-    auth.isAdmin,
+otherServiceRoute.post("/add",[
     otherServiceValidation.add,
   ], otherServiceActions.add);
 
-  app.post("/api/admin/delete-other-service",[
-    auth.verifyToken,
-    auth.isAdmin,
-    otherServiceValidation.delete,
-  ], otherServiceActions.delete);
-
-  app.post("/api/admin/update-other-service",[
-    auth.verifyToken,
-    auth.isAdmin,
-    otherServiceValidation.update,
-  ], otherServiceActions.update);
-
-  app.post("/api/admin/list-other-services",[
-    auth.verifyToken,
-    auth.isAdmin,
+  otherServiceRoute.post("/list",[
     otherServiceValidation.list,
   ], otherServiceActions.list);
 
+  otherServiceRoute.route('/:otherServiceID')
+  .all(otherServiceValidation.otherServiceID)
+  .delete(otherServiceActions.delete)
+  .put([
+    otherServiceValidation.update,
+  ], otherServiceActions.update);
+
+  app.use('/api/admin/other-service', otherServiceRoute);
+
 /** #################### AGENT LIMITS  ########################*/
 
-  app.post("/api/admin/add-agent-limits",[
-    auth.verifyToken,
-    auth.isAdmin,
+agentLimitsRoute.post("/add",[
     agentLimitsValidation.add,
   ], agentActions.add);
 
-  app.post("/api/admin/delete-agent-limits",[
-    auth.verifyToken,
-    auth.isAdmin,
-    agentLimitsValidation.delete,
+  agentLimitsRoute.delete("/:agentLimitID",[
+    agentLimitsValidation.agentLimitID,
   ], agentActions.delete);
 
-  app.post("/api/admin/list-agent-limits",[
-    auth.verifyToken,
-    auth.isAdmin,
+  agentLimitsRoute.post("/list",[
     agentLimitsValidation.list,
   ], agentActions.list);
 
-/** #################### REGION & ROLES API ########################*/
+  app.use('/api/admin/agent-limits', agentLimitsRoute);
 
-  app.get("/api/admin/get-regions-roles",[
-    auth.verifyToken,
-    auth.isAdmin,
-  ], sharedActions.getRegionsAndRoles);
+/** #################### GENERAL API ########################*/
 
-/** #################### REGION ########################*/
+  generalRoute.get("/regions-roles", sharedActions.getRegionsAndRoles);
 
-  app.get("/api/admin/list-regions",[
-    auth.verifyToken,
-    auth.isAdmin,
-  ], regionActions.list);
+  generalRoute.get("/regions", regionActions.list);
+
+  generalRoute.get("/statistics", statisticsActions.list);
+
+  app.use('/api/admin/general', generalRoute);
 
 /** #################### CAR TYPE ########################*/
   
-  app.post("/api/admin/add-car-type",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carTypeRoute.post("/add",[
     carTypeValidation.add
   ], carTypeActions.add);
 
-  app.post("/api/admin/edit-car-type",[
-    auth.verifyToken,
-    auth.isAdmin,
-    carTypeValidation.update,
+  carTypeRoute.route('/:carTypeId')
+  .all(carTypeValidation.carTypeId)
+  .delete(carTypeActions.delete)
+  .put([
+    carTypeValidation.update
   ], carTypeActions.update);
 
-  app.post("/api/admin/delete-car-type",[
-    auth.verifyToken,
-    auth.isAdmin,
-    carTypeValidation.delete,
-  ], carTypeActions.delete);
-
-  app.post("/api/admin/list-car-types",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carTypeRoute.post("/list",[
     carTypeValidation.list,
   ], carTypeActions.list);
 
+  app.use('/api/admin/car-type', carTypeRoute);
+
 /** #################### CAR MODEL ########################*/
 
-  app.post("/api/admin/add-car-model",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carModelRoute.post("/add",[
     carModelValidation.add
   ], carModelActions.add);
 
-  app.post("/api/admin/edit-car-model",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carModelRoute.route("/:carModelId")
+  .all(carModelValidation.carModelId)
+  .delete(carModelActions.delete)
+  .put([
     carModelValidation.update,
   ], carModelActions.update);
 
-  app.post("/api/admin/delete-car-model",[
-    auth.verifyToken,
-    auth.isAdmin,
-    carModelValidation.delete,
-  ], carModelActions.delete);
-
-  app.post("/api/admin/list-car-models",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carModelRoute.post("/list",[
     carModelValidation.list,
   ], carModelActions.list);
 
+  app.use('/api/admin/car-model', carModelRoute);
+
   /** #################### CAR ########################*/
-  app.post("/api/admin/add-car",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carRoute.post("/add",[
     carValidation.add
   ], carActions.add);
 
-  app.post("/api/admin/edit-car",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carRoute.route('/:carId')
+  .all(carValidation.carId)
+  .delete(carActions.delete)
+  .put([
     carValidation.update,
   ], carActions.update);
 
-  app.post("/api/admin/delete-car",[
-    auth.verifyToken,
-    auth.isAdmin,
-    carValidation.delete,
-  ], carActions.delete);
-
-  app.post("/api/admin/list-cars",[
-    auth.verifyToken,
-    auth.isAdmin,
+  carRoute.post("/list",[
     carValidation.list,
   ], carActions.list);
 
+  app.use('/api/admin/car', carRoute);
+
   /** #################### ACCIDENT ########################*/
-  app.post("/api/admin/add-accident",[
-    auth.verifyToken,
-    auth.isAdmin,
+  accidentRoute.post("/add",[
     accidentValidation.add
   ], accidentActions.add);
 
-  app.post("/api/admin/edit-accident",[
-    auth.verifyToken,
-    auth.isAdmin,
+  accidentRoute.route('/:accidentId')
+  .all(accidentValidation.accidentId)
+  .delete(accidentActions.delete)
+  .put([
     accidentValidation.update,
   ], accidentActions.update);
 
-  app.post("/api/admin/delete-accident",[
-    auth.verifyToken,
-    auth.isAdmin,
-    accidentValidation.delete,
-  ], accidentActions.delete);
-
-  app.post("/api/admin/list-accidents",[
-    auth.verifyToken,
-    auth.isAdmin,
+  accidentRoute.post("/list",[
     accidentValidation.list,
   ], accidentActions.list); 
+
+  app.use('/api/admin/accident', accidentRoute);
   
   /** #################### INSURANCE POLICY ########################*/
-  app.post("/api/admin/add-insurance-policy",[
-    auth.verifyToken,
-    auth.isAdmin,
+  insurancePolicyRoute.post("/add",[
     insurancePolicyValidation.add
   ], insurancePolicyActions.add);
 
-  app.post("/api/admin/edit-insurance-policy",[
-    auth.verifyToken,
-    auth.isAdmin,
+  insurancePolicyRoute.route('/:insurancePolicyId')
+  .all(insurancePolicyValidation.insurancePolicyId)
+  .delete(insurancePolicyActions.delete)
+  .put([
     insurancePolicyValidation.update,
   ], insurancePolicyActions.update);
 
-  app.post("/api/admin/delete-insurance-policy",[
-    auth.verifyToken,
-    auth.isAdmin,
-    insurancePolicyValidation.delete,
-  ], insurancePolicyActions.delete);
-
-  app.post("/api/admin/list-insurance-policy",[
-    auth.verifyToken,
-    auth.isAdmin,
+  insurancePolicyRoute.post("/list",[
     insurancePolicyValidation.list,
   ], insurancePolicyActions.list);
+
+  app.use('/api/admin/insurance-policy', insurancePolicyRoute);
 
 /** #################### ACCOUNT  ########################*/
 
 app.post("/api/admin/list-accounts",[
-  auth.verifyToken,
-  auth.isAdmin,
   accountValidation.list,
 ], accountActions.list);
-
-/** #################### STATISTICS  ########################*/
-
-app.get("/api/admin/statistics",[
-  auth.verifyToken,
-  auth.isAdmin,
-], statisticsActions.list);
-
-/** #################### SUPPLIER  ########################*/
-
-app.post("/api/admin/supplier-account",[
-  auth.verifyToken,
-  auth.isAdmin,
-  supplierAccountValidation.list,
-], SupplierActions.list);
 
 };

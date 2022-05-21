@@ -74,19 +74,19 @@ const userActions = {
     }
   },
   delete: async(req, res) => {
-    const { username } = req.body;
-    query = { where: { id: username }};
+    const { userID } = req.params;
+    query = { where: { id: userID }};
   
     await userShared.deleteUser(res, query);
   },
   update: async(req, res) => {
     try {
-      let { id } = req.body;
+      let { userID } = req.params;
   
-      if(!id) 
+      if(!userID) 
         throw new customError("Failed! user data isn't provided!", INTERR);
   
-      const query = { where: {id} };
+      const query = { where: {id: userID} };
       const updateData = {};
       Object.entries(req.body).forEach((val, ind) => {
         updateUserLog(val[0], val[1])
@@ -217,7 +217,10 @@ const serviceActions = {
   },
   delete: async(req, res) => {
     try {
-      let { serviceID } = req.body;
+      let { serviceID } = req.params;
+      
+      if(!serviceID || !Number(serviceID)) 
+        throw new customError("Failed! service data isn't provided!", INTERR);
       
       const deletedService = await Service.destroy({ where: { id: serviceID }});
 
@@ -232,9 +235,9 @@ const serviceActions = {
   },
   update: async(req, res) => {
     try {
-      let { serviceID } = req.body;
+      let { serviceID } = req.params;
   
-      if(!serviceID) 
+      if(!serviceID || !Number(serviceID)) 
         throw new customError("Failed! service data isn't provided!", INTERR);
   
       const query = { where: {id: serviceID} };
@@ -321,7 +324,10 @@ const otherServiceActions = {
   },
   delete: async(req, res) => {
     try {
-      let { otherServiceID } = req.body;
+      let { otherServiceID } = req.params;
+
+      if(!otherServiceID || !Number(otherServiceID))
+        throw new customError("Failed! Other Service data isn't provided!", INTERR);
       
       const deletedOtherService = await OtherServices.destroy({ where: { id: otherServiceID }});
 
@@ -336,10 +342,10 @@ const otherServiceActions = {
   },
   update: async(req, res) => {
     try {
-      let { otherServiceID } = req.body;
+      let { otherServiceID } = req.params;
   
-      if(!otherServiceID) 
-        throw new customError("Failed! other service data isn't provided!", INTERR);
+      if(!otherServiceID || !Number(otherServiceID))
+        throw new customError("Failed! Other Service data isn't provided!", INTERR);
   
       const query = { where: {id: otherServiceID} };
       const updateData = {};
@@ -456,7 +462,11 @@ const agentActions = {
   },
   delete: async(req, res) => {
     try {
-      let { agentLimitID } = req.body;
+      let { agentLimitID } = req.params;
+
+      if(!agentLimitID || !Number(agentLimitID)) 
+        throw new customError("Failed! Agent limits data isn't provided!", INTERR);
+
       deleteAgentLimitsLog(req.body);
       sequelizeDB.transaction( async t => {
         
@@ -576,7 +586,10 @@ const accidentActions = {
   },
   delete: async(req, res) => {
     try {
-      let { accidentID } = req.body;
+      let { accidentId: accidentID } = req.params;
+
+      if(!accidentID || !Number(accidentID))
+        throw new customError("Failed! Accident data isn't provided!", INTERR);
 
       await sequelizeDB.transaction( async t => {
         const deletedAccidentServices = await ServiceAccident.destroy({ where: 
@@ -606,11 +619,12 @@ const accidentActions = {
   update: async(req, res) => {
     try {
       let {
-        accidentID,
         services
        } = req.body;
+
+      const { accidentId: accidentID } = req.params;
   
-      if(!accidentID) 
+      if(!accidentID || !Number(accidentID)) 
         throw new customError("Failed! Accident data isn't provided!", INTERR);
   
       const query = { where: {id: accidentID} };
@@ -1038,15 +1052,24 @@ const insurancePolicyActions = {
   },
   delete: async(req, res) => {
     try {
-      let { insurancePolicyId } = req.body;
+      const { insurancePolicyId } = req.params;
+      
+      if(!insurancePolicyId || !Number(insurancePolicyId))
+        throw new customError("Failed! Insurance Policy data isn't provided!", INTERR);
 
       await sequelizeDB.transaction( async t => {
         const deletedServicesPolicy = await ServicePolicy.destroy({ where: 
-          { insurancePolicyId: insurancePolicyId }}, 
+          { insurancePolicyId }}, 
           { transaction: t });
 
         if(!deletedServicesPolicy)
           throw new customError("Failed! Services Policy isn't deleted!", INTERR);
+
+        const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
+          {transaction: t});
+    
+        if(!deletedAccount)
+          throw new customError("Failed! Account wasn't deleted!", INTERR);
 
         const deletedInsurancePolicy = await InsurancePolicy.destroy({ where: { id: insurancePolicyId }}, 
           {transaction: t});
@@ -1054,12 +1077,6 @@ const insurancePolicyActions = {
         if(!deletedInsurancePolicy)
           throw new customError("Failed! Insurance Policy isn't deleted!", INTERR);
 
-        const deletedAccount = await Account.destroy({ where: { insurancePolicyId: insurancePolicyId }}, 
-          {transaction: t});
-    
-        if(!deletedAccount)
-          throw new customError("Failed! Account wasn't deleted!", INTERR);
-    
         res.status(200).json({
           message: "Insurance Policy was deleted successfully!",
           data: {insurancePolicy: deletedInsurancePolicy, servicesPolicy: deletedServicesPolicy}
@@ -1073,13 +1090,11 @@ const insurancePolicyActions = {
   },
   update: async(req, res) => {
     try {
-      let {
-        insurancePolicyId,
-        totalPrice,
-        services
-       } = req.body;
-  
-      if(!insurancePolicyId) 
+      let { totalPrice, services } = req.body;
+
+      const { insurancePolicyId } = req.params;
+      
+      if(!insurancePolicyId || !Number(insurancePolicyId))
         throw new customError("Failed! Insurance Policy data isn't provided!", INTERR);
   
       await sequelizeDB.transaction( async t => {
@@ -1316,7 +1331,10 @@ const carActions = {
   },
   delete: async(req, res) => {
     try {
-      let { carId } = req.body;
+      let { carId } = req.params;
+
+      if(!carId || !Number(carId))
+        throw new customError("Failed! Car data isn't provided!", INTERR);
 
       const deletedCar = await Car.destroy({ where: { id: carId } });
 
@@ -1334,8 +1352,11 @@ const carActions = {
   },
   update: async(req, res) => {
     try {
-      let { carId } = req.body;
-  
+      let { carId } = req.params;
+      
+      if(!carId || !Number(carId))
+        throw new customError("Failed! Car data isn't provided!", INTERR);
+
       const query = { where: {id: carId} };
       const updateData = {};
       Object.entries(req.body).forEach((val, ind) => {
@@ -1453,7 +1474,10 @@ const carTypeActions = {
   },
   delete: async(req, res) => {
     try {
-      let { carTypeId } = req.body;
+      let { carTypeId } = req.params;
+
+      if(!carTypeId || !Number(carTypeId))
+        throw new customError("Failed! Car Type data isn't provided!", INTERR);
 
       const deletedCarType = await CarType.destroy({ where: { id: carTypeId } });
 
@@ -1471,8 +1495,12 @@ const carTypeActions = {
   },
   update: async(req, res) => {
     try {
-      let { name, carTypeId } = req.body;
+      let { name } = req.body;
+      let { carTypeId } = req.params;
   
+      if(!carTypeId || !Number(carTypeId))
+        throw new customError("Failed! Car Type data isn't provided!", INTERR);
+
       const query = { where: {id: carTypeId} };
       const updateData = { name: name};
       updateUserLog(updateData, query);
@@ -1548,7 +1576,10 @@ const carModelActions = {
   },
   delete: async(req, res) => {
     try {
-      let { carModelId } = req.body;
+      let { carModelId } = req.params;
+
+      if(!carModelId || !Number(carModelId))
+        throw new customError("Failed! Car Model data isn't provided!", INTERR);
 
       const deletedCarModel = await CarModel.destroy({ where: { id: carModelId } });
 
@@ -1566,7 +1597,11 @@ const carModelActions = {
   },
   update: async(req, res) => {
     try {
-      let { carModelId, name, carTypeId } = req.body;
+      let { name, carTypeId } = req.body;
+      const { carModelId } = req.params;
+
+      if(!carModelId || !Number(carModelId))
+        throw new customError("Failed! Car Model data isn't provided!", INTERR);
   
       const query = { where: {id: carModelId} };
       const updateData = {};

@@ -59,8 +59,9 @@ module.exports = {
       roleId: Joi.number().min(1).required(),
       blocked: Joi.boolean().required(),
     }),
+    userID: Joi.any().required(),
     update: Joi.object().keys({
-      id: Joi.string().trim().min(6).required(),
+      // id: Joi.string().trim().min(6).required(),
       identityNum: Joi.string()
       .pattern(/^[0-9]{9}$/)
       .options({ messages: { 'string.pattern.base': 'رقم الهوية خاطىء' } })
@@ -94,12 +95,12 @@ module.exports = {
       roleId: Joi.number().min(1).optional(),
       blocked: Joi.boolean().optional(),
     }),
-    delete: Joi.object().keys({
-      username: Joi.string().trim()
-      .pattern(/^(SUP-\d{5})$|^(AG-\d{6})$|^(C-\d{8})$/)
-      .required()
-      .options({messages: {"string.pattern.base": "username is wrong!"}})
-    }),
+    // delete: Joi.object().keys({
+    //   username: Joi.string().trim()
+    //   .pattern(/^(AD-\d{3})$|(SUP-\d{5})$|^(AG-\d{6})$|^(C-\d{8})$/)
+    //   .required()
+    //   .options({messages: {"string.pattern.base": "username is wrong!"}})
+    // }),
     list: Joi.object().keys({
       role: Joi.string().trim().min(5).optional(),
       limit: Joi.number().optional(),
@@ -113,25 +114,6 @@ module.exports = {
       blocked: Joi.boolean().optional(),
     }),
   },
-  createSupplier: Joi.object().keys({
-    identityNum: Joi.string()
-    .pattern(/^[0-9]{9}$/)
-    .options({ messages: { 'string.pattern.base': 'رقم الهوية خاطىء' } })
-    .optional()
-    .allow(null),
-    username: Joi.string().trim().required().min(3),
-    companyName: Joi.string().trim().min(3).required(),
-    address: Joi.string().trim().optional().allow(null),
-    jawwal1: Joi.number().min(9).required(),
-    jawwal2: Joi.number().min(9).optional().allow(null),
-    fax: Joi.number().min(7).optional().allow(null),
-    tel: Joi.number().min(7).optional().allow(null),
-    email: Joi.string().email().optional().allow(null),
-    note: Joi.string().trim().min(10).optional().allow(null),
-    regionId: Joi.number().min(1).required(),
-    roleId: Joi.number().min(1).required(),
-    blocked: Joi.boolean().required(),
-  }),
   serviceSchema: {
     add: Joi.object().keys({
       name: Joi.string().trim().min(2).required(),
@@ -140,20 +122,21 @@ module.exports = {
       note: Joi.any().optional(),
       supplierPercentage: Joi.number().required(),
     }),
+    serviceID: Joi.any().required(),
     update: Joi.object().keys({
-      serviceID: Joi.number().required(),
+      // serviceID: Joi.number().required(),
       name: Joi.string().trim().min(2).optional(),
       coverageDays: Joi.number().optional(),
       cost: Joi.number().min(1).optional(),
       note: Joi.any().optional(),
       supplierPercentage: Joi.number().optional(),
     }),
-    delete: Joi.object().keys({
-      serviceID: Joi.number().required()
-    }),
+    // delete: Joi.object().keys({
+    //   serviceID: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       serviceName: Joi.string().trim().min(1).optional(),
-      serviceID: Joi.number().min(1).optional(),
+      serviceID: Joi.number().allow(null).min(1).optional(),
       limit: Joi.number().optional(),
       skip: Joi.number().optional()
     }),
@@ -170,7 +153,6 @@ module.exports = {
       insurancePolicyId: Joi.number().required(),
     }),
     update: Joi.object().keys({
-      otherServiceID: Joi.number().required(),
       name: Joi.string().trim().optional(),
       serviceKind: Joi.string().trim().optional(),
       fileStatus: Joi.string().trim().optional(),
@@ -180,9 +162,10 @@ module.exports = {
       customerId: Joi.string().trim().optional(),
       insurancePolicyId: Joi.number().optional(),
     }),
-    delete: Joi.object().keys({
-      otherServiceID: Joi.number().required(),
-    }),
+    otherServiceID: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   otherServiceID: Joi.number().required(),
+    // }),
     list: Joi.object().keys({
       otherServiceID: Joi.number().optional(),
       serviceKind: Joi.string().trim().optional(),
@@ -200,9 +183,10 @@ module.exports = {
       debit: Joi.number().min(1).required(),
       agentID: Joi.string().trim().min(9).max(9).required()
     }),
-    delete: Joi.object().keys({
-      agentLimitID: Joi.number().required()
-    }),
+    agentLimitID: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   agentLimitID: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       agentID: Joi.string().trim().min(9).max(9).optional(),
       main: Joi.boolean().optional(),
@@ -215,12 +199,12 @@ module.exports = {
       name: Joi.string().trim().required(),
     }),
     update: Joi.object().keys({
-      carTypeId: Joi.number().required(),
       name: Joi.string().trim().required(),
     }),
-    delete: Joi.object().keys({
-      carTypeId: Joi.number().required()
-    }),
+    carTypeId: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   carTypeId: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
@@ -234,13 +218,13 @@ module.exports = {
       carTypeId: Joi.number().required(),
     }),
     update: Joi.object().keys({
-      carModelId: Joi.number().required(),
       name: Joi.string().trim().optional(),
       carTypeId: Joi.number().optional(),
     }),
-    delete: Joi.object().keys({
-      carModelId: Joi.number().required()
-    }),
+    carModelId: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   carModelId: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       carModelId: Joi.number().optional(),
       name: Joi.string().trim().optional(),
@@ -263,8 +247,8 @@ module.exports = {
       carModelId: Joi.number().required(),
       customerId: Joi.string().required(),
     }),
+    carId: Joi.any().required(),
     update: Joi.object().keys({
-      carId: Joi.number().required(),
       carNumber: Joi.string().trim().optional(),
       motorNumber: Joi.string().trim().optional(),
       motorPH: Joi.number().min(10).optional(),
@@ -277,9 +261,9 @@ module.exports = {
       carModelId: Joi.number().optional(),
       customerId: Joi.string().optional(),
     }),
-    delete: Joi.object().keys({
-      carId: Joi.number().required()
-    }),
+    // delete: Joi.object().keys({
+    //   carId: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       carId: Joi.number().optional(),
       carNumber: Joi.string().trim().optional(),
@@ -312,7 +296,6 @@ module.exports = {
       carId: Joi.number().required(),
     }),
     update: Joi.object().keys({
-      accidentId: Joi.number().required(),
       name: Joi.string().trim().optional(),
       accidentPlace: Joi.string().trim().optional(),
       accidentDate: Joi.date().optional(),
@@ -328,9 +311,10 @@ module.exports = {
       agentId: Joi.string().optional(),
       carId: Joi.number().optional(),
     }),
-    delete: Joi.object().keys({
-      accidentID: Joi.number().required()
-    }),
+    accidentId: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   accidentID: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       accidentID: Joi.number().optional(),
       carNumber: Joi.number().optional(),
@@ -358,7 +342,6 @@ module.exports = {
       carId: Joi.number().required(),
     }),
     update: Joi.object().keys({
-      insurancePolicyId: Joi.number().required(),
       totalPrice: Joi.number().optional(),
       expireDate: Joi.date().optional(),
       note: Joi.any().optional(),
@@ -367,9 +350,10 @@ module.exports = {
       agentId: Joi.string().optional(),
       carId: Joi.number().optional(),
     }),
-    delete: Joi.object().keys({
-      insurancePolicyId: Joi.number().required()
-    }),
+    insurancePolicyId: Joi.any().required(),
+    // delete: Joi.object().keys({
+    //   insurancePolicyId: Joi.number().required()
+    // }),
     list: Joi.object().keys({
       insurancePolicyId: Joi.number().optional(),
       customerID: Joi.string().optional(),
@@ -395,6 +379,25 @@ module.exports = {
     }),
   },
   supplierSchema:{
+    create: Joi.object().keys({
+      identityNum: Joi.string()
+      .pattern(/^[0-9]{9}$/)
+      .options({ messages: { 'string.pattern.base': 'رقم الهوية خاطىء' } })
+      .optional()
+      .allow(null),
+      username: Joi.string().trim().required().min(3),
+      companyName: Joi.string().trim().min(3).required(),
+      address: Joi.string().trim().optional().allow(null),
+      jawwal1: Joi.number().min(9).required(),
+      jawwal2: Joi.number().min(9).optional().allow(null),
+      fax: Joi.number().min(7).optional().allow(null),
+      tel: Joi.number().min(7).optional().allow(null),
+      email: Joi.string().email().optional().allow(null),
+      note: Joi.string().trim().min(10).optional().allow(null),
+      regionId: Joi.number().min(1).required(),
+      roleId: Joi.number().min(1).required(),
+      blocked: Joi.boolean().required(),
+    }),
     list: Joi.object().keys({
       flag: Joi.string().trim().required(),
       supplierID: Joi.string().trim().required(),
