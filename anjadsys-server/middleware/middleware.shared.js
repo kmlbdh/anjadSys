@@ -26,6 +26,7 @@ const isUserType = (roleName) => {
     let errorCode;
     try{
       const done = await checkRole(roleName, req, res);
+      isUserTypeLog(done);
       if(done) next();
       else{
         errorCode = 401;

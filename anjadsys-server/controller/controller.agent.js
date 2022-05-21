@@ -106,7 +106,7 @@ const userActions = {
   list: async(req, res) => {
     try {
       listUsersLog(req.body.agentID);
-      let query = {where: {
+      let query = { where: {
         '$Role.name$': 'customer',
         agentId: req.agent.id,
         [Op.or]:[]

@@ -15,7 +15,7 @@ const {
 
 const userValidation = {
   create: validation(userSchema.create, 'body'),
-  createParam: validation(userSchema.userID, 'param'),
+  userID: validation(userSchema.userID, 'param'),
   update: validation(userSchema.update, 'body'),
   list: validation(userSchema.list, 'body'),
   // delete: validation(userSchema.delete, 'body'),
