@@ -8,6 +8,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
 .spinner{
   @include loader(30px, 30px, 5px);
+  margin-right: 3px;
 }
 
 .modal{
