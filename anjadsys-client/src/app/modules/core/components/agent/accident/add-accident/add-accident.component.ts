@@ -123,7 +123,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     // formObj.services = this.servicesAccident;
     // delete formObj['insurancePolicyId'];
 
-    this.agentService.addAccident(formObj)
+    this.agentService.AccidentsAPI.add(formObj)
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe({
       next: (response) => {
@@ -190,15 +190,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
     return serviceDefualtDays + serviceDays;
   }
-
-  // serviceText(serviceId: number): string {
-  //   let selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
-  //   return selectedServicePolicy.Service.name;
-  // }
-
-  // supplierText(supplierId: string): string {
-  //   return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
-  // }
 
   getServicePolicyById(serviceId: number): ServicePolicyAPI{
     let servicePolicy = this.servicesPolicies.filter(servicePolicy => servicePolicy.serviceId === Number(serviceId));
@@ -279,7 +270,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       let query!: SearchCar;
       if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
       else query =  { customerID: id, skipLoadingInterceptor: true}
-      return this.agentService.showCars(query);
+      return this.agentService.CarsAPIs.show(query);
     }
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
@@ -307,7 +298,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.agentService.listNotBlockedUsers(
+    let callback = (val: string) => this.agentService.UsersAPI.listActive(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -332,7 +323,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   getRegions(): void {
-    this.agentService.listRegions()
+    this.agentService.GeneralAPIs.regions()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
        next: (response) => {
@@ -346,7 +337,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = {regionID: regionId};
-    this.agentService.listSuppliers(searchConditions)
+    this.agentService.UsersAPI.listSuppliers(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => this.suppliers = response.data,
@@ -358,7 +349,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.spinner.insurancePolicy = true;
     this.insurancePolicyNotValidMsg = undefined;
     let searchConditions: SearchInsurancePolicy = { customerID: customerId, carID: carId, filterOutValid: true}
-    this.agentService.listInsurancePolicy(searchConditions)
+    this.agentService.InsurancePolicesAPI.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {

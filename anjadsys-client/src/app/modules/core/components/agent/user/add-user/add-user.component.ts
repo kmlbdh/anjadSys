@@ -45,7 +45,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   getRegions(){
-    this.agentService.listRegions()
+    this.agentService.GeneralAPIs.regions()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -65,7 +65,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
 
-    this.agentService.addUser(formObj)
+    this.agentService.UsersAPI.add(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {

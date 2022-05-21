@@ -84,7 +84,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.agentService.listLightUsers(
+    let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -153,7 +153,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   open(content: any, insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
-    this.agentService.listInsurancePolicy(searchCondition)
+    this.agentService.InsurancePolicesAPI.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -184,7 +184,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   getInsurancePolices(searchConditions: SearchInsurancePolicy){
-    this.agentService.listInsurancePolicy(searchConditions)
+    this.agentService.InsurancePolicesAPI.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {

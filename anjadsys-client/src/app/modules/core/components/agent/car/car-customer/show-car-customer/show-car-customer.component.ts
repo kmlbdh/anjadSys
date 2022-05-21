@@ -62,7 +62,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.agentService.listLightUsers(
+    let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -131,7 +131,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   getCars(searchConditions: SearchCar){
-    this.agentService.showCars(searchConditions)
+    this.agentService.CarsAPIs.show(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarsAPI) => {

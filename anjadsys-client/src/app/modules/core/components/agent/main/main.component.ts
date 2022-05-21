@@ -31,7 +31,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   getStatistics = () => {
-    this.agentService.statisticsForMainPage()
+    this.agentService.GeneralAPIs.statistics()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

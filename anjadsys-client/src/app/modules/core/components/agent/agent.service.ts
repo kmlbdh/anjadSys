@@ -25,107 +25,117 @@ export class AgentService {
     );
   }
 
-  showUsers(searchBy: SearchUser):Observable<UsersAPI>{
-    return this.http.post<UsersAPI>(`${this.url}list-users`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  UsersAPI = {
+    show: (searchBy: SearchUser):Observable<UsersAPI> => {
+      return this.http.post<UsersAPI>(`${this.url}user/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    listActive: (searchBy: SearchUser):Observable<UsersAPI> => {
+      return this.http.post<UsersAPI>(`${this.url}user/list-active`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    lightList: (searchBy: SearchUser):Observable<UsersLightAPI> => {
+      return this.http.post<UsersLightAPI>(`${this.url}user/list-light`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    listSuppliers: (searchConditions: SearchSuppliers): Observable<any> => {
+      return this.http.post<any>(`${this.url}user/list-suppliers`, searchConditions).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (userData: NewUser): Observable<any> => {
+      return this.http.post<any>(`${this.url}user/create`, userData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listNotBlockedUsers(searchBy: SearchUser):Observable<UsersAPI>{
-    return this.http.post<UsersAPI>(`${this.url}list-not-block-users`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  ServicesAPIs = {
+    list: (searchConditions?: SearchService): Observable<ServicesAPI> => {
+      return this.http.post<ServicesAPI>(`${this.url}service/list`, searchConditions).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listLightUsers(searchBy: SearchUser):Observable<UsersLightAPI>{
-    return this.http.post<UsersLightAPI>(`${this.url}list-light-users`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  CarsAPIs = {
+    show: (searchBy: SearchCar):Observable<CarsAPI> => {
+      return this.http.post<CarsAPI>(`${this.url}car/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (carData: NewCar): Observable<any> => {
+      return this.http.post<any>(`${this.url}car/add`, carData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  addUser(userData: NewUser): Observable<any>{
-    return this.http.post<any>(`${this.url}create-user`, userData).pipe(
-      catchError(this.handleError)
-    );
+  CarTypesAPIs = {
+    list: (searchCarTypeData: SearchCarType) => {
+      return this.http.post<CarTypeArrayAPI>(`${this.url}car-type/list`, searchCarTypeData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listSuppliers(searchConditions: SearchSuppliers): Observable<any>{
-    return this.http.post<any>(`${this.url}list-suppliers`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
+  CarModelsAPIs = {
+    list: (searchCarModelData: SearchCarModel) => {
+      return this.http.post<CarModelArrayAPI>(`${this.url}car-model/list`, searchCarModelData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listServices(searchConditions?: SearchService): Observable<ServicesAPI>{
-    return this.http.post<ServicesAPI>(`${this.url}list-services`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
+  AccidentsAPI = {
+    add: (accidentData: NewAccident):Observable<any> => {
+      return this.http.post<any>(`${this.url}accident/add`, accidentData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchBy: SearchAccident):Observable<AccidentsAPI> => {
+      return this.http.post<AccidentsAPI>(`${this.url}accident/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  showCars(searchBy: SearchCar):Observable<CarsAPI>{
-    return this.http.post<CarsAPI>(`${this.url}list-cars`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  GeneralAPIs = {
+    regions: ():Observable<RegionsAPI> => {
+      return this.http.get<RegionsAPI>(`${this.url}general/regions`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    statistics: ():Observable<any> => {
+      return this.http.get<any>(`${this.url}general/statistics`).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  addCar(carData: NewCar): Observable<any>{
-    return this.http.post<any>(`${this.url}add-car`, carData).pipe(
-      catchError(this.handleError)
-    );
+  InsurancePolicesAPI = {
+    add: (insurancePolicyData: NewInsurancePolicy):Observable<any> => {
+      return this.http.post<any>(`${this.url}insurance-policy/add`, insurancePolicyData)
+      .pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI> => {
+      return this.http.post<InsurancePolicesAPI>(`${this.url}insurance-policy/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listCarTypes(searchCarTypeData: SearchCarType){
-    return this.http.post<CarTypeArrayAPI>(`${this.url}list-car-types`, searchCarTypeData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listCarModels(searchCarModelData: SearchCarModel){
-    return this.http.post<CarModelArrayAPI>(`${this.url}list-car-models`, searchCarModelData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addAccident(accidentData: NewAccident):Observable<any>{
-    return this.http.post<any>(`${this.url}add-accident`, accidentData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listAccidents(searchBy: SearchAccident):Observable<AccidentsAPI>{
-    return this.http.post<AccidentsAPI>(`${this.url}list-accidents`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listRegions():Observable<RegionsAPI>{
-    return this.http.get<RegionsAPI>(`${this.url}list-regions`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addInsurancePolicy(insurancePolicyData: NewInsurancePolicy):Observable<any>{
-    return this.http.post<any>(`${this.url}add-insurance-policy`, insurancePolicyData)
-    .pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listInsurancePolicy(searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI>{
-    return this.http.post<InsurancePolicesAPI>(`${this.url}list-insurance-policy`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listAccounts(searchBy: SearchAccount):Observable<AccountsAPI>{
-    return this.http.post<AccountsAPI>(`${this.url}list-accounts`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  statisticsForMainPage():Observable<any>{
-    return this.http.get<any>(`${this.url}statistics`).pipe(
-      catchError(this.handleError)
-    );
+  AccountsAPI = {
+    list: (searchBy: SearchAccount):Observable<AccountsAPI> => {
+      return this.http.post<AccountsAPI>(`${this.url}account/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
   private handleError(error: HttpErrorResponse) {

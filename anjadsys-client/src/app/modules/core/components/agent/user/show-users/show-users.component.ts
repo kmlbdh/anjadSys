@@ -46,7 +46,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
 
 //TODO wrong response type
   getUsers(searchConditions: SearchUser){
-    this.agentService.showUsers(searchConditions)
+    this.agentService.UsersAPI.show(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => {

@@ -92,7 +92,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.agentService.listLightUsers(
+    let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -161,7 +161,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   open(content: any, accidentId: number) {
     let searchCondition: SearchAccident = { accidentID: accidentId };
-    this.agentService.listAccidents(searchCondition)
+    this.agentService.AccidentsAPI.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: AccidentsAPI) => {
@@ -192,7 +192,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   getAccidents(searchConditions: SearchAccident){
-    this.agentService.listAccidents(searchConditions)
+    this.agentService.AccidentsAPI.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: AccidentsAPI) => {

@@ -51,7 +51,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   }
 
   getCarModels(searchConditions: SearchCarModel){
-    this.agentService.listCarModels(searchConditions)
+    this.agentService.CarModelsAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarModelArrayAPI) =>{
@@ -65,7 +65,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   }
 
   getCarTypes(searchConditions: SearchCarType){
-    this.agentService.listCarTypes(searchConditions)
+    this.agentService.CarTypesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarTypeArrayAPI) => {

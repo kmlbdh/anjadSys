@@ -89,7 +89,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
     formObj.services = this.servicesPolicy;
-    this.agentService.addInsurancePolicy(formObj)
+    this.agentService.InsurancePolicesAPI.add(formObj)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
         next: (response) => {
@@ -202,7 +202,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       let query!: SearchCar;
       if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
       else query =  { customerID: id,  skipLoadingInterceptor: true}
-      return this.agentService.showCars(query);
+      return this.agentService.CarsAPIs.show(query);
     }
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
@@ -230,7 +230,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.agentService.listNotBlockedUsers(
+    let callback = (val: string) => this.agentService.UsersAPI.listActive(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchTextObj.searchCustomerText$.pipe(
@@ -256,7 +256,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   getServices(): void{
-    this.agentService.listServices()
+    this.agentService.ServicesAPIs.list()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -272,7 +272,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = { regionID: regionId };
-    this.agentService.listSuppliers(searchConditions)
+    this.agentService.UsersAPI.listSuppliers(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => this.suppliers = response.data,

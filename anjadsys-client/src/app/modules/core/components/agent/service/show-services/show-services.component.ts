@@ -40,7 +40,7 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
   }
 
   loadServices(searchConditions : SearchService): void{
-    this.agentService.listServices(searchConditions)
+    this.agentService.ServicesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
