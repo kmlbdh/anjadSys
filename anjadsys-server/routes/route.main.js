@@ -1,14 +1,8 @@
 const { verifyLogin } = require("../middleware/middleware.shared");
 const { login } = require("../controller/controller.shared");
 
-module.exports = function(app){
-  app.use((_req, res, next) => {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
+let Router = require('express').Router();
 
-  app.post("/api/login", verifyLogin, login);
-};
+Router.post("", verifyLogin, login);
+
+module.exports = Router;

@@ -35,6 +35,7 @@ const {
 } = require("../controller/controller.admin");
 const express = require("express");
 
+Router = express.Router();
 generalRoute = express.Router();
 userRoute = express.Router();
 supplierRoute = express.Router();
@@ -46,20 +47,12 @@ carModelRoute = express.Router();
 accidentRoute = express.Router();
 insurancePolicyRoute = express.Router();
 otherServiceRoute = express.Router();
+accountRoute = express.Router();
 
-module.exports = function(app){
-  app.use((_req, res, next) => {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
-
-  app.use('/api/admin/*', [
-    auth.verifyToken,
-    auth.isAdmin
-  ]);
+Router.all('*', [
+  auth.verifyToken,
+  auth.isAdmin
+]);
   
 /** #################### USER  ########################*/
 
@@ -69,7 +62,7 @@ module.exports = function(app){
   ], userActions.create);
 
   userRoute.route("/:userID")
-    .all(userValidation.createParam)
+    .all(userValidation.userID)
     .delete(userActions.delete)
     .put([
       userValidation.update,
@@ -82,7 +75,7 @@ module.exports = function(app){
   
   userRoute.post("/list-light", userActions.lightList);
 
-  app.use('/api/admin/user', userRoute);
+  Router.use('/user', userRoute);
 
 /** #################### SUPPLIER  ########################*/
 
@@ -95,7 +88,7 @@ module.exports = function(app){
     supplierValidation.listAccount,
   ], SupplierActions.list);
 
-  app.use('/api/admin/supplier', supplierRoute);
+  Router.use('/supplier', supplierRoute);
   
 /** #################### SERVICE  ########################*/
 
@@ -114,7 +107,7 @@ module.exports = function(app){
       serviceValidation.update,
     ], serviceActions.update);
   
-  app.use('/api/admin/service', serviceRoute);
+  Router.use('/service', serviceRoute);
 
 /** #################### OTHER SERVICE  ########################*/
 
@@ -133,7 +126,7 @@ otherServiceRoute.post("/add",[
     otherServiceValidation.update,
   ], otherServiceActions.update);
 
-  app.use('/api/admin/other-service', otherServiceRoute);
+  Router.use('/other-service', otherServiceRoute);
 
 /** #################### AGENT LIMITS  ########################*/
 
@@ -149,7 +142,7 @@ agentLimitsRoute.post("/add",[
     agentLimitsValidation.list,
   ], agentActions.list);
 
-  app.use('/api/admin/agent-limits', agentLimitsRoute);
+  Router.use('/agent-limits', agentLimitsRoute);
 
 /** #################### GENERAL API ########################*/
 
@@ -159,7 +152,7 @@ agentLimitsRoute.post("/add",[
 
   generalRoute.get("/statistics", statisticsActions.list);
 
-  app.use('/api/admin/general', generalRoute);
+  Router.use('/general', generalRoute);
 
 /** #################### CAR TYPE ########################*/
   
@@ -178,7 +171,7 @@ agentLimitsRoute.post("/add",[
     carTypeValidation.list,
   ], carTypeActions.list);
 
-  app.use('/api/admin/car-type', carTypeRoute);
+  Router.use('/car-type', carTypeRoute);
 
 /** #################### CAR MODEL ########################*/
 
@@ -197,7 +190,7 @@ agentLimitsRoute.post("/add",[
     carModelValidation.list,
   ], carModelActions.list);
 
-  app.use('/api/admin/car-model', carModelRoute);
+  Router.use('/car-model', carModelRoute);
 
   /** #################### CAR ########################*/
   carRoute.post("/add",[
@@ -215,7 +208,7 @@ agentLimitsRoute.post("/add",[
     carValidation.list,
   ], carActions.list);
 
-  app.use('/api/admin/car', carRoute);
+  Router.use('/car', carRoute);
 
   /** #################### ACCIDENT ########################*/
   accidentRoute.post("/add",[
@@ -233,7 +226,7 @@ agentLimitsRoute.post("/add",[
     accidentValidation.list,
   ], accidentActions.list); 
 
-  app.use('/api/admin/accident', accidentRoute);
+  Router.use('/accident', accidentRoute);
   
   /** #################### INSURANCE POLICY ########################*/
   insurancePolicyRoute.post("/add",[
@@ -251,12 +244,15 @@ agentLimitsRoute.post("/add",[
     insurancePolicyValidation.list,
   ], insurancePolicyActions.list);
 
-  app.use('/api/admin/insurance-policy', insurancePolicyRoute);
+  Router.use('/insurance-policy', insurancePolicyRoute);
 
 /** #################### ACCOUNT  ########################*/
 
-app.post("/api/admin/list-accounts",[
-  accountValidation.list,
-], accountActions.list);
+  accountRoute.post("/list",[
+    accountValidation.list,
+  ], accountActions.list);
 
-};
+  Router.use('/account', accountRoute);
+
+
+module.exports = Router;

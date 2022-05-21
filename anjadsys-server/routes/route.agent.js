@@ -29,132 +29,115 @@ const {
   statisticsActions
 } = require("../controller/controller.agent");
 
-module.exports = function(app){
-  app.use((_req, res, next) => {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
+const express = require('express');
 
+Router = express.Router();
+generalRoute = express.Router();
+userRoute = express.Router();
+serviceRoute = express.Router();
+carTypeRoute = express.Router();
+carModelRoute = express.Router();
+carRoute = express.Router();
+accidentRoute = express.Router();
+insurancePolicyRoute = express.Router();
+accountRoute = express.Router();
+
+  Router.all("*", [auth.verifyToken, auth.isAgent]);
 /** #################### USER  ########################*/
 
-  app.post("/api/agent/create-user",[
-    auth.verifyToken,
-    auth.isAgent,
+  userRoute.post("/create",[
     userValidation.create,
     checkDuplicateUsernameOrNickname
   ], userActions.create);
 
-  app.post("/api/agent/list-users",[
-    auth.verifyToken,
-    auth.isAgent,
+  userRoute.post("/list",[
     userValidation.list,
   ], userActions.list);
 
-  app.post("/api/agent/list-not-block-users",[
-    auth.verifyToken,
-    auth.isAgent,
+  userRoute.post("/list-active",[
     userValidation.list,
     notBlockedUser
   ], userActions.list);
 
-  app.post("/api/agent/list-light-users",[
-    auth.verifyToken,
-    auth.isAgent,
+  userRoute.post("/list-light",[
     userValidation.list,
   ], userActions.lightList);
 
-  app.post("/api/agent/list-suppliers",[
-    auth.verifyToken,
-    auth.isAgent,
+  userRoute.post("/list-suppliers",[
     userValidation.listSuppliers,
   ], userActions.listSuppliers);
 
+  Router.use("/user", userRoute);
     
 /** #################### SERVICE  ########################*/
 
-  app.post("/api/agent/list-services",[
-    auth.verifyToken,
-    auth.isAgent,
+  serviceRoute.post("/list",[
     serviceValidation.list,
   ], serviceActions.list);
 
-/** #################### REGION ########################*/
+  Router.use("/service", serviceRoute);
 
-  app.get("/api/agent/list-regions",[
-    auth.verifyToken,
-    auth.isAgent,
-  ], regionActions.list);
+/** #################### GENERAL API ########################*/
+
+  generalRoute.get("/regions", regionActions.list);
+  generalRoute.get("/statistics", statisticsActions.list);
+  Router.use("/general", generalRoute);
 
 /** #################### CAR TYPE ########################*/
 
-  app.post("/api/agent/list-car-types",[
-    auth.verifyToken,
-    auth.isAgent,
+  carTypeRoute.post("/list",[
     carTypeValidation.list,
   ], carTypeActions.list);
 
+  Router.use("/car-type", carTypeRoute);
+
 /** #################### CAR MODEL ########################*/
 
-  app.post("/api/agent/list-car-models",[
-    auth.verifyToken,
-    auth.isAgent,
+  carModelRoute.post("/list",[
     carModelValidation.list,
   ], carModelActions.list);
 
-   /** #################### CAR ########################*/
-   app.post("/api/agent/add-car",[
-    auth.verifyToken,
-    auth.isAgent,
+  Router.use("/car-model", carModelRoute);
+
+/** #################### CAR ########################*/
+  carRoute.post("/add",[
     carValidation.add
   ], carActions.add);
 
-  app.post("/api/agent/list-cars",[
-    auth.verifyToken,
-    auth.isAgent,
+  carRoute.post("/list",[
     carValidation.list,
   ], carActions.list);
 
-  /** #################### ACCIDENT ########################*/
-  app.post("/api/agent/add-accident",[
-    auth.verifyToken,
-    auth.isAgent,
+  Router.use("/car", carRoute);
+
+/** #################### ACCIDENT ########################*/
+  accidentRoute.post("/add",[
     accidentValidation.add
   ], accidentActions.add);
 
-  app.post("/api/agent/list-accidents",[
-    auth.verifyToken,
-    auth.isAgent,
+  accidentRoute.post("/list",[
     accidentValidation.list,
   ], accidentActions.list); 
 
+  Router.use("/accident", accidentRoute);
+
 /** #################### INSURANCE POLICY ########################*/
-  app.post("/api/agent/add-insurance-policy",[
-    auth.verifyToken,
-    auth.isAgent,
+  insurancePolicyRoute.post("/add",[
     insurancePolicyValidation.add
   ], insurancePolicyActions.add);
 
-  app.post("/api/agent/list-insurance-policy",[
-    auth.verifyToken,
-    auth.isAgent,
+  insurancePolicyRoute.post("/list",[
     insurancePolicyValidation.list,
   ], insurancePolicyActions.list);
 
-/** #################### STATISTICS  ########################*/
-
-app.get("/api/agent/statistics",[
-  auth.verifyToken,
-  auth.isAgent,
-], statisticsActions.list);
+  Router.use("/insurance-policy", insurancePolicyRoute);
 
 /** #################### ACCOUNT  ########################*/
-
-  app.post("/api/agent/list-accounts",[
-    auth.verifyToken,
-    auth.isAgent,
+  accountRoute.post("/list",[
     accountValidation.list,
   ], accountActions.list);
-};
+
+  Router.use("/account", accountRoute);
+// };
+
+module.exports = Router;

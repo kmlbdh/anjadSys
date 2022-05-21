@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./models");
-const apiRoutes = require('./routes');
+const {main, agent, admin} = require('./routes');
 
 db.sequelize.sync({force: false}).then( () => {
   console.log("Drop and re-sync db");
@@ -22,8 +22,8 @@ app
   .use(express.json())
   .use(express.urlencoded({extended: true}));
 
-apiRoutes.main(app);
-apiRoutes.admin(app);
-apiRoutes.agent(app);
+  app.use("/api/login", main);
+  app.use("/api/agent", agent);
+  app.use("/api/admin", admin);
 
 module.exports = app;
