@@ -82,8 +82,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   getData(userID: string){
-    let user$ = this.adminService.showUsers({userID: userID!}) as Observable<UsersAPI>;
-    let regionsAndRoles$ = this.adminService.getRegionsAndRoles() as Observable<any>;
+    let user$ = this.adminService.UsersAPIs.list({userID: userID!}) as Observable<UsersAPI>;
+    let regionsAndRoles$ = this.adminService.GeneralAPIs.regionsAndRoles() as Observable<any>;
 
     combineLatest([user$, regionsAndRoles$])
     .pipe(first())
@@ -101,7 +101,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
   updateUser = (): void => {
     let formObj: updateUser = {} as updateUser;
-    formObj.id = this.user.id;
+    const userID = this.user.id;
 
     let controlsObject = this.editUserForm.controls;
     let keys = Object.keys(controlsObject);
@@ -113,13 +113,13 @@ export class EditUserComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.updateUser(formObj)
+    this.adminService.UsersAPIs.update(userID, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {

@@ -84,7 +84,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
 
-   this.adminService.addCar(formObj)
+   this.adminService.CarsAPIs.add(formObj)
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe({
       next: (response) => {
@@ -125,7 +125,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
 
   getCarTypes(){
     this.spinner.carType = true;
-    this.adminService.listCarTypes({skipLoadingInterceptor: true})
+    this.adminService.CarTypesAPIs.list({skipLoadingInterceptor: true})
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -142,7 +142,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCarModelAPI(){
-    this.adminService.listCarModels({
+    this.adminService.CarModelsAPIs.list({
       carTypeId: Number(this.selectedCarTypeId),
       skipLoadingInterceptor: true
     })
@@ -170,7 +170,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.spinner.customer = true),
-      switchMap(text => this.adminService.showUsers({username: text, skipLoadingInterceptor: true}))
+      switchMap(text => this.adminService.UsersAPIs.list({username: text, skipLoadingInterceptor: true}))
     ).subscribe({
       next: (response: any) =>{
         if(response.data){

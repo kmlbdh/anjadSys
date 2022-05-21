@@ -263,7 +263,7 @@
           <select id="serviceId" type="text" name="serviceId" formControlName="serviceId"
             (change)="selectAccidentService($event)">
             <ng-template [ngIf]="servicesPolicies">
-              <option>اختر خدمة من القائمة</option>
+              <option [value]="null">اختر خدمة من القائمة</option>
               <ng-container *ngFor="let servicePolicy of servicesPolicies">
                 <option *ngIf="!servicePolicy.propertiesUI!.hide"
                   [value]="servicePolicy.Service.id">
@@ -348,10 +348,10 @@
       <ng-template [ngIf]="servicesAccident.length > 0">
         <li *ngFor="let serviceAccident of servicesAccident; let i = index; trackBy: trackByServiceId" class="table-row">
           <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
-          <div class="col-custom col-custom-2" data-label="Service Name">{{serviceAccident['Service'].name}}</div>
+          <div class="col-custom col-custom-2" data-label="Service Name">{{serviceAccident['Service']?.name || ''}}</div>
           <!-- <div class="col-custom col-custom-3" data-label="Cost">{{serviceAccident.cost}} {{currency}}</div> -->
           <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ serviceAccident.coverageDays }} {{days}}</div>
-          <div class="col-custom col-custom-5" data-label="Supplier Name">{{ serviceAccident['Service'].supplierText }}</div>
+          <div class="col-custom col-custom-5" data-label="Supplier Name">{{ serviceAccident['Service']?.supplierText || ''}}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteAccidentService(i)">
               <fa-icon [icon]="trashIcon"></fa-icon>

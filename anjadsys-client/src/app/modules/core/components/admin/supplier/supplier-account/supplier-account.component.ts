@@ -92,7 +92,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   }
 
   listSupplierAccountAPI = () => {
-    this.adminService.listSupplierAccount(this.searchConditions)
+    this.adminService.SuppliersAPIs.listAccount(this.searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

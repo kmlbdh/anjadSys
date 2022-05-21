@@ -35,7 +35,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   getStatistics = () => {
-    this.adminService.statisticsForMainPage()
+    this.adminService.GeneralAPIs.statistics()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

@@ -63,7 +63,7 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
 
   addAgentLimit(){
     if(this.addAgentLimitsForm.invalid) return;
-    this.adminService.addAgentLimits(this.addAgentLimitsForm.value)
+    this.adminService.AgentLimitsAPIs.add(this.addAgentLimitsForm.value)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -104,7 +104,9 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.spinnerAgent = true),
-      switchMap(text => this.adminService.listAgents({username: text, companyName: text,  skipLoadingInterceptor: true}))
+      switchMap(text => this.adminService.AgentLimitsAPIs.listAgents(
+        {username: text, companyName: text,  skipLoadingInterceptor: true})
+      )
     ).subscribe({
       next: response =>{
         if(response.data)

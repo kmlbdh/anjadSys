@@ -106,8 +106,8 @@ export class EditInsurancePolicyComponent implements OnInit {
 
   getData(insurancePolicyID: string){
     // let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
-    let insurancePolicy$ = this.adminService.listInsurancePolicy({insurancePolicyId: Number(insurancePolicyID)}) as Observable<InsurancePolicesAPI>;
-    let services$ = this.adminService.listServices() as Observable<ServicesAPI>;
+    let insurancePolicy$ = this.adminService.InsurancePoliciesAPIs.list({insurancePolicyId: Number(insurancePolicyID)}) as Observable<InsurancePolicesAPI>;
+    let services$ = this.adminService.ServicesAPIs.list() as Observable<ServicesAPI>;
     combineLatest([insurancePolicy$, services$])
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
@@ -156,10 +156,10 @@ export class EditInsurancePolicyComponent implements OnInit {
       if(formObj[k] === "") delete formObj[k]
     });
 
-    formObj.insurancePolicyId = this.insurancePolicy.id;
+    const insurancePolicyId = this.insurancePolicy.id;
     formObj.services = this.handleServicesPolicyOnSubmit();
 
-    this.adminService.updateInsurancePolicy(formObj)
+    this.adminService.InsurancePoliciesAPIs.update(insurancePolicyId, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -304,7 +304,7 @@ export class EditInsurancePolicyComponent implements OnInit {
       if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
       else query =  { customerId: id, skipLoadingInterceptor: true}
 
-      return this.adminService.showCars(query);
+      return this.adminService.CarsAPIs.show(query);
     }
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
@@ -333,7 +333,7 @@ export class EditInsurancePolicyComponent implements OnInit {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -358,7 +358,7 @@ export class EditInsurancePolicyComponent implements OnInit {
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
@@ -402,7 +402,7 @@ export class EditInsurancePolicyComponent implements OnInit {
 
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
-    this.adminService.showUsers(searchConditions)
+    this.adminService.UsersAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => this.suppliers = response.data,
@@ -443,20 +443,6 @@ export class EditInsurancePolicyComponent implements OnInit {
       // console.log('total',total);
     });
     this.editInsurancePolicyForm.get('totalPrice')?.setValue(total);
-    // this.servicesPolicy.forEach(servicePolicy => {
-    //   let serviceId: number;
-    //   if(servicePolicy.Service?.id)
-    //     serviceId = servicePolicy.Service.id
-    //   else
-    //     serviceId = servicePolicy.serviceId!;
-
-    //   let service = this.services.filter(service => service.id === serviceId)[0];
-    //   const perDayCost = Number(service.coverageDays.toFixed(2))/ Number(service.cost.toFixed(2));
-    //   const additionalDays = Number(servicePolicy.additionalDays);
-    //   const cost = Number(servicePolicy.Service.cost.toFixed(2));
-    //   total = cost + (perDayCost * (additionalDays * 0.25));
-    //   this.addServicePolicyForm.get('totalPrice')?.setValue(total);
-    // });
   }
 
   fillFieldsByCustomer(event: Event){

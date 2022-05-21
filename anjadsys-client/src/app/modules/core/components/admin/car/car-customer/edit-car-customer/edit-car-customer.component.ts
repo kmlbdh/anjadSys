@@ -84,7 +84,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
 
   updateCar = (): void => {
     let formObj: updateCar = {} as updateCar;
-    formObj.carId = this.car.id;
+    let carId = this.car.id;
 
     let controlsObject = this.editCarForm.controls;
     let keys = Object.keys(controlsObject);
@@ -96,13 +96,13 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.updateCar(formObj)
+    this.adminService.CarsAPIs.update(carId, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -141,7 +141,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
 
   searchCarModelAPI(triggerBuildForm: boolean = false){
     let carTypeId = this.selectedCarType?.id || this.selectedCarTypeId;
-    this.adminService.listCarModels({carTypeId: Number(carTypeId), skipLoadingInterceptor: true})
+    this.adminService.CarModelsAPIs.list({carTypeId: Number(carTypeId), skipLoadingInterceptor: true})
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -165,7 +165,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.showUsers({username: text, skipLoadingInterceptor: true}))
+      switchMap(text => this.adminService.UsersAPIs.list({username: text, skipLoadingInterceptor: true}))
     ).subscribe({
       next: (response: any) =>{
         if(response.data){
@@ -189,8 +189,8 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
         if(!carId)
           this.redirect();
 
-        let car$ = this.adminService.showCars({carId:  Number(carId!)}) as Observable<CarsAPI>;
-        let carType$ = this.adminService.listCarTypes({}) as Observable<CarTypeArrayAPI>;
+        let car$ = this.adminService.CarsAPIs.show({carId:  Number(carId!)}) as Observable<CarsAPI>;
+        let carType$ = this.adminService.CarTypesAPIs.list({}) as Observable<CarTypeArrayAPI>;
 
         combineLatest([car$, carType$])
         .pipe(takeUntil(this.unsubscribe$))

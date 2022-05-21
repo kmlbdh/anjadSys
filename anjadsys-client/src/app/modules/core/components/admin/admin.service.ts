@@ -4,9 +4,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { AgentLimitsArrayAPI, NewAgentLimits, SearchAgentLimits } from '../../model/agentlimits';
-import { NewPart } from '../../model/supplierparts';
 import { SearchUser, UsersAPI, NewUser, updateUser, UsersLightAPI } from '../../model/user';
-import { SearchSuppliers, SearchSupplierAccount } from '../../model/supplier';
+import { SearchSupplierAccount } from '../../model/supplier';
 import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchAgent } from '../../model/agent';
 import { CarsAPI, NewCar, SearchCar, NewCarType, NewCarModel, SearchCarType, CarTypeArrayAPI, SearchCarModel, CarModelArrayAPI } from '../../model/car';
@@ -31,241 +30,237 @@ export class AdminService {
     );
   }
 
-  showUsers(searchBy: SearchUser):Observable<UsersAPI>{
-    return this.http.post<UsersAPI>(`${this.url}list-users`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  UsersAPIs = {
+    list: (searchBy: SearchUser):Observable<UsersAPI> => {
+      return this.http.post<UsersAPI>(`${this.url}user/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    lightlist: (searchBy: SearchUser):Observable<UsersLightAPI> => {
+      return this.http.post<UsersLightAPI>(`${this.url}user/list-light`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (userID: string): Observable<any> => {
+      return this.http.delete<any>(`${this.url}user/${userID}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (userData: NewUser): Observable<any> => {
+      return this.http.post<any>(`${this.url}user/create`, userData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (userID: string, userData: updateUser): Observable<any> => {
+      return this.http.put<any>(`${this.url}user/${userID}`, userData).pipe(
+        catchError(this.handleError)
+      );
+    }
+
+  };
+
+
+  SuppliersAPIs = {
+    add: (userData: NewUser): Observable<any> => {
+      return this.http.post<any>(`${this.url}supplier/create`, userData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    listAccount: (searchBy: SearchSupplierAccount):Observable<any> => {
+      return this.http.post<any>(`${this.url}supplier/account`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listLightUsers(searchBy: SearchUser):Observable<UsersLightAPI>{
-    return this.http.post<UsersLightAPI>(`${this.url}list-light-users`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  ServicesAPIs = {
+    list: (searchConditions?: SearchService): Observable<ServicesAPI> => {
+      console.log(searchConditions);
+      return this.http.post<ServicesAPI>(`${this.url}service/list`, searchConditions).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (serviceID: number): Observable<any> => {
+      return this.http.delete<any>(`${this.url}service/${serviceID}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (service: Partial<ServicesAPI>) => {
+      return this.http.post<any>(`${this.url}service/add`, service).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (serviceID: number, service: Partial<ServicesAPI>) => {
+      return this.http.put<any>(`${this.url}service/${serviceID}`, service).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  deleteUser(id: string): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-user`, {username: id}).pipe(
-      catchError(this.handleError)
-    );
+  AgentLimitsAPIs = {
+    listAgents: (searchConditions: SearchAgent): Observable<any> => {
+      searchConditions.role = "agent";
+      return this.UsersAPIs.list(searchConditions);
+    },
+    add: (agentLimitsData: NewAgentLimits) => {
+      return this.http.post<any>(`${this.url}agent-limits/add`, agentLimitsData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    listLimits: (searchAgentLimitsData: SearchAgentLimits) => {
+      return this.http.post<AgentLimitsArrayAPI>(`${this.url}agent-limits/list`, searchAgentLimitsData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (id: string) => {
+      return this.http.delete<any>(`${this.url}agent-limits/${id}`).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  addUser(userData: NewUser): Observable<any>{
-    return this.http.post<any>(`${this.url}create-user`, userData).pipe(
-      catchError(this.handleError)
-    );
+
+  CarsAPIs = {
+    delete: (carId: string): Observable<any> => {
+      return this.http.delete<any>(`${this.url}car/${carId}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    show: (searchBy: SearchCar):Observable<CarsAPI> => {
+      return this.http.post<CarsAPI>(`${this.url}car/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (carData: NewCar): Observable<any> => {
+      return this.http.post<any>(`${this.url}car/add`, carData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (carId: number, carData: updateCar): Observable<any> => {
+      return this.http.put<any>(`${this.url}car/${carId}`, carData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  updateUser(userData: updateUser): Observable<any>{
-    return this.http.post<any>(`${this.url}edit-user`, userData).pipe(
-      catchError(this.handleError)
-    );
+
+  CarTypesAPIs = {
+    add: (carTypeData: NewCarType): Observable<any> => {
+      return this.http.post<any>(`${this.url}car-type/add`, carTypeData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchCarTypeData: SearchCarType) => {
+      return this.http.post<CarTypeArrayAPI>(`${this.url}car-type/list`, searchCarTypeData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (carTypeId: number): Observable<any> => {
+      return this.http.delete<any>(`${this.url}car-type/${carTypeId}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (carTypeId: number, carModelData: updateCarType): Observable<any> => {
+      return this.http.put<any>(`${this.url}car-type/${carTypeId}`, carModelData).pipe(
+        catchError(this.handleError)
+      );
+    }
+
   }
 
-  addSupplier(userData: NewUser): Observable<any>{
-    return this.http.post<any>(`${this.url}create-supplier`, userData).pipe(
-      catchError(this.handleError)
-    );
+  CarModelsAPIs = {
+    add: (carModelData: NewCarModel): Observable<any> => {
+      return this.http.post<any>(`${this.url}car-model/add`, carModelData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchCarModelData: SearchCarModel) => {
+      return this.http.post<CarModelArrayAPI>(`${this.url}car-model/list`, searchCarModelData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (carModelId: number): Observable<any> => {
+      return this.http.delete<any>(`${this.url}car-model/${carModelId}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (carModelId: number, carModelData: updateCarModel): Observable<any> => {
+      return this.http.put<any>(`${this.url}car-model/${carModelId}`, carModelData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listSuppliers(searchConditions: SearchSuppliers): Observable<any>{
-    searchConditions.role = "supplier";
-    return this.http.post<any>(`${this.url}list-users`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
+
+  AccidentsAPIs = {
+    add: (accidentData: NewAccident):Observable<any> => {
+      return this.http.post<any>(`${this.url}accident/add`, accidentData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchBy: SearchAccident):Observable<AccidentsAPI> => {
+      return this.http.post<AccidentsAPI>(`${this.url}accident/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (accidentId: number, accidentData: NewAccident):Observable<any> => {
+      return this.http.put<any>(`${this.url}accident/${accidentId}`, accidentData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (accidentID: number): Observable<any> => {
+      return this.http.delete<any>(`${this.url}accident/${accidentID}`).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listServices(searchConditions?: SearchService): Observable<ServicesAPI>{
-    return this.http.post<ServicesAPI>(`${this.url}list-services`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
+  InsurancePoliciesAPIs = {
+    add: (insurancePolicyData: NewInsurancePolicy):Observable<any> => {
+      return this.http.post<any>(`${this.url}insurance-policy/add`, insurancePolicyData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (insurancePolicyId: number, insurancePolicyData: updateInsurancePolicy):Observable<any> => {
+      return this.http.put<any>(`${this.url}insurance-policy/${insurancePolicyId}`, insurancePolicyData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    list: (searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI> => {
+      return this.http.post<InsurancePolicesAPI>(`${this.url}insurance-policy/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    delete: (insurancePolicyId: number): Observable<any> => {
+      return this.http.delete<any>(`${this.url}insurance-policy/${insurancePolicyId}`).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  addSupplierParts(supplierPartsData: NewPart){
-    return this.http.post<any>(`${this.url}add-supplier-part`, supplierPartsData).pipe(
-      catchError(this.handleError)
-    );
+  OtherServicesAPIs = {
+    delete: (otherServiceID: string): Observable<any> => {
+      return this.http.delete<any>(`${this.url}other-service/${otherServiceID}`).pipe(
+        catchError(this.handleError)
+      );
+    },
+    show: (searchBy: SearchOtherServices):Observable<OtherServiceAPI> => {
+      return this.http.post<OtherServiceAPI>(`${this.url}other-service/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    },
+    add: (otherServiceData: NewOtherService): Observable<any> => {
+      return this.http.post<any>(`${this.url}other-service/add`, otherServiceData).pipe(
+        catchError(this.handleError)
+      );
+    },
+    update: (otherServiceID: number, otherServiceData: updateOtherService): Observable<any> => {
+      return this.http.put<any>(`${this.url}other-service/${otherServiceID}`, otherServiceData).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
-  listSupplierParts(searchConditions: {supplierID: string}): Observable<any>{
-    return this.http.post<any>(`${this.url}list-supplier-parts`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteSupplierPart(id: string): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-supplier-part`, {supplierPartsID: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listAgents(searchConditions: SearchAgent): Observable<any>{
-    searchConditions.role = "agent";
-    return this.http.post<any>(`${this.url}list-users`, searchConditions).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addAgentLimits(agentLimitsData: NewAgentLimits){
-    return this.http.post<any>(`${this.url}add-agent-limits`, agentLimitsData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listAgentLimits(searchAgentLimitsData: SearchAgentLimits){
-    return this.http.post<AgentLimitsArrayAPI>(`${this.url}list-agent-limits`, searchAgentLimitsData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteAgentLimits(id: string){
-    return this.http.post<any>(`${this.url}delete-agent-limits`, {agentLimitID: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteService(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-service`, {serviceID: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addService(service: Partial<ServicesAPI>){
-    return this.http.post<any>(`${this.url}add-service`, service).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateService(service: Partial<ServicesAPI>){
-    return this.http.post<any>(`${this.url}update-service`, service).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getRegionsAndRoles(){
-    return this.http.get<any>(`${this.url}get-regions-roles`).pipe(
-      catchError(this.handleError)
-    )
-  }
-
-  deleteCar(id: string): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-car`, {carId: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  showCars(searchBy: SearchCar):Observable<CarsAPI>{
-    return this.http.post<CarsAPI>(`${this.url}list-cars`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addCar(carData: NewCar): Observable<any>{
-    return this.http.post<any>(`${this.url}add-car`, carData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateCar(carData: updateCar): Observable<any>{
-    return this.http.post<any>(`${this.url}edit-car`, carData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addCarType(carTypeData: NewCarType): Observable<any>{
-    return this.http.post<any>(`${this.url}add-car-type`, carTypeData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listCarTypes(searchCarTypeData: SearchCarType){
-    return this.http.post<CarTypeArrayAPI>(`${this.url}list-car-types`, searchCarTypeData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteCarType(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-car-type`, {carTypeId: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateCarType(carModelData: updateCarType): Observable<any>{
-    return this.http.post<any>(`${this.url}edit-car-type`, carModelData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addCarModel(carModelData: NewCarModel): Observable<any>{
-    return this.http.post<any>(`${this.url}add-car-model`, carModelData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listCarModels(searchCarModelData: SearchCarModel){
-    return this.http.post<CarModelArrayAPI>(`${this.url}list-car-models`, searchCarModelData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteCarModel(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-car-model`, {carModelId: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateCarModel(carModelData: updateCarModel): Observable<any>{
-    return this.http.post<any>(`${this.url}edit-car-model`, carModelData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addAccident(accidentData: NewAccident):Observable<any>{
-    return this.http.post<any>(`${this.url}add-accident`, accidentData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listAccidents(searchBy: SearchAccident):Observable<AccidentsAPI>{
-    return this.http.post<AccidentsAPI>(`${this.url}list-accidents`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteAccident(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-accident`, {accidentID: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listRegions():Observable<RegionsAPI>{
-    return this.http.get<RegionsAPI>(`${this.url}list-regions`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addInsurancePolicy(insurancePolicyData: NewInsurancePolicy):Observable<any>{
-    return this.http.post<any>(`${this.url}add-insurance-policy`, insurancePolicyData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateInsurancePolicy(insurancePolicyData: updateInsurancePolicy):Observable<any>{
-    return this.http.post<any>(`${this.url}edit-insurance-policy`, insurancePolicyData).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listInsurancePolicy(searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI>{
-    return this.http.post<InsurancePolicesAPI>(`${this.url}list-insurance-policy`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteInsurancePolicy(id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}delete-insurance-policy`, {insurancePolicyId: id}).pipe(
-      catchError(this.handleError)
-    );
-  }
 
   listAccounts(searchBy: SearchAccount):Observable<AccountsAPI>{
     return this.http.post<AccountsAPI>(`${this.url}list-accounts`, searchBy).pipe(
@@ -273,40 +268,24 @@ export class AdminService {
     );
   }
 
-  statisticsForMainPage():Observable<any>{
-    return this.http.get<any>(`${this.url}statistics`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  listSupplierAccount(searchBy: SearchSupplierAccount):Observable<any>{
-    return this.http.post<any>(`${this.url}supplier-account`, searchBy).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  OtherServicesAPIs = {
-    delete: (id: string): Observable<any> => {
-      return this.http.post<any>(`${this.url}delete-other-service`, {otherServiceID: id}).pipe(
+  GeneralAPIs = {
+    regionsAndRoles: () => {
+      return this.http.get<any>(`${this.url}general/regions-roles`).pipe(
+        catchError(this.handleError)
+      )
+    },
+    regions: ():Observable<RegionsAPI> => {
+      return this.http.get<RegionsAPI>(`${this.url}general/regions`).pipe(
         catchError(this.handleError)
       );
     },
-    show: (searchBy: SearchOtherServices):Observable<OtherServiceAPI> => {
-      return this.http.post<OtherServiceAPI>(`${this.url}list-other-services`, searchBy).pipe(
-        catchError(this.handleError)
-      );
-    },
-    add: (otherServiceData: NewOtherService): Observable<any> => {
-      return this.http.post<any>(`${this.url}add-other-service`, otherServiceData).pipe(
-        catchError(this.handleError)
-      );
-    },
-    update: (otherServiceData: updateOtherService): Observable<any> => {
-      return this.http.post<any>(`${this.url}update-other-service`, otherServiceData).pipe(
+    statistics: ():Observable<any> => {
+      return this.http.get<any>(`${this.url}general/statistics`).pipe(
         catchError(this.handleError)
       );
     }
   }
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {

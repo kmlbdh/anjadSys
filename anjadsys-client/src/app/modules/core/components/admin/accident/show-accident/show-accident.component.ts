@@ -53,6 +53,8 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   private searchCustomerText$ = new Subject<string>();
   private searchAgentText$ = new Subject<string>();
 
+  TIMEOUTMILISEC = 7000;
+
   modalAccident: {
     customer: UserAPI,
     accident: AccidentAPI,
@@ -95,7 +97,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -136,7 +138,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
       this.searchAgentText$.pipe(
@@ -189,6 +191,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     event.stopImmediatePropagation();
     this.selectedCustomer = undefined;
     this.formCont('customerID').setValue('');
+    this.formCont('agentID').enable();
   }
 
   cancelAgentInput(event: Event): void {
@@ -196,7 +199,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     event.stopImmediatePropagation();
     this.selectedAgent = undefined;
     this.formCont('agentID').setValue('');
-    this.searchAccidentForm.get('customerID')?.enable();
+    this.formCont('customerID')?.enable();
   }
 
   searchAccident(form: FormGroupDirective){
@@ -214,7 +217,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   open(content: any, accidentId: number) {
     let searchCondition: SearchAccident = { accidentID: accidentId };
-    this.adminService.listAccidents(searchCondition)
+    this.adminService.AccidentsAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: AccidentsAPI) => {
@@ -245,7 +248,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   getAccidents(searchConditions: SearchAccident){
-    this.adminService.listAccidents(searchConditions)
+    this.adminService.AccidentsAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: AccidentsAPI) => {
@@ -264,17 +267,23 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف بلاغ حادث رقم ${accident.id} للزبون ${accident.Customer.username}`);
     if(!yes) return;
 
-    this.adminService.deleteAccident(accident.id)
+    this.adminService.AccidentsAPIs.delete(accident.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
         if(response.data)
           this.successMsg = response.message;
-
+          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
         this.getAccidents(this.searchConditions);
         console.log(response);
       },
-      error: (err: any) => console.log(err)
+      error: (err: any) => {
+        console.error(err.error);
+        if(err?.error?.message){
+          this.errorMsg = err.error.message;
+          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+        }
+      }
     })
   }
 

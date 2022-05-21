@@ -28,13 +28,15 @@
             </span>
           </div>
           <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedAgent}" id="agentID" type="text" (keyup)="searchCustomer($event)" list="agentList"
-            name="agentID" formControlName="agentID"/>
+            <input [ngClass]="{'hide': selectedAgent}" id="agentID" type="text"
+            (keyup)="searchCustomer($event)" list="agentsList" name="agentID"
+            formControlName="agentID" (change)="fillFieldsByCustomer($event)"/>
             <span *ngIf="spinner.customer" class="spinner"></span>
           </div>
-          <datalist id="agentList">
+
+          <datalist id="agentsList">
             <option *ngFor="let agent of agents;" [value]="agent.id">
-                {{agent.companyName}}
+                {{agent.companyName}}/{{agent.username}}
             </option>
           </datalist>
         </div>

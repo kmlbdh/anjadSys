@@ -96,7 +96,7 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -146,7 +146,7 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
     let customerId = this.selectedCustomer!.id;
     this.insurancePolicyNotValidMsg = undefined;
     let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true}
-    this.adminService.listInsurancePolicy(searchConditions)
+    this.adminService.InsurancePoliciesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {

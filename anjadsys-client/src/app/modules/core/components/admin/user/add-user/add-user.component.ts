@@ -65,7 +65,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   getRegionsAndRoles(){
-    this.adminService.getRegionsAndRoles()
+    this.adminService.GeneralAPIs.regionsAndRoles()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -90,10 +90,10 @@ export class AddUserComponent implements OnInit, OnDestroy {
     console.log("here is ", this.removePassword);
 
     if(Number(formObj.roleId) !== 4){
-      dataAPI$ = this.adminService.addUser(formObj);
+      dataAPI$ = this.adminService.UsersAPIs.add(formObj);
     } else {
       delete formObj['role'];
-      dataAPI$ = this.adminService.addSupplier(formObj);
+      dataAPI$ = this.adminService.SuppliersAPIs.add(formObj);
     }
 
     dataAPI$

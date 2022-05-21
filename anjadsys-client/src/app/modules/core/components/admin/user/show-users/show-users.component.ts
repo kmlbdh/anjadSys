@@ -75,7 +75,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
 
 //TODO wrong response type
   getUsers(searchConditions: SearchUser){
-    this.adminService.showUsers(searchConditions)
+    this.adminService.UsersAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => {
@@ -95,7 +95,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
     if(!yes) return;
 
-    this.adminService.deleteUser(user.id)
+    this.adminService.UsersAPIs.delete(user.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response) => {
@@ -136,7 +136,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   }
 
   sharedBlockUser(user: UserAPI, blocked: boolean){
-    this.adminService.updateUser({id: user.id, blocked: blocked} as updateUser)
+    this.adminService.UsersAPIs.update(user.id, {blocked: blocked} as updateUser)
     .subscribe({
       next: (response) => {
         if(response.data){

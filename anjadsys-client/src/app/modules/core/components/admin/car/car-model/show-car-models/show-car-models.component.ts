@@ -55,7 +55,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   }
 
   getCarModels(searchConditions: SearchCarModel){
-    this.adminService.listCarModels(searchConditions)
+    this.adminService.CarModelsAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarModelArrayAPI) =>{
@@ -74,7 +74,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف موديل السيارة رقم ${carModel.id} واسم ${carModel.name}`);
     if(!yes) return;
 
-    this.adminService.deleteCarModel(carModel.id)
+    this.adminService.CarModelsAPIs.delete(carModel.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -89,7 +89,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   }
 
   getCarTypes(searchConditions: SearchCarType){
-    this.adminService.listCarTypes(searchConditions)
+    this.adminService.CarTypesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarTypeArrayAPI) => {

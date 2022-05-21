@@ -62,7 +62,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -131,7 +131,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   getCars(searchConditions: SearchCar){
-    this.adminService.showCars(searchConditions)
+    this.adminService.CarsAPIs.show(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarsAPI) => {
@@ -150,7 +150,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف السيارة رقم ${car.carNumber} للزبون ${car.User.username}`);
     if(!yes) return;
 
-    this.adminService.deleteCar(car.id)
+    this.adminService.CarsAPIs.delete(car.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

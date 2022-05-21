@@ -41,7 +41,7 @@ export class AddServiceComponent implements OnInit, OnDestroy{
 
     let formObj = this.addServiceForm.value;
 
-    this.adminService.addService(formObj)
+    this.adminService.ServicesAPIs.add(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
       next: (response) => {

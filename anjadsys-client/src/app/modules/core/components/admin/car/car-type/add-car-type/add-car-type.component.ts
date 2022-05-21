@@ -45,7 +45,7 @@ export class AddCarTypeComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
 
-   this.adminService.addCarType(formObj)
+   this.adminService.CarTypesAPIs.add(formObj)
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe({
       next: (response) => {

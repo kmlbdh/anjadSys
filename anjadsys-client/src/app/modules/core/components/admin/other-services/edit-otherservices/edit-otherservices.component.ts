@@ -93,7 +93,9 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   updateOtherService = (): void => {
-    let formObj: updateOtherService = {otherServiceID: this.otherService.id!} as updateOtherService;
+    let formObj: updateOtherService = {} as updateOtherService;
+
+    const otherServiceID = this.otherService.id!;
 
     let controlsObject = this.editOtherServiceForm.controls;
     let keys = Object.keys(controlsObject);
@@ -105,13 +107,13 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.OtherServicesAPIs.update(formObj)
+    this.adminService.OtherServicesAPIs.update(otherServiceID, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
       next: (response) => {
@@ -134,7 +136,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -184,7 +186,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     let customerId = this.selectedCustomer!.id;
     this.insurancePolicyNotValidMsg = undefined;
     let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true}
-    this.adminService.listInsurancePolicy(searchConditions)
+    this.adminService.InsurancePoliciesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {

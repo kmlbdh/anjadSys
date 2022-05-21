@@ -90,7 +90,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -131,7 +131,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
       this.searchAgentText$.pipe(
@@ -210,7 +210,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   open(content: any, insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
-    this.adminService.listInsurancePolicy(searchCondition)
+    this.adminService.InsurancePoliciesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -241,7 +241,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   getInsurancePolices(searchConditions: SearchInsurancePolicy){
-    this.adminService.listInsurancePolicy(searchConditions)
+    this.adminService.InsurancePoliciesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -260,7 +260,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف بوليصة التأمين رقم ${insurancePolicy.id} للزبون ${insurancePolicy.Customer.username}`);
     if(!yes) return;
 
-    this.adminService.deleteInsurancePolicy(insurancePolicy.id)
+    this.adminService.InsurancePoliciesAPIs.delete(insurancePolicy.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

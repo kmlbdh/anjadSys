@@ -46,7 +46,7 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
   }
 
   loadServices(searchCondition: SearchService): void{
-    this.adminService.listServices(searchCondition)
+    this.adminService.ServicesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -64,7 +64,7 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف الخدمة "${service.name}"؟`);
     if(!yes) return;
 
-    this.adminService.deleteService(service.id)
+    this.adminService.ServicesAPIs.delete(service.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

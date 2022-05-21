@@ -106,8 +106,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
-      { username: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
+      { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
       this.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -132,7 +132,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   }
 
   searchSupplierAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true, role: 'supplier' } as SearchUser);
 
       this.searchSupplierText$.pipe(
@@ -222,7 +222,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   open(content: any, insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
-    this.adminService.listInsurancePolicy(searchCondition)
+    this.adminService.InsurancePoliciesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -285,6 +285,14 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   //     error: (err: any) => console.log(err)
   //   })
   // }
+
+  fillFieldsByCustomer(event: Event){
+    if(event instanceof KeyboardEvent) return;
+
+    setTimeout(() => {
+      this.searchAccountForm.get('agentID')?.setValue(this.selectedAgent?.id);
+    }, 0);
+  }
 
   goToAccountEdit(id: number){
     this.router.navigate(['agent/account/edit', id]);

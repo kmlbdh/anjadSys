@@ -50,7 +50,7 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
 
   updateCarModel = (): void => {
     let formObj: updateCarModel = {} as updateCarModel;
-    formObj.carModelId = this.carModel.id;
+    const carModelId = this.carModel.id;
 
     let controlsObject = this.editCarModelForm.controls;
     let keys = Object.keys(controlsObject);
@@ -62,13 +62,13 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.updateCarModel(formObj)
+    this.adminService.CarModelsAPIs.update(carModelId, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -113,7 +113,7 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.listCarTypes({name: text}))
+      switchMap(text => this.adminService.CarTypesAPIs.list({name: text}))
     ).subscribe({
       next: response =>{
         if(response.data)
@@ -132,7 +132,7 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
         if(!carModelId)
           this.router.navigate(['/admin/car/car-model/show']);
 
-          this.adminService.listCarModels({carModelId:  Number(carModelId!)})
+          this.adminService.CarModelsAPIs.list({carModelId:  Number(carModelId!)})
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: response => {
@@ -164,12 +164,4 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
     this.carTypeName = undefined;
     this.formCont('carTypeId')?.setValue('');
   }
-
-  // acceptNumbers(event: KeyboardEvent): Boolean | undefined{
-  //   const code = event.key;
-  //   if(Number.isNaN(+code))
-  //     return false;
-
-  //   return;
-  // }
 }

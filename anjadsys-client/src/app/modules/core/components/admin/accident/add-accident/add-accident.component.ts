@@ -130,7 +130,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     // formObj.services = this.servicesAccident;
     // delete formObj['insurancePolicyId'];
 
-    this.adminService.addAccident(formObj)
+    this.adminService.AccidentsAPIs.add(formObj)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
         next: (response) => {
@@ -138,7 +138,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
             this.successMsg = response.message;
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
 
-          this.resetAccientForm(ngform);
+          this.resetAccidentForm(ngform);
           // console.log(response);
         },
         error: (err: any) => {
@@ -199,14 +199,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     return serviceDefualtDays + serviceDays;
   }
 
-  // serviceText(serviceId: number): string {
-  //   let selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
-  //   return selectedServicePolicy.Service.name;
-  // }
-
-  // supplierText(supplierId: string): string {
-  //   return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
-  // }
 
   getServicePolicyById(serviceId: number): ServicePolicyAPI{
     let servicePolicy = this.servicesPolicies.filter(servicePolicy => servicePolicy.serviceId === Number(serviceId));
@@ -303,7 +295,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       let query!: SearchCar;
       if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
       else query =  { customerID: id, skipLoadingInterceptor: true}
-      return this.adminService.showCars(query);
+      return this.adminService.CarsAPIs.show(query);
     }
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
@@ -331,7 +323,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
       this.searchTextObj.searchCustomerText$.pipe(
         takeUntil(this.unsubscribe$),
@@ -356,7 +348,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true } as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
@@ -381,7 +373,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   getRegions(): void {
-    this.adminService.listRegions()
+    this.adminService.GeneralAPIs.regions()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
        next: (response) => {
@@ -395,7 +387,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
-    this.adminService.showUsers(searchConditions)
+    this.adminService.UsersAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => this.suppliers = response.data,
@@ -407,7 +399,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.spinner.insurancePolicy = true;
     this.insurancePolicyNotValidMsg = undefined;
     let searchConditions: SearchInsurancePolicy = { customerID: customerId, carID: carId, filterOutValid: true}
-    this.adminService.listInsurancePolicy(searchConditions)
+    this.adminService.InsurancePoliciesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -439,7 +431,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
   selectAccidentService(event: Event){
     // console.log(event, event.target)
-    let serviceId = ((event.target as HTMLInputElement).value)?.trim()
+    let serviceId = ((event.target as HTMLInputElement).value)?.trim();
+    if(!Number(serviceId)) return;
     this.selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
     this.maxDays = Number(this.selectedServicePolicy.additionalDays) +  Number(this.selectedServicePolicy.Service.coverageDays);
     this.addServiceAccidentForm.get('coverageDays')?.enable();
@@ -447,7 +440,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.addServiceAccidentForm.updateValueAndValidity();
   }
 
-  resetAccientForm(addAccidentFormDirective: FormGroupDirective){
+  resetAccidentForm(addAccidentFormDirective: FormGroupDirective){
     this.addAccidentForm.reset();
     this.addAccidentForm.updateValueAndValidity();
     this.addAccidentForm.markAsUntouched();
@@ -456,19 +449,22 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.selectedCar = undefined;
     this.selectedAgent = undefined;
     this.selectedRegion = undefined;
-    this.addServiceAccidentForm.reset();
-    this.addServiceAccidentForm.updateValueAndValidity();
-    this.addServiceAccidentForm.markAsUntouched();
+    this.selectedInsurancePolicy = undefined;
     this.servicesAccident = [];
-    this.serviceShowStatusWhenMaintainPolicy();
     this.formCont('registerAccidentDate').setValue((new Date()).toISOString().substring(0,10));
+
+    this.resetAccidentServiceFormGene();
   }
 
   resetAccidentServiceForm(addAccidentServiceFormDirective: FormGroupDirective){
+    this.resetAccidentServiceFormGene();
+    addAccidentServiceFormDirective.resetForm();
+  }
+
+  resetAccidentServiceFormGene(){
     this.addServiceAccidentForm.reset();
     this.addServiceAccidentForm.updateValueAndValidity();
     this.addServiceAccidentForm.markAsUntouched();
-    addAccidentServiceFormDirective.resetForm();
     this.serviceShowStatusWhenMaintainPolicy();
     this.maxDays = 0;
   }

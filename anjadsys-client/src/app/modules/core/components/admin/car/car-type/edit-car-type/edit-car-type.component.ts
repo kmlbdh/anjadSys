@@ -40,7 +40,7 @@ export class EditCarTypeComponent implements OnInit, OnDestroy {
 
   updateCarType = (): void => {
     let formObj: updateCarType = {} as updateCarType;
-    formObj.carTypeId = this.carType.id;
+    const carTypeId = this.carType.id;
 
     let controlsObject = this.editCarTypeForm.controls;
     let keys = Object.keys(controlsObject);
@@ -52,13 +52,13 @@ export class EditCarTypeComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.updateCarType(formObj)
+    this.adminService.CarTypesAPIs.update(carTypeId, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -88,7 +88,7 @@ export class EditCarTypeComponent implements OnInit, OnDestroy {
         if(!carTypeId)
           this.router.navigate(['/admin/car/car-type/show']);
 
-          this.adminService.listCarTypes({carTypeId:  Number(carTypeId!)})
+          this.adminService.CarTypesAPIs.list({carTypeId:  Number(carTypeId!)})
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: response => {

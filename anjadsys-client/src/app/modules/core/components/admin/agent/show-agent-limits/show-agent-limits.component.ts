@@ -52,7 +52,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
         console.log(this.selectedAgentName);
         if(!agentId || !this.selectedAgentName) this.router.navigate(['admin/show-agents']);
         searchAgentLimits = {...searchAgentLimits, agentID: agentId?.toUpperCase()!, main: false};
-        this.adminService.listAgentLimits(searchAgentLimits)
+        this.adminService.AgentLimitsAPIs.listLimits(searchAgentLimits)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: response => {
@@ -72,7 +72,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
     const yes = confirm(`هل تريد حذف السقف المالي "${agentLimits.debit}" للوكيل؟`);
     if(!yes) return;
 
-    this.adminService.deleteAgentLimits(agentLimits.id)
+    this.adminService.AgentLimitsAPIs.delete(agentLimits.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {

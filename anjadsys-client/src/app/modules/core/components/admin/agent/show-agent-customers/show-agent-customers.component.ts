@@ -74,7 +74,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
 
        this.selectedAgentName = params.get('fullname') || undefined;
        searchConditions = {...searchConditions, agentID: this.selectedAgent.id!};
-       this.adminService.showUsers(searchConditions)
+       this.adminService.UsersAPIs.list(searchConditions)
        .pipe(takeUntil(this.unsubscribe$))
        .subscribe({
          next: response => {
@@ -100,7 +100,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     const yes = confirm(`هل تريد حذف الزبون ${user.username} ورقم حسابه ${user.id} بشكل نهائي؟`);
     if(!yes) return;
 
-    this.adminService.deleteUser(user.id)
+    this.adminService.UsersAPIs.delete(user.id)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -117,10 +117,10 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     if(this.addCustomerToAgentForm.invalid) return;
 
     let formObj: updateUser = {} as updateUser;
-    formObj.id = this.selectedCustomer?.id!;
+    const userID = this.selectedCustomer?.id!;
     formObj.agentId = this.selectedAgent?.id;
 
-    this.adminService.updateUser(formObj)
+    this.adminService.UsersAPIs.update(userID, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -151,10 +151,10 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
     if(!yes) return;
 
     let formObj: updateUser = {} as updateUser;
-    formObj.id = user.id!;
+    let userID = user.id!;
     formObj.agentId = null;
 
-    this.adminService.updateUser(formObj)
+    this.adminService.UsersAPIs.update(userID, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
@@ -199,7 +199,7 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy{
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.spinnerCustomer = true),
-      switchMap(text => this.adminService.showUsers({username: text, role: 'customer', skipLoadingInterceptor: true} as SearchUser))
+      switchMap(text => this.adminService.UsersAPIs.list({username: text, role: 'customer', skipLoadingInterceptor: true} as SearchUser))
     ).subscribe({
       next: response =>{
         if(response.data){

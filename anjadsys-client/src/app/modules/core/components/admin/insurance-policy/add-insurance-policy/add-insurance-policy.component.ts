@@ -96,7 +96,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
     formObj.services = this.servicesPolicy;
-    this.adminService.addInsurancePolicy(formObj)
+    this.adminService.InsurancePoliciesAPIs.add(formObj)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
         next: (response) => {
@@ -227,7 +227,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       let query!: SearchCar;
       if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
       else query =  { customerID: id,  skipLoadingInterceptor: true}
-      return this.adminService.showCars(query);
+      return this.adminService.CarsAPIs.show(query);
     }
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
@@ -255,7 +255,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
 
       this.searchTextObj.searchCustomerText$.pipe(
@@ -281,7 +281,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchAgentAPI(){
-    let callback = (val: string) => this.adminService.showUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
 
       this.searchTextObj.searchAgentText$.pipe(
@@ -303,7 +303,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   getServices(): void{
-    this.adminService.listServices()
+    this.adminService.ServicesAPIs.list()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -319,7 +319,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   getSuppliers(regionId: number){
     let searchConditions: SearchUser = {role: "supplier", regionID: regionId};
-    this.adminService.showUsers(searchConditions)
+    this.adminService.UsersAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => this.suppliers = response.data,

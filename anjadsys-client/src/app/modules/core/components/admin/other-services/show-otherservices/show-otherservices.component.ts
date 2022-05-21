@@ -108,7 +108,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI(){
-    let callback = (val: string) => this.adminService.listLightUsers(
+    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true, role: 'customer' } as SearchUser);
 
       this.searchCustomerText$.pipe(
@@ -177,7 +177,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
 
   open(content: any, insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
-    this.adminService.listInsurancePolicy(searchCondition)
+    this.adminService.InsurancePoliciesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
@@ -199,7 +199,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
 
   openOtherService(content: any, otherServiceId: number, modalOtherService: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: modalOtherService };
-    this.adminService.listInsurancePolicy(searchCondition)
+    this.adminService.InsurancePoliciesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: InsurancePolicesAPI) => {

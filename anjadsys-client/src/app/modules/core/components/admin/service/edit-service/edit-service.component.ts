@@ -45,7 +45,7 @@ export class EditServiceComponent implements OnInit, OnDestroy {
   }
 
   updateService = (): void => {
-    let formObj: { [index: string]: string | number} = {serviceID: this.service.id!};
+    let formObj: { [index: string]: string | number} = {};
 
     let controlsObject = this.editServiceForm.controls;
     let keys = Object.keys(controlsObject);
@@ -57,13 +57,13 @@ export class EditServiceComponent implements OnInit, OnDestroy {
       }
     });
 
-    if(Object.keys(formObj).length < 2){
+    if(Object.keys(formObj).length === 0){
       this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
 
-    this.adminService.updateService(formObj)
+    this.adminService.ServicesAPIs.update(this.service.id!, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
       next: (response) => {
@@ -95,7 +95,7 @@ export class EditServiceComponent implements OnInit, OnDestroy {
           if(!serviceId)
             this.router.navigate(['/admin/service/show']);
 
-            this.adminService.listServices({serviceID: serviceId!})
+            this.adminService.ServicesAPIs.list({serviceID: serviceId!})
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: response => {

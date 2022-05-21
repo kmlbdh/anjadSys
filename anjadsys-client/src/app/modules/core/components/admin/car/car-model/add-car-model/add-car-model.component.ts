@@ -53,7 +53,7 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
 
-   this.adminService.addCarModel(formObj)
+   this.adminService.CarModelsAPIs.add(formObj)
    .pipe(takeUntil(this.unsubscribe$))
    .subscribe({
       next: (response) => {
@@ -77,7 +77,7 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
   }
 
   getCarTypes(searchConditions: SearchCarType){
-    this.adminService.listCarTypes(searchConditions)
+    this.adminService.CarTypesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarTypeArrayAPI) => {
