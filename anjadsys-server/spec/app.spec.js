@@ -1,15 +1,5 @@
 var request = require("request");
 
-// describe("connecting to Database", () => {
-//   var dbConnection;
-//   beforeAll(() => {
-//     dbConnection = require("../config/config.db").connect();
-//   });
-//   it("indicate the connection is established", () => {
-//     expect(dbConnection).not.toBeNull();
-//   });
-// });
-
 describe("Server", () => {
   var server, 
   postData = {
