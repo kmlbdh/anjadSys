@@ -253,7 +253,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   }
 
   getAccount(searchConditions: SearchAccount){
-    this.adminService.listAccounts(searchConditions)
+    this.adminService.AccountsAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: AccountsAPI) => {
