@@ -119,7 +119,6 @@ export class AdminService {
     }
   }
 
-
   CarsAPIs = {
     delete: (carId: string): Observable<any> => {
       return this.http.delete<any>(`${this.url}car/${carId}`).pipe(
@@ -142,7 +141,6 @@ export class AdminService {
       );
     }
   }
-
 
   CarTypesAPIs = {
     add: (carTypeData: NewCarType): Observable<any> => {
@@ -261,11 +259,12 @@ export class AdminService {
     }
   }
 
-
-  listAccounts(searchBy: SearchAccount):Observable<AccountsAPI>{
-    return this.http.post<AccountsAPI>(`${this.url}list-accounts`, searchBy).pipe(
-      catchError(this.handleError)
-    );
+  AccountsAPIs = {
+    list: (searchBy: SearchAccount):Observable<AccountsAPI> => {
+      return this.http.post<AccountsAPI>(`${this.url}account/list`, searchBy).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
   GeneralAPIs = {
@@ -285,7 +284,6 @@ export class AdminService {
       );
     }
   }
-
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
