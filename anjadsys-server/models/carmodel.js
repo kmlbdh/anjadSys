@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      CarModel.hasOne(models.Car, { 
+      CarModel.hasMany(models.Car, { 
         foreignKey: 'carModelId',
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
@@ -27,9 +27,9 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
+      unique: false,
     } 
   }, {
     sequelize,
