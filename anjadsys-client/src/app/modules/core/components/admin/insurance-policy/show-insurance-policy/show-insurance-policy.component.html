@@ -3,7 +3,7 @@
     <p>اظهار جميع بوالص التأمين</p>
   </div>
 
-  <div class="card search-insurance-policy-container">
+  <div class="card search-insurance-policy-container dont-print">
     <form [formGroup]="searchInsurancePolicyForm" #form="ngForm" (ngSubmit)="searchInsurancePolicy(form)">
       <div class="form-sec1">
 
@@ -70,7 +70,7 @@
 
   </div>
 
-  <div class="page-content card">
+  <div class="page-content card dont-print">
     <ul class="responsive-table">
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم البوليصة</div>
