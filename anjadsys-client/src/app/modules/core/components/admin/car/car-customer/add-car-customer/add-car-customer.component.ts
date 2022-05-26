@@ -170,7 +170,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.spinner.customer = true),
-      switchMap(text => this.adminService.UsersAPIs.list({username: text, skipLoadingInterceptor: true}))
+      switchMap(text => this.adminService.UsersAPIs.list({username: text, role: 'customer', skipLoadingInterceptor: true}))
     ).subscribe({
       next: (response: any) =>{
         if(response.data){
