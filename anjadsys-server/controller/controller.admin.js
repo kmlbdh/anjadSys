@@ -841,8 +841,13 @@ const accountActions = {
           [Op.lte]: new Date(req.body.endDate).setHours(23, 59 , 59, 59),
         };
       }
-      // if (req.body.agentID)
-      //   query.where.agentId = req.body.agentID;
+
+      if (req.body.agentID){
+        query.where[Op.or] = [
+          {agentId: req.body.agentID},
+          {'$InsurancePolicy.agentId$': req.body.agentID},
+        ];
+      }
 
       // if (req.body.customerID)
       //   query.where.customerID = req.body.customerID;
@@ -869,12 +874,12 @@ const accountActions = {
               {
                 model: InsurancePolicy,
                 required: false,
-                where: { agentId: req.body.agentID },
+                // where: { agentId: req.body.agentID },
               },
               {
                 model: User,
                 required: false,
-                where: { id: req.body.agentID },
+                // where: { id: req.body.agentID },
                 attributes: { exclude: ['passowrd']}
               },
             ],
