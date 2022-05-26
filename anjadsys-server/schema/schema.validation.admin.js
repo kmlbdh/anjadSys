@@ -280,7 +280,7 @@ module.exports = {
   },
   accidentSchema: {
     add: Joi.object().keys({
-      name: Joi.string().trim().required(),
+      // name: Joi.string().trim().required(),
       accidentPlace: Joi.string().trim().required(),
       accidentDate: Joi.date().required(),
       registerAccidentDate: Joi.date().required(),
@@ -296,7 +296,7 @@ module.exports = {
       carId: Joi.number().required(),
     }),
     update: Joi.object().keys({
-      name: Joi.string().trim().optional(),
+      // name: Joi.string().trim().optional(),
       accidentPlace: Joi.string().trim().optional(),
       accidentDate: Joi.date().optional(),
       registerAccidentDate: Joi.date().optional(),

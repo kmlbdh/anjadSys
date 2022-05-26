@@ -516,7 +516,7 @@ const accidentActions = {
   add: async(req, res) => {
     try {
       let {
-        name,
+        // name,
         accidentPlace,
         accidentDate,
         registerAccidentDate,
@@ -535,7 +535,7 @@ const accidentActions = {
      await sequelizeDB.transaction( async t => {
 
         const accident = Accident.build({
-          name,
+          // name,
           accidentPlace,
           accidentDate,
           registerAccidentDate,

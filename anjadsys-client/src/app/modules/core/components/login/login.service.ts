@@ -19,8 +19,8 @@ export interface Login{
 
 @Injectable()
 export class LoginService {
-  private url = "http://localhost:4200/api/";
-  // private url = "https://injad.albayraq.net/api/";
+  // private url = "http://localhost:4200/api/";
+  private url = "https://injad.albayraq.net/api/";
 
   constructor(private http: HttpClient) { }
 

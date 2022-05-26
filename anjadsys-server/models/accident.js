@@ -43,11 +43,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true,
-    },
+    // name: {
+    //   type: DataTypes.STRING(100),
+    //   allowNull: false,
+    //   unique: true,
+    // },
     accidentPlace: {
       type: DataTypes.STRING(100),
       allowNull: false
