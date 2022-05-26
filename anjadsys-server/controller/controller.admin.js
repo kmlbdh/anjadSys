@@ -695,8 +695,8 @@ const accidentActions = {
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
  
-      if (req.body.accidentId) 
-        query.where.id = req.body.accidentId;
+      if (req.body.accidentID) 
+        query.where.id = req.body.accidentID;
      
       if (req.body.carNumber) 
         query.where.carNumber = req.body.carNumber; 
