@@ -64,7 +64,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   addAccidentForm = this.fb.group({
-    name: ['', [Validators.required]],
+    // name: ['', [Validators.required]],
     accidentPlace: ['', Validators.required],
     accidentDate: ['', Validators.required],
     registerAccidentDate: [(new Date()).toISOString().substring(0,10), Validators.required],
