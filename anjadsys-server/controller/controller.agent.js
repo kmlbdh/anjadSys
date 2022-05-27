@@ -519,8 +519,9 @@ const accountActions = {
         };
       }
 
-      // if (req.body.insurancePolicyId) 
-      //   query.where.insurancePolicyId = req.body.insurancePolicyId;
+      if (!req.body.insurancePolicyId){
+        query.where[Op.or] = [{agentId: req.agent.id}, {'$InsurancePolicy.agentId$': req.agent.id}]
+      } 
 
       // if (req.body.customerID)
       //   query.where.customerID = req.body.customerID;
@@ -546,7 +547,7 @@ const accountActions = {
             {
               model: InsurancePolicy,
               required: false,
-              where: { agentId: req.agent.id}
+              // where: { agentId: req.agent.id}
             },
             {
               model: User,
