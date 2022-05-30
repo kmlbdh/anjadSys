@@ -430,7 +430,7 @@ export class EditInsurancePolicyComponent implements OnInit {
     coverageDays = Number(coverageDays.toFixed(2));
     let perDayCost =  Number((cost / coverageDays).toFixed(2));
 
-    let total = cost + (perDayCost * (additionalDays * 0.25));
+    let total = Math.ceil(cost + (perDayCost * (additionalDays * 0.25)));
     // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
     // this.addServiceAccidentForm.get('cost')?.enable;
