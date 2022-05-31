@@ -420,58 +420,70 @@ const accidentActions = {
       query = { ...query, 
         order: [['id', 'ASC' ]],
         include: [
-        {
-          model: ServiceAccident,
-          required: true,
-          separate: true,
-          include: [
-            {
-              model: Service,
-              required: true,
-              attributes: ['id', 'name', 'cost', 'coverageDays']
-            },
-            {
-              model: User,
-              as: 'Supplier',
-              required: true,
-              attributes: ['id', 'username', 'companyName']
-            }
-          ]
-        },
-        {
-          model: User,
-          required: true,
-          as: 'Customer',
-          include:[
-            {
-              model: Role,
-              required: true
-            },
-            {
-              model: Region,
-              required: true
-            }
-          ],
-          attributes: { exclude: ['password', 'note'] }
-        },
-        {
-          model: Car,
-          required: true,
-          include: [
-            {
-              model: CarType,
-              require: true,
-            },
-            {
-              model: CarModel,
-              require: true,
-            }
-          ]
-        },
-        {
-          model: Region,
-          required: true,
-        }],
+          {
+            model: User,
+            required: true,
+            as: 'Agent',
+            include:[
+              {
+                model: Region,
+                required: true
+              }
+            ],
+            attributes: { include: ['companyName', 'username', 'jawwal1', 'jawwal2'] }
+          },
+          {
+            model: ServiceAccident,
+            required: true,
+            separate: true,
+            include: [
+              {
+                model: Service,
+                required: true,
+                attributes: ['id', 'name', 'cost', 'coverageDays']
+              },
+              {
+                model: User,
+                as: 'Supplier',
+                required: true,
+                attributes: ['id', 'username', 'companyName']
+              }
+            ]
+          },
+          {
+            model: User,
+            required: true,
+            as: 'Customer',
+            include:[
+              {
+                model: Role,
+                required: true
+              },
+              {
+                model: Region,
+                required: true
+              }
+            ],
+            attributes: { exclude: ['password', 'note'] }
+          },
+          {
+            model: Car,
+            required: true,
+            include: [
+              {
+                model: CarType,
+                require: true,
+              },
+              {
+                model: CarModel,
+                require: true,
+              }
+            ]
+          },
+          {
+            model: Region,
+            required: true,
+          }],
         offset: skip,
         limit: limit,
         attributes: { exclude: ['carId', 'customerId', 'agentId', 'regionId']}
@@ -561,9 +573,11 @@ const accountActions = {
       }
 
       const { count, rows: accounts } = await Account.findAndCountAll(query);
+
+      let agentBalance = await agentAccount(req);
   
       listAccountsLog(query);
-      res.status(200).json({data: accounts, total: count});
+      res.status(200).json({data: accounts, agentBalance, total: count});
     } catch(error) {
       listAccountsLog(error);
       errorHandler(res, error, "Failed! can't get Accounts!");
@@ -891,6 +905,37 @@ const checkLimits = async (req) => {
       totalPricePolicy = Number(req.body.totalPrice);
 
     let finalAccount = ((totalDebitVal - (totalCreditVal + totalPricePolicy)) > 0);
+    return finalAccount;
+}
+
+const agentAccount = async (req) => {
+  const totalDebit = await Account.findAll({
+    where: { agentId: req.agent.id },
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('debit')), 'debit'],
+    ],
+    group: ['agentId']
+  });
+
+  const totalCredit = await Account.findAll({
+    include:[
+      {
+        model: InsurancePolicy,
+        require: true,
+        where: { agentId: req.agent.id },
+        attributes: []
+      }
+    ],
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('credit')), 'credit'],
+    ],
+    group: ['InsurancePolicy.agentId']
+  });
+
+  let totalDebitVal = Number(totalDebit[0]?.debit || 0),
+      totalCreditVal = Number(totalCredit[0]?.credit || 0);
+
+    let finalAccount = totalDebitVal - totalCreditVal;
     return finalAccount;
 }
 
