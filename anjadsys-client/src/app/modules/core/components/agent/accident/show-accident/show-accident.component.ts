@@ -51,10 +51,12 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   private searchCustomerText$ = new Subject<string>();
 
   modalAccident: {
+    agent: UserAPI,
     customer: UserAPI,
     accident: AccidentAPI,
     services: ServiceAccidentAPI[]
   } = {
+    agent: {} as UserAPI,
     customer: {} as UserAPI,
     accident: {} as AccidentAPI,
     services: [] as ServiceAccidentAPI[]
@@ -166,6 +168,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: AccidentsAPI) => {
         if(response.data){
+          this.modalAccident.agent = response.data[0].Agent;
           this.modalAccident.customer = response.data[0].Customer;
           this.modalAccident.accident = response.data[0];
           this.modalAccident.services = response.data[0].ServiceAccidents!;

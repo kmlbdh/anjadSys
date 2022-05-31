@@ -220,6 +220,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         delete searchConditions[key];
     });
     console.log('searchConditions', searchConditions);
+    this.searchConditions = searchConditions;
     this.getAccount(searchConditions);
   }
 

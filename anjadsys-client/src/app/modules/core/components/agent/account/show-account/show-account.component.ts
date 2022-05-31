@@ -17,6 +17,7 @@ import { ServicePolicyAPI } from 'src/app/modules/core/model/service';
 })
 export class ShowAccountComponent implements OnInit, OnDestroy {
   accounts: AccountAPI[] = [];
+  agentBalance: number | undefined;
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
 
@@ -42,6 +43,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   currency = 'شيكل';
   errorMsg: string | undefined;
   successMsg: string | undefined;
+  showTop = false;
+  showBottom = false;
   searchConditions: SearchAccount = {};
 
   p: number = 1;
@@ -168,6 +171,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         delete searchConditions[key];
     });
     console.log('searchConditions', searchConditions);
+    this.searchConditions = searchConditions;
     this.getAccount(searchConditions);
   }
 
@@ -210,6 +214,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
       next: (response: AccountsAPI) => {
         if(response.data){
           this.accounts = response.data;
+          this.agentBalance = response.agentBalance;
           this.pagination.total = response.total;
         }
       },
@@ -255,6 +260,11 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);
+  }
+
+  showSearch () {
+    this.showTop = !this.showTop;
+    setTimeout(() => this.showBottom = !this.showBottom, 40)
   }
 
   printPage(): void{
