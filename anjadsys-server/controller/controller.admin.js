@@ -817,6 +817,7 @@ const accountActions = {
   list: async(req, res) => {
     try{
       let query = {where:{}};
+      let agentBalance = 0;
 
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
@@ -847,6 +848,7 @@ const accountActions = {
           {agentId: req.body.agentID},
           {'$InsurancePolicy.agentId$': req.body.agentID},
         ];
+        agentBalance = await agentAccount(req);
       }
 
       // if (req.body.customerID)
@@ -908,7 +910,7 @@ const accountActions = {
       var { count, rows: accounts } = await Account.findAndCountAll(query);
   
       listServicesLog(query);
-      res.status(200).json({data: accounts, total: count});
+      res.status(200).json({data: accounts, agentBalance, total: count});
     } catch(error) {
       listServicesLog(error);
       errorHandler(res, error, "Failed! can't get Accounts!");
@@ -1770,6 +1772,36 @@ const checkLimits = async (req) => {
     return finalAccount;
 }
 
+const agentAccount = async (req) => {
+  const totalDebit = await Account.findAll({
+    where: { agentId: req.body.agentID },
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('debit')), 'debit'],
+    ],
+    group: ['agentId']
+  });
+
+  const totalCredit = await Account.findAll({
+    include:[
+      {
+        model: InsurancePolicy,
+        require: true,
+        where: { agentId: req.body.agentID },
+        attributes: []
+      }
+    ],
+    attributes: [
+       [sequelize.fn('sum', sequelize.col('credit')), 'credit'],
+    ],
+    group: ['InsurancePolicy.agentId']
+  });
+
+  let totalDebitVal = Number(totalDebit[0]?.debit || 0),
+      totalCreditVal = Number(totalCredit[0]?.credit || 0);
+
+    let finalAccount = totalDebitVal - totalCreditVal;
+    return finalAccount;
+}
 // const filterInsurancePolicy = async(insurancePolices) => {
 //   let validInsurancePolicies = [];
 //   console.log('here is me ', insurancePolices);
