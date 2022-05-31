@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 })
 export class ShowAccountComponent implements OnInit, OnDestroy {
   accounts: AccountAPI[] = [];
+  agentBalance: number | undefined;
   selectedAgent: UserAPI | undefined;
   selectedSupplier: UserAPI | undefined;
   agents: UserAPI[] = [];
@@ -42,6 +43,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   currency = 'شيكل';
   errorMsg: string | undefined;
   successMsg: string | undefined;
+  showTop = false;
+  showBottom = false;
   searchConditions: SearchAccount = {};
 
   p: number = 1;
@@ -259,6 +262,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
       next: (response: AccountsAPI) => {
         if(response.data){
           this.accounts = response.data;
+          this.agentBalance = response.agentBalance;
           this.pagination.total = response.total;
         }
       },
@@ -312,6 +316,11 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);
+  }
+
+  showSearch () {
+    this.showTop = !this.showTop;
+    setTimeout(() => this.showBottom = !this.showBottom, 40)
   }
 
   printPage(): void{

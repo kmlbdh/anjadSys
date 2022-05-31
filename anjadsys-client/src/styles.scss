@@ -34,6 +34,49 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       .card-body{
         padding: 0 !important;
       }
+      .agent-container{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 1rem 1.25rem 1.25rem 1.25rem;
+        .date-id{
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          align-items: center;
+
+          & > div {
+            display: flex;
+            flex-direction: row;
+            label{
+              font-size: 14px;
+              font-weight: 700;
+            }
+            span{
+              margin: 0 0.4rem;
+            }
+          }
+        }
+        .agent-section{
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          gap: 5px;
+
+          & > div {
+            display: flex;
+            flex-direction: row;
+            label{
+              font-size: 14px;
+              font-weight: 700;
+            }
+            span{
+              margin: 0 0.4rem;
+            }
+          }
+        }
+      }
       .main-data-section{
         width: 100%;
         &.card{
@@ -53,6 +96,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
           h1, h2, h3, h4, h5, h6{
             margin: 0;
           }
+          h5{
+            font-size: 17.5px;
+          }
 
           .expire-date{
             display: flex;
@@ -69,6 +115,18 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             span{
               line-height: 1.2;
             }
+          }
+        }
+        .accident-description{
+          width: 100%;
+          height: max-content;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: stretch;
+          span{
+            margin: 0.2rem 0.4rem;
+            font-size: 15px;
           }
         }
         .data-section,
@@ -88,6 +146,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             align-items: stretch;
             justify-content: space-between;
             height: max-content;
+            font-size: 14.5px;
 
             tr.total-cost{
               th, td{
@@ -104,11 +163,12 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             align-items: stretch;
 
             label{
-              font-size: 17px;
+              font-size: 14px;
               font-weight: 700;
             }
             span{
               margin: 0.2rem 0.4rem;
+              font-size: 14.5px;
             }
           }
         }
@@ -125,6 +185,10 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       .condition{
         width:100%;
         font-weight: 600;
+        font-size: 14.5px;
+        > li::marker {
+          font-size: 1.5rem;
+        }
       }
     }
 

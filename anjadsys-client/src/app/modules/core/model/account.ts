@@ -49,7 +49,8 @@ export interface SearchAccount {
 }
 
 export interface AccountsAPI{
-  data:[AccountAPI];
-  total: number;
+  data:[AccountAPI],
+  total: number,
+  agentBalance: number,
 }
 
