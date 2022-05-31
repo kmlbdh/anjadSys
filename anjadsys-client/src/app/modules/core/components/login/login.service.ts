@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 export interface LoginUser{
   data: {
@@ -19,12 +20,11 @@ export interface Login{
 
 @Injectable()
 export class LoginService {
-  private url = "http://localhost:4200/api/";
-  // private url = "https://injad.albayraq.net/api/";
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
   login(data: Login): Observable<any>{
-    return this.http.post<any>(`${this.url}login`, data)
+    return this.http.post<any>(`${this.url}api/login`, data)
   }
 }

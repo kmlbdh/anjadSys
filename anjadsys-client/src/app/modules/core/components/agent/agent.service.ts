@@ -9,11 +9,11 @@ import { SearchService, ServicesAPI } from '../../model/service';
 import { SearchSuppliers } from '../../model/supplier';
 import { NewUser, SearchUser, UsersAPI, UsersLightAPI } from '../../model/user';
 import { AccountsAPI, SearchAccount } from '../../model/account';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable()
 export class AgentService {
-  private url = "http://localhost:4200/api/agent/";
-  // private url = "https://injad.albayraq.net/api/agent/";
+  private url = environment.apiUrl + 'api/agent/';
 
   constructor(private http: HttpClient) { }
 

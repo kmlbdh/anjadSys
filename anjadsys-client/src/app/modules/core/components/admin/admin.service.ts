@@ -14,11 +14,10 @@ import { RegionsAPI } from '../../model/general';
 import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
 import { AccountsAPI, SearchAccount } from '../../model/account';
 import { SearchOtherServices, OtherServiceAPI, NewOtherService, updateOtherService } from '../../model/otherservices';
-
+import { environment } from '../../../../../environments/environment';
 @Injectable()
 export class AdminService {
-  private url = "http://localhost:4200/api/admin/";
-  // private url = "https://injad.albayraq.net/api/admin/";
+  private url = environment.apiUrl + 'api/admin/';
 
   constructor(private http: HttpClient) { }
 
