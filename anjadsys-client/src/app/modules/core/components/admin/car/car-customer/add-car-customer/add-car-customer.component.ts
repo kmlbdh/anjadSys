@@ -54,6 +54,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     serialNumber: ['', Validators.required],
     passengersCount: ['', Validators.required],
     productionYear: ['', Validators.required],
+    color: ['', Validators.required],
     note: [''],
     customerId: ['', Validators.required],
     carTypeId: ['', Validators.required],

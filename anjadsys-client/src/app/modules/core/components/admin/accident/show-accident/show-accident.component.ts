@@ -8,6 +8,7 @@ import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { ServiceAccidentAPI } from 'src/app/modules/core/model/service';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { AccidentModalComponent } from '../../../../../shared/components/accident-modal/accident-modal.component';
 
 @Component({
   selector: 'app-show-accident',
@@ -215,7 +216,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.getAccidents(searchConditions);
   }
 
-  open(content: any, accidentId: number) {
+  open(accidentId: number) {
     let searchCondition: SearchAccident = { accidentID: accidentId };
     this.adminService.AccidentsAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
@@ -226,7 +227,10 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
           this.modalAccident.accident = response.data[0];
           this.modalAccident.services = response.data[0].ServiceAccidents!;
 
-          this.modalService.open(content, this.modalOptions).result.then((result) => {
+          const refModal = this.modalService.open(AccidentModalComponent, this.modalOptions);
+          refModal.componentInstance.modalAccident = this.modalAccident;
+
+          refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -305,10 +309,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getAccidents(this.searchConditions);
     console.log(pageNumber);
-  }
-
-  printPage(): void{
-    window.print()
   }
 
 }

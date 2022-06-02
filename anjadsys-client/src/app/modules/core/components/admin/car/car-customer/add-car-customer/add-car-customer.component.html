@@ -99,6 +99,18 @@
 
         <div class="form-sec2">
           <div class="form-control-group">
+            <label for="color">لون السيارة</label>
+            <input id="color" type="text" name="color" formControlName="color" required/>
+
+            <div *ngIf="(form.submitted || formCont('color')?.touched)
+              && formCont('color')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('color').hasError('required')">
+                 لون السيارة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
             <label for="productionYear">سنة التصنيع</label>
             <input id="productionYear" type="text" name="productionYear" formControlName="productionYear"
             (keydown)="acceptNumbers($event)" required/>

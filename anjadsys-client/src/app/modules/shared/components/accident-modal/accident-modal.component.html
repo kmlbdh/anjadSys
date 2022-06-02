@@ -1,0 +1,143 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">بلاغ حادث</h4>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div id="print-content" class="modal-body">
+  <div class="main-data-section card agent-container">
+    <div class="date-id">
+    <div>
+      <label>التاريخ: </label>
+      <span>{{modalAccident.accident.registerAccidentDate | date: 'dd-MM-yyyy'}}</span>
+    </div>
+    <div>
+      <label>رقم البلاغ: </label>
+      <span>{{modalAccident.accident.id}}</span>
+    </div>
+    </div>
+
+    <div class="agent-section">
+      <div>
+        <label>اسم الوكيل: </label>
+        <span>{{modalAccident.accident.Agent.companyName}}</span>
+      </div>
+      <div>
+        <label>العنوان : </label>
+        <span>{{modalAccident.accident.Agent.Region.name}} / {{modalAccident.accident.Agent.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{modalAccident.accident.Agent.jawwal1}}
+          <ng-container *ngIf="modalAccident.accident.Agent.jawwal2">
+            /
+          </ng-container>
+          {{modalAccident.accident.Agent.jawwal2}}</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات الزبون</h5>
+      </div>
+      <div class="data-section" style="margin-bottom: 25px;">
+        <div class="each-data">
+          <label>اسم الزبون</label>
+          <span>{{modalAccident.customer.username}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الهوية</label>
+          <span>{{modalAccident.customer.identityNum}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الجوال</label>
+          <span>{{modalAccident.customer.jawwal1}}
+            <ng-container *ngIf="modalAccident.customer.jawwal2">
+              /
+            </ng-container>
+            {{modalAccident.customer.jawwal2}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>العنوان</label>
+          <span>{{modalAccident.customer.Region.name}} / {{modalAccident.customer.address}}</span>
+        </div>
+
+      </div>
+
+      <div class="data-section">
+
+        <div class="each-data">
+          <label>رقم المركبة</label>
+          <span>{{modalAccident.accident.Car.carNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>النوع/الموديل</label>
+          <span>{{modalAccident.accident.Car.CarType.name}}
+            / {{modalAccident.accident.Car.CarModel.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>سنة التصنيع</label>
+          <span>{{modalAccident.accident.Car.productionYear | date: 'yyyy'}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الشصي</label>
+          <span>{{modalAccident.accident.Car.serialNumber}}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- <div class="main-data-section card">
+    <div class="header-section">
+      <h5>بيانات السيارة</h5>
+    </div>
+    <div class="data-section">
+
+    </div>
+  </div> -->
+
+  <div class="main-data-section card">
+    <div class="header-section">
+      <h5>تفاصيل الحادث</h5>
+    </div>
+    <div class="accident-description">
+      <span>{{modalAccident.accident.accidentDescription}}</span>
+    </div>
+  </div>
+  <div class="main-data-section card">
+    <div class="data-section for-table">
+      <div>
+       <table class="table">
+           <thead class="thead-light">
+            <tr>
+              <th>الخدمة</th>
+              <th>عدد ايام التغطية</th>
+              <th>المورد</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let service of modalAccident.services;">
+              <td>{{service.Service.name}}</td>
+              <td>{{service.Service.coverageDays}}</td>
+              <td>{{service.Supplier.companyName}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة بلاغ الحادث</button>
+</div>

@@ -1,0 +1,165 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">بوليصة التأمين</h4>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="main-data-section card agent-container">
+    <div class="date-id">
+    <div>
+      <label>التاريخ: </label>
+      <span>{{modalInsurancePolicy.insurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
+    </div>
+    <div>
+      <label>رقم البوليصة: </label>
+      <span>{{modalInsurancePolicy.insurancePolicy.id}}</span>
+    </div>
+    </div>
+
+    <div class="agent-section">
+      <div>
+        <label>اسم الوكيل: </label>
+        <span>{{modalInsurancePolicy.insurancePolicy.Agent.companyName}}</span>
+      </div>
+      <div>
+        <label>العنوان : </label>
+        <span>{{modalInsurancePolicy.insurancePolicy.Agent.Region.name}} / {{modalInsurancePolicy.insurancePolicy.Agent.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{modalInsurancePolicy.insurancePolicy.Agent.jawwal1}}
+          <ng-container *ngIf="modalInsurancePolicy.insurancePolicy.Agent.jawwal2">
+            /
+          </ng-container>
+           {{modalInsurancePolicy.insurancePolicy.Agent.jawwal2}}</span>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات الزبون</h5>
+      </div>
+      <div class="data-section">
+        <div class="each-data">
+          <label>رقم هوية الزبون</label>
+          <span>{{modalInsurancePolicy.customer.identityNum}}</span>
+        </div>
+        <div class="each-data">
+          <label>اسم الزبون</label>
+          <span>{{modalInsurancePolicy.customer.username}}</span>
+        </div>
+        <div class="each-data">
+          <label>عنوان الزبون</label>
+          <span>{{modalInsurancePolicy.customer.Region.name}} / {{modalInsurancePolicy.customer.address}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الجوال</label>
+          <span>{{modalInsurancePolicy.customer.jawwal1}}
+            <ng-container *ngIf="modalInsurancePolicy.customer.jawwal2">
+              /
+            </ng-container>
+            {{modalInsurancePolicy.customer.jawwal2}}</span>
+        </div>
+      </div>
+
+      <div class="data-section">
+
+        <div class="each-data">
+          <label>رقم المركبة</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.carNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>النوع</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.CarType.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>الموديل</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.CarModel.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>سنة التصنيع</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
+        </div>
+
+      </div>
+
+      <div class="data-section">
+
+        <div class="each-data">
+          <label>رقم الشصي</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.serialNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>Kg/cc</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.motorPH}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>اللون</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.color}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>أصل المركبة</label>
+          <span>{{modalInsurancePolicy.insurancePolicy.Car.licenseType}}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="main-data-section card">
+    <div class="header-section">
+      <h5>بيانات البوليصة</h5>
+      <div class="expire-date">
+        <h6>تاريخ انتهاء البوليصة:</h6>
+        <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
+      </div>
+    </div>
+    <div class="data-section for-table">
+      <div>
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>الخدمة</th>
+              <th>عدد ايام التغطية</th>
+              <th>المورد</th>
+              <th>تكلفة الخدمة</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let service of modalInsurancePolicy.services;">
+              <td>{{service.Service.name}}</td>
+              <td>{{service.Service.coverageDays}}</td>
+              <td>{{service.Supplier.companyName}}</td>
+              <td>{{service.Service.cost}}</td>
+            </tr>
+          </tbody>
+          <tr class="total-cost">
+            <th colspan="3">التكلفة الاجمالية</th>
+            <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<ul class="condition">
+  <li>
+    شروط الوثائق مع الكتيب المرفق
+    <p>اجباري الاطلاع</p>
+  </li>
+</ul>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة البوليصة</button>
+</div>

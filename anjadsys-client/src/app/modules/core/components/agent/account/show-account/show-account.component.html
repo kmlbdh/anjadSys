@@ -96,7 +96,7 @@
           <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
             <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
-              <p style="text-decoration: underline;" (click)="open(insurancePolicyModal, account.insurancePolicyId)">
+              <p style="text-decoration: underline;" (click)="open(account.insurancePolicyId)">
                  رقم: {{ account.insurancePolicyId }}
               </p>
             </ng-container>
@@ -127,106 +127,3 @@
   </div>
 
 </div>
-
-<ng-template #insurancePolicyModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">بوليصة التأمين - {{agentName}}</h4>
-    <button type="button" class="close d-print-none" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="main-data-section card">
-      <div class="card-body">
-        <div class="header-section">
-          <h5>بيانات الزبون</h5>
-        </div>
-        <div class="data-section">
-          <div class="each-data">
-            <label>رقم هوية الزبون</label>
-            <span>{{modalInsurancePolicy.customer.identityNum}}</span>
-          </div>
-          <div class="each-data">
-            <label>اسم الزبون</label>
-            <span>{{modalInsurancePolicy.customer.username}}</span>
-          </div>
-          <div class="each-data">
-            <label>عنوان الزبون</label>
-            <span>{{modalInsurancePolicy.customer.Region.name}} / {{modalInsurancePolicy.customer.address}}</span>
-          </div>
-          <div class="each-data">
-            <label>رقم الجوال</label>
-            <span>{{modalInsurancePolicy.customer.jawwal1}} / {{modalInsurancePolicy.customer.jawwal2}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="main-data-section card">
-      <div class="header-section">
-        <h5>بيانات السيارة</h5>
-      </div>
-      <div class="data-section">
-        <div class="each-data">
-          <label>رقم السيارة</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.carNumber}}</span>
-        </div>
-        <div class="each-data">
-          <label>نوع وموديل السيارة</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.CarType.name}}
-            / {{modalInsurancePolicy.insurancePolicy.Car.CarModel.name}}</span>
-        </div>
-        <div class="each-data">
-          <label>سنة التصنيع</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
-        </div>
-        <div class="each-data">
-          <label>رقم شصي السيارة</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.serialNumber}}</span>
-        </div>
-      </div>
-    </div>
-
-      <div class="main-data-section card">
-        <div class="header-section">
-          <h5>بيانات البوليصة</h5>
-          <div class="expire-date">
-            <h6>تاريخ انتهاء البوليصة:</h6>
-            <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
-          </div>
-        </div>
-        <div class="data-section for-table">
-          <div>
-            <table class="table">
-              <thead class="thead-light">
-                <tr>
-                  <th>الخدمة</th>
-                  <th>عدد ايام التغطية</th>
-                  <th>المورد</th>
-                  <th>تكلفة الخدمة</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr *ngFor="let service of modalInsurancePolicy.services;">
-                  <td>{{service.Service.name}}</td>
-                  <td>{{service.Service.coverageDays}}</td>
-                  <td>{{service.Supplier.companyName}}</td>
-                  <td>{{service.Service.cost}}</td>
-                </tr>
-              </tbody>
-              <tr class="total-cost">
-                <th colspan="3">التكلفة الاجمالية</th>
-                <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <p class="condition">* شروط الوثائق مع الكتيب المرفق</p>
-  </div>
-  <div class="modal-footer d-print-none">
-    <button type="button" class="button-primary" (click)="printPage()">طباعة البوليصة</button>
-  </div>
-</ng-template>

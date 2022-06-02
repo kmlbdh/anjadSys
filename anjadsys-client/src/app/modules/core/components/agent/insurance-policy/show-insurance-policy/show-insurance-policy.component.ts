@@ -7,6 +7,7 @@ import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng
 import { SearchUser, UserAPI } from '../../../../model/user';
 import { ServicePolicyAPI } from '../../../../model/service';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy/insurance-policy.component';
 
 @Component({
   selector: 'app-show-insurance-policy',
@@ -151,7 +152,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     this.getInsurancePolices(searchConditions);
   }
 
-  open(content: any, insurancePolicyId: number) {
+  open(insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
     this.agentService.InsurancePolicesAPI.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
@@ -162,7 +163,9 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
           this.modalInsurancePolicy.insurancePolicy = response.data[0];
           this.modalInsurancePolicy.services = response.data[0].ServicePolicies;
 
-          this.modalService.open(content, this.modalOptions).result.then((result) => {
+          const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
+          refModal.componentInstance.modalInsurancePolicy = this.modalInsurancePolicy;
+          refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

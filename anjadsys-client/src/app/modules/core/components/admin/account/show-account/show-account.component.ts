@@ -9,6 +9,8 @@ import { ServicePolicyAPI } from '../../../../model/service';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router } from '@angular/router';
+import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy/insurance-policy.component';
+
 @Component({
   selector: 'app-show-account',
   templateUrl: './show-account.component.html',
@@ -224,7 +226,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.getAccount(searchConditions);
   }
 
-  open(content: any, insurancePolicyId: number) {
+  open(insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
     this.adminService.InsurancePoliciesAPIs.list(searchCondition)
     .pipe(takeUntil(this.unsubscribe$))
@@ -235,7 +237,9 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
           this.modalInsurancePolicy.insurancePolicy = response.data[0];
           this.modalInsurancePolicy.services = response.data[0].ServicePolicies;
 
-          this.modalService.open(content, this.modalOptions).result.then((result) => {
+          const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions)
+          refModal.componentInstance.modalInsurancePolicy = this.modalInsurancePolicy;
+          refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
