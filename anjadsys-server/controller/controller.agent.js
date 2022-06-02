@@ -728,6 +728,18 @@ const insurancePolicyActions = {
           attributes: { exclude: ['password', 'note'] }
         },
         {
+          model: User,
+          required: true,
+          as: 'Agent',
+          include:[
+            {
+              model: Region,
+              required: true
+            }
+          ],
+          attributes: { exclude: ['password', 'note'] }
+        },
+        {
           model: Car,
           required: true,
           include: [
