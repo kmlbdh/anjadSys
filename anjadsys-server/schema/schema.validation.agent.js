@@ -96,6 +96,7 @@ module.exports = {
       serialNumber: Joi.string().trim().required(),
       passengersCount: Joi.number().min(1).required(),
       productionYear: Joi.date().required(),
+      color: Joi.string().trim().required(),
       licenseType: Joi.string().required(),
       note: Joi.any().optional(),
       carTypeId: Joi.number().required(),

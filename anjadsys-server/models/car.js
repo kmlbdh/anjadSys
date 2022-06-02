@@ -50,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     motorPH: {
       type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
     },
     licenseType: {
       type: DataTypes.STRING(12),
@@ -57,12 +58,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     serialNumber: {
       type: DataTypes.STRING(17),
+      allowNull: false
     },
     passengersCount: {
-      type: DataTypes.TINYINT.UNSIGNED
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false
     },
     productionYear: {
-      type: DataTypes.DATEONLY
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    color: {
+      type: DataTypes.STRING(20),
+      allowNull: false
     },
     note: {
       type: DataTypes.TEXT,
