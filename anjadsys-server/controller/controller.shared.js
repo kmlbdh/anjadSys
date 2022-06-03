@@ -155,6 +155,12 @@ const shared = {
             model: User,
             required: requiredAgentJoin,
             as: 'Agent',
+            include: [
+              {
+                model: Region,
+                required: true,
+              }
+            ],
             attributes: { exclude: ['password', 'note'] }
           }],
           offset: skip,
