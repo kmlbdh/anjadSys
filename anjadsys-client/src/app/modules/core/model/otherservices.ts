@@ -1,14 +1,15 @@
 import { UserAPI } from './user';
 import { InsurancePolicyAPI } from './insurancepolicy';
 export interface SearchOtherServices {
-  [index: string]: string | number | Date | boolean | undefined;
+  [index: string]: string | number | Date | boolean | UserAPI | undefined;
   otherServiceName?: string;
-  otherServiceID?: string;
-  customerID: string,
-  startDate: Date,
-  endDate: Date,
+  otherServiceID?: number;
+  customerID?: string,
+  startDate?: Date,
+  endDate?: Date,
   skip?: number,
   limit?: number,
+  Customer?: UserAPI,
 }
 
 export interface OtherServiceAPI {
@@ -50,4 +51,9 @@ export interface updateOtherService {
   customerId: number,
   cost: number,
   insurancePolicyId: number,
+}
+
+export interface OtherServicesAPI {
+  data: [OtherServiceAPI];
+  total: number;
 }

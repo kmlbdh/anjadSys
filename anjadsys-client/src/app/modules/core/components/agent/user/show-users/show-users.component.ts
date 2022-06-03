@@ -3,6 +3,8 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { SearchUser, UserAPI, UsersAPI } from 'src/app/modules/core/model/user';
 import { AgentService } from '../../agent.service';
+import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { UserModalComponent } from '../../../../../shared/components/user-modal/user-modal.component';
 
 @Component({
   selector: 'app-show-users',
@@ -33,7 +35,14 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     'customer': 'زبون'
   };
 
-  constructor( private agentService: AgentService ) { }
+  closeResult!: string;
+  modalOptions: NgbModalOptions = {
+    size: 'lg',
+    backdrop: 'static',
+    windowClass: 'insurance-policy-modal'
+  };
+
+  constructor( private agentService: AgentService, private modalService: NgbModal ) { }
 
   ngOnInit(): void {
     this.getUsers(this.searchConditions);
@@ -59,33 +68,29 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     })
   }
 
-  // deleteUser(user: any){
-  //   if(!user) return;
+  open(user: UserAPI) {
+    const refModal = this.modalService.open(UserModalComponent, this.modalOptions)
+    refModal.componentInstance.customerDetails = user;
+    refModal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
 
-  //   const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
-  //   if(!yes) return;
-
-  //   this.agentService.deleteUser(user.id)
-  //   .pipe(takeUntil(this.unsubscribe$))
-  //   .subscribe({
-  //     next: response => {
-  //       if(response.data)
-  //         this.successMsg = response.message;
-
-  //       this.getUsers(this.searchConditions);
-  //       console.log(response);
-  //     },
-  //     error: err => console.log(err)
-  //   });
-  // }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
 
   trackById(index: number, el: any){
     return el.id;
   }
-
-  // goToUserEdit(id: string){
-  //   this.router.navigate(['agent/user/edit', id]);
-  // }
 
   getPage(pageNumber: number){
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;

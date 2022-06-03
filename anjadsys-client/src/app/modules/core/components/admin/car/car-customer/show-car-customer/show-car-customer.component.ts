@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEnvelopeOpenText, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { CarAPI, CarsAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { AdminService } from '../../../admin.service';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { CarModalComponent } from '../../../../../../shared/components/car-modal/car-modal.component';
 
 @Component({
   selector: 'app-show-car-customer',
@@ -17,6 +19,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
 
+  openIcon = faEnvelopeOpenText;
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
   cancelInput = faTimes;
@@ -31,6 +34,13 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
 
   spinner = {
     customer: false,
+  };
+
+  closeResult!: string;
+  modalOptions: NgbModalOptions = {
+    size: 'lg',
+    backdrop: 'static',
+    windowClass: 'insurance-policy-modal'
   };
 
   private searchCustomerText$ = new Subject<string>();
@@ -48,7 +58,8 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
     ) { }
 
   ngOnInit(): void {
@@ -162,6 +173,26 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
       },
       error: err => console.log(err)
     })
+  }
+
+  open(car: CarAPI) {
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions)
+    refModal.componentInstance.carDetails = car;
+    refModal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
   }
 
   goToCarEdit(id: number){

@@ -5,7 +5,6 @@ import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from '
 import { AgentService } from '../../agent.service';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { SearchUser, UserAPI } from '../../../../model/user';
-import { ServicePolicyAPI } from '../../../../model/service';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy/insurance-policy.component';
 
@@ -44,16 +43,6 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   };
 
   private searchCustomerText$ = new Subject<string>();
-
-  modalInsurancePolicy: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    services: ServicePolicyAPI[]
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    services: [] as ServicePolicyAPI[]
-  };
 
   currency = 'شيكل';
   errorMsg: string | undefined;
@@ -159,12 +148,8 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
-          this.modalInsurancePolicy.customer = response.data[0].Customer;
-          this.modalInsurancePolicy.insurancePolicy = response.data[0];
-          this.modalInsurancePolicy.services = response.data[0].ServicePolicies;
-
           const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
-          refModal.componentInstance.modalInsurancePolicy = this.modalInsurancePolicy;
+          refModal.componentInstance.modalInsurancePolicy = response.data[0];
           refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {

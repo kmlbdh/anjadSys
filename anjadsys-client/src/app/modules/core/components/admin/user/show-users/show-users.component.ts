@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchUser, UsersAPI, UserAPI, updateUser } from '../../../../model/user';
-import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit, faUserSlash, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit, faUserSlash, faUserCheck, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
 import { Subject, takeUntil } from 'rxjs';
+import { ModalDismissReasons, NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserModalComponent } from '../../../../../shared/components/user-modal/user-modal.component';
 
 @Component({
   selector: 'app-show-users',
@@ -12,6 +14,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 
 export class ShowUsersComponent implements OnInit, OnDestroy {
+
+  openIcon = faEnvelopeOpenText;
   trashIcon = faTrashAlt;
   userEditIcon = faEdit;
   deactivateUserIcon = faUserSlash;
@@ -28,6 +32,13 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   pagination = {
     total: 0,
     itemsPerPage: 10,
+  };
+
+  closeResult!: string;
+  modalOptions: NgbModalOptions = {
+    size: 'lg',
+    backdrop: 'static',
+    windowClass: 'insurance-policy-modal'
   };
 
   TIMEOUTMILISEC = 7000;
@@ -54,7 +65,8 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   constructor(
     private adminService: AdminService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.route.data.subscribe({
@@ -155,6 +167,27 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  open(user: UserAPI) {
+    const refModal = this.modalService.open(UserModalComponent, this.modalOptions)
+    refModal.componentInstance.customerDetails = user;
+    refModal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
+
 
   trackById(index: number, el: any){
     return el.id;

@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" class="d-print-none">
   <div class="page-header card">
     <p>اظهار جميع سيارات الزبائن</p>
   </div>
@@ -77,6 +77,10 @@
           <div class="col-custom col-custom-3" data-label="Car Type/Model">{{car.CarType.name}}/{{car.CarModel.name}}</div>
           <div class="col-custom col-custom-4" data-label="Car Registration Date">{{ car.createdAt | date: 'dd-MM-yyyy' }}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
+
+            <button class="btn-primary" title="بيانات السيارة" (click)="open(car)">
+              <fa-icon [icon]="openIcon"></fa-icon>
+            </button>
 
             <button class="btn-error" title="حذف السيارة" (click)="deleteCar(car)">
               <fa-icon [icon]="trashIcon"></fa-icon>

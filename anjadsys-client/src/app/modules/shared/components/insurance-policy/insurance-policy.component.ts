@@ -13,15 +13,7 @@ export class InsurancePolicyComponent implements OnInit {
 
   currency = 'شيكل';
 
-  modalInsurancePolicy: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    services: ServicePolicyAPI[]
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    services: [] as ServicePolicyAPI[]
-  };
+  modalInsurancePolicy: InsurancePolicyAPI = {} as InsurancePolicyAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
 

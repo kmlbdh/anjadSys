@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" class="d-print-none">
   <div class="page-header card">
     <p>اظهار جميع الخدمات الاخرى</p>
   </div>
@@ -103,7 +103,7 @@
             </ng-container>
           </div>
           <div class="col-custom col-custom-7 control" data-label="Control">
-            <button class="btn-primary" title="ملف الخدمة" (click)="openOtherService(otherService.id, otherService.insurancePolicyId)">
+            <button class="btn-primary" title="ملف الخدمة" (click)="openOtherService(otherService)">
               <fa-icon [icon]="openIcon"></fa-icon>
             </button>
 

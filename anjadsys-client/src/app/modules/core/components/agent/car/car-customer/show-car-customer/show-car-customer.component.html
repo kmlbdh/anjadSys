@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" class="d-print-none">
   <div class="page-header card">
     <p>اظهار جميع سيارات الزبائن</p>
   </div>
@@ -71,7 +71,7 @@
       <ng-template [ngIf]="cars.length > 0">
         <li *ngFor="let car of cars | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1" data-label="Car Number">{{car.carNumber}}</div>
+          <div class="col-custom col-custom-1 clickable" data-label="Car Number" (click)="open(car)">{{car.carNumber}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Name">{{car.User.username}}</div>
           <div class="col-custom col-custom-3" data-label="Car Type/Model">{{car.CarType.name}}/{{car.CarModel.name}}</div>
           <div class="col-custom col-custom-4" data-label="Car Registration Date">{{ (car.createdAt | date: 'dd-MM-yyyy') }}</div>

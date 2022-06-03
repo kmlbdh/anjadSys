@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
-import { Router } from '@angular/router';
 import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
 import { CarAPI, CarsAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { AgentService } from '../../../agent.service';
+import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { CarModalComponent } from '../../../../../../shared/components/car-modal/car-modal.component';
 
 @Component({
   selector: 'app-show-car-customer',
@@ -33,6 +34,13 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     customer: false,
   };
 
+  closeResult!: string;
+  modalOptions: NgbModalOptions = {
+    size: 'lg',
+    backdrop: 'static',
+    windowClass: 'insurance-policy-modal'
+  };
+
   private searchCustomerText$ = new Subject<string>();
 
   errorMsg: string | undefined;
@@ -48,7 +56,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private agentService: AgentService,
-    private router: Router
+    private modalService: NgbModal
     ) { }
 
   ngOnInit(): void {
@@ -144,29 +152,25 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     });
   }
 
-  // deleteCar(car: any){
-  //   if(!car) return;
+  open(car: any) {
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions)
+    refModal.componentInstance.carDetails = car;
+    refModal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
 
-  //   const yes = confirm(`هل تريد حذف السيارة رقم ${car.carNumber} للزبون ${car.User.username}`);
-  //   if(!yes) return;
-
-  //   this.agentService.deleteCar(car.id)
-  //   .pipe(takeUntil(this.unsubscribe$))
-  //   .subscribe({
-  //     next: response => {
-  //       if(response.data)
-  //         this.successMsg = response.message;
-
-  //       this.getCars(this.searchConditions);
-  //       console.log(response);
-  //     },
-  //     error: err => console.log(err)
-  //   })
-  // }
-
-  // goToCarEdit(id: number){
-  //   this.router.navigate(['agent/car/car-customer/edit', id]);
-  // }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
 
   formCont(controlName: string){
     return this.searchCarForm.controls[controlName];

@@ -9,30 +9,30 @@
     <div class="date-id">
     <div>
       <label>التاريخ: </label>
-      <span>{{modalInsurancePolicy.insurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
+      <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
     </div>
     <div>
       <label>رقم البوليصة: </label>
-      <span>{{modalInsurancePolicy.insurancePolicy.id}}</span>
+      <span>{{modalInsurancePolicy.id}}</span>
     </div>
     </div>
 
     <div class="agent-section">
       <div>
         <label>اسم الوكيل: </label>
-        <span>{{modalInsurancePolicy.insurancePolicy.Agent.companyName}}</span>
+        <span>{{modalInsurancePolicy.Agent.companyName}}</span>
       </div>
       <div>
         <label>العنوان : </label>
-        <span>{{modalInsurancePolicy.insurancePolicy.Agent.Region.name}} / {{modalInsurancePolicy.insurancePolicy.Agent.address}}</span>
+        <span>{{modalInsurancePolicy.Agent.Region.name}} / {{modalInsurancePolicy.Agent.address}}</span>
       </div>
       <div>
         <label>رقم الهاتف : </label>
-        <span>{{modalInsurancePolicy.insurancePolicy.Agent.jawwal1}}
-          <ng-container *ngIf="modalInsurancePolicy.insurancePolicy.Agent.jawwal2">
+        <span>{{modalInsurancePolicy.Agent.jawwal1}}
+          <ng-container *ngIf="modalInsurancePolicy.Agent.jawwal2">
             /
           </ng-container>
-           {{modalInsurancePolicy.insurancePolicy.Agent.jawwal2}}</span>
+           {{modalInsurancePolicy.Agent.jawwal2}}</span>
       </div>
 
     </div>
@@ -46,23 +46,23 @@
       <div class="data-section">
         <div class="each-data">
           <label>رقم هوية الزبون</label>
-          <span>{{modalInsurancePolicy.customer.identityNum}}</span>
+          <span>{{modalInsurancePolicy.Customer.identityNum}}</span>
         </div>
         <div class="each-data">
           <label>اسم الزبون</label>
-          <span>{{modalInsurancePolicy.customer.username}}</span>
+          <span>{{modalInsurancePolicy.Customer.username}}</span>
         </div>
         <div class="each-data">
           <label>عنوان الزبون</label>
-          <span>{{modalInsurancePolicy.customer.Region.name}} / {{modalInsurancePolicy.customer.address}}</span>
+          <span>{{modalInsurancePolicy.Customer.Region.name}} / {{modalInsurancePolicy.Customer.address}}</span>
         </div>
         <div class="each-data">
           <label>رقم الجوال</label>
-          <span>{{modalInsurancePolicy.customer.jawwal1}}
-            <ng-container *ngIf="modalInsurancePolicy.customer.jawwal2">
+          <span>{{modalInsurancePolicy.Customer.jawwal1}}
+            <ng-container *ngIf="modalInsurancePolicy.Customer.jawwal2">
               /
             </ng-container>
-            {{modalInsurancePolicy.customer.jawwal2}}</span>
+            {{modalInsurancePolicy.Customer.jawwal2}}</span>
         </div>
       </div>
 
@@ -70,22 +70,22 @@
 
         <div class="each-data">
           <label>رقم المركبة</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.carNumber}}</span>
+          <span>{{modalInsurancePolicy.Car.carNumber}}</span>
         </div>
 
         <div class="each-data">
           <label>النوع</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.CarType.name}}</span>
+          <span>{{modalInsurancePolicy.Car.CarType.name}}</span>
         </div>
 
         <div class="each-data">
           <label>الموديل</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.CarModel.name}}</span>
+          <span>{{modalInsurancePolicy.Car.CarModel.name}}</span>
         </div>
 
         <div class="each-data">
           <label>سنة التصنيع</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
+          <span>{{modalInsurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
         </div>
 
       </div>
@@ -94,22 +94,22 @@
 
         <div class="each-data">
           <label>رقم الشصي</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.serialNumber}}</span>
+          <span>{{modalInsurancePolicy.Car.serialNumber}}</span>
         </div>
 
         <div class="each-data">
           <label>Kg/cc</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.motorPH}}</span>
+          <span>{{modalInsurancePolicy.Car.motorPH}}</span>
         </div>
 
         <div class="each-data">
           <label>اللون</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.color}}</span>
+          <span>{{modalInsurancePolicy.Car.color}}</span>
         </div>
 
         <div class="each-data">
           <label>أصل المركبة</label>
-          <span>{{modalInsurancePolicy.insurancePolicy.Car.licenseType}}</span>
+          <span>{{modalInsurancePolicy.Car.licenseType}}</span>
         </div>
 
       </div>
@@ -122,7 +122,7 @@
       <h5>بيانات البوليصة</h5>
       <div class="expire-date">
         <h6>تاريخ انتهاء البوليصة:</h6>
-        <span>{{modalInsurancePolicy.insurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
+        <span>{{modalInsurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
       </div>
     </div>
     <div class="data-section for-table">
@@ -138,7 +138,7 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let service of modalInsurancePolicy.services;">
+            <tr *ngFor="let service of modalInsurancePolicy.ServicePolicies;">
               <td>{{service.Service.name}}</td>
               <td>{{service.Service.coverageDays}}</td>
               <td>{{service.Supplier.companyName}}</td>
@@ -147,7 +147,7 @@
           </tbody>
           <tr class="total-cost">
             <th colspan="3">التكلفة الاجمالية</th>
-            <td>{{modalInsurancePolicy.insurancePolicy.totalPrice}} {{currency}}</td>
+            <td>{{modalInsurancePolicy.totalPrice}} {{currency}}</td>
           </tr>
         </table>
       </div>

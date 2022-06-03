@@ -13,7 +13,7 @@ import { SearchAccident, AccidentsAPI, NewAccident } from '../../model/accident'
 import { RegionsAPI } from '../../model/general';
 import { NewInsurancePolicy, SearchInsurancePolicy, InsurancePolicesAPI } from '../../model/insurancepolicy';
 import { AccountsAPI, SearchAccount } from '../../model/account';
-import { SearchOtherServices, OtherServiceAPI, NewOtherService, updateOtherService } from '../../model/otherservices';
+import { SearchOtherServices, NewOtherService, updateOtherService, OtherServicesAPI } from '../../model/otherservices';
 import { environment } from '../../../../../environments/environment';
 @Injectable()
 export class AdminService {
@@ -241,8 +241,8 @@ export class AdminService {
         catchError(this.handleError)
       );
     },
-    show: (searchBy: SearchOtherServices):Observable<OtherServiceAPI> => {
-      return this.http.post<OtherServiceAPI>(`${this.url}other-service/list`, searchBy).pipe(
+    show: (searchBy: SearchOtherServices):Observable<OtherServicesAPI> => {
+      return this.http.post<OtherServicesAPI>(`${this.url}other-service/list`, searchBy).pipe(
         catchError(this.handleError)
       );
     },

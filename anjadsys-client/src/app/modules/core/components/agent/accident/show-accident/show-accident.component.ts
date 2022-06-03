@@ -51,18 +51,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   private searchCustomerText$ = new Subject<string>();
 
-  modalAccident: {
-    agent: UserAPI,
-    customer: UserAPI,
-    accident: AccidentAPI,
-    services: ServiceAccidentAPI[]
-  } = {
-    agent: {} as UserAPI,
-    customer: {} as UserAPI,
-    accident: {} as AccidentAPI,
-    services: [] as ServiceAccidentAPI[]
-  };
-
   searchAccidentForm = this.fb.group({
     accidentID: [''],
     accidentPlace: [''],
@@ -169,13 +157,8 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: AccidentsAPI) => {
         if(response.data){
-          this.modalAccident.agent = response.data[0].Agent;
-          this.modalAccident.customer = response.data[0].Customer;
-          this.modalAccident.accident = response.data[0];
-          this.modalAccident.services = response.data[0].ServiceAccidents!;
-
           const refModal = this.modalService.open(AccidentModalComponent, this.modalOptions);
-          refModal.componentInstance.modalAccident = this.modalAccident;
+          refModal.componentInstance.modalAccident = response.data[0];
 
           refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;

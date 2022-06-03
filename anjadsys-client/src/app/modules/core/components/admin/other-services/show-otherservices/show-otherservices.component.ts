@@ -5,9 +5,8 @@ import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { SearchUser, UserAPI } from '../../../../model/user';
-import { SearchInsurancePolicy, InsurancePolicesAPI, InsurancePolicyAPI } from '../../../../model/insurancepolicy';
+import { SearchInsurancePolicy, InsurancePolicesAPI } from '../../../../model/insurancepolicy';
 import { faEdit, faEnvelopeOpenText, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { ServicePolicyAPI } from '../../../../model/service';
 import { SearchOtherServices, OtherServiceAPI } from '../../../../model/otherservices';
 import { OtherServiceModalComponent } from '../../../../../shared/components/other-service-modal/other-service-modal.component';
 import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy/insurance-policy.component';
@@ -61,26 +60,6 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   private searchCustomerText$ = new Subject<string>();
 
   fileStatusArr = ['مفتوح', 'مغلق'];
-
-  modalInsurancePolicy: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    services: ServicePolicyAPI[]
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    services: [] as ServicePolicyAPI[]
-  };
-
-  modalOtherService: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    otherService: OtherServiceAPI
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    otherService: {} as OtherServiceAPI
-  };
 
   searchOtherServiceForm = this.fb.group({
     otherServiceID: [''],
@@ -184,12 +163,8 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
-          this.modalInsurancePolicy.customer = response.data[0].Customer;
-          this.modalInsurancePolicy.insurancePolicy = response.data[0];
-          this.modalInsurancePolicy.services = response.data[0].ServicePolicies;
-
           const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
-          refModal.componentInstance.modalInsurancePolicy = this.modalInsurancePolicy;
+          refModal.componentInstance.modalInsurancePolicy = response.data[0];
           refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {
@@ -201,28 +176,13 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  openOtherService(otherServiceId: number, modalOtherService: number) {
-    let searchCondition: SearchInsurancePolicy = { insurancePolicyId: modalOtherService };
-    this.adminService.InsurancePoliciesAPIs.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          this.modalOtherService.insurancePolicy = response.data[0];
-          let currentOtherService = this.otherServices.filter(otherserv => Number(otherserv.id) === Number(otherServiceId))[0];
-          this.modalOtherService.customer = currentOtherService.Customer;
-          this.modalOtherService.otherService = currentOtherService;
-
-          const refModal = this.modalService.open(OtherServiceModalComponent, this.modalOptions);
-          refModal.componentInstance.modalOtherService = this.modalOtherService;
-          refModal.result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
-        }
-      },
-      error: (error: any) => console.log(error)
+  openOtherService(otherService: OtherServiceAPI) {
+    const refModal = this.modalService.open(OtherServiceModalComponent, this.modalOptions);
+    refModal.componentInstance.modalOtherService = otherService;
+    refModal.result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
 

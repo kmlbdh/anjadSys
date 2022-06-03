@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InsurancePolicyAPI } from 'src/app/modules/core/model/insurancepolicy';
 import { OtherServiceAPI } from 'src/app/modules/core/model/otherservices';
-import { UserAPI } from 'src/app/modules/core/model/user';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -11,15 +9,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class OtherServiceModalComponent implements OnInit {
 
-  modalOtherService: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    otherService: OtherServiceAPI
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    otherService: {} as OtherServiceAPI
-  };
+  modalOtherService: OtherServiceAPI = {} as OtherServiceAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
 

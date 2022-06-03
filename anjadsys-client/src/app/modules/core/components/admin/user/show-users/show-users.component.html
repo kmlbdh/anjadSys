@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container"  class="d-print-none">
   <div class="page-header card">
     <p>{{pageTitle}}</p>
   </div>
@@ -27,8 +27,8 @@
           <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date: 'dd-MM-yyyy') : rolesLang[user.Role.name] }}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
 
-            <button *ngIf="user.Role.name !== 'admin'" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
+            <button class="btn-primary" title="بيانات المستخدم" (click)="open(user)">
+              <fa-icon [icon]="openIcon"></fa-icon>
             </button>
 
             <button *ngIf="!user.blocked" class="btn-primary" title="تعطيل حساب المستخدم"
@@ -65,6 +65,10 @@
                 <fa-icon [icon]="supplierPartsIcon"></fa-icon>
               </button>
             </ng-template>
+
+            <button *ngIf="user.Role.name !== 'admin'" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
 
           </div>
         </li>

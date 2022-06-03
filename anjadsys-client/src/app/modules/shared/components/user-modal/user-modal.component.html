@@ -1,0 +1,100 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">بيانات المستخدم</h4>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="main-data-section card agent-container" *ngIf="customerDetails.Agent">
+    <div class="agent-section">
+      <div>
+        <label>اسم الوكيل : </label>
+        <span>{{customerDetails.Agent?.companyName}}</span>
+      </div>
+      <div>
+        <label>العنوان : </label>
+        <span>{{customerDetails.Agent?.Region?.name}} / {{customerDetails.Agent?.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{customerDetails.Agent?.jawwal1}}
+          <ng-container *ngIf="customerDetails.Agent?.jawwal2">
+            /
+          </ng-container>
+           {{customerDetails.Agent?.jawwal2}}</span>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات المستخدم</h5>
+      </div>
+      <div class="data-section-car">
+        <div class="each-data">
+          <label>نوع حساب المستخدم : </label>
+          <span>{{rolesLang[customerDetails.Role.name]}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم حساب المستخدم : </label>
+          <span>{{customerDetails.id}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم هوية المستخدم : </label>
+          <span>{{customerDetails.identityNum}}</span>
+        </div>
+        <div class="each-data">
+          <label>اسم المستخدم : </label>
+          <span>{{customerDetails.username}}</span>
+        </div>
+        <div class="each-data" *ngIf="['agent', 'supplier'].includes(customerDetails.Role.name)">
+          <label>اسم الشركة : </label>
+          <span>{{customerDetails.companyName}}</span>
+        </div>
+        <div class="each-data">
+          <label>المنطقة : </label>
+          <span>{{customerDetails.Region.name}}</span>
+        </div>
+        <div class="each-data">
+          <label>العنوان : </label>
+          <span>{{customerDetails.address}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الجوال الاول : </label>
+          <span>{{customerDetails.jawwal1}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الجوال الثاني : </label>
+          <span>{{customerDetails.jawwal2 || '--'}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الهاتف : </label>
+          <span>{{customerDetails.tel || '--'}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الفاكس : </label>
+          <span>{{customerDetails.fax || '--'}}</span>
+        </div>
+        <div class="each-data">
+          <label>البريد الالكتروني : </label>
+          <span>{{customerDetails.email || '--'}}</span>
+        </div>
+        <div class="each-data">
+          <label>حالة الحساب : </label>
+          <span>{{blocked[customerDetails.blocked+'']}}</span>
+        </div>
+        <div class="each-data">
+          <label>ملاحظات : </label>
+          <span>{{customerDetails.note || '--'}}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة تفاصيل المستخدم</button>
+</div>

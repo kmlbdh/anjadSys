@@ -9,30 +9,30 @@
     <div class="date-id">
     <div>
       <label>التاريخ: </label>
-      <span>{{modalAccident.accident.registerAccidentDate | date: 'dd-MM-yyyy'}}</span>
+      <span>{{modalAccident.registerAccidentDate | date: 'dd-MM-yyyy'}}</span>
     </div>
     <div>
       <label>رقم البلاغ: </label>
-      <span>{{modalAccident.accident.id}}</span>
+      <span>{{modalAccident.id}}</span>
     </div>
     </div>
 
     <div class="agent-section">
       <div>
         <label>اسم الوكيل: </label>
-        <span>{{modalAccident.accident.Agent.companyName}}</span>
+        <span>{{modalAccident.Agent.companyName}}</span>
       </div>
       <div>
         <label>العنوان : </label>
-        <span>{{modalAccident.accident.Agent.Region.name}} / {{modalAccident.accident.Agent.address}}</span>
+        <span>{{modalAccident.Agent.Region.name}} / {{modalAccident.Agent.address}}</span>
       </div>
       <div>
         <label>رقم الهاتف : </label>
-        <span>{{modalAccident.accident.Agent.jawwal1}}
-          <ng-container *ngIf="modalAccident.accident.Agent.jawwal2">
+        <span>{{modalAccident.Agent.jawwal1}}
+          <ng-container *ngIf="modalAccident.Agent.jawwal2">
             /
           </ng-container>
-          {{modalAccident.accident.Agent.jawwal2}}</span>
+          {{modalAccident.Agent.jawwal2}}</span>
       </div>
     </div>
 
@@ -42,29 +42,29 @@
       <div class="header-section">
         <h5>بيانات الزبون</h5>
       </div>
-      <div class="data-section" style="margin-bottom: 25px;">
+      <div class="data-section">
         <div class="each-data">
           <label>اسم الزبون</label>
-          <span>{{modalAccident.customer.username}}</span>
+          <span>{{modalAccident.Customer.username}}</span>
         </div>
 
         <div class="each-data">
           <label>رقم الهوية</label>
-          <span>{{modalAccident.customer.identityNum}}</span>
+          <span>{{modalAccident.Customer.identityNum}}</span>
         </div>
 
         <div class="each-data">
           <label>رقم الجوال</label>
-          <span>{{modalAccident.customer.jawwal1}}
-            <ng-container *ngIf="modalAccident.customer.jawwal2">
+          <span>{{modalAccident.Customer.jawwal1}}
+            <ng-container *ngIf="modalAccident.Customer.jawwal2">
               /
             </ng-container>
-            {{modalAccident.customer.jawwal2}}</span>
+            {{modalAccident.Customer.jawwal2}}</span>
         </div>
 
         <div class="each-data">
           <label>العنوان</label>
-          <span>{{modalAccident.customer.Region.name}} / {{modalAccident.customer.address}}</span>
+          <span>{{modalAccident.Customer.Region.name}} / {{modalAccident.Customer.address}}</span>
         </div>
 
       </div>
@@ -73,23 +73,23 @@
 
         <div class="each-data">
           <label>رقم المركبة</label>
-          <span>{{modalAccident.accident.Car.carNumber}}</span>
+          <span>{{modalAccident.Car.carNumber}}</span>
         </div>
 
         <div class="each-data">
           <label>النوع/الموديل</label>
-          <span>{{modalAccident.accident.Car.CarType.name}}
-            / {{modalAccident.accident.Car.CarModel.name}}</span>
+          <span>{{modalAccident.Car.CarType.name}}
+            / {{modalAccident.Car.CarModel.name}}</span>
         </div>
 
         <div class="each-data">
           <label>سنة التصنيع</label>
-          <span>{{modalAccident.accident.Car.productionYear | date: 'yyyy'}}</span>
+          <span>{{modalAccident.Car.productionYear | date: 'yyyy'}}</span>
         </div>
 
         <div class="each-data">
           <label>رقم الشصي</label>
-          <span>{{modalAccident.accident.Car.serialNumber}}</span>
+          <span>{{modalAccident.Car.serialNumber}}</span>
         </div>
 
       </div>
@@ -97,21 +97,12 @@
 
   </div>
 
-  <!-- <div class="main-data-section card">
-    <div class="header-section">
-      <h5>بيانات السيارة</h5>
-    </div>
-    <div class="data-section">
-
-    </div>
-  </div> -->
-
   <div class="main-data-section card">
     <div class="header-section">
       <h5>تفاصيل الحادث</h5>
     </div>
     <div class="accident-description">
-      <span>{{modalAccident.accident.accidentDescription}}</span>
+      <span>{{modalAccident.accidentDescription}}</span>
     </div>
   </div>
   <div class="main-data-section card">
@@ -127,7 +118,7 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let service of modalAccident.services;">
+            <tr *ngFor="let service of modalAccident.ServiceAccidents;">
               <td>{{service.Service.name}}</td>
               <td>{{service.Service.coverageDays}}</td>
               <td>{{service.Supplier.companyName}}</td>

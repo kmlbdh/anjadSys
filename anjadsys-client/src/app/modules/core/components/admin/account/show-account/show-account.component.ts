@@ -63,26 +63,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   private searchCustomerText$ = new Subject<string>();
   private searchSupplierText$ = new Subject<string>();
 
-  modalInsurancePolicy: {
-    customer: UserAPI,
-    insurancePolicy: InsurancePolicyAPI,
-    services: ServicePolicyAPI[]
-  } = {
-    customer: {} as UserAPI,
-    insurancePolicy: {} as InsurancePolicyAPI,
-    services: [] as ServicePolicyAPI[]
-  };
-
-  // modalAccident: {
-  //   customer: UserAPI,
-  //   accident: AccidentAPI,
-  //   services: ServiceAccidentAPI[]
-  // } = {
-  //   customer: {} as UserAPI,
-  //   accident: {} as AccidentAPI,
-  //   services: [] as ServiceAccidentAPI[]
-  // };
-
   searchAccountForm = this.fb.group({
     accountId: [''],
     insurancePolicyId: [''],
@@ -233,12 +213,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
-          this.modalInsurancePolicy.customer = response.data[0].Customer;
-          this.modalInsurancePolicy.insurancePolicy = response.data[0];
-          this.modalInsurancePolicy.services = response.data[0].ServicePolicies;
-
           const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions)
-          refModal.componentInstance.modalInsurancePolicy = this.modalInsurancePolicy;
+          refModal.componentInstance.modalInsurancePolicy = response.data[0];
           refModal.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
           }, (reason) => {

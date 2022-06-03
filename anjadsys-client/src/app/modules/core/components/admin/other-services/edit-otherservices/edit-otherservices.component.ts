@@ -74,7 +74,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   getOtherServiceById(){
     this.route.paramMap.subscribe({
         next: params => {
-          const otherServiceId = params.get('id');
+          const otherServiceId = Number(params.get('id'));
           console.log("otherServiceId", otherServiceId);
           if(!otherServiceId)
             this.router.navigate(['/admin/otherservices/show']);

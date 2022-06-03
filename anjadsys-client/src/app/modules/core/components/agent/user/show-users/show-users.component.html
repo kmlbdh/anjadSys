@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" class="d-print-none">
   <div class="page-header card">
     <p>جميع الزبائن</p>
   </div>
@@ -20,7 +20,7 @@
       <ng-template [ngIf]="users.length > 0">
         <li [ngClass]="{'blocked-user': user.blocked}" *ngFor="let user of users | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1" data-label="Id">{{user.id}}</div>
+          <div class="col-custom col-custom-1 clickable" data-label="Id" (click)="open(user)">{{user.id}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
           <div class="col-custom col-custom-3" data-label="Customer Jawwal">{{user.jawwal1}}</div>
           <div class="col-custom col-custom-4" data-label="Customer Address">{{user.Region.name}} - {{user.address}}</div>
