@@ -420,6 +420,26 @@ const otherServiceActions = {
                 attributes: ['name']
               }
             ]
+          },
+          {
+            model: InsurancePolicy,
+            required: true,
+            include:[
+              {
+                model: Car,
+                required: true,
+                include: [
+                  {
+                    model: CarType,
+                    required: true
+                  },
+                  {
+                    model: CarModel,
+                    required: true
+                  }
+                ]
+              }
+            ]
           }
         ],
         offset: skip,
