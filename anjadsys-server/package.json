@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "build:prod": "webpack --mode=production --config webpack.config.js && mkdir dist/anjad-server/config && cp config/config.json dist/anjad-server/config/config.json",
+    "build:dev": "webpack --mode=development --config webpack.config.js && mkdir dist/anjad-server/config && cp config/config.json dist/anjad-server/config/config.json",
+    "start": "node ./dist/index.js",
     "dev": "NODE_DEBUG=controller*,middleware* nodemon index.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init",
     "test": "./node_modules/jasmine/bin/jasmine.js"
@@ -30,12 +32,19 @@
     "mysql2": "^2.3.3",
     "request": "^2.88.2",
     "sequelize": "^6.13.0",
-    "sequelize-auto-migrations-v2": "^1.2.1",
     "xss": "^1.0.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "babel-loader": "^8.2.5",
+    "dotenv-webpack": "^7.1.0",
+    "file-loader": "^6.2.0",
     "jasmine": "^3.10.0",
     "nodemon": "^2.0.15",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }
