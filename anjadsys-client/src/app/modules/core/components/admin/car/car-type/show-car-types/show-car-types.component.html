@@ -21,12 +21,12 @@
           <div class="col-custom col-custom-2" data-label="Customer Name">{{carType.name}}</div>
           <div class="col-custom col-custom-3 control" data-label="Control">
 
-            <button class="btn-error" title="حذف نوع السيارة" (click)="deleteCarType(carType)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
-            </button>
-
             <button class="btn-primary" title="تعديل بيانات نوع السيارة" (click)="goToCarTypeEdit(carType.id)">
               <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+            <button class="btn-error" title="حذف نوع السيارة" (click)="deleteCarType(carType)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
             </button>
 
           </div>

@@ -27,12 +27,12 @@
           <div class="col-custom col-custom-4" data-label="Service Supplier Percentage">{{service.supplierPercentage | percent: '2.0'}}</div>
           <div class="col-custom col-custom-5" data-label="Service Addition Date">{{service.createdAt | date: 'dd-MM-yyyy'}}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
-            <button class="btn-error" title="حذف الخدمة">
-              <fa-icon [icon]="trashIcon" (click)="deleteService(service)"></fa-icon>
-            </button>
              <button class="btn-primary" title="تعديل بيانات الخدمة">
               <fa-icon [icon]="editServiceIcon" (click)="goToEditService(service)"></fa-icon>
              </button>
+             <button class="btn-error" title="حذف الخدمة">
+              <fa-icon [icon]="trashIcon" (click)="deleteService(service)"></fa-icon>
+            </button>
           </div>
         </li>
       </ng-template>
