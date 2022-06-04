@@ -19,7 +19,7 @@
               <input [ngClass]="{'hide': fullname}" id="agentID" type="text"
                 (keyup)="searchAgent($event)" list="agentsList" name="agentID"
                 formControlName="agentID" placeholder="قم بالبحث عن الوكيل بادخال اسمه"
-                required/>
+                autocomplete="off" required/>
               <span *ngIf="spinnerAgent" class="spinner"></span>
             </div>
             <datalist id="agentsList">

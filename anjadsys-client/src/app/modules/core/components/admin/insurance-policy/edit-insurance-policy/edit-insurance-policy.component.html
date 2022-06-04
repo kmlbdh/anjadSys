@@ -19,7 +19,7 @@
           <div class="input-with-spinner">
             <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
             (keyup)="searchCustomer($event)" list="customerList" name="customerId"
-            formControlName="customerId" (change)="fillFieldsByCustomer($event)" required/>
+            formControlName="customerId" (change)="fillFieldsByCustomer($event)" autocomplete="off" required/>
             <span *ngIf="spinner.customer" class="spinner"></span>
           </div>
             <datalist id="customerList">
@@ -43,7 +43,7 @@
             </span>
           </div>
           <input [ngClass]="{'hide': selectedAgent}" id="agentId" type="text"
-          (keyup)="searchAgent($event)" list="agentList" name="agentId" formControlName="agentId"
+          (keyup)="searchAgent($event)" list="agentList" name="agentId" autocomplete="off" formControlName="agentId"
            required/>
           <datalist id="agentList">
             <option *ngFor="let agent of agents;" [value]="agent.id">
@@ -66,7 +66,7 @@
             </span>
           </div>
           <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="searchCar($event)"
-            list="carList" name="carId" formControlName="carId" required/>
+            list="carList" name="carId" formControlName="carId" autocomplete="off" required/>
           <datalist id="carList">
             <option *ngFor="let car of cars;" [value]="car.id">
                 {{car.carNumber}}

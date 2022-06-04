@@ -301,8 +301,8 @@ export class EditInsurancePolicyComponent implements OnInit {
   searchCarAPI(){
     let callback = (id: string, val: string) => {
       let query!: SearchCar;
-      if(val && val !== '') query =  { carNumber: val, customerId: id, skipLoadingInterceptor: true}
-      else query =  { customerId: id, skipLoadingInterceptor: true}
+      if(val && val !== '') query =  { carNumber: val, customerID: id, skipLoadingInterceptor: true}
+      else query =  { customerID: id, skipLoadingInterceptor: true}
 
       return this.adminService.CarsAPIs.show(query);
     }

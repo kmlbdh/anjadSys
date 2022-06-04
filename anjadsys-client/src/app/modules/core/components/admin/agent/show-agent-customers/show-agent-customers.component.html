@@ -22,7 +22,7 @@
             <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
             (keyup)="searchCustomer($event)" list="customerList" name="customerId"
             formControlName="customerId" placeholder="قم بالبحث عن الزبون بادخال اسمه"
-            required/>
+            autocomplete="off" required/>
             <span *ngIf="spinnerCustomer" class="spinner"></span>
           </div>
           <datalist id="customerList">
