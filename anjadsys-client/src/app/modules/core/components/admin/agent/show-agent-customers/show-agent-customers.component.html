@@ -79,15 +79,15 @@
           <div class="col-custom col-custom-3" data-label="Customer Jawwal">{{customer.jawwal1}}</div>
           <div class="col-custom col-custom-4" data-label="Customer Address and Region">{{customer.Region.name}} - {{customer.address}}</div>
           <div class="col-custom col-custom-5 control" data-label="Control">
-            <button class="btn-error" title="حذف الزبون نهائي" (click)="deleteUser(customer)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
-            </button>
-            <button class="btn-primary" title="ازالة الزبون من قائمة الوكيل" (click)="removeCustomerFromAgent(customer)">
+            <button class="btn-error" title="ازالة الزبون من قائمة الوكيل" (click)="removeCustomerFromAgent(customer)">
               <fa-icon [icon]="userMinus"></fa-icon>
             </button>
             <button class="btn-primary" title="تعديل بيانات الزبون" (click)="goToUserEdit(customer.id)">
               <fa-icon [icon]="userEditIcon"></fa-icon>
             </button>
+            <!-- <button class="btn-error" title="حذف الزبون نهائي" (click)="deleteUser(customer)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button> -->
           </div>
         </li>
       </ng-template>
