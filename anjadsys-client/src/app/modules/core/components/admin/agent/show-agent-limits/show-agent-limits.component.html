@@ -11,7 +11,6 @@
       <li class="table-header">
         <div class="col-custom col-custom-1">رقم الحركة</div>
         <div class="col-custom col-custom-2">السقف المالي</div>
-        <!-- <div class="col-custom col-custom-3">البوليصة</div> -->
         <div class="col-custom col-custom-3">تاريخ الحركة</div>
         <div class="col-custom col-custom-4">التحكم</div>
       </li>
@@ -25,15 +24,11 @@
          trackBy: trackById; let i = index;" class="table-row">
           <div class="col-custom col-custom-1" data-label="ID">{{i+1}}</div>
           <div class="col-custom col-custom-2" data-label="Total Limits">{{agentLimit.debit}} {{currency}}</div>
-          <!-- <div class="col-custom col-custom-3" data-label="Policy">{{(agentLimit.service | json)
-            || 'سقف مالي أساسي'}}</div> -->
           <div class="col-custom col-custom-3" data-label="Customer Role">{{agentLimit.createdAt | date}}</div>
           <div class="col-custom col-custom-4 control" data-label="Control">
             <button class="btn-error" title="حذف السقف المالي" (click)="deleteAgentLimits(agentLimit)">
               <fa-icon [icon]="trashIcon"></fa-icon>
             </button>
-
-             <!-- <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(user._id)"></fa-icon> -->
           </div>
         </li>
       </ng-template>
