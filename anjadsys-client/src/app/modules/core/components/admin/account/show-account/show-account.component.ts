@@ -4,8 +4,7 @@ import { AccountAPI, AccountsAPI, SearchAccount } from '../../../../model/accoun
 import { UserAPI, SearchUser } from '../../../../model/user';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime, Subject, takeUntil, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
-import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
-import { ServicePolicyAPI } from '../../../../model/service';
+import { InsurancePolicesAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router } from '@angular/router';
