@@ -162,8 +162,8 @@
           <div class="label-with-data">
             <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
           </div>
-          <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
-            (keyup)="totalCostPerServicePolicy($event)" required/>
+          <input type="text" id="additionalDays" name="additionalDays" formControlName="additionalDays"
+           (keydown)="acceptNumbers($event)" (keyup)="totalCostPerServicePolicy($event)" required/>
 
           <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
             && formContS('additionalDays')?.invalid" class="alert alert-danger">

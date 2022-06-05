@@ -140,9 +140,9 @@
           <tbody>
             <tr *ngFor="let service of modalInsurancePolicy.ServicePolicies;">
               <td>{{service.Service.name}}</td>
-              <td>{{service.Service.coverageDays}}</td>
+              <td>{{service.Service.coverageDays + service.additionalDays}}</td>
               <td>{{service.Supplier.companyName}}</td>
-              <td>{{service.Service.cost}}</td>
+              <td>{{service.cost}}</td>
             </tr>
           </tbody>
           <tr class="total-cost">

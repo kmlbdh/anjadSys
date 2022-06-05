@@ -149,8 +149,8 @@
 
         <div class="form-control-group">
           <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
-          <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
-            (keyup)="totalCostPerServicePolicy($event)" required/>
+          <input type="text" id="additionalDays" name="additionalDays" formControlName="additionalDays"
+           (keydown)="acceptNumbers($event)" (keyup)="totalCostPerServicePolicy($event)" required/>
 
           <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
             && formContS('additionalDays')?.invalid" class="alert alert-danger">
@@ -171,7 +171,7 @@
           <select id="supplierId" type="text" name="supplierId" formControlName="supplierId" required>
             <ng-template [ngIf]="services">
               <option>اختر مورد الخدمة من القائمة</option>
-              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}/{{ supplier.username }}</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}</option>
             </ng-template>
           </select>
 
@@ -224,7 +224,7 @@
             : totalCoverageDays(servicePolicy.serviceId!)
           }} {{days}}</div>
           <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{
-            servicePolicy.Supplier ? servicePolicy.Supplier.companyName+ '/' +servicePolicy.Supplier.username :  supplierText(servicePolicy.supplierId!)
+            servicePolicy.Supplier ? servicePolicy.Supplier.companyName :  supplierText(servicePolicy.supplierId!)
           }}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteServicePolicy(i)">

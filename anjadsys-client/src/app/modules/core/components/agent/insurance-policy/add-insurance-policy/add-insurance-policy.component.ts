@@ -115,9 +115,11 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   addServicePolicy = (ngform: FormGroupDirective) => {
     if (this.addServicePolicyForm.invalid) return;
 
-    let formObj = this.addServicePolicyForm.value;
+    let formObj: NewServicePolicy = this.addServicePolicyForm.value;
     let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
     formObj.supplierPercentage = currentService.supplierPercentage;
+    if(!formObj.additionalDays) formObj.additionalDays = 0;
+
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.totalCostForAllServices();
@@ -284,21 +286,32 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     console.log(event, event.target)
     let serviceId = ((event.target as HTMLInputElement).value)?.trim()
     this.selectedService = this.services.filter(service => service.id === Number(serviceId) )[0];
-    this.addServicePolicyForm.get('additionalDays')?.enable();
+
+    if(this.selectedService.coverageDays != 0)
+     this.addServicePolicyForm.get('additionalDays')?.enable();
+    else{
+      this.addServicePolicyForm.get('additionalDays')?.setValue(0);
+      this.sharedTotalCostPerServicePolicy(0);
+    }
   }
 
   totalCostPerServicePolicy(event: Event){
     // if(!(event instanceof KeyboardEvent)) return;
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
+    this.sharedTotalCostPerServicePolicy(additionalDays);
+  }
+
+  sharedTotalCostPerServicePolicy(additionalDays: number){
     let cost = Number(this.selectedService?.cost);
     let coverageDays = this.selectedService?.coverageDays;
     // console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
-    if(!(additionalDays >= 0) || !cost || !coverageDays) return;
+    if(!(additionalDays >= 0) || cost == null || coverageDays == null) return;
+    let perDayCost = 0;
 
     additionalDays = Number(additionalDays.toFixed(2));
     cost = Number(cost.toFixed(2));
     coverageDays = Number(coverageDays.toFixed(2));
-    let perDayCost =  Number((cost / coverageDays).toFixed(2));
+    perDayCost = coverageDays === 0 ? 1 : Number((cost / coverageDays).toFixed(2));
 
     let total = Math.ceil(cost + (perDayCost * (additionalDays * 0.25)));
     // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
