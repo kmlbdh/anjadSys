@@ -6,7 +6,7 @@ import { AdminService } from '../../admin.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ModalDismissReasons, NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserModalComponent } from '../../../../../shared/components/user-modal/user-modal.component';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroupDirective } from '@angular/forms';
 import { RegionAPI } from '../../../../model/general';
 
 @Component({
@@ -72,7 +72,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     userID: [''],
     username: [''],
     regionID: [''],
-    role: [''],
   });
 
   constructor(
@@ -89,6 +88,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
         this.activeAgentLimits = (!!data['role'] && data['role'] === "agent");
         this.activeSuppliers = (!!data['role'] && data['role'] === "supplier");
         this.searchConditions['role'] = data['role'];
+        if(!data['role']){
+          this.searchUserForm.addControl('role', new FormControl(''));
+        }
         this.getUsers(this.searchConditions);
         this.getRegions();
       }
@@ -187,7 +189,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   searchUser(form: FormGroupDirective){
     if(form.invalid) return;
     let keys = Object.keys(form.value);
-    let searchConditions: SearchUser = {}
+    let searchConditions: SearchUser = this.searchConditions;
     keys.forEach(key => {
       searchConditions[key] = this.searchUserForm.get(key)?.value;
       if(!searchConditions[key] || searchConditions[key] === '')

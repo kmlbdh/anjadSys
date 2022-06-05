@@ -19,7 +19,7 @@
            name="username" formControlName="username"/>
         </div>
 
-        <div class="form-control-group">
+        <div class="form-control-group" *ngIf="!activeSuppliers && !activeAgentLimits">
           <label for="role">نوع الحساب</label>
           <select id="role" name="role" formControlName="role">
             <option value="">اختر من القائمة</option>
