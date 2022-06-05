@@ -74,7 +74,6 @@ export class AdminService {
 
   ServicesAPIs = {
     list: (searchConditions?: SearchService): Observable<ServicesAPI> => {
-      console.log(searchConditions);
       return this.http.post<ServicesAPI>(`${this.url}service/list`, searchConditions).pipe(
         catchError(this.handleError)
       );
@@ -99,7 +98,7 @@ export class AdminService {
   AgentLimitsAPIs = {
     listAgents: (searchConditions: SearchAgent): Observable<any> => {
       searchConditions.role = "agent";
-      return this.UsersAPIs.list(searchConditions);
+      return this.UsersAPIs.list(searchConditions as SearchUser);
     },
     add: (agentLimitsData: NewAgentLimits) => {
       return this.http.post<any>(`${this.url}agent-limits/add`, agentLimitsData).pipe(
