@@ -35,8 +35,8 @@
             </span>
           </div>
           <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)" list="customerList"
-            name="customerID" formControlName="customerID"/>
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
             <span *ngIf="spinner.customer" class="spinner"></span>
           </div>
           <datalist id="customerList">
