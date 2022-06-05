@@ -81,7 +81,8 @@ export interface updateUser{
 }
 
 export interface SearchUser {
-  skip?:number;
+  [index: string]: number | string | boolean | undefined | null;
+  skip?: number;
   limit?: number;
   userID?: string;
   role?: string;

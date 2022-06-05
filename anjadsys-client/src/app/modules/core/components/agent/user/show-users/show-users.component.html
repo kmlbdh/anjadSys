@@ -3,6 +3,54 @@
     <p>جميع الزبائن</p>
   </div>
 
+  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="userID">رقم الحساب</label>
+          <input id="userID" type="text"
+           name="userID" formControlName="userID"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="username">اسم المستخدم</label>
+          <input id="username" type="text"
+           name="username" formControlName="username"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="regionID">المنطقة</label>
+          <select id="regionID" name="regionID" formControlName="regionID">
+            <option value="">اختر من القائمة</option>
+            <option *ngFor="let region of regions" [value]="region.id">{{region.name}}</option>
+          </select>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+  </div>
+
   <div class="page-content card">
     <ul class="responsive-table">
       <li class="table-header">

@@ -5,6 +5,8 @@ import { SearchUser, UserAPI, UsersAPI } from 'src/app/modules/core/model/user';
 import { AgentService } from '../../agent.service';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { UserModalComponent } from '../../../../../shared/components/user-modal/user-modal.component';
+import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { RegionAPI } from 'src/app/modules/core/model/general';
 
 @Component({
   selector: 'app-show-users',
@@ -13,6 +15,8 @@ import { UserModalComponent } from '../../../../../shared/components/user-modal/
 })
 export class ShowUsersComponent implements OnInit, OnDestroy {
   users: UserAPI[] = [];
+  regions: RegionAPI[] = [];
+
   trashIcon = faTrashAlt;
   userEditIcon = faEdit;
 
@@ -42,10 +46,23 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     windowClass: 'insurance-policy-modal'
   };
 
-  constructor( private agentService: AgentService, private modalService: NgbModal ) { }
+  showTop = false;
+  showBottom = false;
+
+  searchUserForm = this.fb.group({
+    userID: [''],
+    username: [''],
+    regionID: [''],
+  });
+
+  constructor(
+    private agentService: AgentService,
+    private modalService: NgbModal,
+    private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.getUsers(this.searchConditions);
+    this.getRegions();
   }
 
   ngOnDestroy(): void {
@@ -66,6 +83,32 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       },
       error: (error) => console.log(error)
     })
+  }
+
+  searchUser(form: FormGroupDirective){
+    if(form.invalid) return;
+    let keys = Object.keys(form.value);
+    let searchConditions: SearchUser = {}
+    keys.forEach(key => {
+      searchConditions[key] = this.searchUserForm.get(key)?.value;
+      if(!searchConditions[key] || searchConditions[key] === '')
+        delete searchConditions[key];
+    });
+    console.log('searchConditions', searchConditions);
+    this.searchConditions = searchConditions;
+    this.getUsers(searchConditions);
+  }
+
+  getRegions(){
+    this.agentService.GeneralAPIs.regions()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: response => {
+        if(response.data){
+          this.regions = response.data;
+        }
+      }
+    });
   }
 
   open(user: UserAPI) {
@@ -98,6 +141,11 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getUsers(this.searchConditions);
     console.log(pageNumber);
+  }
+
+  showSearch () {
+    this.showTop = !this.showTop;
+    setTimeout(() => this.showBottom = !this.showBottom, 40)
   }
 
 }

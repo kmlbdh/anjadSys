@@ -6,6 +6,8 @@ import { AdminService } from '../../admin.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ModalDismissReasons, NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserModalComponent } from '../../../../../shared/components/user-modal/user-modal.component';
+import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { RegionAPI } from '../../../../model/general';
 
 @Component({
   selector: 'app-show-users',
@@ -26,6 +28,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   supplierPartsIcon = faPeopleCarry;
 
   users: UserAPI[] = [];
+  regions: RegionAPI[] = [];
   usersToBeAdded: UserAPI[] = [];
 
   p: number = 1;
@@ -52,6 +55,8 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   pageTitle!: string;
   activeAgentLimits: boolean = false;
   activeSuppliers: boolean = false;
+  showTop = false;
+  showBottom = false;
 
   rolesLang:{
     [index: string]: string;
@@ -61,12 +66,21 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     'supplier':  'مورد',
     'customer': 'زبون'
   };
+  roles = Object.entries(this.rolesLang);
+
+  searchUserForm = this.fb.group({
+    userID: [''],
+    username: [''],
+    regionID: [''],
+    role: [''],
+  });
 
   constructor(
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.route.data.subscribe({
@@ -76,6 +90,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
         this.activeSuppliers = (!!data['role'] && data['role'] === "supplier");
         this.searchConditions['role'] = data['role'];
         this.getUsers(this.searchConditions);
+        this.getRegions();
       }
     });
   }
@@ -87,6 +102,8 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
 
 //TODO wrong response type
   getUsers(searchConditions: SearchUser){
+    this.users = [];
+    this.pagination.total = 0;
     this.adminService.UsersAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
@@ -137,7 +154,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.sharedBlockUser(user, false);
   }
 
-
   blockUser(user: UserAPI) {
     if(!user) return;
 
@@ -163,6 +179,33 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
         if(err?.error?.message){
           this.errorMsg = err.error.message;
           setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+        }
+      }
+    });
+  }
+
+  searchUser(form: FormGroupDirective){
+    if(form.invalid) return;
+    let keys = Object.keys(form.value);
+    let searchConditions: SearchUser = {}
+    keys.forEach(key => {
+      searchConditions[key] = this.searchUserForm.get(key)?.value;
+      if(!searchConditions[key] || searchConditions[key] === '')
+        delete searchConditions[key];
+    });
+    if(searchConditions.username) searchConditions.companyName = searchConditions.username;
+    console.log('searchConditions', searchConditions);
+    this.searchConditions = searchConditions;
+    this.getUsers(searchConditions);
+  }
+
+  getRegions(){
+    this.adminService.GeneralAPIs.regions()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: response => {
+        if(response.data){
+          this.regions = response.data;
         }
       }
     });
@@ -224,4 +267,10 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.getUsers(this.searchConditions);
     console.log(pageNumber);
   }
+
+  showSearch () {
+    this.showTop = !this.showTop;
+    setTimeout(() => this.showBottom = !this.showBottom, 40)
+  }
+
 }
