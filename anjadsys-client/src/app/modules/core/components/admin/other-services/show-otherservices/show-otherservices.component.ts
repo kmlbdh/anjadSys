@@ -45,6 +45,8 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   searchConditions: SearchOtherServices = {} as SearchOtherServices;
+  showTop = false;
+  showBottom = false;
 
   p: number = 1;
   pagination = {
@@ -248,6 +250,11 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getOtherServices(this.searchConditions);
     console.log(pageNumber);
+  }
+
+  showSearch () {
+    this.showTop = !this.showTop;
+    setTimeout(() => this.showBottom = !this.showBottom, 40)
   }
 
 }

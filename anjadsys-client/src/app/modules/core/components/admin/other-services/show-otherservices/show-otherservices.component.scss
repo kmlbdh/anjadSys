@@ -30,7 +30,22 @@
 
   .search-accident-container{
     width: 100%;
-    min-height: 20%;
+    height: 0;
+    padding-bottom: 2rem;
+    @include prefix(transition, moz webkit o, height 0.3s ease-in-out);
+    &.open{
+      height: 235px;
+
+      .open-search{
+        align-self: end;
+     }
+    }
+
+    .open-search{
+      &.flexRight{
+        align-self: flex-start;
+      }
+    }
 
     form {
       display: flex;
@@ -39,8 +54,11 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: flex-end;
-      min-height: 130px;
       row-gap: 10px;
+      display: none;
+      &.open {
+        display: inherit;
+      }
 
       .form-sec1,
       .form-sec2 {
@@ -74,7 +92,7 @@
           justify-content: space-between;
           align-items: center;
           > input, select, textarea{
-            flex-basis: 90%;
+            flex-basis: 100%;
           }
         }
 
@@ -140,8 +158,6 @@
 
 
       div.btn-container{
-        // margin-top: 14px;
-        // margin-bottom: 14px;
         margin: 1px 0;
         flex-basis: 100%;
 

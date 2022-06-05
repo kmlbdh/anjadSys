@@ -3,8 +3,8 @@
     <p>اظهار جميع الخدمات الاخرى</p>
   </div>
 
-  <div class="card search-accident-container">
-    <form [formGroup]="searchOtherServiceForm" #form="ngForm" (ngSubmit)="searchOtherService(form)">
+  <div class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchOtherServiceForm" #form="ngForm" (ngSubmit)="searchOtherService(form)">
       <div class="form-sec1">
 
         <div class="form-control-group">
@@ -69,7 +69,15 @@
 
       </div>
     </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
 
+    </a>
   </div>
 
   <div class="page-content card dont-print">
