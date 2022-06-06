@@ -67,7 +67,7 @@
           </div>
           <div class="input-with-spinner">
             <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="searchCar($event)"
-            list="carList" name="carId" formControlName="carId" autocomplete="off"required/>
+            list="carList" name="carId" formControlName="carId" autocomplete="off" required/>
             <span *ngIf="spinner.car" class="spinner"></span>
           </div>
           <datalist id="carList">

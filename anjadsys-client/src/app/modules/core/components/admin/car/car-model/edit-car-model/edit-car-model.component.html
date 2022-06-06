@@ -15,8 +15,8 @@
               </span>
             </div>
             <div class="input-with-spinner">
-              <input [ngClass]="{'hide': carTypeName}" id="carTypeId" type="text" (keyup)="searchCarType($event)" list="carTypeList"
-              name="carTypeId" formControlName="carTypeId" required/>
+              <input [ngClass]="{'hide': carTypeName}" id="carTypeId" type="text" (keyup)="searchCarType($event)"
+               list="carTypeList" name="carTypeId" formControlName="carTypeId" autocomplete="off" required/>
               <span *ngIf="spinnerCarType" class="spinner"></span>
             </div>
 
