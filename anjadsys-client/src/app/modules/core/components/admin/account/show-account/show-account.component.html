@@ -106,7 +106,7 @@
 
       </li>
       <ng-template [ngIf]="accounts.length === 0">
-        <li class="no-data" style="width: 100%;">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
           <p>لا يوجد بيانات!</p>
         </li>
       </ng-template>
