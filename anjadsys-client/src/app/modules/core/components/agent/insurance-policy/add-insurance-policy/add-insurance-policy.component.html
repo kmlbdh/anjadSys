@@ -157,7 +157,7 @@
           <select id="supplierId" type="text" name="supplierId" formControlName="supplierId" required>
             <ng-template [ngIf]="services">
               <option>اختر مورد الخدمة من القائمة</option>
-              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}/{{ supplier.username }}</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}</option>
             </ng-template>
           </select>
 

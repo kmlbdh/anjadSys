@@ -152,7 +152,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   supplierText(supplierId: string): string {
     console.log('supplierText');
-    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].username;
+    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
   }
 
   deleteServicePolicy(index: number){
