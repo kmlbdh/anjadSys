@@ -6,7 +6,7 @@
   "scripts": {
     "build:prod": "webpack --mode=production --config webpack.config.js && mkdir dist/anjad-server/config && cp config/config.json dist/anjad-server/config/config.json",
     "build:dev": "webpack --mode=development --config webpack.config.js && mkdir dist/anjad-server/config && cp config/config.json dist/anjad-server/config/config.json",
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/server.js",
     "dev": "NODE_DEBUG=controller*,middleware* nodemon index.js",
     "test-init": "./node_modules/jasmine/bin/jasmine.js init",
     "test": "./node_modules/jasmine/bin/jasmine.js"
