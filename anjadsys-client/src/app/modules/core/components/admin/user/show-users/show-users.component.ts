@@ -72,6 +72,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     userID: [''],
     username: [''],
     regionID: [''],
+    identityNum: [''],
   });
 
   constructor(
@@ -110,11 +111,12 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: UsersAPI) => {
-        if(response.data){
+        console.log('done')
+        if(response.data && response.data.length){
+          console.log('done 2')
            this.users = response.data;
            this.pagination.total = response.total;
         }
-
       },
       error: (error) => console.log(error)
     })

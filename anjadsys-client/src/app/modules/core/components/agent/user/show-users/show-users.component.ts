@@ -53,6 +53,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     userID: [''],
     username: [''],
     regionID: [''],
+    identityNum: [''],
   });
 
   constructor(

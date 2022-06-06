@@ -85,6 +85,7 @@ export interface SearchUser {
   skip?: number;
   limit?: number;
   userID?: string;
+  identityNum?: number,
   role?: string;
   agentID?: string;
   companyName?: string;
