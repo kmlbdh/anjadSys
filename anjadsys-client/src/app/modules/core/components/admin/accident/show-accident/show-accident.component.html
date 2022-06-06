@@ -24,8 +24,8 @@
             </span>
           </div>
           <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)" list="customerList"
-            name="customerID" formControlName="customerID"/>
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
             <span *ngIf="spinner.customer" class="spinner"></span>
           </div>
           <datalist id="customerList">
@@ -44,8 +44,8 @@
             </span>
           </div>
           <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedAgent}" id="agentID" type="text" (keyup)="searchAgent($event)" list="agentList"
-            name="agentID" formControlName="agentID"/>
+            <input [ngClass]="{'hide': selectedAgent}" id="agentID" type="text" (keyup)="searchAgent($event)"
+             list="agentList" name="agentID" formControlName="agentID" autocomplete="off"/>
             <span *ngIf="spinner.agent" class="spinner"></span>
           </div>
           <datalist id="agentList">
