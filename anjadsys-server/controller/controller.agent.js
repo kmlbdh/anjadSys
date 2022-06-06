@@ -131,7 +131,8 @@ const userActions = {
       }
    
       if (req.body.userID) query.where.id = req.body.userID;
-  
+      if (req.body.identityNum) query.where.identityNum = req.body.identityNum;
+
       if(query.where[Op.or] && query.where[Op.or].length === 0) delete query.where[Op.or];
 
       listUsersLog(query);

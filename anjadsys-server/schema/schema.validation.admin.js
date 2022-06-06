@@ -107,6 +107,7 @@ module.exports = {
       skip: Joi.number().optional(),
       agentID: Joi.string().trim().min(9).max(9).optional(),
       userID: Joi.string().trim().min(6).max(10).optional(), //TODO convert it to customerID
+      identityNum: Joi.number().optional(),
       companyName: Joi.string().trim().optional(),
       username: Joi.string().trim().optional(),
       regionID: Joi.number().optional(),

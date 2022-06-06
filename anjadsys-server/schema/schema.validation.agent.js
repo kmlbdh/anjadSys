@@ -50,6 +50,7 @@ module.exports = {
       limit: Joi.number().optional(),
       skip: Joi.number().optional(),
       userID: Joi.string().trim().min(6).max(10).optional(), //TODO convert it to customerID
+      identityNum: Joi.number().optional(),
       companyName: Joi.string().trim().optional(),
       username: Joi.string().trim().optional(),
       regionID: Joi.number().optional(),

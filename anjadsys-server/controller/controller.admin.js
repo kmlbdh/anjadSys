@@ -112,6 +112,7 @@ const userActions = {
       if (req.body.role) query.where = ({'$Role.name$': req.body.role});
       if (req.body.agentID) query.where.agentId = req.body.agentID;
       if (req.body.regionID) query.where.regionId = req.body.regionID;
+      if (req.body.identityNum) query.where.identityNum = req.body.identityNum;
   
       if (req.body.companyName && req.body.username){
         query.where[Op.or] = [
