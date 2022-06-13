@@ -34,7 +34,7 @@ module.exports = {
       if(!user)
         throw new customError("User not found!", INTERR);
 
-      let validPassword = bcrypt.compareSync(password, user.password);
+      let validPassword = await bcrypt.compare(password, user.password);
 
       if(!validPassword)
         throw new customError("Failed! Wrong Password!", INTERR);
