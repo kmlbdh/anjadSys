@@ -1,22 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddUserComponent } from './add-user/add-user.component';
-import { EditUserComponent } from './edit-user/edit-user.component';
-import { ShowUsersComponent } from './show-users/show-users.component';
+import { AddUserComponent } from './add/add-user.component';
+import { EditUserComponent } from './edit/edit-user.component';
+import { ShowUsersComponent } from './show/show-users.component';
 
 const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditUserComponent,
+    data: {breadcrumb: 'تعديل بيانات المستخدم'}
   },
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {title: 'اظهار كافة مستخدمي النظام'}
+    data: {breadcrumb: 'اظهار كافة مستخدمي النظام'}
   },
   {
     path: 'add',
-    component: AddUserComponent
+    component: AddUserComponent,
+    data: {breadcrumb: 'اضافة مستخدم جديد'}
   },
 ];
 

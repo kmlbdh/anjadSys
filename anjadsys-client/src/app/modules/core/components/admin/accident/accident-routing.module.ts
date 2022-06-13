@@ -1,22 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddAccidentComponent } from './add-accident/add-accident.component';
-import { EditAccidentComponent } from './edit-accident/edit-accident.component';
-import { ShowAccidentComponent } from './show-accident/show-accident.component';
+import { AddAccidentComponent } from './add/add-accident.component';
+import { EditAccidentComponent } from './edit/edit-accident.component';
+import { ShowAccidentComponent } from './show/show-accident.component';
 
 const routes: Routes = [
 
   {
     path: 'edit/:id',
-    component: EditAccidentComponent
+    component: EditAccidentComponent,
+    data: {breadcrumb: 'تعديل بيانات بلاغ الحادث'}
   },
   {
     path: 'add',
-    component: AddAccidentComponent
+    component: AddAccidentComponent,
+    data: {breadcrumb: 'اضافة بلاغ عن حادث جديد'}
   },
   {
     path: 'show',
-    component: ShowAccidentComponent
+    component: ShowAccidentComponent,
+    data: {breadcrumb: 'اظهار جميع بلاغات الحوادث'}
   },
 
 ];

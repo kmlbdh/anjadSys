@@ -5,9 +5,9 @@
         <fa-icon [icon]="nav.faIcon"></fa-icon>
         <span>{{nav.name}}</span>
       </p>
-      <ul [class.close]="!nav.hide">
-          <li *ngFor="let child of nav.children; trackBy: trackById"
-            [routerLink]="child.link" routerLinkActive="active">
+      <ul [class.close]="!nav.hide" [routerLinkActive]="'close'">
+          <li *ngFor="let child of nav.children; let i = index; trackBy: trackById"
+            [routerLink]="[child.link]" [routerLinkActive]="'active'" #child{{i}}>
             <fa-icon [icon]="chevronLeftIcon"></fa-icon>
 
             <span>{{child.name}}</span>

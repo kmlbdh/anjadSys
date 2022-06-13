@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ServiceRoutingModule } from './service-routing.module';
-import { ShowServicesComponent } from './show-services/show-services.component';
+import { ShowServicesComponent } from './show/show-services.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 

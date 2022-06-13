@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ShowUsersComponent } from '../user/show-users/show-users.component';
-import { SupplierAccountComponent } from './supplier-account/supplier-account.component';
+import { ShowUsersComponent } from '../user/show/show-users.component';
+import { SupplierAccountComponent } from './account/supplier-account.component';
 
 const routes: Routes = [
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {role: 'supplier', title: 'اظهار جميع الموردين'}
+    data: {role: 'supplier', breadcrumb: 'اظهار جميع الموردين'}
   },
   {
     path: 'account/:id',
-    component: SupplierAccountComponent
+    component: SupplierAccountComponent,
+    data: {breadcrumb: 'حساب المورد'}
   },
 ];
 

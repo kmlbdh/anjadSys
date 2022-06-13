@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ShowServicesComponent } from './show-services/show-services.component';
+import { ShowServicesComponent } from './show/show-services.component';
 
 const routes: Routes = [
   {

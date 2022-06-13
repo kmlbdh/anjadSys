@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CarTypeRoutingModule } from './car-type-routing.module';
-import { ShowCarTypesComponent } from './show-car-types/show-car-types.component';
+import { ShowCarTypesComponent } from './show/show-car-types.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserAPI } from '../../../core/model/user';
 
@@ -8,6 +9,7 @@ import { UserAPI } from '../../../core/model/user';
   styleUrls: ['./user-modal.component.scss']
 })
 export class UserModalComponent implements OnInit {
+  printer = faPrint;
   customerDetails: UserAPI = {} as UserAPI;
   rolesLang:{
     [index: string]: string;

@@ -5,7 +5,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ShowAccountComponent } from './show-account/show-account.component';
+import { ShowAccountComponent } from './show/show-account.component';
 
 
 @NgModule({

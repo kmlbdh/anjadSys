@@ -1,0 +1,207 @@
+<div id="main-container">
+  <div class="page-content card">
+      <form [formGroup]="addCarForm" #form="ngForm" (ngSubmit)="addCar(form)">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="carNumber">رقم السيارة</label>
+            <input id="carNumber" type="text" name="carNumber"
+              minlength="5" maxlength="10" formControlName="carNumber" required/>
+
+            <div *ngIf="(form.submitted || formCont('carNumber')?.touched)
+              && formCont('carNumber')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('carNumber').hasError('required')">
+                رقم السيارة مطلوب تعبئته</div>
+
+              <div *ngIf="formCont('carNumber').hasError('minlength')
+              || formCont('carNumber').hasError('maxlength')">
+                رقم السيارة يجب ان يحتوي ٥-١٠ حروف/ارقام</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="motorNumber">رقم الماتور</label>
+            <input id="motorNumber" type="text" name="motorNumber" formControlName="motorNumber"
+              minlength="8" maxlength="8" required/>
+
+            <div *ngIf="(form.submitted || formCont('motorNumber')?.touched)
+              && formCont('motorNumber')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('motorNumber').hasError('required')">
+                رقم الماتور مطلوب تعبئته</div>
+              <div *ngIf="formCont('motorNumber').hasError('minlength')
+              || formCont('motorNumber').hasError('maxlength')">
+                رقم الماتور يجب ان يحتوي ٨ حروف</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="motorPH">قوة الماتور</label>
+            <input id="motorPH" type="text" name="motorPH" formControlName="motorPH"
+              (keydown)="acceptNumbers($event)" required/>
+
+            <div *ngIf="(form.submitted || formCont('motorPH')?.touched)
+              && formCont('motorPH')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('motorPH').hasError('required')">
+                قوة الماتور مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="licenseType">نوع الترخيص</label>
+            <select id="licenseType" name="licenseType" formControlName="licenseType">
+              <option value="">اختر نوع الترخيص</option>
+              <option *ngFor="let licenseType of licenseTypes" [value]="licenseType">{{licenseType}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('licenseType')?.touched) &&
+             formCont('licenseType')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('licenseType').hasError('required')">نوع الترخيص مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="serialNumber">رقم الشصي</label>
+            <input id="serialNumber" type="text" name="serialNumber" formControlName="serialNumber"
+              minlength="17" maxlength="17" required/>
+
+            <div *ngIf="(form.submitted || formCont('serialNumber')?.touched)
+              && formCont('serialNumber')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('serialNumber').hasError('required')">
+                رقم الشصي مطلوب تعبئته</div>
+              <div *ngIf="formCont('serialNumber').hasError('minlength')
+              || formCont('serialNumber').hasError('maxlength')">
+                رقم الشصي يجب ان يحتوي ١٧ حرف/رقم</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="passengersCount"> عدد الركاب</label>
+            <input id="passengersCount" type="text" name="passengersCount" formControlName="passengersCount"
+              (keydown)="acceptNumbers($event)" required/>
+
+            <div *ngIf="(form.submitted || formCont('passengersCount')?.touched)
+              && formCont('passengersCount')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('passengersCount').hasError('required')">
+                عدد الركاب مطلوب تعبئته</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-sec2">
+          <div class="form-control-group">
+            <label for="color">لون السيارة</label>
+            <input id="color" type="text" name="color" formControlName="color" required/>
+
+            <div *ngIf="(form.submitted || formCont('color')?.touched)
+              && formCont('color')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('color').hasError('required')">
+                 لون السيارة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="productionYear">سنة التصنيع</label>
+            <input id="productionYear" type="text" name="productionYear" formControlName="productionYear"
+            (keydown)="acceptNumbers($event)" required/>
+
+            <div *ngIf="(form.submitted || formCont('productionYear')?.touched)
+              && formCont('productionYear')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('productionYear').hasError('required')">
+                 سنة التصنيع مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="customerId">الزبون:</label>
+            <div class="input" *ngIf="selectedCustomer">
+              {{selectedCustomer.username}}
+              <span (click)="cancelCustomerInput($event)">
+                <fa-icon [icon]="cancelInput"></fa-icon>
+              </span>
+            </div>
+            <div class="input-with-spinner">
+              <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
+              name="customerId" formControlName="customerId" autocomplete="off" required/>
+              <span *ngIf="spinner.customer" class="spinner"></span>
+            </div>
+            <datalist id="customerList">
+              <option *ngFor="let customer of customers;" [value]="customer.id">
+                 {{customer.username}}
+              </option>
+            </datalist>
+
+            <div *ngIf="(form.submitted || formCont('customerId')?.touched)
+            && formCont('customerId')?.invalid" class="alert alert-danger">
+             <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+           </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="carTypeId">نوع السيارة :</label>
+            <select id="carTypeId" type="text" name="carTypeId" formControlName="carTypeId"
+            (change)="toggleModel($event)" required>
+            <ng-template [ngIf]="carTypes">
+              <option>اختر نوع السيارة من القائمة</option>
+              <ng-container *ngFor="let carType of carTypes">
+                <option [value]="carType.id">
+                    {{ carType.name }}
+                </option>
+              </ng-container>
+            </ng-template>
+          </select>
+
+            <div *ngIf="(form.submitted || formCont('carTypeId')?.touched) &&
+              formCont('carTypeId')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('carTypeId').hasError('required')">نوع السيارة مطلوب تعبئته</div>
+           </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="carModelId">موديل السيارة:</label>
+            <div class="input-with-spinner">
+              <select id="carModelId" type="text" name="carModelId" formControlName="carModelId"
+                required>
+                <ng-template [ngIf]="carModels">
+                  <option [ngValue]="null">اختر موديل السيارة من القائمة</option>
+                  <ng-container *ngFor="let carModel of carModels">
+                    <option [value]="carModel.id">
+                        {{ carModel.name }}
+                    </option>
+                  </ng-container>
+                </ng-template>
+              </select>
+              <span *ngIf="spinner.carModel" class="spinner"></span>
+            </div>
+
+            <div *ngIf="(form.submitted || formCont('carModelId')?.touched)
+             && formCont('carModelId')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('carModelId').hasError('required')">موديل السيارة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="note">ملاحظات</label>
+            <textarea id="note" formControlName="note"></textarea>
+          </div>
+
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit" [disabled]="form.invalid">
+            <span>حفظ</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

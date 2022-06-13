@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddInsurancePolicyComponent } from './add-insurance-policy/add-insurance-policy.component';
-import { EditInsurancePolicyComponent } from './edit-insurance-policy/edit-insurance-policy.component';
-import { ShowInsurancePolicyComponent } from './show-insurance-policy/show-insurance-policy.component';
+import { AddInsurancePolicyComponent } from './add/add-insurance-policy.component';
+import { EditInsurancePolicyComponent } from './edit/edit-insurance-policy.component';
+import { ShowInsurancePolicyComponent } from './show/show-insurance-policy.component';
 
 const routes: Routes = [
   {
     path: 'edit/:id',
-    component: EditInsurancePolicyComponent
+    component: EditInsurancePolicyComponent,
+    data: {breadcrumb: 'تعديل بيانات بوليصة تأمين'}
   },
   {
     path: 'add',
-    component: AddInsurancePolicyComponent
+    component: AddInsurancePolicyComponent,
+    data: {breadcrumb: 'اضافة بوليصة تأمين جديد'}
   },
   {
     path: 'show',
-    component: ShowInsurancePolicyComponent
+    component: ShowInsurancePolicyComponent,
+    data: {breadcrumb: 'اظهار جميع بوالص التأمين'}
   },
 ];
 

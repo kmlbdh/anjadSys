@@ -1,14 +1,24 @@
 import { UserAPI } from './user';
 import { InsurancePolicyAPI } from './insurancepolicy';
-import { ServiceAccidentAPI } from './service';
+import { ServiceAccidentAPI, ServiceAPI } from './service';
 
 export interface SupplierAccountAPI {
   ServiceAccident: ServiceAccidentAPI
   accountId: number,
   id: number,
+  cost?: number,
   serviceAccidentId: number | null,
   servicePolicyId: number | null,
+  Service: ServiceAPI,
   supplierPercentage: number,
+  coverageDays?: number,
+  additionalDays: number,
+  createdAt: Date,
+}
+
+export interface SupplierAccountsAPI {
+  data: [SupplierAccountAPI],
+  total: number;
 }
 
 export interface AccountAPI {

@@ -1,0 +1,118 @@
+<div id="main-container" class="print">
+  <div class="page-header card" style="padding: 0.8rem">
+    <span style="font-weight: 400;">{{selectedSupplier}}</span>
+  </div>
+
+  <div class="card search-supplier-container">
+    <form [formGroup]="searchSupplierAccountForm" #form="ngForm" (ngSubmit)="searchSupplierAccount()">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="flag">اظهار الحساب/الخدمات حسب:</label>
+          <select id="flag" formControlName="flag">
+            <option value="accident">ابلاغات الحوادث</option>
+            <option value="policy">بوالص التأمين</option>
+          </select>
+        </div>
+
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">الرقم</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div  *ngIf="searchConditions.flag==='policy'" class="col-custom col-custom-3 clickable" (click)="showPercentage = !showPercentage">
+          <ng-container *ngIf="showPercentage">
+            المبلغ مع النسبة (له)
+          </ng-container>
+          <ng-container *ngIf="!showPercentage">
+            المبلغ (له)
+          </ng-container>
+        </div>
+        <div class="col-custom col-custom-4">ايام التغطية</div>
+        <div class="col-custom col-custom-5">تاريخ الحركة</div>
+        <!-- <div class="col-custom col-custom-5">الخدمة</div> -->
+        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
+      </li>
+      <ng-template [ngIf]="accounts.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accounts.length > 0">
+        <li *ngFor="let account of accounts| paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+          trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="الرقم">{{account.id || i+1}}</div>
+          <div class="col-custom col-custom-2" data-label="الخدمة">{{account.Service.name}}</div>
+          <div *ngIf="searchConditions.flag==='policy'" class="col-custom col-custom-3" data-label="المبلغ مع النسبة (له)">
+            <ng-container *ngIf="showPercentage">
+              {{((account.cost! * (account.supplierPercentage || 1)) || 0) | number: '1.0-0'}}
+            </ng-container>
+            <ng-container *ngIf="!showPercentage">
+              {{account.cost || 0}}
+            </ng-container>
+            {{currency}}
+          </div>
+          <div class="col-custom col-custom-4" data-label="ايام التغطية">
+            <ng-template [ngIf]="searchConditions.flag==='accident'">
+              {{(account.coverageDays | number) }} {{days}}
+            </ng-template>
+            <ng-template [ngIf]="searchConditions.flag==='policy'">
+              {{(account.additionalDays + account.Service.coverageDays | number)}} {{days}}
+            </ng-template>
+          </div>
+          <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date: 'dd-MM-yyyy'}}</div>
+          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
+             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
+              <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(account.id)"></fa-icon>
+          </div> -->
+        </li>
+        <li class="table-row" *ngIf="accounts.length > 0 && searchConditions.flag==='policy'">
+          <div class="col-custom col-custom-total-label" data-label="المجموع">المجموع</div>
+          <div class="col-custom col-custom-total" data-label="المجموع بالشيكل">{{accountBalance}} {{currency}}</div>
+        </li>
+
+        <div class="d-print-none print-btn">
+          <button type="button" class="btn-primary" (click)="printPage()">
+            <fa-icon [icon]="printer"></fa-icon>
+            طباعة الحساب
+          </button>
+        </div>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

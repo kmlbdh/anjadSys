@@ -1,0 +1,43 @@
+<div id="main-container">
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم النوع</div>
+        <div class="col-custom col-custom-2">نوع السيارة</div>
+        <div class="col-custom col-custom-3">التحكم</div>
+      </li>
+      <ng-template [ngIf]="carTypes.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="carTypes.length > 0">
+        <li *ngFor="let carType of carTypes | paginate:{ itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total}; trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Car Number">{{carType.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{carType.name}}</div>
+          <div class="col-custom col-custom-3 control" data-label="Control">
+
+            <button class="btn-primary" title="تعديل بيانات نوع السيارة" (click)="goToCarTypeEdit(carType.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+            <button class="btn-error" title="حذف نوع السيارة" (click)="deleteCarType(carType)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

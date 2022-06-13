@@ -21,36 +21,36 @@ export class AdminComponent implements OnInit {
   navData: NavInput[] = [
     {
       id: 1,
-      name: 'مستخدمي النظام',
+      name: 'المستخدمين',
       faIcon: faUsers,
       hide: true,
       children: [
         {
           id: 1,
-          name: 'اظهار المستخدمين',
+          name: 'اظهار الكل',
           link: 'user/show'
         },
         {
           id: 2,
-          name: 'اضافة مستخدم جديد',
+          name: 'اضافة مستخدم',
           link: 'user/add'
         },
       ]
     },
     {
       id: 2,
-      name: 'الوكيل',
+      name: 'الوكلاء',
       faIcon: faUserTie,
       hide: true,
       children: [
         {
           id: 1,
-          name: 'اظهار الوكلاء',
+          name: 'اظهار الكل',
           link: 'agent/show'
         },
         {
           id: 2,
-          name: 'اضافة سقف مالي للوكيل',
+          name: 'اضافة سقف مالي',
           link: 'agent/add-agent-limit'
         },
       ]
@@ -63,7 +63,7 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار الموردين',
+          name: 'اظهار الكل',
           link: 'supplier/show'
         },
         // {
@@ -80,12 +80,12 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار الخدمات',
+          name: 'اظهار الكل',
           link: 'service/show'
         },
         {
           id: 2,
-          name: 'اضافة خدمة جديدة ',
+          name: 'اضافة خدمة',
           link: 'service/add'
         },
       ]
@@ -98,12 +98,12 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار الخدمات الأخرى',
+          name: 'اظهار الكل',
           link: 'otherservices/show'
         },
         {
           id: 2,
-          name: 'اضافة خدمة اخرى',
+          name: 'اضافة خدمة',
           link: 'otherservices/add'
         },
       ]
@@ -116,12 +116,12 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار سيارات الزبائن',
+          name: 'اظهار الكل',
           link: 'car/car-customer/show'
         },
         {
           id: 2,
-          name: 'اضافة سيارة جديدة ',
+          name: 'اضافة سيارة',
           link: 'car/car-customer/add'
         },
       ]
@@ -134,22 +134,22 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار انواع السيارات',
+          name: 'اظهار كل الانواع',
           link: 'car/car-type/show'
         },
         {
           id: 2,
-          name: 'اضافة نوع سيارة ',
+          name: 'اضافة نوع',
           link: 'car/car-type/add'
         },
         {
           id: 3,
-          name: 'اظهار موديلات السيارات',
+          name: 'اظهار كل الموديلات',
           link: 'car/car-model/show'
         },
         {
           id: 4,
-          name: 'اضافة موديل سيارة ',
+          name: 'اضافة موديل',
           link: 'car/car-model/add'
         },
       ]
@@ -162,30 +162,30 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار بلاغات الحوادث',
+          name: 'اظهار الكل',
           link: 'accident/show'
         },
         {
           id: 2,
-          name: 'اضافة بلاغ عن حادث جديد ',
+          name: 'اضافة بلاغ حادث',
           link: 'accident/add'
         }
       ]
     },
     {
       id: 9,
-      name: 'بوليصة التأمين',
+      name: 'بوالص التأمين',
       faIcon: faCarCrash,
       hide: true,
       children: [
         {
           id: 1,
-          name: 'اظهار بوالص التأمين',
+          name: 'اظهار الكل',
           link: 'insurance-policy/show'
         },
         {
           id: 2,
-          name: 'اضافة بوليصة تأمين جديدة ',
+          name: 'اضافة بوليصة تأمين',
           link: 'insurance-policy/add'
         }
       ]
@@ -198,7 +198,7 @@ export class AdminComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار الحساب المالي ',
+          name: 'اظهار كل الحساب',
           link: 'account/show'
         }
       ]

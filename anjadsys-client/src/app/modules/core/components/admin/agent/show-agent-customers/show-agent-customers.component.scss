@@ -5,9 +5,9 @@
   height: min-content;
 }
 #main-container {
-  padding: 25px;
+  padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
-  min-height: 100%;
+  min-height: max-content;
 
   @include pagination;
 

@@ -1,0 +1,45 @@
+<div id="main-container">
+  <div class="page-content card">
+      <form [formGroup]="addCarModelForm" #form="ngForm" (ngSubmit)="addCarModel(form)">
+        <div class="form-sec1">
+
+          <div class="form-control-group">
+            <label for="carTypeId">نوع السيارة :</label>
+            <select id="carTypeId" name="carTypeId" formControlName="carTypeId" required>
+              <option *ngFor="let carType of carTypes" [value]="carType.id">{{carType.name}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('carTypeId')?.touched) &&
+            formCont('carTypeId')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('carTypeId').hasError('required')">نوع السيارة مطلوب تعبئته</div>
+           </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="name">موديل السيارة</label>
+            <input id="name" type="text" name="name" formControlName="name" required/>
+
+            <div *ngIf="(form.submitted || formCont('name')?.touched)
+              && formCont('name')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('name').hasError('required')">
+                نوع السيارة مطلوب تعبئته</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-sec2">
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>حفظ</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

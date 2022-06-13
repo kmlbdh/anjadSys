@@ -1,0 +1,136 @@
+<div id="main-container" class="d-print-none">
+  <div class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchOtherServiceForm" #form="ngForm" (ngSubmit)="searchOtherService(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="otherServiceID">رقم الخدمة</label>
+          <input id="otherServiceID" type="text"
+           name="otherServiceID" formControlName="otherServiceID"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="fileStatus">حالة الملف</label>
+          <select id="fileStatus" formControlName="fileStatus">
+            <option *ngFor="let fileStatus of fileStatusArr" [ngValue]="fileStatus">{{fileStatus}}</option>
+          </select>
+        </div>
+
+        <div class="form-control-group">
+          <label for="serviceKind">نوع الخدمة</label>
+          <input id="serviceKind" type="text"
+           name="serviceKind" formControlName="serviceKind"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="customerID">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+  </div>
+
+  <div class="page-content card dont-print">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الخدمة</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div class="col-custom col-custom-3">الزبون</div>
+        <div class="col-custom col-custom-4">حالة الملف</div>
+        <div class="col-custom col-custom-5">تاريخ الخدمة</div>
+        <div class="col-custom col-custom-6">رقم البوليصة</div>
+        <div class="col-custom col-custom-7">التحكم</div>
+      </li>
+      <ng-template [ngIf]="otherServices.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="otherServices.length > 0">
+        <li *ngFor="let otherService of otherServices | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Other Service Id">{{otherService.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Other Service Id">{{otherService.name}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Name">{{otherService.Customer.username}}</div>
+          <div class="col-custom col-custom-4" data-label="File Status">{{otherService.fileStatus}}</div>
+          <div class="col-custom col-custom-5" data-label="Date">{{ otherService.createdAt| date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-6" [ngClass]="{'clickable': otherService.insurancePolicyId}"
+          style="text-decoration: underline;" data-label="Account Transaction Type" (click)="open(otherService.insurancePolicyId)">
+            <ng-container *ngIf="otherService.insurancePolicyId">
+                {{ otherService.insurancePolicyId }}
+            </ng-container>
+          </div>
+          <div class="col-custom col-custom-7 control" data-label="Control">
+            <button class="btn-primary" title="ملف الخدمة" (click)="openOtherService(otherService)">
+              <fa-icon [icon]="openIcon"></fa-icon>
+            </button>
+
+            <button class="btn-primary" title="تعديل بيانات الخدمة" (click)="goToOtherServiceEdit(otherService.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+            <button class="btn-error" title="حذف الخدمة" (click)="deleteOtherService(otherService)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

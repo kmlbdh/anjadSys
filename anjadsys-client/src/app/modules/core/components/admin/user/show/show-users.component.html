@@ -1,0 +1,149 @@
+<div id="main-container"  class="d-print-none">
+  <!-- <div class="page-header card"> -->
+    <!-- <p>{{pageTitle}}</p>
+  </div> -->
+
+  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="userID">رقم الحساب</label>
+          <input id="userID" type="text"
+           name="userID" formControlName="userID"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="identityNum">رقم الهوية</label>
+          <input id="identityNum" type="number"
+           name="identityNum" formControlName="identityNum"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="username">اسم المستخدم</label>
+          <input id="username" type="text"
+           name="username" formControlName="username"/>
+        </div>
+
+        <div class="form-control-group" *ngIf="!activeSuppliers && !activeAgentLimits">
+          <label for="role">نوع الحساب</label>
+          <select id="role" name="role" formControlName="role">
+            <option value="">اختر من القائمة</option>
+            <option *ngFor="let role of roles" [value]="role[0]">{{role[1]}}</option>
+          </select>
+        </div>
+
+        <div class="form-control-group">
+          <label for="regionID">المنطقة</label>
+          <select id="regionID" name="regionID" formControlName="regionID">
+            <option value="">اختر من القائمة</option>
+            <option *ngFor="let region of regions" [value]="region.id">{{region.name}}</option>
+          </select>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table" [ngClass]="{'agent':activeAgentLimits, 'supplier':!activeAgentLimits}">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم المستخدم</div>
+        <div class="col-custom col-custom-2">اسم المستخدم</div>
+        <div class="col-custom col-custom-3">اسم الشركة</div>
+        <div *ngIf="!activeSuppliers && !activeAgentLimits" class="col-custom col-custom-4">نوع الحساب</div>
+        <div *ngIf="activeSuppliers || activeAgentLimits" class="col-custom col-custom-4">تاريخ الانضمام</div>
+        <div class="col-custom col-custom-5">التحكم</div>
+      </li>
+      <ng-template [ngIf]="users.length === 0">
+        <li class="no-data" style="width: 100%;" *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: 0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="users.length > 0">
+        <li [ngClass]="{'blocked-user': user.blocked}" *ngFor="let user of users | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Id">{{user.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Company">{{user.companyName || '---'}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Role">{{ activeSuppliers || activeAgentLimits ? (user.createdAt | date: 'dd-MM-yyyy') : rolesLang[user.Role.name] }}</div>
+          <div class="col-custom col-custom-5 control" data-label="Control">
+
+            <button class="btn-primary" title="بيانات المستخدم" (click)="open(user)">
+              <fa-icon [icon]="openIcon"></fa-icon>
+            </button>
+
+            <button class="btn-primary" title="تعديل بيانات المستخدم" (click)="goToUserEdit(user.id)">
+              <fa-icon [icon]="userEditIcon"></fa-icon>
+            </button>
+
+            <ng-template [ngIf]="activeAgentLimits">
+              <button class="btn-primary" title="اضافة سقف مالي للوكيل" (click)="goToAddAgentLimits(user)">
+                <fa-icon [icon]="addAgentLimitIcon"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="اظهار جميع الاسقف المالية للوكيل" (click)="goToListAgentLimits(user)">
+                <fa-icon [icon]="agentLimitsListIcon"></fa-icon>
+              </button>
+
+              <button class="btn-primary" title="زبائن الوكيل" (click)="goToListCustomers(user)">
+                <fa-icon [icon]="customersIcon"></fa-icon>
+              </button>
+
+            </ng-template>
+
+            <ng-template [ngIf]="activeSuppliers">
+              <button class="btn-primary" title="اظهار حساب المورد" (click)="goToSupplierAccount(user)">
+                <fa-icon [icon]="supplierPartsIcon"></fa-icon>
+              </button>
+            </ng-template>
+
+            <button *ngIf="user.Role.name !== 'admin' && !activeAgentLimits && !activeSuppliers" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+            <button *ngIf="!user.blocked" class="btn-primary" title="تعطيل حساب المستخدم"
+            (click)="blockUser(user)">
+             <fa-icon [icon]="deactivateUserIcon"></fa-icon>
+           </button>
+
+           <button *ngIf="user.blocked" class="btn-primary" title="تفعيل حساب المستخدم"
+            (click)="unblockUser(user)">
+             <fa-icon [icon]="activateUserIcon"></fa-icon>
+           </button>
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+@import 'shared';
+
+.breadcrumb {
+  background: $goldColor;
+  font-size: 1rem;
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 0.4rem 0;
+  margin: 0 0 1rem 0;
+  list-style: none;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 0;
+  a,
+  span {
+    color: #fff;
+  }
+  a:hover,
+  span:hover {
+    // color: lightgray;
+    // text-decoration: none;
+    cursor: default;
+  }
+  li {
+    list-style: none;
+    float: left;
+    margin: 5px;
+  }
+  // li:last-child {
+  //   span{
+  //     font-weight: 600;
+  //   }
+  // }
+  li::after {
+    content: ">";
+    color: #fff;
+    font-weight: 600;
+    margin-right: 0.4rem;
+  }
+  li:last-child::after {
+    content: "";
+  }
+}

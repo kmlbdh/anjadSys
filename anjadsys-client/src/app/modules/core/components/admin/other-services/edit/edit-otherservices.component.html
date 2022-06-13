@@ -1,0 +1,159 @@
+<div id="main-container">
+  <div class="page-content card">
+      <form [formGroup]="editOtherServiceForm" #form="ngForm" (ngSubmit)="updateOtherService()">
+        <div class="form-sec1">
+
+          <div class="form-control-group">
+            <label for="name">الخدمة</label>
+            <input id="name" type="text" name="name" formControlName="name"
+             required/>
+
+             <div *ngIf="(form.submitted || formCont('name')?.touched) &&
+             formCont('name')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('name').hasError('required')">اسم الخدمة مطلوب تعبئته</div>
+            </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="serviceKind">نوع الخدمة</label>
+            <select id="serviceKind" formControlName="serviceKind" placeholder="" required>
+              <option [value]="null">اختر من القائمة</option>
+              <option *ngFor="let serviceKind of serviceKindArr" [ngValue]="serviceKind">{{serviceKind}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('serviceKind')?.touched) &&
+            formCont('serviceKind')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('serviceKind').hasError('required')">نوع الخدمة مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="fileStatus">حالة الملف</label>
+            <select id="fileStatus" formControlName="fileStatus" required>
+                <option *ngFor="let fileStatus of fileStatusArr" [ngValue]="fileStatus">{{fileStatus}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('fileStatus')?.touched) &&
+            formCont('fileStatus')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('fileStatus').hasError('required')">حالة الملف مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="customerId">الزبون:</label>
+            <div class="input" *ngIf="selectedCustomer">
+              {{selectedCustomer.username}}
+              <span (click)="cancelCustomerInput($event)">
+                <fa-icon [icon]="cancelInput"></fa-icon>
+              </span>
+            </div>
+            <div class="input-with-spinner">
+              <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
+              (keyup)="searchCustomer($event)" list="customerList" name="customerId"
+              formControlName="customerId" (change)="fillFieldsByCustomer($event)" autocomplete="off" required/>
+              <span *ngIf="spinner.customer" class="spinner"></span>
+            </div>
+
+            <datalist id="customerList">
+              <option *ngFor="let customer of customers;" [value]="customer.id">
+                  {{customer.username}}
+              </option>
+            </datalist>
+
+            <div *ngIf="(form.submitted || formCont('customerId')?.touched)
+            && formCont('customerId')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="carId">رقم بوليصة التأمين :</label>
+            <div class="input" *ngIf="selectedInsurancePolicy">
+              {{selectedInsurancePolicy.id}}
+              <span (click)="cancelInsurancePolicyInput($event)">
+                <fa-icon [icon]="cancelInput"></fa-icon>
+              </span>
+            </div>
+            <div class="input-with-spinner">
+              <input [ngClass]="{'hide': selectedInsurancePolicy || false}" id="insurancePolicyId" type="text"
+               (change)="selectInsurancePolicy($event)" list="insurancePolicyList"
+                name="insurancePolicyId" formControlName="insurancePolicyId" autocomplete="off" required/>
+              <span *ngIf="spinner.insurancePolicy" class="spinner"></span>
+            </div>
+            <datalist id="insurancePolicyList">
+              <option *ngFor="let insurancePolicy of insurancePolicies;" [value]="insurancePolicy.id">
+                  {{insurancePolicy.id}}
+              </option>
+            </datalist>
+
+            <div *ngIf="!insurancePolicyNotValidMsg && (form.submitted || formCont('insurancePolicyId')?.touched) &&
+              formCont('insurancePolicyId')?.invalid" class="alert alert-danger">
+              <div *ngIf="formCont('insurancePolicyId').hasError('required')">رقم البوليصة مطلوب تعبئته</div>
+            </div>
+            <div *ngIf="insurancePolicyNotValidMsg" class="alert alert-danger">
+              <div>{{insurancePolicyNotValidMsg}}</div>
+            </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="cost">التكلفة المتوقعة</label>
+            <input id="cost" type="text" name="cost" formControlName="cost"
+            (keydown)="acceptNumbers($event)" required/>
+
+            <div *ngIf="(form.submitted || formCont('cost')?.touched) &&
+            formCont('cost')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('cost').hasError('required')">التكلفة المتوقعة مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-sec2">
+
+          <div class="form-control-group">
+            <label for="descCustomer">افادة الزبون</label>
+            <textarea rows="10" id="descCustomer" name="descCustomer" formControlName="descCustomer" required>
+            </textarea>
+
+            <div *ngIf="(form.submitted || formCont('descCustomer')?.touched) &&
+            formCont('descCustomer')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('descCustomer').hasError('required')">افادة الزبون مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="description">افادة المفتش</label>
+            <textarea rows="10" id="description" name="description" formControlName="description" required>
+            </textarea>
+
+            <div *ngIf="(form.submitted || formCont('description')?.touched) &&
+            formCont('description')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('description').hasError('required')">افادة المفتش مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>حفظ</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

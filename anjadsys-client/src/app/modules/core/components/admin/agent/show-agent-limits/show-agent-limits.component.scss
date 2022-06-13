@@ -4,9 +4,9 @@
   flex-grow: 9;
 }
 #main-container {
-  padding: 25px;
+  padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
-  height: 100%;
+  height: max-content;
 
   @include pagination;
 
