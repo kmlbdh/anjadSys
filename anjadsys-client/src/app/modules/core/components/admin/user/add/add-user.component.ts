@@ -4,7 +4,7 @@ import { Observable, takeUntil, Subject } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { RoleAPI, RegionAPI } from '../../../../model/general';
 import { ConfirmedValidator } from '../confirm.validator';
-import { IBreadCrumb } from '../../../../model/breadcrumb';
+import { IBreadCrumb } from '../../../../../shared/models/breadcrumb';
 
 @Component({
   selector: 'app-add-user',

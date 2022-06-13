@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IBreadCrumb } from '../../../core/model/breadcrumb';
-import { filter, distinctUntilChanged, map } from 'rxjs/operators';
+import { IBreadCrumb } from '../../models/breadcrumb';
+import { filter, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-breadcrumb',
