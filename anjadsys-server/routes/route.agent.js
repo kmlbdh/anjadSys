@@ -16,18 +16,7 @@ const {
   checkDuplicateUsernameOrNickname 
 } = require("../middleware/middleware.shared");
 
-const {
-  userActions,
-  serviceActions,
-  accidentActions,
-  carTypeActions,
-  carModelActions,
-  carActions,
-  regionActions,
-  insurancePolicyActions,
-  accountActions,
-  statisticsActions
-} = require("../controller/controller.agent");
+const { agentController } = require('../controller');
 
 const express = require('express');
 
@@ -48,24 +37,24 @@ accountRoute = express.Router();
   userRoute.post("/create",[
     userValidation.create,
     checkDuplicateUsernameOrNickname
-  ], userActions.create);
+  ], agentController.userActions.create);
 
   userRoute.post("/list",[
     userValidation.list,
-  ], userActions.list);
+  ], agentController.userActions.list);
 
   userRoute.post("/list-active",[
     userValidation.list,
     notBlockedUser
-  ], userActions.list);
+  ], agentController.userActions.list);
 
   userRoute.post("/list-light",[
     userValidation.list,
-  ], userActions.lightList);
+  ], agentController.userActions.lightList);
 
   userRoute.post("/list-suppliers",[
     userValidation.listSuppliers,
-  ], userActions.listSuppliers);
+  ], agentController.userActions.listSuppliers);
 
   Router.use("/user", userRoute);
     
@@ -73,21 +62,21 @@ accountRoute = express.Router();
 
   serviceRoute.post("/list",[
     serviceValidation.list,
-  ], serviceActions.list);
+  ], agentController.serviceActions.list);
 
   Router.use("/service", serviceRoute);
 
 /** #################### GENERAL API ########################*/
 
-  generalRoute.get("/regions", regionActions.list);
-  generalRoute.get("/statistics", statisticsActions.list);
+  generalRoute.get("/regions", agentController.sharedActions.listRegions);
+  generalRoute.get("/statistics", agentController.sharedActions.statistics);
   Router.use("/general", generalRoute);
 
 /** #################### CAR TYPE ########################*/
 
   carTypeRoute.post("/list",[
     carTypeValidation.list,
-  ], carTypeActions.list);
+  ], agentController.carTypeActions.list);
 
   Router.use("/car-type", carTypeRoute);
 
@@ -95,47 +84,47 @@ accountRoute = express.Router();
 
   carModelRoute.post("/list",[
     carModelValidation.list,
-  ], carModelActions.list);
+  ], agentController.carModelActions.list);
 
   Router.use("/car-model", carModelRoute);
 
 /** #################### CAR ########################*/
   carRoute.post("/add",[
     carValidation.add
-  ], carActions.add);
+  ], agentController.carActions.add);
 
   carRoute.post("/list",[
     carValidation.list,
-  ], carActions.list);
+  ], agentController.carActions.list);
 
   Router.use("/car", carRoute);
 
 /** #################### ACCIDENT ########################*/
   accidentRoute.post("/add",[
     accidentValidation.add
-  ], accidentActions.add);
+  ], agentController.accidentActions.add);
 
   accidentRoute.post("/list",[
     accidentValidation.list,
-  ], accidentActions.list); 
+  ], agentController.accidentActions.list); 
 
   Router.use("/accident", accidentRoute);
 
 /** #################### INSURANCE POLICY ########################*/
   insurancePolicyRoute.post("/add",[
     insurancePolicyValidation.add
-  ], insurancePolicyActions.add);
+  ], agentController.insurancePolicyActions.add);
 
   insurancePolicyRoute.post("/list",[
     insurancePolicyValidation.list,
-  ], insurancePolicyActions.list);
+  ], agentController.insurancePolicyActions.list);
 
   Router.use("/insurance-policy", insurancePolicyRoute);
 
 /** #################### ACCOUNT  ########################*/
   accountRoute.post("/list",[
     accountValidation.list,
-  ], accountActions.list);
+  ], agentController.accountActions.list);
 
   Router.use("/account", accountRoute);
 // };

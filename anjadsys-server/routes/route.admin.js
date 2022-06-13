@@ -1,3 +1,5 @@
+const express = require("express");
+
 const { 
   userValidation,
   serviceValidation,
@@ -17,23 +19,7 @@ const {
   checkDuplicateUsernameOrNickname 
 } = require("../middleware/middleware.shared");
 
-const {
-  userActions,
-  serviceActions,
-  otherServiceActions,
-  agentActions,
-  sharedActions,
-  accidentActions,
-  carTypeActions,
-  carModelActions,
-  carActions,
-  regionActions,
-  insurancePolicyActions,
-  accountActions,
-  statisticsActions,
-  SupplierActions
-} = require("../controller/controller.admin");
-const express = require("express");
+const { adminController } = require("../controller");
 
 Router = express.Router();
 generalRoute = express.Router();
@@ -59,21 +45,21 @@ Router.all('*', [
   userRoute.post("/create",[
     userValidation.create,
     checkDuplicateUsernameOrNickname
-  ], userActions.create);
+  ], adminController.userActions.create);
 
   userRoute.route("/:userID")
     .all(userValidation.userID)
-    .delete(userActions.delete)
+    .delete(adminController.userActions.delete)
     .put([
       userValidation.update,
-    ], userActions.update);
+    ], adminController.userActions.update);
 
   userRoute.route("/list*")
   .all(userValidation.list);
 
-  userRoute.post("/list", userActions.list);
+  userRoute.post("/list", adminController.userActions.list);
   
-  userRoute.post("/list-light", userActions.lightList);
+  userRoute.post("/list-light", adminController.userActions.lightList);
 
   Router.use('/user', userRoute);
 
@@ -82,11 +68,11 @@ Router.all('*', [
   supplierRoute.post("/create",[
     supplierValidation.create,
     checkDuplicateUsernameOrNickname
-  ], userActions.create);
+  ], adminController.userActions.create);
 
   supplierRoute.post("/account",[
     supplierValidation.listAccount,
-  ], SupplierActions.list);
+  ], adminController.SupplierActions.list);
 
   Router.use('/supplier', supplierRoute);
   
@@ -94,18 +80,18 @@ Router.all('*', [
 
   serviceRoute.post("/add",[
     serviceValidation.add,
-  ], serviceActions.add);
+  ], adminController.serviceActions.add);
 
   serviceRoute.post("/list",[
     serviceValidation.list,
-  ], serviceActions.list);
+  ], adminController.serviceActions.list);
   
   serviceRoute.route("/:serviceID")
     .all(serviceValidation.serviceID)
-    .delete(serviceActions.delete)
+    .delete(adminController.serviceActions.delete)
     .put([
       serviceValidation.update,
-    ], serviceActions.update);
+    ], adminController.serviceActions.update);
   
   Router.use('/service', serviceRoute);
 
@@ -113,18 +99,18 @@ Router.all('*', [
 
 otherServiceRoute.post("/add",[
     otherServiceValidation.add,
-  ], otherServiceActions.add);
+  ], adminController.otherServiceActions.add);
 
   otherServiceRoute.post("/list",[
     otherServiceValidation.list,
-  ], otherServiceActions.list);
+  ], adminController.otherServiceActions.list);
 
   otherServiceRoute.route('/:otherServiceID')
   .all(otherServiceValidation.otherServiceID)
-  .delete(otherServiceActions.delete)
+  .delete(adminController.otherServiceActions.delete)
   .put([
     otherServiceValidation.update,
-  ], otherServiceActions.update);
+  ], adminController.otherServiceActions.update);
 
   Router.use('/other-service', otherServiceRoute);
 
@@ -132,25 +118,25 @@ otherServiceRoute.post("/add",[
 
 agentLimitsRoute.post("/add",[
     agentLimitsValidation.add,
-  ], agentActions.add);
+  ], adminController.agentActions.add);
 
   agentLimitsRoute.delete("/:agentLimitID",[
     agentLimitsValidation.agentLimitID,
-  ], agentActions.delete);
+  ], adminController.agentActions.delete);
 
   agentLimitsRoute.post("/list",[
     agentLimitsValidation.list,
-  ], agentActions.list);
+  ], adminController.agentActions.list);
 
   Router.use('/agent-limits', agentLimitsRoute);
 
 /** #################### GENERAL API ########################*/
 
-  generalRoute.get("/regions-roles", sharedActions.getRegionsAndRoles);
+  generalRoute.get("/regions-roles", adminController.sharedActions.getRegionsAndRoles);
 
-  generalRoute.get("/regions", regionActions.list);
+  generalRoute.get("/regions", adminController.sharedActions.listRegions);
 
-  generalRoute.get("/statistics", statisticsActions.list);
+  generalRoute.get("/statistics", adminController.sharedActions.statistics);
 
   Router.use('/general', generalRoute);
 
@@ -158,18 +144,18 @@ agentLimitsRoute.post("/add",[
   
   carTypeRoute.post("/add",[
     carTypeValidation.add
-  ], carTypeActions.add);
+  ], adminController.carTypeActions.add);
 
   carTypeRoute.route('/:carTypeId')
   .all(carTypeValidation.carTypeId)
-  .delete(carTypeActions.delete)
+  .delete(adminController.carTypeActions.delete)
   .put([
     carTypeValidation.update
-  ], carTypeActions.update);
+  ], adminController.carTypeActions.update);
 
   carTypeRoute.post("/list",[
     carTypeValidation.list,
-  ], carTypeActions.list);
+  ], adminController.carTypeActions.list);
 
   Router.use('/car-type', carTypeRoute);
 
@@ -177,72 +163,72 @@ agentLimitsRoute.post("/add",[
 
   carModelRoute.post("/add",[
     carModelValidation.add
-  ], carModelActions.add);
+  ], adminController.carModelActions.add);
 
   carModelRoute.route("/:carModelId")
   .all(carModelValidation.carModelId)
-  .delete(carModelActions.delete)
+  .delete(adminController.carModelActions.delete)
   .put([
     carModelValidation.update,
-  ], carModelActions.update);
+  ], adminController.carModelActions.update);
 
   carModelRoute.post("/list",[
     carModelValidation.list,
-  ], carModelActions.list);
+  ], adminController.carModelActions.list);
 
   Router.use('/car-model', carModelRoute);
 
   /** #################### CAR ########################*/
   carRoute.post("/add",[
     carValidation.add
-  ], carActions.add);
+  ], adminController.carActions.add);
 
   carRoute.route('/:carId')
   .all(carValidation.carId)
-  .delete(carActions.delete)
+  .delete(adminController.carActions.delete)
   .put([
     carValidation.update,
-  ], carActions.update);
+  ], adminController.carActions.update);
 
   carRoute.post("/list",[
     carValidation.list,
-  ], carActions.list);
+  ], adminController.carActions.list);
 
   Router.use('/car', carRoute);
 
   /** #################### ACCIDENT ########################*/
   accidentRoute.post("/add",[
     accidentValidation.add
-  ], accidentActions.add);
+  ], adminController.accidentActions.add);
 
   accidentRoute.route('/:accidentId')
   .all(accidentValidation.accidentId)
-  .delete(accidentActions.delete)
+  .delete(adminController.accidentActions.delete)
   .put([
     accidentValidation.update,
-  ], accidentActions.update);
+  ], adminController.accidentActions.update);
 
   accidentRoute.post("/list",[
     accidentValidation.list,
-  ], accidentActions.list); 
+  ], adminController.accidentActions.list); 
 
   Router.use('/accident', accidentRoute);
   
   /** #################### INSURANCE POLICY ########################*/
   insurancePolicyRoute.post("/add",[
     insurancePolicyValidation.add
-  ], insurancePolicyActions.add);
+  ], adminController.insurancePolicyActions.add);
 
   insurancePolicyRoute.route('/:insurancePolicyId')
   .all(insurancePolicyValidation.insurancePolicyId)
-  .delete(insurancePolicyActions.delete)
+  .delete(adminController.insurancePolicyActions.delete)
   .put([
     insurancePolicyValidation.update,
-  ], insurancePolicyActions.update);
+  ], adminController.insurancePolicyActions.update);
 
   insurancePolicyRoute.post("/list",[
     insurancePolicyValidation.list,
-  ], insurancePolicyActions.list);
+  ], adminController.insurancePolicyActions.list);
 
   Router.use('/insurance-policy', insurancePolicyRoute);
 
@@ -250,7 +236,7 @@ agentLimitsRoute.post("/add",[
 
   accountRoute.post("/list",[
     accountValidation.list,
-  ], accountActions.list);
+  ], adminController.accountActions.list);
 
   Router.use('/account', accountRoute);
 
