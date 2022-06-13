@@ -177,14 +177,14 @@
     li {
       border: 1px solid #ddd;
       border-radius: 5px;
-      height: 30px;
-      width: 30px;
+      height: 33px;
+      width: 33px;
 
       a {
         margin: auto;
         vertical-align: sub;
-        height: 30px;
-        width: 30px;
+        height: 33px;
+        width: 33px;
       }
       span:last-child{
         vertical-align: middle;
@@ -193,8 +193,8 @@
       &.pagination-next.disabled
       &.pagination-previous,
       &.pagination-previous.disabled{
-        height: 30px;
-        width: 30px;
+        height: 33px;
+        width: 33px;
         a::after{
           vertical-align: middle;
         }
