@@ -5,7 +5,8 @@ import { ShowServicesComponent } from './show/show-services.component';
 const routes: Routes = [
   {
     path: 'show',
-    component: ShowServicesComponent
+    component: ShowServicesComponent,
+    data: {breadcrumb: 'اظهار جميع الخدمات'}
   }
 ];
 

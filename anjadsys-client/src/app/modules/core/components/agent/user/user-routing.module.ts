@@ -7,10 +7,12 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowUsersComponent,
+    data: {breadcrumb: 'اظهار جميع الزبائن'}
   },
   {
     path: 'add',
-    component: AddUserComponent
+    component: AddUserComponent,
+    data: {breadcrumb: 'اضافة زبون جديد'}
   },
 ];
 

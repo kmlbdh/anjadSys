@@ -6,11 +6,13 @@ import { ShowAccidentComponent } from './show/show-accident.component';
 const routes: Routes = [
   {
     path: 'add',
-    component: AddAccidentComponent
+    component: AddAccidentComponent,
+    data: {breadcrumb: 'اضافة بلاغ عن حادث جديد'}
   },
   {
     path: 'show',
-    component: ShowAccidentComponent
+    component: ShowAccidentComponent,
+    data: {breadcrumb: 'اظهار جميع بلاغات الحوادث'}
   },
 
 ];

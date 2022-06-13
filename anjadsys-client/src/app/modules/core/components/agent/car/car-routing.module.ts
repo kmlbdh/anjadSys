@@ -8,15 +8,18 @@ import { CarTypeModule } from './car-type/car-type.module';
 const routes: Routes = [
   {
     path: 'car-customer',
-    loadChildren: () => CarCustomerModule
+    loadChildren: () => CarCustomerModule,
+    // data: {breadcrumb: 'سيارات الزبائن'}
   },
   {
     path: 'car-type',
-    loadChildren: () => CarTypeModule
+    loadChildren: () => CarTypeModule,
+    // data: {breadcrumb: 'انواع السيارات'}
   },
   {
     path: 'car-model',
-    loadChildren: () => CarModelModule
+    loadChildren: () => CarModelModule,
+    // data: {breadcrumb: 'موديلات السيارات'}
   }
 ];
 

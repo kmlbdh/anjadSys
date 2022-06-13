@@ -6,11 +6,13 @@ import { ShowInsurancePolicyComponent } from './show/show-insurance-policy.compo
 const routes: Routes = [
   {
     path: 'add',
-    component: AddInsurancePolicyComponent
+    component: AddInsurancePolicyComponent,
+    data: {breadcrumb: 'اضافة بوليصة تأمين جديد'}
   },
   {
     path: 'show',
-    component: ShowInsurancePolicyComponent
+    component: ShowInsurancePolicyComponent,
+    data: {breadcrumb: 'اظهار جميع بوالص التأمين'}
   },
 ];
 

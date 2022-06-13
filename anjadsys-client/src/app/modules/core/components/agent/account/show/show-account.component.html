@@ -1,8 +1,4 @@
 <div id="main-container">
-  <div class="page-header card">
-    <p>اظهار جميع الحركات المالية</p>
-  </div>
-
   <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
     <form [ngClass]="{'open': showBottom}" [formGroup]="searchAccountForm" #form="ngForm" (ngSubmit)="searchAccount(form)">
       <div class="form-sec1">

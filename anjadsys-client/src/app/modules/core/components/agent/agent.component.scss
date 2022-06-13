@@ -172,7 +172,10 @@
   }
 
   #page-container{
-    flex-basis: 80.5%;
+    flex-basis: 80%;
     position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: #f3f3f3;
   }
 }

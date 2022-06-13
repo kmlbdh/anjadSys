@@ -1,8 +1,4 @@
 <div id="main-container" class="d-print-none">
-  <div class="page-header card">
-    <p>جميع الزبائن</p>
-  </div>
-
   <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
     <form [ngClass]="{'open': showBottom}" [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
       <div class="form-sec1">

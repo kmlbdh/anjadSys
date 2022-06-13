@@ -31,7 +31,9 @@
     <app-nav [navData]="navData"></app-nav>
     <div id="page-container">
       <app-loader></app-loader>
-      <router-outlet></router-outlet>
+      <router-outlet>
+        <app-breadcrumb></app-breadcrumb>
+      </router-outlet>
     </div>
   </div>
 </div>

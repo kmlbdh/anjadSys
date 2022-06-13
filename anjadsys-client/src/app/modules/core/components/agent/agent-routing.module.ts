@@ -16,27 +16,33 @@ const routes: Routes = [
     children: [
       {
         path: 'user',
-        loadChildren: () => UserModule
+        loadChildren: () => UserModule,
+        data: {breadcrumb: 'المستخدمين'}
       },
       {
         path: 'service',
-        loadChildren: () => ServiceModule
+        loadChildren: () => ServiceModule,
+        data: {breadcrumb: 'الخدمات'}
       },
       {
         path: 'account',
-        loadChildren: () => AccountModule
+        loadChildren: () => AccountModule,
+        data: {breadcrumb: 'المالية'}
       },
       {
         path: 'car',
-        loadChildren: () => CarModule
+        loadChildren: () => CarModule,
+        data: {breadcrumb: 'السيارات'}
       },
       {
         path: 'accident',
-        loadChildren: () => AccidentModule
+        loadChildren: () => AccidentModule,
+        data: {breadcrumb: 'الحوادث'}
       },
       {
         path: 'insurance-policy',
-        loadChildren: () => InsurancePolicyModule
+        loadChildren: () => InsurancePolicyModule,
+        data: {breadcrumb: 'بوالص التأمين'}
       },
       {
         path: '',

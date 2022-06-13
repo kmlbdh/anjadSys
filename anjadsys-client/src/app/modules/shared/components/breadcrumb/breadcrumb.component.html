@@ -1,4 +1,4 @@
-<ol class="breadcrumb card">
+<ol *ngIf="breadcrumbs.length > 0" class="breadcrumb card">
   <li *ngFor="let breadcrumb of breadcrumbs">
     <!-- <span [routerLink]="breadcrumb.url" routerLinkActive="router-link-active"> -->
     <span>

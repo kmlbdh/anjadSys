@@ -6,6 +6,7 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowCarTypesComponent,
+    data: {breadcrumb: 'اظهار جميع انواع السيارات'}
   }
 ];
 
