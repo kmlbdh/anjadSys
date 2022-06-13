@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTaxi, faUsers, faWrench, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTaxi, faUsers, faWrench, faAngleDown, faAngleUp, faFileMedicalAlt } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from 'src/app/modules/shared/components/nav/nav.component';
 import { UserLoggedInAPI } from '../../model/general';
 import { AgentService } from './agent.service';
@@ -107,7 +107,7 @@ export class AgentComponent implements OnInit {
     {
       id: 7,
       name: 'بوليصة التأمين',
-      faIcon: faCarCrash,
+      faIcon: faFileMedicalAlt,
       hide: true,
       children: [
         {

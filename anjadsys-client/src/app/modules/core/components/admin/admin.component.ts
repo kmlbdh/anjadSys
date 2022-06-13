@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench, faClipboardList, faFileMedicalAlt } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { NavInput } from '../../../shared/components/nav/nav.component';
 
@@ -175,7 +175,7 @@ export class AdminComponent implements OnInit {
     {
       id: 9,
       name: 'بوالص التأمين',
-      faIcon: faCarCrash,
+      faIcon: faFileMedicalAlt,
       hide: true,
       children: [
         {
