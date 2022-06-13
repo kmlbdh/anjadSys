@@ -52,7 +52,7 @@
         overflow-y: hidden;
         @include prefix(transition, moz webkit o, max-height 0.5s ease-in-out);
         &.close {
-          max-height: 130px;
+          max-height: 155px;
         }
 
         &>li{
