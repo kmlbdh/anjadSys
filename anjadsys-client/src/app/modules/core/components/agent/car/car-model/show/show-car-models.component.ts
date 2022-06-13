@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil } from 'rxjs';
 import { CarModelAPI, CarModelArrayAPI, SearchCarModel } from 'src/app/modules/core/model/car';
 import { AgentService } from '../../../agent.service';
 import { CarTypeAPI, SearchCarType, CarTypeArrayAPI } from '../../../../../model/car';
@@ -52,7 +52,9 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   getCarModels(searchConditions: SearchCarModel){
     this.agentService.CarModelsAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
+    .pipe(
+      first(),
+      takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response: CarModelArrayAPI) =>{
         if(response.data){
@@ -71,6 +73,9 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
       next: (response: CarTypeArrayAPI) => {
         if(response.data){
           this.carTypes = response.data;
+          this.searchConditions = {carTypeId: this.carTypes[0].id};
+
+          this.getCarModels(this.searchConditions);
         }
       },
       error: (error) => console.log(error)

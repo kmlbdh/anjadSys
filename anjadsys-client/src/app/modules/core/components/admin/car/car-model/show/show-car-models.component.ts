@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, first } from 'rxjs';
 import { CarModelAPI, CarModelArrayAPI, SearchCarModel } from 'src/app/modules/core/model/car';
 import { AdminService } from '../../../admin.service';
 import { SearchCarType, CarTypeArrayAPI, CarTypeAPI } from '../../../../../model/car';
@@ -36,7 +36,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit(): void {
-    this.getCarTypes({limit: 999999999999999})
+    this.getCarTypes({limit: 999999999999999});
   }
 
   ngOnDestroy(): void {
@@ -90,11 +90,17 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   getCarTypes(searchConditions: SearchCarType){
     this.adminService.CarTypesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
+    .pipe(
+      first(),
+      takeUntil(this.unsubscribe$)
+     )
     .subscribe({
       next: (response: CarTypeArrayAPI) => {
         if(response.data){
           this.carTypes = response.data;
+          this.searchConditions = {carTypeId: this.carTypes[0].id};
+
+          this.getCarModels(this.searchConditions);
         }
       },
       error: (error) => console.log(error)
