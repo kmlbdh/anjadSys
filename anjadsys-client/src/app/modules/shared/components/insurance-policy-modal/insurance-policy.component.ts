@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InsurancePolicyAPI } from 'src/app/modules/core/model/insurancepolicy';
-import { ServicePolicyAPI } from 'src/app/modules/core/model/service';
-import { UserAPI } from 'src/app/modules/core/model/user';
 
 @Component({
   selector: 'app-insurance-policy',
