@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CarCustomerModule } from './car-customer/car-customer.module';
-import { CarTypeModule } from './car-type/car-type.module';
-import { CarModelModule } from './car-model/car-model.module';
 
 const routes: Routes = [
   {
     path: 'car-customer',
-    loadChildren: () => CarCustomerModule
+    // loadChildren: () => CarCustomerModule
+    loadChildren: () => import('./car-customer/car-customer.module')
+    .then(m => m.CarCustomerModule),
   },
   {
     path: 'car-type',
-    loadChildren: () => CarTypeModule
+    // loadChildren: () => CarTypeModule
+    loadChildren: () => import('./car-type/car-type.module')
+    .then(m => m.CarTypeModule),
   },
   {
     path: 'car-model',
-    loadChildren: () => CarModelModule
+    // loadChildren: () => CarModelModule
+    loadChildren: () => import('./car-model/car-model.module')
+    .then(m => m.CarModelModule),
   }
 ];
 @NgModule({
