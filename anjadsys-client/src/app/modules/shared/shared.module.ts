@@ -11,8 +11,6 @@ import { CarModalComponent } from './components/car-modal/car-modal.component';
 import { UserModalComponent } from './components/user-modal/user-modal.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
-
-
 @NgModule({
   declarations: [
     NavComponent,
@@ -22,17 +20,17 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     OtherServiceModalComponent,
     CarModalComponent,
     UserModalComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   exports: [
     NavComponent,
     LoaderComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
   ]
 })
 export class SharedModule { }
