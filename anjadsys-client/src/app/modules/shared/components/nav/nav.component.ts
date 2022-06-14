@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../models/nav';
 export { NavInput } from '../../models/nav';
+
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
