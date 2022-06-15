@@ -1,6 +1,7 @@
 {
   "name": "anjad-sys-client",
   "version": "0.0.0",
+  "sideEffects": false,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
