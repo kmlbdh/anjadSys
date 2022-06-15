@@ -1,6 +1,6 @@
 
 const validation = require("../middleware.validation");
-const { otherServiceSchema } = require("../../schema/schema.validation.admin");
+const otherServiceSchema = require("../../schema/admin/schema.validation.admin.otherservices");
 
 const otherServiceValidation = {
   add: validation(otherServiceSchema.add, 'body'),

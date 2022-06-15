@@ -1,5 +1,5 @@
 const validation = require("../middleware.validation");
-const { supplierSchema } = require("../../schema/schema.validation.admin");
+const supplierSchema = require("../../schema/admin/schema.validation.admin.suppliers");
 
 const supplierValidation = {
   create: validation(supplierSchema.create, 'body'),

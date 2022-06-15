@@ -1,5 +1,5 @@
 const validation = require("../middleware.validation");
-const { carSchema } = require("../../schema/schema.validation.admin");
+const carSchema = require("../../schema/admin/schema.validation.admin.cars");
 
 const carValidation = {
   add: validation(carSchema.add, 'body'),

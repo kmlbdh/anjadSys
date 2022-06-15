@@ -1,5 +1,5 @@
 const validation = require("../middleware.validation");
-const { userSchema } = require("../../schema/schema.validation.agent");
+const userSchema = require("../../schema/agent/schema.validation.agent.users");
 
 const userValidation = {
   create: validation(userSchema.create, 'body'),
