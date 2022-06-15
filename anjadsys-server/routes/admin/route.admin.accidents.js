@@ -1,6 +1,6 @@
 const accidentRoute = require("express").Router();
 
-const { accidentValidation } = require("../../middleware/middleware.admin");
+const accidentValidation = require('../../middleware/admin/middleware.admin.accidents');
 const accidentController = require("../../controller/admin/controller.admin.accidents");
 
 accidentRoute.post("/add",[

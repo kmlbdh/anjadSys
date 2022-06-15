@@ -1,6 +1,6 @@
 const otherServiceRoute = require("express").Router();
 
-const { otherServiceValidation } = require("../../middleware/middleware.admin");
+const otherServiceValidation = require('../../middleware/admin/middleware.admin.otherservices');
 const otherServiceController = require("../../controller/admin/controller.admin.otherservices");
 
 otherServiceRoute.post("/add",[

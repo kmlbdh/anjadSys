@@ -1,6 +1,6 @@
 const carModelRoute = require("express").Router();
 
-const { carModelValidation } = require("../../middleware/middleware.admin");
+const carModelValidation = require('../../middleware/admin/middleware.admin.carmodels');
 const carModelController = require("../../controller/admin/controller.admin.carmodels");
 
 carModelRoute.post("/add",[

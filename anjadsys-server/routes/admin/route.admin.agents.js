@@ -1,18 +1,18 @@
 const agentLimitsRoute = require("express").Router();
 
-const { agentLimitsValidation } = require("../../middleware/middleware.admin");
+const agentValidation = require('../../middleware/admin/middleware.admin.agents');
 const agentController = require("../../controller/admin/controller.admin.agents");
 
 agentLimitsRoute.post("/add",[
-  agentLimitsValidation.add,
+  agentValidation.add,
 ], agentController.add);
 
 agentLimitsRoute.delete("/:agentLimitID",[
-  agentLimitsValidation.agentLimitID,
+  agentValidation.agentLimitID,
 ], agentController.delete);
 
 agentLimitsRoute.post("/list",[
-  agentLimitsValidation.list,
+  agentValidation.list,
 ], agentController.list);
 
 module.exports = agentLimitsRoute;

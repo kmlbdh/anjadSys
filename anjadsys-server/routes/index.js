@@ -1,4 +1,4 @@
-const { auth, verifyLogin } = require("../middleware/middleware.shared");
+const { auth, verifyLoginValidation } = require("../middleware/middleware.shared");
 const loginController = require("../controller/shared/controller.shared.login");
 
 const adminRouter = require('express').Router();
@@ -33,6 +33,6 @@ agentRouter
   .use("/account", require('./agent/route.agent.accounts'));
 
 loginRouter
-    .post("", verifyLogin, loginController.login);
+    .post("", verifyLoginValidation, loginController.login);
 
 module.exports = { adminRouter, agentRouter, loginRouter };

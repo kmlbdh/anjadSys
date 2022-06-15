@@ -1,6 +1,6 @@
 const accountRoute = require("express").Router();
 
-const { accountValidation } = require("../../middleware/middleware.admin");
+const accountValidation = require('../../middleware/admin/middleware.admin.accounts');
 const accountController = require("../../controller/admin/controller.admin.accounts");
 
 accountRoute.post("/list",[

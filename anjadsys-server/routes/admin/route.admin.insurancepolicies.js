@@ -1,6 +1,6 @@
 const insurancePolicyRoute = require("express").Router();
 
-const { insurancePolicyValidation } = require("../../middleware/middleware.admin");
+const insurancePolicyValidation = require('../../middleware/admin/middleware.admin.insurancepolicies');
 const insurancePolicyController = require("../../controller/admin/controller.admin.insurancepolicies");
 
 insurancePolicyRoute.post("/add",[

@@ -1,9 +1,9 @@
 const supplierRoute = require("express").Router();
 
-const { supplierValidation } = require("../../middleware/middleware.admin");
+const supplierValidation = require('../../middleware/admin/middleware.admin.suppliers');
 const { checkDuplicateUsernameOrNickname } = require("../../middleware/middleware.shared");
 const supplierController = require("../../controller/admin/controller.admin.suppliers");
-const  userController = require("../../controller/admin/controller.admin.users");
+const userController = require("../../controller/admin/controller.admin.users");
 
 supplierRoute.post("/create",[
   supplierValidation.create,

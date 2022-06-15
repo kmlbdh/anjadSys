@@ -1,6 +1,6 @@
 const userRoute = require('express').Router();
 
-const { userValidation, notBlockedUser } = require("../../middleware/middleware.agent");
+const { userValidation, notBlockedUser } = require("../../middleware/agent/middleware.agent.users");
 const { checkDuplicateUsernameOrNickname } = require("../../middleware/middleware.shared");
 const userController  = require('../../controller/agent/controller.agent.users');
 

@@ -14,10 +14,7 @@ const INTERR = "INT_ERR";
 
 //debugging NOT FOR PRODUCTION
 const verifyTokenLog = util.debuglog("middleware.auth-VerifyToken");
-const isAdminLog = util.debuglog("middleware.auth-isAdmin");
-const isAgentLog = util.debuglog("middleware.auth-isAgent");
 const isUserTypeLog = util.debuglog("middleware.auth-isUserType");
-const isCustomerLog = util.debuglog("middleware.auth-isCustomer");
 const checkRoleLog = util.debuglog("middleware.checkRole");
 const checkDuplicateLog = util.debuglog("middleware.auth-checkDuplicateUsernameOrNickname");
 
@@ -94,7 +91,7 @@ const checkDuplicateUsernameOrNickname = async(req, res, next) => {
   }
 };
 
-const verifyLogin =  validation(login, 'body');
+const verifyLoginValidation =  validation(login, 'body');
 
 const checkRole = async(roleName, req, res) => {
   try{
@@ -127,4 +124,4 @@ const checkRole = async(roleName, req, res) => {
   }
 };
 
-module.exports = { auth, verifyLogin, checkDuplicateUsernameOrNickname };
+module.exports = { auth, verifyLoginValidation, checkDuplicateUsernameOrNickname };

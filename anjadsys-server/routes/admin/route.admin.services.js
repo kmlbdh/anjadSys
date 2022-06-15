@@ -1,6 +1,6 @@
 const serviceRoute = require("express").Router();
 
-const { serviceValidation } = require("../../middleware/middleware.admin");
+const serviceValidation = require('../../middleware/admin/middleware.admin.services');
 const serviceController = require("../../controller/admin/controller.admin.services");
 
 serviceRoute.post("/add",[
