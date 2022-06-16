@@ -75,8 +75,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     note: [''],
     regionId: ['', Validators.required],
     customerId: ['', Validators.required],
-    carId: ['', Validators.required],
-    insurancePolicyId: ['', Validators.required],
+    carId: [{value: '', disabled: true}, Validators.required],
+    insurancePolicyId: [{value: '', disabled: true}, Validators.required],
   });
 
   addServiceAccidentForm = this.fb.group({
@@ -237,10 +237,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       newServicePolicy.propertiesUI = {hide: false};
       return newServicePolicy;
     });
-
     // console.log('servicesPolicies', this.servicesPolicies)
   }
-
 
   searchCustomer(event: Event): void{
     // console.log(event);
@@ -275,7 +273,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
-      distinctUntilChanged(),
       mergeMap(text => forkJoin([
         of(this.selectedCustomer?.id!),
         of(text)
@@ -286,6 +283,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if(response.data){
           this.cars = response.data;
+          this.formCont('carId').enable();
         }
         this.spinner.car = false;
         // console.log(response);
@@ -355,6 +353,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
           this.insurancePolicies = response.data;
+          this.formCont('insurancePolicyId').enable();
         }
         this.spinner.insurancePolicy = false;
       },
@@ -435,37 +434,49 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
     this.selectedCar = undefined;
-    this.formCont('carId').setValue('');
-    this.formCont('customerId').setValue('');
 
-    this.cancelCarInput(event);
+    this.formCont('customerId').setValue('');
 
     this.formCont('driverName').setValue('');
     this.formCont('driverIdentity').setValue('');
     this.formCont('insurancePolicyId').setValue('');
+
+    this.formCont('carId').disable();
+
+    this.cancelCarInput(event);
+    this.suppliers = [];
   }
 
   cancelCarInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCar = undefined;
     this.formCont('carId').setValue('');
 
-    this.cancelInsurancePolicyInput(event);
-
     this.insurancePolicyNotValidMsg = undefined;
+    this.formCont('insurancePolicyId').disable();
+
+    this.cancelInsurancePolicyInput(event);
   }
 
   cancelInsurancePolicyInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedInsurancePolicy = undefined;
-    this.servicesPolicies = [];
     this.formCont('insurancePolicyId').setValue('');
 
+    this.resetArraysOfData();
     this.resetAccidentServiceFormToEmpty();
+  }
+
+  resetArraysOfData(){
+    this.servicesPolicies = [];
+    this.servicesAccident = [];
   }
 
   resetAccidentServiceFormToEmpty(){

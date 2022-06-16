@@ -224,7 +224,7 @@
   <div class="page-content card">
     <form [formGroup]="addServiceAccidentForm" #formS="ngForm" (ngSubmit)="addServiceAccident(formS)">
       <div *ngIf="!selectedInsurancePolicy" class="alert alert-danger" style="width:100%">
-        <div>يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
+        <div style="font-weight:600">يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
       </div>
       <div class="form-sec0 custom-row">
 

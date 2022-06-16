@@ -98,6 +98,12 @@
 
   <div class="page-content card">
     <form [formGroup]="addServicePolicyForm" #formS="ngForm" (ngSubmit)="addServicePolicy(formS)">
+      <div *ngIf="suppliers.length === 0" class="alert alert-danger" style="width:100%">
+        <div style="font-weight:600">
+           اختر الزبون لاظهار الموردين
+        </div>
+      </div>
+
       <div class="form-sec0 custom-row">
 
         <div class="form-control-group">
@@ -163,11 +169,6 @@
               المورد مطلوب تعبئته
             </div>
           </div>
-          <div *ngIf="suppliers.length === 0" class="alert alert-danger">
-           <div>
-            لاظهار الموردين، قم باضافة الزبون
-          </div>
-         </div>
         </div>
 
         <div class="btn-container center">

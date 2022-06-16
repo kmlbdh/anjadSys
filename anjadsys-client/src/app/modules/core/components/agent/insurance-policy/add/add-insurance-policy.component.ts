@@ -52,7 +52,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     expireDate: ['', Validators.required],
     note: [''],
     customerId: ['', Validators.required],
-    carId: ['', Validators.required],
+    carId: [{value: '', disabled: true}, Validators.required],
   });
 
   addServicePolicyForm = this.fb.group({
@@ -209,7 +209,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
-      distinctUntilChanged(),
+      // distinctUntilChanged(),
       mergeMap(text => forkJoin([
         of(this.selectedCustomer?.id!),
         of(text)
@@ -220,9 +220,9 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if(response.data){
           this.cars = response.data;
+          this.formCont('carId').enable();
         }
         this.spinner.car = false;
-        console.log(response);
       },
       error: (err: any) => {
         this.spinner.car = false;
@@ -383,16 +383,24 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
-    this.selectedCar = undefined;
-    this.formCont('carId').setValue('');
+
     this.formCont('customerId').setValue('');
+    this.formCont('carId').disable();
+
+    this.cancelCarInput(event);
+
+    this.suppliers = [];
+    this.servicesPolicy = [];
   }
 
   cancelCarInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCar = undefined;
+
     this.formCont('carId').setValue('');
   }
 
