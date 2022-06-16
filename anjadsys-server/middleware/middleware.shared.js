@@ -109,15 +109,15 @@ const checkRole = async(roleName, req, res) => {
     if(!user || !user.Role || user.Role.name !== roleName)
       throw new customError(`Require ${roleName} Role!`, INTERR);
     
-    const { id, username, companyName, Role: {name: role} } = user;
+    const { id, username, companyName, Role: {name: role}, servicesPackage } = user;
  
     if(roleName === 'admin'){
       req.admin = { id, username, companyName, role};
     } else if(roleName === 'agent'){
-      req.agent = { id, username, companyName, role};
+      req.agent = { id, username, companyName, role, servicesPackage};
     }
 
-    return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
+    return (req.admin || req.agent); //TODO wrong behaviour, fail on customer check 
   } catch(error){
     checkRoleLog(error);
     errorHandler(res, error, "Failed! can't get role!");

@@ -36,6 +36,7 @@ const userSchema = {
     agentId: Joi.string().trim().optional().allow(null),
     regionId: Joi.number().min(1).required(),
     roleId: Joi.number().min(1).required(),
+    servicesPackage: Joi.number().optional(),
     blocked: Joi.boolean().required(),
   }),
   userID: Joi.any().required(),
@@ -72,6 +73,7 @@ const userSchema = {
     agentId: Joi.string().trim().optional().allow(null),
     regionId: Joi.number().min(1).optional(),
     roleId: Joi.number().min(1).optional(),
+    servicesPackage: Joi.number().optional(),
     blocked: Joi.boolean().optional(),
   }),
   list: Joi.object().keys({

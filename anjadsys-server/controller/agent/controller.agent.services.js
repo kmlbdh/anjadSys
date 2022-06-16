@@ -23,9 +23,13 @@ module.exports = {
       
       if (req.body.serviceID)
         query.where.id = req.body.serviceID;
-      
+
+      //TODO need to be automated!! 0 is westbank, 1 jeru and 2 is for jer & west bank
+      if(req.agent.servicesPackage>=0){
+        query.where.packageType = {[Op.or]:[req.agent.servicesPackage, 2]};
+      }
+
       listServicesLog(query);
-     
       await sharedService.list(res, query, skip, limit);
   
     } catch(error) {

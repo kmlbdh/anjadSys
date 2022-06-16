@@ -108,11 +108,16 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     note: {
       type: DataTypes.TEXT,
+      allowNull: true,
     }, 
     blocked: {
       type: DataTypes.BOOLEAN,
       defaultValue: 0,
       allowNull: false
+    },
+    servicesPackage: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true
     }
   }, {
     sequelize,

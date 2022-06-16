@@ -23,14 +23,15 @@ module.exports = {
 
   add: async(req, res) => {
     try {
-      let {name, coverageDays, cost, supplierPercentage, note} = req.body;
+      let {name, coverageDays, cost, supplierPercentage, packageType, note} = req.body;
 
       const service = Service.build({
         name,
         coverageDays,
         cost,
         note,
-        supplierPercentage
+        supplierPercentage,
+        packageType
       });
 
       const savedService = await service.save();
@@ -102,6 +103,11 @@ module.exports = {
       
       if (req.body.serviceID)
         query.where.id = req.body.serviceID;
+      
+      //TODO need to be automated!! 0 is westbank, 1 jeru and 2 is for jer & west bank
+      if(req.body.packageType === 0 || req.body.packageType === 1){
+        query.where.packageType = {[Op.or]:[req.body.packageType, 2]};
+      }
       
       listServicesLog(query);
       await sharedService.list(res, query, skip, limit);

@@ -1,6 +1,7 @@
 const db = require("../../models");
 const bcrypt = require("bcryptjs");
 const util = require("util");
+const AutoID = require("auto-id-builder");
 const customError = require("../../classes/customError");
 const errorHandler = require("../../classes/errorhandler");
 
@@ -10,6 +11,8 @@ const updateUserLog = util.debuglog("controller.shared-updateUser");
 const listUsersLog = util.debuglog("controller.shared-listUsers");
 const lightListUsersLog = util.debuglog("controller.shared-lightListUsers");
 const deleteUserLog = util.debuglog("controller.shared-deleteUser");
+const createUniqueRefIdLog = util.debuglog("controller.shared-createUniqueRefId");
+const getUserLastIdLog = util.debuglog("controller.shared-getUserLastId");
 
 const User = db.User;
 const Role = db.Role;
@@ -53,7 +56,8 @@ module.exports = {
       roleId,
       regionId,
       agentId,
-      roleName
+      roleName,
+      servicesPackage = null
     } = data;
 
     const id = await createUniqueRefId(roleId, roleName);
@@ -80,7 +84,8 @@ module.exports = {
         note,
         roleId,
         regionId,
-        agentId
+        agentId,
+        servicesPackage
       });
       
       const savedUser = await user.save();
@@ -100,7 +105,6 @@ module.exports = {
         update.password = bcrypt.hashSync(update.password);
         delete update.confirmPassword;
       }
-
 
       const updatedUser = await User.update(update, query);
       updateUserLog(updatedUser[0]);
