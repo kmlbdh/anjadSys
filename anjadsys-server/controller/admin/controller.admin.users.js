@@ -22,8 +22,8 @@ module.exports = {
       const { roleId } = req.body;
         const role = await Role.findByPk(roleId, {raw: true});
   
-        if(!role || !role.name)
-          throw new customError("Failed! Role isn't exist!", INTERR);
+      if(!role || !role.name)
+        throw new customError("Failed! Role isn't exist!", INTERR);
   
       req.body.roleName = role.name;
       await sharedUser.add(res, req.body);
