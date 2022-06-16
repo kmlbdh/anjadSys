@@ -502,6 +502,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.servicesAccident = [];
   }
 
+
   resetAccidentServiceFormToEmpty(){
     this.maxDays = 0;
     this.addServiceAccidentForm.get('coverageDays')?.setValue(null);

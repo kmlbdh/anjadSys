@@ -394,14 +394,16 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
     this.selectedAgent = undefined;
-    this.selectedCar = undefined;
-    this.formCont('carId').setValue('');
+
     this.formCont('agentId').setValue('');
     this.formCont('customerId').setValue('');
 
     this.formCont('carId').disable();
+
+    this.cancelCarInput(event);
 
     this.services = [];
     this.suppliers = [];
@@ -411,6 +413,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelCarInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCar = undefined;
     this.formCont('carId').setValue('');
   }
