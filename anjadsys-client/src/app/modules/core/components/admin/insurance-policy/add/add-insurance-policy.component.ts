@@ -7,7 +7,7 @@ import { ServiceAPI } from 'src/app/modules/core/model/service';
 import { SearchUser, UserAPI, UsersAPI } from 'src/app/modules/core/model/user';
 import { AdminService } from '../../admin.service';
 import { NewInsurancePolicy } from '../../../../model/insurancepolicy';
-import { NewServicePolicy } from '../../../../model/service';
+import { NewServicePolicy, SearchService } from '../../../../model/service';
 
 @Component({
   selector: 'app-add-insurance-policy',
@@ -47,7 +47,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
     searchCustomerText$: new Subject<string>(),
-    searchAgentText$: new Subject<string>()
+    // searchAgentText$: new Subject<string>()
   };
 
   TIMEOUTMILISEC = 7000;
@@ -74,11 +74,9 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.getServices();
-
     this.searchCarAPI();
     this.searchCustomerAPI();
-    this.searchAgentAPI();
+    // this.searchAgentAPI();
   }
 
   ngOnDestroy(): void {
@@ -185,20 +183,20 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   }
 
-  searchAgent(event: Event){
-    console.log(event);
-    if(!(event instanceof KeyboardEvent)){
-      const controlValue = this.formCont('agentId')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      return;
-    }
+  // searchAgent(event: Event){
+  //   console.log(event);
+  //   if(!(event instanceof KeyboardEvent)){
+  //     const controlValue = this.formCont('agentId')?.value;
+  //     this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
+  //     return;
+  //   }
 
-    let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
-      this.spinner.agent = true;
-      this.searchTextObj.searchAgentText$.next(typeTxt);
-    }
-  }
+  //   let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
+  //   if(typeTxt && typeTxt !== ''){
+  //     this.spinner.agent = true;
+  //     this.searchTextObj.searchAgentText$.next(typeTxt);
+  //   }
+  // }
 
   searchCustomer(event: Event): void{
     // console.log(event);
@@ -206,6 +204,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
+      this.formCont('agentId').setValue(this.selectedAgent?.id);
+      this.getServices(Number(this.selectedCustomer?.Agent?.servicesPackage));
       return;
     }
 
@@ -282,30 +282,32 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchAgentAPI(){
-    let callback = (val: string) => this.adminService.UsersAPIs.list(
-      { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
+  // searchAgentAPI(){
+  //   let callback = (val: string) => this.adminService.UsersAPIs.list(
+  //     { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
 
-      this.searchTextObj.searchAgentText$.pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(500),
-        distinctUntilChanged(),
-        filter(txt => txt !== ''),
-        switchMap(callback)
-      ).subscribe({
-        next: (response: any) => {
-          if(response.data){
-            this.agents = response.data;
-            this.spinner.agent = false;
-          }
-          // console.log(response);
-        },
-        error: (err: any) => console.log(err)
-      });
-  }
+  //     this.searchTextObj.searchAgentText$.pipe(
+  //       takeUntil(this.unsubscribe$),
+  //       debounceTime(500),
+  //       distinctUntilChanged(),
+  //       filter(txt => txt !== ''),
+  //       switchMap(callback)
+  //     ).subscribe({
+  //       next: (response: any) => {
+  //         if(response.data){
+  //           this.agents = response.data;
+  //           this.spinner.agent = false;
+  //         }
+  //         // console.log(response);
+  //       },
+  //       error: (err: any) => console.log(err)
+  //     });
+  // }
 
-  getServices(): void{
-    this.adminService.ServicesAPIs.list()
+  getServices(packageType: number): void{
+    if(packageType == null) return alert('حدث خطأ في الخدمات، يرجى اضافة حزمة خدمات للوكيل!');
+    const searchConditions: SearchService = { packageType, skipLoadingInterceptor: true };
+    this.adminService.ServicesAPIs.list(searchConditions)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: response => {
@@ -371,7 +373,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       // console.log('total',total);
     });
     this.addInsurancePolicyForm.get('totalPrice')?.setValue(total);
-
   }
 
   fillFieldsByCustomer(event: Event){
