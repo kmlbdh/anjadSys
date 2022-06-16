@@ -110,8 +110,13 @@
           flex-wrap: nowrap;
           justify-content: space-between;
           align-items: center;
+          > .spinner{
+            margin-right: 5px;
+          }
           > input, select, textarea{
             flex-basis: 90%;
+            flex-grow: 12;
+            flex-shrink: 10;
           }
         }
       }

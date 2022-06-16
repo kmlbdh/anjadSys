@@ -81,8 +81,8 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     regionId: ['', Validators.required],
     customerId: ['', Validators.required],
     agentId: ['', Validators.required],
-    carId: ['', Validators.required],
-    insurancePolicyId: ['', Validators.required],
+    carId: [{value:'', disabled: true}, Validators.required],
+    insurancePolicyId: [{value:'', disabled: true}, Validators.required],
   });
 
   addServiceAccidentForm = this.fb.group({
@@ -103,7 +103,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
 
     this.searchCarAPI();
     this.searchCustomerAPI();
-    this.searchAgentAPI();
+    // this.searchAgentAPI();
   }
 
   ngOnDestroy(): void {
@@ -199,7 +199,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     return serviceDefualtDays + serviceDays;
   }
 
-
   getServicePolicyById(serviceId: number): ServicePolicyAPI{
     let servicePolicy = this.servicesPolicies.filter(servicePolicy => servicePolicy.serviceId === Number(serviceId));
     console.log('servicePolicy',servicePolicy);
@@ -251,20 +250,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     // console.log('servicesPolicies', this.servicesPolicies)
   }
 
-  searchAgent(event: Event){
-    // console.log(event);
-    if(!(event instanceof KeyboardEvent)){
-      const controlValue = this.formCont('agentId')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      return;
-    }
-
-    let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
-      this.spinner.agent = true;
-      this.searchTextObj.searchAgentText$.next(typeTxt);
-    }
-  }
 
   searchCustomer(event: Event): void{
     // console.log(event);
@@ -272,6 +257,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
+      this.formCont('agentId').setValue(this.selectedAgent?.id);
       return;
     }
 
@@ -300,7 +286,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
-      distinctUntilChanged(),
+      // distinctUntilChanged(),
       mergeMap(text => forkJoin([
         of(this.selectedCustomer?.id!),
         of(text)
@@ -311,6 +297,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if(response.data){
           this.cars = response.data;
+          this.formCont('carId').enable();
         }
         this.spinner.car = false;
         // console.log(response);
@@ -347,30 +334,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchAgentAPI(){
-    let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
-      { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true } as SearchUser);
-
-      this.searchTextObj.searchAgentText$.pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(500),
-        distinctUntilChanged(),
-        filter(txt => txt !== ''),
-        switchMap(callback)
-      ).subscribe({
-        next: (response: any) => {
-          if(response.data){
-            this.agents = response.data;
-          }
-          this.spinner.agent = false;
-          // console.log(response);
-        },
-        error: (err: any) => {
-          this.spinner.agent = false;
-          console.log(err);
-        }
-      });
-  }
 
   getRegions(): void {
     this.adminService.GeneralAPIs.regions()
@@ -405,6 +368,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       next: (response: InsurancePolicesAPI) => {
         if(response.data){
           this.insurancePolicies = response.data;
+          this.formCont('insurancePolicyId').enable();
         }
         this.spinner.insurancePolicy = false;
       },
@@ -424,7 +388,7 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       this.addAccidentForm.get('driverName')?.setValue(this.selectedCustomer?.username);
       this.addAccidentForm.get('driverIdentity')?.setValue(this.selectedCustomer?.identityNum);
       this.addAccidentForm.get('agentId')?.setValue(this.selectedCustomer?.Agent?.id);
-      this.getSuppliers(Number(this.selectedCustomer?.Region.id))
+      this.getSuppliers(Number(this.selectedCustomer?.Region.id));
     }, 0);
     this.searchTextObj.searchCarText$.next('');
   }
@@ -491,39 +455,51 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
     this.selectedAgent = undefined;
     this.selectedCar = undefined;
-    this.formCont('carId').setValue('');
+
     this.formCont('agentId').setValue('');
     this.formCont('customerId').setValue('');
-
-    this.cancelCarInput(event);
 
     this.formCont('driverName').setValue('');
     this.formCont('driverIdentity').setValue('');
     this.formCont('insurancePolicyId').setValue('');
+
+    this.formCont('carId').disable();
+
+    this.cancelCarInput(event);
+    this.suppliers = [];
   }
 
   cancelCarInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCar = undefined;
     this.formCont('carId').setValue('');
 
-    this.cancelInsurancePolicyInput(event);
-
     this.insurancePolicyNotValidMsg = undefined;
+    this.formCont('insurancePolicyId').disable();
+
+    this.cancelInsurancePolicyInput(event);
   }
 
   cancelInsurancePolicyInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedInsurancePolicy = undefined;
-    this.servicesPolicies = [];
     this.formCont('insurancePolicyId').setValue('');
 
+    this.resetArraysOfData();
     this.resetAccidentServiceFormToEmpty();
+  }
+
+  resetArraysOfData(){
+    this.servicesPolicies = [];
+    this.servicesAccident = [];
   }
 
   resetAccidentServiceFormToEmpty(){
