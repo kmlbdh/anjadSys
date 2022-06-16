@@ -11,11 +11,17 @@ export class InsurancePolicyComponent implements OnInit {
 
   currency = 'شيكل';
 
+  tax = 0.16;
+  taxOnCost!: number;
+  totalWithTaxes!: number;
+
   modalInsurancePolicy: InsurancePolicyAPI = {} as InsurancePolicyAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
+    this.taxOnCost = Math.ceil(Number(this.modalInsurancePolicy.totalPrice) * this.tax);
+    this.totalWithTaxes =  Number(this.modalInsurancePolicy.totalPrice) + this.taxOnCost;
   }
 
 

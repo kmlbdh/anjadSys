@@ -62,7 +62,6 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
           display: flex;
           flex-direction: column;
           flex-wrap: nowrap;
-          gap: 5px;
 
           & > div {
             display: flex;
@@ -81,6 +80,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         width: 100%;
         &.card{
           @include card;
+          padding: 0.7rem;
+          margin-bottom: 0;
         }
         .header-section{
           margin-bottom: 15px;
@@ -138,7 +139,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          margin-bottom: 0.8rem;
+          margin-bottom: 0.3rem;
           height: auto;
 
           &.for-table{
@@ -151,9 +152,38 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             font-size: 14.5px;
 
             tr.total-cost{
-              th, td{
-                padding: 0.5rem 0.5rem;
+              th{
+                padding-left:0;
               }
+              td{
+                padding-right:0;
+              }
+            }
+
+            .right-total-cost{
+              margin-top: 0.5rem;
+              display: flex;
+              flex-direction: column;
+              flex-wrap: nowrap;
+              border: 1px solid gray;
+              width: 27%;
+              align-items: start;
+              margin-left: 0;
+              margin-right: auto;
+              border-left: none;
+              padding-left: 0;
+            }
+            .left-total-cost{
+              margin-top: 0.5rem;
+              display: flex;
+              flex-direction: column;
+              border: 1px solid gray;
+              width: 27%;
+              align-items: end;
+              margin-left: auto;
+              margin-right: 0;
+              border-right: none;
+              padding-right: 0;
             }
           }
 
@@ -233,6 +263,37 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   td    { page-break-inside:avoid; page-break-after:auto }
   thead { display: table-row-group; }
   tfoot { display: table-footer-group }
+
+  tr.total-cost > th{
+    padding-left:0;
+  }
+  tr.total-cost >  td{
+    padding-right:0;
+  }
+
+  tr.total-cost > th div.right-total-cost{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    border: 1px solid gray;
+    width: 27%;
+    align-items: start;
+    margin-left: 0;
+    margin-right: auto;
+    border-left: none;
+    padding-left: 0;
+  }
+  tr.total-cost > td div.left-total-cost{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gray;
+    width: 27%;
+    align-items: end;
+    margin-left: auto;
+    margin-right: 0;
+    border-right: none;
+    padding-right: 0;
+  }
 
   .dont-print{
     display: none !important;

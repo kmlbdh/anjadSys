@@ -23,8 +23,12 @@
         <span>{{modalInsurancePolicy.Agent.companyName}}</span>
       </div>
       <div>
-        <label>العنوان : </label>
+        <label>عنوانه : </label>
         <span>{{modalInsurancePolicy.Agent.Region.name}} / {{modalInsurancePolicy.Agent.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهوية : </label>
+        <span>{{modalInsurancePolicy.Agent.identityNum}}</span>
       </div>
       <div>
         <label>رقم الهاتف : </label>
@@ -33,6 +37,10 @@
             /
           </ng-container>
            {{modalInsurancePolicy.Agent.jawwal2}}</span>
+      </div>
+      <div>
+        <label>كود الوكيل : </label>
+        <span>{{modalInsurancePolicy.Agent.id}}</span>
       </div>
 
     </div>
@@ -146,8 +154,20 @@
             </tr>
           </tbody>
           <tr class="total-cost">
-            <th colspan="3">التكلفة الاجمالية</th>
-            <td>{{modalInsurancePolicy.totalPrice}} {{currency}}</td>
+            <th colspan="3">
+              <div class="right-total-cost">
+                <span>المبلغ قبل الضريبة</span>
+                <span>ضريبة المبيعات</span>
+                <span>الاجمالي</span>
+              </div>
+            </th>
+            <td>
+              <div class="left-total-cost">
+                <span>{{modalInsurancePolicy.totalPrice}}</span>
+                <span>{{taxOnCost}}</span>
+                <span>{{totalWithTaxes}}</span>
+              </div>
+            </td>
           </tr>
         </table>
       </div>
