@@ -2,8 +2,10 @@ import { UserAPI } from './user';
 export interface SearchService {
   serviceName?: string;
   serviceID?: string;
-  skip?: number,
-  limit?: number,
+  packageType?: number;
+  skip?: number;
+  limit?: number;
+  skipLoadingInterceptor?: boolean;
 }
 
 export interface ServiceAPI {
@@ -13,6 +15,7 @@ export interface ServiceAPI {
   coverageDays: number;
   cost: number;
   supplierPercentage: number;
+  packageType: number;
   note: string;
   createdAt: Date;
   updatedAt: Date;
@@ -34,6 +37,7 @@ export interface NewService {
   cost: number;
   note: string;
   supplierPercentage: number;
+  packageType: number;
   propertiesUI?: PropertiesUI;
 }
 

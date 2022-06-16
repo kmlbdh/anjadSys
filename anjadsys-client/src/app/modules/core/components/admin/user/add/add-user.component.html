@@ -92,14 +92,14 @@
             </div>
           </div>
 
-        </div>
-
-        <div class="form-sec2">
-
           <div class="form-control-group">
             <label for="address">العنوان</label>
             <input id="address" type="text" name="address" formControlName="address"/>
           </div>
+
+        </div>
+
+        <div class="form-sec2">
 
           <div class="form-control-group">
             <label for="jawwal1">رقم الجوال الاول</label>
@@ -175,7 +175,21 @@
             && formCont('blocked')?.invalid" class="alert alert-danger">
 
             <div *ngIf="formCont('blocked').hasError('required')">
-            تفعيل الحساب مطلوب تعبئته.</div>
+            مطلوب الاختيار لحقل تفعيل الحساب.</div>
+           </div>
+          </div>
+
+          <div class="form-control-group" *ngIf="addServicesPackage">
+            <label for="servicesPackage">حزمة الخدمات الخاصة بـ:</label>
+            <select id="servicesPackage" name="servicesPackage" formControlName="servicesPackage">
+              <option *ngFor="let package of servicesPackageArray; let i = index" [value]="i">{{package}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('servicesPackage')?.touched)
+            && formCont('servicesPackage')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('servicesPackage').hasError('required')">
+            مطلوب الاختيار في حقل حزمة الخدمات</div>
            </div>
           </div>
 

@@ -6,7 +6,7 @@
         <div class="col-custom col-custom-2">التغطية الاساسية</div>
         <div class="col-custom col-custom-3">تكلفة</div>
         <div class="col-custom col-custom-4">نسبة الموردين</div>
-        <div class="col-custom col-custom-5">تاريخ الاضافة</div>
+        <div class="col-custom col-custom-5">حزمة الخدمة</div>
         <div class="col-custom col-custom-6">التحكم</div>
       </li>
       <ng-template [ngIf]="services.length === 0">
@@ -21,7 +21,8 @@
           <div class="col-custom col-custom-2" data-label="Coverage Days">{{service.coverageDays}} {{day}}</div>
           <div class="col-custom col-custom-3" data-label="Service Cost">{{service.cost}} {{currency}}</div>
           <div class="col-custom col-custom-4" data-label="Service Supplier Percentage">{{service.supplierPercentage | percent: '2.0'}}</div>
-          <div class="col-custom col-custom-5" data-label="Service Addition Date">{{service.createdAt | date: 'dd-MM-yyyy'}}</div>
+          <!-- <div class="col-custom col-custom-5" data-label="Service Addition Date">{{service.createdAt | date: 'dd-MM-yyyy'}}</div> -->
+          <div class="col-custom col-custom-5" data-label="Service Package Type">{{ packageTypeArray[service.packageType]}}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
              <button class="btn-primary" title="تعديل بيانات الخدمة">
               <fa-icon [icon]="editServiceIcon" (click)="goToEditService(service)"></fa-icon>

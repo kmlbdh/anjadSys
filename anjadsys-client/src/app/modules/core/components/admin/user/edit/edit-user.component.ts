@@ -19,12 +19,16 @@ export class EditUserComponent implements OnInit, OnDestroy {
   removePassword: boolean = true;
   removeIdentityNum: boolean = true;
   removeCompanyName: boolean = true;
+  addServicesPackage: boolean = false;
+
   private unsubscribe$ = new Subject<void>();
+
   user!: UserAPI;
   rolesAPI!: RoleAPI[];
   regionsAPI!: RegionAPI[];
 
   private keys = ['backspace', 'arrowleft', 'arrowright'];
+
   roles:{
     [index: string]: string;
   } = {
@@ -33,6 +37,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
     'supplier':  'مورد',
     'customer': 'زبون'
   };
+
+  servicesPackageArray = ['الضفة الغربية', 'القدس'];
 
   TIMEOUTMILISEC = 7000;
 
@@ -52,6 +58,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     roleId: ['', Validators.required],
     regionId: ['', Validators.required],
     blocked: ['', Validators.required],
+    servicesPackage: [0, Validators.required],
   }, {validators: ConfirmedValidator('password', 'confirmPassword')});
 
   constructor(
@@ -140,7 +147,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
         }
     });
 
-    console.log(formObj);
+    // console.log(formObj);
   }
 
   buildForm():void{
@@ -162,6 +169,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
       roleId: this.user.Role.id,
       regionId: this.user.Region.id,
       blocked: this.user.blocked,
+      servicesPackage: this.user.servicesPackage,
     });
   }
 
@@ -180,6 +188,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     this.removePassword = !(roleString === "supplier" || roleString === "customer");
     this.removeCompanyName = !(roleString === "customer");
     this.removeIdentityNum = !(roleString === "admin");
+    this.addServicesPackage = (roleString === "agent");
     const identityNum = this.editUserForm.get('identityNum');
 
     if(roleString === this.roles["admin"]){

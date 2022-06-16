@@ -59,6 +59,20 @@
           </div>
 
           <div class="form-control-group">
+            <label for="packageType">اضافة الى حزمة خدمات:</label>
+            <select id="packageType" name="packageType" formControlName="packageType">
+              <option *ngFor="let package of packageTypeArray; let i = index" [value]="i">{{package}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('packageType')?.touched)
+            && formCont('packageType')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('packageType').hasError('required')">
+            مطلوب الاختيار في حقل حزمة الخدمات</div>
+           </div>
+          </div>
+
+          <div class="form-control-group">
             <label for="note">ملاحظات</label>
             <textarea id="note" formControlName="note"></textarea>
           </div>

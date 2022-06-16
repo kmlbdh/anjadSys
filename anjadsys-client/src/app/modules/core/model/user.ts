@@ -1,11 +1,11 @@
 export interface UserAPI{
-  [index: string]: number | string | Date | {} | null;
+  [index: string]: number | string | Date | {} | undefined;
   id: string;
   identityNum: number,
   username: string;
-  companyName: string | null;
+  companyName?: string;
   jawwal1: number;
-  jawwal2: number | null;
+  jawwal2?: number;
   address: string;
   Region: {
     id: string,
@@ -15,12 +15,13 @@ export interface UserAPI{
     id: string,
     name: string
   },
-  Agent: UserAPI | null,
-  tel: number | null;
-  fax: number | null;
-  email: string | null,
-  note: string | null;
+  Agent?: UserAPI,
+  tel?: number;
+  fax?: number;
+  email?: string;
+  note?: string;
   blocked: boolean;
+  servicesPackage?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -55,8 +56,9 @@ export interface NewUser{ //CreateUserData
     email?: number;
     address?: string;
     note?: string;
-    agentId?: string,
+    agentId?: string;
     blocked: boolean;
+    servicesPackage?: number;
 }
 
 export interface updateUser{
@@ -78,6 +80,7 @@ export interface updateUser{
   note?: string;
   agentId?: string | null;
   blocked: boolean;
+  servicesPackage?: number;
 }
 
 export interface SearchUser {

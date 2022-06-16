@@ -14,18 +14,26 @@ import { ServiceAPI } from '../../../../model/service';
 export class EditServiceComponent implements OnInit, OnDestroy {
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
+
   private unsubscribe$ = new Subject<void>();
+
   service!: Partial<ServiceAPI>;
+
   TIMEOUTMILISEC = 7000;
 
   private keys = ['backspace', 'arrowleft', 'arrowright'];
+
+  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+
   editServiceForm = this.fb.group({
     name: ['', Validators.required],
     coverageDays: ['', Validators.required],
     cost: ['', Validators.required],
     supplierPercentage: ['', Validators.required],
+    packageType: ['', Validators.required],
     note: [''],
   });
 
@@ -114,6 +122,7 @@ export class EditServiceComponent implements OnInit, OnDestroy {
       coverageDays: this.service.coverageDays,
       cost: this.service.cost,
       supplierPercentage: this.service.supplierPercentage,
+      packageType: this.service.packageType,
       note: this.service.note || ''
     });
   }

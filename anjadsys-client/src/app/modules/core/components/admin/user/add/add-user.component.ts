@@ -17,6 +17,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   removePassword: boolean = true;
   removeCompanyName: boolean = true;
   removeIdentityNum: boolean = true;
+  addServicesPackage: boolean = false;
 
   private unsubscribe$ = new Subject<void>();
   rolesAPI!: RoleAPI[];
@@ -31,6 +32,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
     'supplier':  'مورد',
     'customer': 'زبون'
   };
+
+  servicesPackageArray = ['الضفة الغربية', 'القدس'];
 
   TIMEOUTMILISEC = 7000;
 
@@ -50,6 +53,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     roleId: ['', Validators.required],
     regionId: ['', Validators.required],
     blocked: [false, Validators.required],
+    servicesPackage: [0, Validators.required],
   }, { validators: ConfirmedValidator('password', 'confirmPassword')}
   );
   constructor(
@@ -79,7 +83,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   addUser = (ngform: FormGroupDirective) => {
-    console.log(this.addUserForm);
+    // console.log(this.addUserForm);
     if (this.addUserForm.invalid) return;
 
     let formObj = this.addUserForm.value;
@@ -88,7 +92,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
       if(formObj[k] === "") delete formObj[k]
     });
     let dataAPI$!: Observable<any>;
-    console.log("here is ", this.removePassword);
+    // console.log("here is ", this.removePassword);
 
     if(Number(formObj.roleId) !== 4){
       dataAPI$ = this.adminService.UsersAPIs.add(formObj);
@@ -128,12 +132,14 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     this.removePassword = !(roleString === "supplier" || roleString === "customer");
     this.removeCompanyName = !(roleString === "customer");
+    this.addServicesPackage = (roleString === "agent");
     this.removeIdentityNum = !(roleString === "admin");
 
     let pass = this.addUserForm.get('password');
     let conPass = this.addUserForm.get('confirmPassword');
     let identityNum = this.addUserForm.get('identityNum');
     let companyName = this.addUserForm.get('companyName');
+    let servicesPackage = this.addUserForm.get('servicesPackage');
 
     if(roleString === "supplier"){
       pass?.clearValidators();
@@ -152,12 +158,18 @@ export class AddUserComponent implements OnInit, OnDestroy {
       this.addUserForm.clearValidators();
       pass?.setValue('');
       conPass?.setValue('');
+    } else if (roleString === "agent"){
+      servicesPackage?.addValidators([Validators.required]);
+      servicesPackage?.setValue(0);
     } else {
+      servicesPackage?.setValue('');
+      servicesPackage?.clearValidators();
       pass?.addValidators([Validators.required]);
       conPass?.addValidators([Validators.required]);
       identityNum?.addValidators([Validators.required, Validators.minLength(5)]);
       this.addUserForm.addValidators(ConfirmedValidator('password', 'confirmPassword'))
     }
+    servicesPackage?.updateValueAndValidity;
     identityNum?.updateValueAndValidity;
     pass?.updateValueAndValidity;
     conPass?.updateValueAndValidity;

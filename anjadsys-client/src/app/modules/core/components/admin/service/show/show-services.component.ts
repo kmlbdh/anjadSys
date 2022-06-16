@@ -12,6 +12,9 @@ import { ServiceAPI, SearchService } from '../../../../model/service';
 })
 export class ShowServicesComponent implements OnInit, OnDestroy {
   services: ServiceAPI[] = [];
+
+  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+
   private unsubscribe$ = new Subject<void>();
 
   p: number = 1;

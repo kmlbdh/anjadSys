@@ -27,6 +27,8 @@ export class UserModalComponent implements OnInit {
     true: 'معطل',
   };
 
+  servicesPackageArray = ['الضفة الغربية', 'القدس'];
+
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {

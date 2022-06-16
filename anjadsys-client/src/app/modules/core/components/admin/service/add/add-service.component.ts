@@ -12,19 +12,27 @@ import { AdminService } from '../../admin.service';
 export class AddServiceComponent implements OnInit, OnDestroy{
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
+
   errorMsg: string | undefined;
   successMsg: string | undefined;
+
   TIMEOUTMILISEC = 7000;
 
   private unsubscribe$ = new Subject<void>();
+
   private keys = ['backspace', 'arrowleft', 'arrowright'];
+
+  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+
   addServiceForm = this.fb.group({
     name: ['', Validators.required],
     coverageDays: ['', Validators.required],
     cost: ['', Validators.required],
     supplierPercentage: ['', Validators.required],
+    packageType: [0, Validators.required],
     note: [''],
   });
+
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService) { }
@@ -85,14 +93,6 @@ export class AddServiceComponent implements OnInit, OnDestroy{
     }
     return true;
   }
-
-  // calculateTotalCost(event: Event){
-  //   if(!(event instanceof KeyboardEvent)) return;
-  //   let coverDays = parseInt(this.addServiceForm.get('coverageDays')?.value);
-  //   let dailyCost = parseFloat(this.addServiceForm.get('dailyCost')?.value);
-  //   if(!isNaN(dailyCost) && !isNaN(coverDays))
-  //     this.addServiceForm.get('cost')?.setValue(dailyCost*coverDays);
-  // }
 
 }
 

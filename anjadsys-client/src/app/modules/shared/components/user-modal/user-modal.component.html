@@ -85,6 +85,10 @@
           <label>حالة الحساب : </label>
           <span>{{blocked[customerDetails.blocked+'']}}</span>
         </div>
+        <div class="each-data" *ngIf="customerDetails.servicesPackage">
+          <label>حزمة الخدمات الخاصة : </label>
+          <span>{{servicesPackageArray[customerDetails.servicesPackage]}}</span>
+        </div>
         <div class="each-data">
           <label>ملاحظات : </label>
           <span>{{customerDetails.note || '--'}}</span>
