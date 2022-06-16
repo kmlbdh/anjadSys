@@ -167,7 +167,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
               flex-wrap: nowrap;
               border: 1px solid gray;
               width: 27%;
-              align-items: start;
+              align-items: flex-start;
               margin-left: 0;
               margin-right: auto;
               border-left: none;
@@ -179,7 +179,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
               flex-direction: column;
               border: 1px solid gray;
               width: 27%;
-              align-items: end;
+              align-items: flex-end;
               margin-left: auto;
               margin-right: 0;
               border-right: none;
@@ -277,7 +277,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
     flex-wrap: nowrap;
     border: 1px solid gray;
     width: 27%;
-    align-items: start;
+    align-items: flex-start;
     margin-left: 0;
     margin-right: auto;
     border-left: none;
@@ -288,7 +288,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
     flex-direction: column;
     border: 1px solid gray;
     width: 27%;
-    align-items: end;
+    align-items: flex-end;
     margin-left: auto;
     margin-right: 0;
     border-right: none;
