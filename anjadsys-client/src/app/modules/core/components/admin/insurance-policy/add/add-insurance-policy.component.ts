@@ -58,7 +58,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     note: [''],
     customerId: ['', Validators.required],
     agentId: ['', Validators.required],
-    carId: ['', Validators.required],
+    carId: [{value:'', disabled: true}, Validators.required],
   });
 
   addServicePolicyForm = this.fb.group({
@@ -183,21 +183,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   }
 
-  // searchAgent(event: Event){
-  //   console.log(event);
-  //   if(!(event instanceof KeyboardEvent)){
-  //     const controlValue = this.formCont('agentId')?.value;
-  //     this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-  //     return;
-  //   }
-
-  //   let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-  //   if(typeTxt && typeTxt !== ''){
-  //     this.spinner.agent = true;
-  //     this.searchTextObj.searchAgentText$.next(typeTxt);
-  //   }
-  // }
-
   searchCustomer(event: Event): void{
     // console.log(event);
     if(!(event instanceof KeyboardEvent)){
@@ -234,7 +219,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.searchTextObj.searchCarText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
-      distinctUntilChanged(),
       mergeMap(text => forkJoin([
         of(this.selectedCustomer?.id!),
         of(text)
@@ -245,6 +229,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if(response.data){
           this.cars = response.data;
+          this.formCont('carId').enable();
         }
         this.spinner.car = false;
         // console.log(response);
@@ -281,28 +266,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
         }
       });
   }
-
-  // searchAgentAPI(){
-  //   let callback = (val: string) => this.adminService.UsersAPIs.list(
-  //     { username: val, companyName: val, role: "agent", skipLoadingInterceptor: true} as SearchUser);
-
-  //     this.searchTextObj.searchAgentText$.pipe(
-  //       takeUntil(this.unsubscribe$),
-  //       debounceTime(500),
-  //       distinctUntilChanged(),
-  //       filter(txt => txt !== ''),
-  //       switchMap(callback)
-  //     ).subscribe({
-  //       next: (response: any) => {
-  //         if(response.data){
-  //           this.agents = response.data;
-  //           this.spinner.agent = false;
-  //         }
-  //         // console.log(response);
-  //       },
-  //       error: (err: any) => console.log(err)
-  //     });
-  // }
 
   getServices(packageType: number): void{
     if(packageType == null) return alert('حدث خطأ في الخدمات، يرجى اضافة حزمة خدمات للوكيل!');
@@ -437,6 +400,12 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.formCont('carId').setValue('');
     this.formCont('agentId').setValue('');
     this.formCont('customerId').setValue('');
+
+    this.formCont('carId').disable();
+
+    this.services = [];
+    this.suppliers = [];
+    this.servicesPolicy = [];
   }
 
   cancelCarInput(event: Event): void {
