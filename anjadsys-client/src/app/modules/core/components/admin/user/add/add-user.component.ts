@@ -38,7 +38,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   addUserForm = this.fb.group({
-    identityNum: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]{9}')]],
+    identityNum: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
     username: ['', Validators.required],
     companyName: [''],
     password: ['', Validators.required],
@@ -83,7 +83,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   addUser = (ngform: FormGroupDirective) => {
-    // console.log(this.addUserForm);
+    console.log(this.addUserForm);
     if (this.addUserForm.invalid) return;
 
     let formObj = this.addUserForm.value;
@@ -127,11 +127,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
   changeForm(roleFormControl: any) {
     const role = roleFormControl.value;
     const roleString = this.rolesAPI.filter(roleAPI => roleAPI.id == role)[0]?.name;
-    console.log('role', role, roleString);
+    // console.log('role', role, roleString);
     if(!roleString) return;
 
     this.removePassword = !(roleString === "supplier" || roleString === "customer");
-    this.removeCompanyName = !(roleString === "customer");
+    this.removeCompanyName = !(roleString === "customer" || roleString === "admin");
     this.addServicesPackage = (roleString === "agent");
     this.removeIdentityNum = !(roleString === "admin");
 
@@ -141,43 +141,52 @@ export class AddUserComponent implements OnInit, OnDestroy {
     let companyName = this.addUserForm.get('companyName');
     let servicesPackage = this.addUserForm.get('servicesPackage');
 
-    if(roleString === "supplier"){
+    if(roleString === "supplier" || roleString === "customer"){
+      this.addUserForm.removeValidators(ConfirmedValidator('password', 'confirmPassword'));
       pass?.clearValidators();
       conPass?.clearValidators();
-      this.addUserForm.clearValidators();
       pass?.setValue('');
       conPass?.setValue('');
-    } else if(roleString === "admin"){
-      identityNum?.clearValidators();
-      identityNum?.setValue('');
+      servicesPackage?.setValue('');
+      servicesPackage?.clearValidators();
+      identityNum?.addValidators([Validators.required, Validators.minLength(9), Validators.maxLength(9)]);
+    }
+    else if(roleString === "agent" || roleString === "admin"){
+      pass?.addValidators([Validators.required]);
+      conPass?.addValidators([Validators.required]);
+      this.addUserForm.addValidators(ConfirmedValidator('password', 'confirmPassword'));
+    }
+
+    if(roleString === "supplier"){
+      companyName?.addValidators([Validators.required]);
     } else if(roleString === "customer"){
       companyName?.clearValidators();
       companyName?.setValue('');
-      pass?.clearValidators();
-      conPass?.clearValidators();
-      this.addUserForm.clearValidators();
-      pass?.setValue('');
-      conPass?.setValue('');
+    } else if(roleString === "admin"){
+      companyName?.clearValidators();
+      companyName?.setValue('');
+
+      identityNum?.clearValidators();
+      identityNum?.setValue('');
+
+      servicesPackage?.setValue('');
+      servicesPackage?.clearValidators();
     } else if (roleString === "agent"){
       servicesPackage?.addValidators([Validators.required]);
       servicesPackage?.setValue(0);
-    } else {
-      servicesPackage?.setValue('');
-      servicesPackage?.clearValidators();
-      pass?.addValidators([Validators.required]);
-      conPass?.addValidators([Validators.required]);
-      identityNum?.addValidators([Validators.required, Validators.minLength(5)]);
-      this.addUserForm.addValidators(ConfirmedValidator('password', 'confirmPassword'))
+      companyName?.addValidators([Validators.required]);
+      identityNum?.addValidators([Validators.required, Validators.minLength(9), Validators.maxLength(9)]);
     }
-    servicesPackage?.updateValueAndValidity;
-    identityNum?.updateValueAndValidity;
-    pass?.updateValueAndValidity;
-    conPass?.updateValueAndValidity;
-    this.addUserForm.updateValueAndValidity;
+
+    servicesPackage?.updateValueAndValidity();
+    identityNum?.updateValueAndValidity();
+    pass?.updateValueAndValidity();
+    conPass?.updateValueAndValidity();
+    this.addUserForm.updateValueAndValidity() ;
   }
 
   resetForm(ngform: FormGroupDirective){
-    this.addUserForm.reset({blocked: false});
+    this.addUserForm.reset();
     this.addUserForm.updateValueAndValidity();
     this.addUserForm.markAsUntouched();
     ngform.resetForm();
