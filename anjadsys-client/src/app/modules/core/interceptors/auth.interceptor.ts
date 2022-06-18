@@ -4,8 +4,9 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserLoggedInAPI } from '../../core/model/general';
 
@@ -33,13 +34,23 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(newRq);
-      // .pipe(
-      //   tap(evt => {
-      //     console.log(evt)
-      //     if (evt instanceof HttpResponse)
-      //       console.warn(evt);
-      //   }),
-      // );
+    return next.handle(newRq)
+      .pipe(
+          catchError((error: HttpErrorResponse) => {
+            let errorMsg = '';
+            if (error.error instanceof ErrorEvent) {
+                console.log('This is client side error');
+                errorMsg = `Error: ${error.error.message}`;
+            } else {
+                console.log('This is server side error');
+                errorMsg = `Error Code: ${error.status},  Message: ${error.message}`;
+                if(error.status === 401){
+                  localStorage.removeItem('user');
+                  this.router.navigate(['login']);
+                }
+            }
+            return throwError(() => error);
+        })
+      )
   }
 }
