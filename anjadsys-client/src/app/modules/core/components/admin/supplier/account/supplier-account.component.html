@@ -54,10 +54,8 @@
             المبلغ (له)
           </ng-container>
         </div>
-        <div class="col-custom col-custom-4">ايام التغطية</div>
+        <div class="col-custom col-custom-4">التغطية</div>
         <div class="col-custom col-custom-5">تاريخ الحركة</div>
-        <!-- <div class="col-custom col-custom-5">الخدمة</div> -->
-        <!-- <div class="col-custom col-custom-6">التحكم</div> -->
       </li>
       <ng-template [ngIf]="accounts.length === 0">
         <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
@@ -83,7 +81,7 @@
               {{(account.coverageDays | number) }} {{days}}
             </ng-template>
             <ng-template [ngIf]="searchConditions.flag==='policy'">
-              {{(account.additionalDays + account.Service.coverageDays | number)}} {{days}}
+              {{(account.additionalDays + account.Service.coverageDays | number)}}
             </ng-template>
           </div>
           <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date: 'dd-MM-yyyy'}}</div>
