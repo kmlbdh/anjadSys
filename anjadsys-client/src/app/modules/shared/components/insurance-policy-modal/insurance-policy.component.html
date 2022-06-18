@@ -1,23 +1,31 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">بوليصة التأمين</h4>
+  <div class="company-header">
+    <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span>فلسطين - العيزرية</span>
+    <span>هاتف: 0227900000</span>
+    <span>فاكس: 0227900001</span>
+    <span>injad@palestine-vip.com</span>
+  </div>
+  <h4 class="modal-title" id="modal-basic-title">بوليصة أصلية</h4>
   <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
+
   <div class="main-data-section card agent-container">
     <div class="date-id">
-    <div>
-      <label>التاريخ: </label>
-      <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
-    </div>
-    <div>
-      <label>رقم البوليصة: </label>
-      <span>{{modalInsurancePolicy.id}}</span>
-    </div>
+      <div>
+        <label>التاريخ: </label>
+        <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
+      </div>
+      <div>
+        <label>رقم البوليصة: </label>
+        <span>{{modalInsurancePolicy.id}}</span>
+      </div>
     </div>
 
-    <div class="agent-section">
+    <div class="agent-section padd-l-r-7">
       <div>
         <label>اسم الوكيل: </label>
         <span>{{modalInsurancePolicy.Agent.companyName}}</span>
@@ -51,7 +59,7 @@
       <div class="header-section">
         <h5>بيانات الزبون</h5>
       </div>
-      <div class="data-section">
+      <div class="data-section padd-l-r-7">
         <div class="each-data">
           <label>رقم هوية الزبون</label>
           <span>{{modalInsurancePolicy.Customer.identityNum}}</span>
@@ -74,7 +82,7 @@
         </div>
       </div>
 
-      <div class="data-section">
+      <div class="data-section padd-l-r-7">
 
         <div class="each-data">
           <label>رقم المركبة</label>
@@ -98,7 +106,7 @@
 
       </div>
 
-      <div class="data-section">
+      <div class="data-section padd-l-r-7">
 
         <div class="each-data">
           <label>رقم الشصي</label>
@@ -133,7 +141,7 @@
         <span>{{modalInsurancePolicy.expireDate | date:'dd-MM-yyyy'}}</span>
       </div>
     </div>
-    <div class="data-section for-table">
+    <div class="data-section for-table padd-l-r-7">
       <div>
         <table class="table">
           <thead class="thead-light">
@@ -176,8 +184,7 @@
 </div>
 <ul class="condition">
   <li>
-    شروط الوثائق مع الكتيب المرفق
-    <p>اجباري الاطلاع</p>
+    المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحغظ يجب ان يسدد لتعتبر البوليصة  سارية
   </li>
 </ul>
 <div class="modal-footer d-print-none">

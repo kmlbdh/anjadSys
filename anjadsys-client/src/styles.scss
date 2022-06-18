@@ -23,7 +23,28 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
 .insurance-policy-modal{
   -webkit-print-color-adjust: exact;
-    .modal-content {
+  .modal-header{
+
+    .company-header{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      flex-basis: 19%;
+      align-self: flex-start;
+      text-align: center;
+      font-size: 0.7rem;
+
+      img{
+        margin: auto;
+      }
+    }
+
+    .modal-title{
+      flex-basis: 77%;
+      text-align: center;
+    }
+  }
+  .modal-content {
     button.close{
       @include button-primary;
       border-radius: 50%;
@@ -31,20 +52,35 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       height: 35px;
     }
     .modal-body{
+      .padd-l-r-7{
+        padding: 0 0.7rem;
+      }
       .card-body{
         padding: 0 !important;
       }
+      .custom-card{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        padding: 0;
+        margin: 0;
+      }
+
       .agent-container{
         display: flex;
         flex-direction: column;
         gap: 20px;
         padding: 1rem 1.25rem 1.25rem 1.25rem;
+
         .date-id{
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
           justify-content: space-between;
           align-items: center;
+          flex-basis: 40%;
 
           & > div {
             display: flex;
@@ -58,6 +94,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             }
           }
         }
+
         .agent-section{
           display: flex;
           flex-direction: column;
@@ -80,8 +117,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         width: 100%;
         &.card{
           @include card;
-          padding: 0.7rem;
           margin-bottom: 0;
+          padding: 0.5rem;
+          box-shadow: none;
         }
         .header-section{
           margin-bottom: 15px;
