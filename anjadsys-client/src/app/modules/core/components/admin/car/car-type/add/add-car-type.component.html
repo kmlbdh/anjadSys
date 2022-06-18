@@ -4,7 +4,7 @@
         <div class="form-sec1">
           <div class="form-control-group">
             <label for="name">نوع السيارة</label>
-            <input id="name" type="text" name="name" formControlName="name" required/>
+            <input id="name" type="text" name="name" formControlName="name" autocomplete="off" required/>
 
             <div *ngIf="(form.submitted || formCont('name')?.touched)
               && formCont('name')?.invalid" class="alert alert-danger">
