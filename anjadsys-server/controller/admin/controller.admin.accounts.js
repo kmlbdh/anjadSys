@@ -58,7 +58,7 @@ module.exports = {
 
       if(req.body.insurancePolicyId){
         query = { ...query,
-          order: [['id', 'ASC' ]],
+          order: [['createdAt', 'DESC' ]],
           include: [
             {
               model: InsurancePolicy,
@@ -69,9 +69,9 @@ module.exports = {
           offset: skip,
           limit: limit,
         };
-      } else if(req.body.agentID){
+      } else {
           query = { ...query,
-            order: [['id', 'ASC' ]],
+            order: [['createdAt', 'DESC' ]],
             include: [
               {
                 model: InsurancePolicy,
@@ -88,23 +88,6 @@ module.exports = {
             offset: skip,
             limit: limit,
           };     
-      } else {
-        query = { ...query,
-          order: [['id', 'ASC' ]],
-          include: [
-            {
-              model: InsurancePolicy,
-              required: false,
-            },
-            {
-              model: User,
-              required: false,
-              attributes: { exclude: ['passowrd']}
-            },
-          ],
-          offset: skip,
-          limit: limit,
-        };     
       }
       
       var { count, rows: accounts } = await Account.findAndCountAll(query);
