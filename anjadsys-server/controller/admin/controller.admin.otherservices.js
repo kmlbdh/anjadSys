@@ -144,7 +144,7 @@ module.exports = {
       
       listOtherServiceLog(query);
       query = { ...query, 
-        order: [['id', 'ASC' ]],
+        order: [['createdAt', 'DESC' ]],
         include: [
           {
             model: User,

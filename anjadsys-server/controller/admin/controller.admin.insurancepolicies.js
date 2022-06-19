@@ -251,7 +251,7 @@ module.exports = {
       if(Object.keys(query.where) === 0 ) delete query.where;
       
       query = { ...query,
-        order: [['id', 'ASC' ]],
+        order: [['createdAt', 'DESC' ]],
         include: [{
           model: ServicePolicy,
           required: true,
