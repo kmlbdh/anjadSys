@@ -76,9 +76,9 @@
             </ng-container>
             {{currency}}
           </div>
-          <div class="col-custom col-custom-4" data-label="ايام التغطية">
+          <div class="col-custom col-custom-4" data-label="التغطية">
             <ng-template [ngIf]="searchConditions.flag==='accident'">
-              {{(account.coverageDays | number) }} {{days}}
+              {{(account.coverageDays | number) }}
             </ng-template>
             <ng-template [ngIf]="searchConditions.flag==='policy'">
               {{(account.additionalDays + account.Service.coverageDays | number)}}

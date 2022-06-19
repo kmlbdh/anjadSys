@@ -172,6 +172,16 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           text-align: right;
           font-weight: 700;
         }
+        .page-header .date{
+          font-weight: 200;
+          display: flex;
+          flex-direction: row;
+          gap: 5%;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: flex-start;
+          margin-top: 8px;
+        }
         .card.search-supplier-container{
           display: none;
         }
@@ -186,13 +196,9 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           margin: 0;
           padding: 0;
         }
-
         .page-content ul.responsive-table li {
-          border-radius: 3px;
-          padding: 15px 15px;
           display: flex;
           justify-content: space-between;
-          margin-bottom: 15px;
         }
         .page-content ul.responsive-table li.no-data {
           width: 100%;
@@ -210,29 +216,45 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           letter-spacing: 0.03em;
           font-weight: bold;
           color: #000;
+          border: 1px solid gray;
         }
         .page-content ul.responsive-table .table-row {
           background-color: #fff;
+          border: 1px solid gray;
+          border-top: none;
         }
         .page-content ul.responsive-table div[class*=col-custom-] {
-          margin: auto;
+          margin: 0 auto;
           text-align: center;
+          padding: 10px;
+          border-left: 1px solid gray;
+        }
+        .page-content ul.responsive-table div:last-child {
+          border-left:none;
         }
         .page-content ul.responsive-table .col-custom-1 {
-          flex-basis: 7%;
+          flex-basis: 5%;
         }
         .page-content ul.responsive-table .col-custom-2 {
           flex-basis: 20%;
         }
         .page-content ul.responsive-table .col-custom-3 {
-          flex-basis: 23%;
+          flex-basis: 26%;
         }
         .page-content ul.responsive-table .col-custom-4 {
           flex-basis: 20%;
         }
         .page-content ul.responsive-table .col-custom-5 {
-          flex-basis: 30%;
+          flex-basis: 29%;
           text-align: center;
+        }
+        .page-content ul.responsive-table .col-custom-total-label{
+          flex-basis: 26%;
+          font-weight: 700;
+        }
+        .page-content ul.responsive-table .col-custom-total{
+          flex-basis: 74%;
+          font-weight: 700;
         }
         .page-content ul.responsive-table .col-custom-5.control {
           display: none;
@@ -257,12 +279,23 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     <body onload="window.print()">
     ${divToPrint.innerHTML}
     </body></html>`);
+    const node = document.createElement("div");
+    node.setAttribute('class', 'date');
+
+    const childNode1 = document.createElement("span");
+    const childNode2 = document.createElement("span");
+    const textnode1 = document.createTextNode(`من : ${this.formCont('startDate').value}`);
+    const textnode2 = document.createTextNode(`الى : ${this.formCont('endDate').value}`);
+    childNode1.appendChild(textnode1);
+    childNode2.appendChild(textnode2);
+    node.appendChild(childNode1);
+    node.appendChild(childNode2);
+    newWin.document.querySelector('.page-header')?.appendChild(node);
     newWin.document.close();
     newWin.focus();
     newWin.print();
     newWin.close();
     setTimeout(() => this.reloadPageAfterPrint(), 0)
-    // window.print()
   }
 
   reloadPageAfterPrint(){
