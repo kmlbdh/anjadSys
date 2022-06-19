@@ -23,6 +23,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
 .insurance-policy-modal{
   -webkit-print-color-adjust: exact;
+  size: auto;
+  margin: 0;
   .modal-header{
 
     .company-header{
