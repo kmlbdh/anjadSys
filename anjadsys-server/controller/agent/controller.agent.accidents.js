@@ -123,7 +123,7 @@ module.exports = {
         query.where.customerId = req.body.customerID;
 
       query = { ...query, 
-        order: [['id', 'ASC' ]],
+        order: [['createdAt', 'DESC' ]],
         include: [
           {
             model: User,

@@ -51,7 +51,7 @@ module.exports = {
 
       if(req.body.insurancePolicyId){
         query = { ...query,
-          order: [['id', 'ASC' ]],
+          order: [['createdAt', 'DESC' ]],
           include: [{
             model: InsurancePolicy,
             required: true,

@@ -128,7 +128,7 @@ module.exports = {
       }
       
       query = { ...query,
-        order: [['id', 'ASC' ]],
+        order: [['createdAt', 'DESC' ]],
         include: [
         {
           model: ServicePolicy,

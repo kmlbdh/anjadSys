@@ -94,7 +94,7 @@ module.exports = {
         query.where.motorNumber = req.body.motorNumber;
 
       query = { ...query, 
-        order: [['id', 'ASC' ]],
+        order: [['createdAt', 'DESC' ]],
         include: [
         {
           model: User,
