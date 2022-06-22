@@ -79,7 +79,7 @@
             justify-content: space-between;
             align-items: center;
             > input, select, textarea{
-              flex-basis: 90%;
+              flex-basis: 100%;
             }
           }
         }
@@ -113,7 +113,7 @@
           justify-content: space-between;
           align-items: center;
           > input, select, textarea{
-            flex-basis: 90%;
+            flex-basis: 100%;
           }
         }
       }

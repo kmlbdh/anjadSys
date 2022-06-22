@@ -1,4 +1,3 @@
-import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -6,14 +5,11 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  forkJoin,
-  mergeMap,
-  of,
   Subject,
   switchMap,
   takeUntil,
-  Observable,
-  tap
+  tap,
+  map
 } from 'rxjs';
 import { CarAPI, SearchCar } from 'src/app/modules/core/model/car';
 import { ServiceAPI } from 'src/app/modules/core/model/service';
@@ -48,7 +44,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
   insurancePolicy!: InsurancePolicyAPI;
   servicesPolicy: ServicePolicyAPI[] = [];
   cars: CarAPI[] = [];
-  agents: UserAPI[] = [];
   customers: UserAPI[] = [];
   suppliers: UserAPI[] = [];
   selectedCustomer: UserAPI | undefined;
@@ -101,7 +96,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
 
     this.searchCarAPI();
     this.searchCustomerAPI();
-    this.searchAgentAPI();
   }
 
   ngOnDestroy(): void {
@@ -114,42 +108,40 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
       next: params => {
         const insurancePolicyID = params.get('id');
         // console.log("insurancePolicyID", insurancePolicyID);
-        if (!insurancePolicyID)
-        { this.router.navigate(['/admin/insurance-policy/show']); }
+        if (!insurancePolicyID) { this.router.navigate(['/admin/insurance-policy/show']); }
         this.getData(insurancePolicyID!);
       }
     });
   }
 
   getData(insurancePolicyID: string) {
-    let insurancePolicy$ = this.adminService.InsurancePoliciesAPIs
-      .list({ insurancePolicyId: Number(insurancePolicyID) }) as Observable<InsurancePolicesAPI>;
-    let services$ = this.adminService.ServicesAPIs.list() as Observable<ServicesAPI>;
-
-    combineLatest([ insurancePolicy$, services$ ])
-      .pipe(takeUntil(this.unsubscribe$))
+    this.adminService.InsurancePoliciesAPIs.list({ insurancePolicyId: Number(insurancePolicyID) })
+      .pipe(
+        map( (res: InsurancePolicesAPI) => {
+          if (!res.data || !res.data.length) { throw new Error('no data'); }
+          this.insurancePolicy = res.data[0];
+          this.servicesPolicy = this.insurancePolicy.ServicePolicies;
+          this.selectedCustomer = this.insurancePolicy.Customer;
+          this.selectedAgent = this.insurancePolicy.Agent;
+          this.selectedCar = this.insurancePolicy.Car;
+          return res;
+        }),
+        switchMap( (insurancePolicy: InsurancePolicesAPI) => {
+          const packageType = insurancePolicy.data[0].Agent.servicesPackage;
+          return this.adminService.ServicesAPIs.list({ packageType });
+        })
+      )
       .subscribe({
-        next: ([ insurancePolicy, services ]) => {
-          if (services.data) {
-            this.services = services.data;
+        next: (result: ServicesAPI) => {
+          if (result.data && result.data.length) {
+            this.services = result.data;
             this.serviceShowStatusWhenMaintainPolicy();
-          }
-          if (insurancePolicy.data && insurancePolicy.data.length === 1) {
-            this.insurancePolicy = insurancePolicy.data[0];
-            this.servicesPolicy = this.insurancePolicy.ServicePolicies;
-            this.selectedCustomer = this.insurancePolicy.Customer;
-            this.selectedAgent = this.insurancePolicy.Agent;
-            this.selectedCar = this.insurancePolicy.Car;
+            this.totalCoverageDays();
             this.buildForm();
-            this.services.map(service => {
-              let found = this.insurancePolicy.ServicePolicies
-                .filter(servicePolicy => service.id === servicePolicy.Service.id)[0];
-              service['propertiesUI'] = found ? { hide: true } : { hide: false };
-              return service;
-            });
             this.getSuppliers(Number(this.selectedCustomer?.Region.id));
           }
-        }
+        },
+        error: error => console.log(error)
       });
   }
 
@@ -200,17 +192,25 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
   };
 
   handleServicesPolicyOnSubmit(): updateServicePolicy[] {
-    let servicesPolices: updateServicePolicy[] = [];
+    let servicesPolicies: updateServicePolicy[] = [];
     this.servicesPolicy.forEach(servicePolicy => {
       if (servicePolicy.id) {
         //TODO unsed variables need to be removed and enhance the destructuring
         let { Service, Supplier, createdAt, updatedAt, ...newServicePolicy } = servicePolicy;
-        servicesPolices.push(newServicePolicy as updateServicePolicy);
-      } else
-      { servicesPolices.push(servicePolicy as updateServicePolicy); }
+        delete newServicePolicy['totalCoverageDaysWithAdditional'];
+        delete newServicePolicy['supplierText'];
+        delete newServicePolicy['serviceText'];
+        servicesPolicies.push(newServicePolicy as updateServicePolicy);
+      } else {
+        let newServicePolicy = { ...servicePolicy };
+        delete newServicePolicy['totalCoverageDaysWithAdditional'];
+        delete newServicePolicy['supplierText'];
+        delete newServicePolicy['serviceText'];
+        servicesPolicies.push(newServicePolicy as updateServicePolicy);
+      }
     });
 
-    return servicesPolices;
+    return servicesPolicies;
   }
 
   addServicePolicy = (ngform: FormGroupDirective) => {
@@ -220,6 +220,9 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
     formObj.supplierPercentage = currentService.supplierPercentage;
     if (!formObj.additionalDays) { formObj.additionalDays = 0; }
+    formObj['totalCoverageDaysWithAdditional'] =  Number(formObj.additionalDays) + Number(currentService.coverageDays);
+    formObj['supplierText'] = this.suppliers.filter(supp => supp.id === formObj.supplierId)[0].companyName;
+    formObj['serviceText'] = currentService.name;
 
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
@@ -239,23 +242,17 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     });
   }
 
-  totalCoverageDays(serviceId: number): number {
-    let serviceDefualtDays = Number(this.services
-      .filter(service =>  service.id === Number(serviceId))[0].coverageDays);
-    let serviceDays = Number(this.servicesPolicy
-      .filter(service => service.serviceId === serviceId)[0].additionalDays);
-    // console.log('totalCoverageDays');
-    return serviceDefualtDays + serviceDays;
-  }
-
-  serviceText(serviceId: number): string {
-    console.log('serviceText', serviceId);
-    return this.services.filter(service =>  service.id === Number(serviceId))[0].name;
-  }
-
-  supplierText(supplierId: string): string {
-    console.log('supplierText');
-    return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
+  totalCoverageDays(): void {
+    if (!this.services || !this.servicesPolicy) { return; }
+    this.servicesPolicy.map( (servicePolicy: ServicePolicyAPI) => {
+      this.services.forEach((service: ServiceAPI) => {
+        if (Number(service.id) === Number(servicePolicy.Service.id)) {
+          servicePolicy['totalCoverageDaysWithAdditional'] = Number(service.coverageDays) + Number(servicePolicy.additionalDays);
+        }
+      });
+      return servicePolicy;
+    });
+    console.log('done 1 time');
   }
 
   deleteServicePolicy(index: number) {
@@ -275,21 +272,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchTextObj.searchCarText$.next(typeTxt);
-    }
-  }
-
-  searchAgent(event: Event) {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('agentId')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      return;
-    }
-
-    let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if (typeTxt && typeTxt !== '') {
-      this.spinner.agent = true;
-      this.searchTextObj.searchAgentText$.next(typeTxt);
     }
   }
 
@@ -330,12 +312,8 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
-        mergeMap(text => forkJoin([
-          of(this.selectedCustomer?.id!),
-          of(text)
-        ])),
         tap(() => this.spinner.car = true),
-        switchMap(([ id, text ]) => callback(id, text))
+        switchMap(text => callback(this.selectedCustomer?.id!, text))
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
@@ -378,32 +356,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
-  searchAgentAPI() {
-    let callback = (val: string) => this.adminService.UsersAPIs.list(
-      { username: val, companyName: val, role: 'agent', skipLoadingInterceptor: true } as SearchUser);
-
-    this.searchTextObj.searchAgentText$
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        debounceTime(500),
-        distinctUntilChanged(),
-        filter(txt => txt !== ''),
-        switchMap(callback)
-      ).subscribe({
-        next: (response: any) => {
-          if (response.data) {
-            this.agents = response.data;
-          }
-          this.spinner.agent = false;
-          console.log(response);
-        },
-        error: (err: any) => {
-          this.spinner.agent = false;
-          console.log(err);
-        }
-      });
-    // this.sharedSearchAPI('agents', this.searchTextObj.searchAgentText$, callback);
-  }
 
   sharedSearchAPI(array: string, subjectName: Subject<string>, callback: any): void {
     subjectName
@@ -511,9 +463,11 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
     this.selectedAgent = undefined;
     this.selectedCar = undefined;
+
     this.formCont('carId').setValue('');
     this.formCont('agentId').setValue('');
     this.formCont('customerId').setValue('');
@@ -522,6 +476,7 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
   cancelCarInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCar = undefined;
     this.formCont('carId').setValue('');
   }

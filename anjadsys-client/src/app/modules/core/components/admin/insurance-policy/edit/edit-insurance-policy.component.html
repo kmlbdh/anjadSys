@@ -31,26 +31,17 @@
         </div>
 
         <div class="form-control-group">
-          <label for="agentId">الوكيل:</label>
-          <div class="input" *ngIf="selectedAgent">
-            {{selectedAgent.companyName}}/{{selectedAgent.username}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
+          <div class="label-with-data">
+            <label for="agentId">الوكيل:</label>
           </div>
-          <input [ngClass]="{'hide': selectedAgent}" id="agentId" type="text"
-          (keyup)="searchAgent($event)" list="agentList" name="agentId" autocomplete="off" formControlName="agentId"
-           required/>
-          <datalist id="agentList">
-            <option *ngFor="let agent of agents;" [value]="agent.id">
-              {{agent.companyName}}/{{agent.username}}
-            </option>
-          </datalist>
+          <input type="text" [value]="selectedAgent?.companyName" disabled/>
+          <input class="hide" type="agentId" id="agentId" name="agentId" formControlName="agentId"
+           required autocomplete="off"/>
 
-          <div *ngIf="(form.submitted || formCont('agentId')?.touched)
-          && formCont('agentId')?.invalid" class="alert alert-danger">
-            <div *ngIf="formCont('agentId').hasError('required')">الوكيل مطلوب تعبئته</div>
-          </div>
+           <div *ngIf="(form.submitted || formCont('agentId')?.touched)
+           && formCont('agentId')?.invalid" class="alert alert-danger">
+             <div *ngIf="formCont('agentId').hasError('required')">الوكيل مطلوب تعبئته</div>
+           </div>
         </div>
 
         <div class="form-control-group">
@@ -146,7 +137,7 @@
         <div class="form-control-group">
           <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
           <input type="text" id="additionalDays" name="additionalDays" formControlName="additionalDays"
-           (keydown)="acceptNumbers($event)" (keyup)="totalCostPerServicePolicy($event)" required/>
+           (keydown)="acceptNumbers($event)" (keyup)="totalCostPerServicePolicy($event)" autocomplete="off" required/>
 
           <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
             && formContS('additionalDays')?.invalid" class="alert alert-danger">
@@ -210,17 +201,15 @@
         <li *ngFor="let servicePolicy of servicesPolicy; let i = index; trackBy: trackByServiceId" class="table-row">
           <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
           <div class="col-custom col-custom-2" data-label="Customer Number">{{
-            servicePolicy.Service ? servicePolicy.Service.name : serviceText(servicePolicy.serviceId!)
+            servicePolicy.Service ? servicePolicy.Service.name : servicePolicy['serviceText']
           }}</div>
           <div class="col-custom col-custom-3" data-label="Cost">{{servicePolicy.cost}} {{currency}}</div>
 
           <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{
-            (servicePolicy.Service && servicePolicy.additionalDays) ?
-            (servicePolicy.Service.coverageDays | number)! + (servicePolicy.additionalDays! | number)
-            : totalCoverageDays(servicePolicy.serviceId!)
+            servicePolicy['totalCoverageDaysWithAdditional']
           }} {{days}}</div>
           <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{
-            servicePolicy.Supplier ? servicePolicy.Supplier.companyName :  supplierText(servicePolicy.supplierId!)
+            servicePolicy.Supplier ? servicePolicy.Supplier.companyName :  servicePolicy['supplierText']
           }}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteServicePolicy(i)">
