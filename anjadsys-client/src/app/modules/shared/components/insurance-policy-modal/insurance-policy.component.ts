@@ -20,7 +20,7 @@ export class InsurancePolicyComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-    this.taxOnCost = Math.ceil(Number(this.modalInsurancePolicy.totalPrice) * this.tax);
+    this.taxOnCost = Math.round(Number(this.modalInsurancePolicy.totalPrice) * this.tax);
     this.totalWithTaxes =  Number(this.modalInsurancePolicy.totalPrice) + this.taxOnCost;
   }
 

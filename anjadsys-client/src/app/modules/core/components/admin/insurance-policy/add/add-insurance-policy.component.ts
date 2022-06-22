@@ -336,7 +336,7 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     coverageDays = Number(coverageDays!.toFixed(2)) || 1;
     perDayCost = coverageDays === 0 ? 1 : Number((cost / coverageDays).toFixed(2));
 
-    let total = Math.ceil(cost + (perDayCost * (additionalDays * 0.25)));
+    let total = Math.round(cost + (perDayCost * (additionalDays * 0.25)));
     // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
   }
