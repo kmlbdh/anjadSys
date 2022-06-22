@@ -1,4 +1,3 @@
-import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { CarsAPI, updateCar } from '../../../../../model/car';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -9,6 +8,7 @@ import {
   Observable,
   Subject,
   switchMap,
+  forkJoin,
   takeUntil
 } from 'rxjs';
 import { CarModelAPI, CarTypeAPI } from 'src/app/modules/core/model/car';
@@ -169,25 +169,26 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI() {
-    this.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(text =>
-        this.adminService.UsersAPIs.list({ username: text, skipLoadingInterceptor: true }))
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.customers = response.data;
+    this.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap(text =>
+          this.adminService.UsersAPIs.list({ username: text, skipLoadingInterceptor: true }))
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.customers = response.data;
+          }
+          this.spinner.customer = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
         }
-        this.spinner.customer = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        this.spinner.customer = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
   getCarData(): void {
@@ -200,16 +201,16 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
         let car$ = this.adminService.CarsAPIs.show({ carId:  Number(carId!) }) as Observable<CarsAPI>;
         let carType$ = this.adminService.CarTypesAPIs.list({}) as Observable<CarTypeArrayAPI>;
 
-        combineLatest([ car$, carType$ ])
+        forkJoin([ car$, carType$ ])
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: ([ car, carType ]) => {
-              if (!car.data || car.data?.length < 0) { this.redirect(); }
+              if (!car.data || !car.data.length || !carType.data || !carType.data.length) { this.redirect(); }
 
               this.car = car.data[0];
               this.selectedCarType = this.car.CarType;
               this.selectedCarModel = this.car.CarModel;
-              if (carType.data) { this.carTypes =  carType.data; }
+              this.carTypes =  carType.data;
 
               this.searchCarModelAPI(true);
             }
@@ -246,6 +247,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
   cancelCustomerInput(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
+
     this.selectedCustomer = undefined;
     this.formCont('customerId').setValue('');
   }

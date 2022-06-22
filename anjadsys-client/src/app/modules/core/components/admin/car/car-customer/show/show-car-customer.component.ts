@@ -93,25 +93,26 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
-    this.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      filter(txt => txt !== ''),
-      switchMap(callback)
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.customers = response.data;
+    this.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        filter(txt => txt !== ''),
+        switchMap(callback)
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.customers = response.data;
+          }
+          this.spinner.customer = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          console.log(err);
+          this.spinner.customer = false;
         }
-        this.spinner.customer = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        console.log(err);
-        this.spinner.customer = false;
-      }
-    });
+      });
   }
 
   searchCustomer(event: Event): void {

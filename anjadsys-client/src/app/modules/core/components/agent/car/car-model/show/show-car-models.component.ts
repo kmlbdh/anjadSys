@@ -53,9 +53,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   getCarModels(searchConditions: SearchCarModel) {
     this.agentService.CarModelsAPIs.list(searchConditions)
-      .pipe(
-        first(),
-        takeUntil(this.unsubscribe$))
+      .pipe(first())
       .subscribe({
         next: (response: CarModelArrayAPI) => {
           if (response.data) {

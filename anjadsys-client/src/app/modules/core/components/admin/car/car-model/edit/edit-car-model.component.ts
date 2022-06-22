@@ -107,18 +107,19 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
   }
 
   searchAPI() {
-    this.searchCarTypeText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(text => this.adminService.CarTypesAPIs.list({ name: text }))
-    ).subscribe({
-      next: response => {
-        if (response.data) { this.carTypes = response.data; }
-        console.log(response);
-      },
-      error: err => console.log(err)
-    });
+    this.searchCarTypeText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap(text => this.adminService.CarTypesAPIs.list({ name: text }))
+      ).subscribe({
+        next: response => {
+          if (response.data) { this.carTypes = response.data; }
+          console.log(response);
+        },
+        error: err => console.log(err)
+      });
   }
 
   getCarModelData() {
@@ -132,7 +133,7 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: response => {
-              if (response.data && response.data.length === 1) {
+              if (response.data && response.data.length) {
                 this.carModel = response.data[0];
                 this.buildForm();
               }

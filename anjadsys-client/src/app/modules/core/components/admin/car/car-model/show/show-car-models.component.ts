@@ -91,16 +91,12 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   getCarTypes(searchConditions: SearchCarType) {
     this.adminService.CarTypesAPIs.list(searchConditions)
-      .pipe(
-        first(),
-        takeUntil(this.unsubscribe$)
-      )
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response: CarTypeArrayAPI) => {
           if (response.data) {
             this.carTypes = response.data;
             this.searchConditions = { carTypeId: this.carTypes[0].id };
-
             this.getCarModels(this.searchConditions);
           }
         },

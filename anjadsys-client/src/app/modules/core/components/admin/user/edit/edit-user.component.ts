@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, Observable, first } from 'rxjs';
+import { Subject, takeUntil, Observable, first, forkJoin } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { UserAPI, updateUser, UsersAPI } from '../../../../model/user';
 import { RoleAPI, RegionAPI } from '../../../../model/general';
 import { ConfirmedValidator } from '../confirm.validator';
-import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
 @Component({
   selector: 'app-edit-user',
@@ -93,17 +92,20 @@ export class EditUserComponent implements OnInit, OnDestroy {
     let user$ = this.adminService.UsersAPIs.list({ userID: userID! }) as Observable<UsersAPI>;
     let regionsAndRoles$ = this.adminService.GeneralAPIs.regionsAndRoles() as Observable<any>;
 
-    combineLatest([ user$, regionsAndRoles$ ])
+    forkJoin([ user$, regionsAndRoles$ ])
       .pipe(first())
       .subscribe( ([ user, regionsAndRoles ]: [UsersAPI, any]) => {
-        if (regionsAndRoles.data && regionsAndRoles.data.regions && regionsAndRoles.data.roles) {
+        if (regionsAndRoles.data
+          && regionsAndRoles.data.regions
+          && regionsAndRoles.data.roles
+          && user.data
+          && user.data.length
+        ) {
           this.rolesAPI = regionsAndRoles.data.roles;
           this.regionsAPI = regionsAndRoles.data.regions;
+          this.user = user.data[0];
+          this.buildForm();
         }
-        if (user.data && user.data.length === 1)
-        { this.user = user.data[0]; }
-
-        this.buildForm();
       });
   }
 

@@ -215,9 +215,7 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {
-          if (response.data) {
-            this.regions = response.data;
-          }
+          if (response.data) { this.regions = response.data; }
         }
       });
   }

@@ -104,10 +104,10 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {
-          if (response.data)
-          { this.successMsg = response.message; }
-
-          this.loadCustomersById(this.searchConditions);
+          if (response.data) {
+            this.successMsg = response.message;
+            this.loadCustomersById(this.searchConditions);
+          }
         },
         error: err => console.log(err)
       });
@@ -193,26 +193,28 @@ export class ShowAgentCustomersComponent implements OnInit, OnDestroy {
   }
 
   searchAPI() {
-    this.searchUserText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.spinnerCustomer = true),
-      switchMap(text =>
-        this.adminService.UsersAPIs.list({ username: text, role: 'customer', skipLoadingInterceptor: true } as SearchUser))
-    ).subscribe({
-      next: response => {
-        if (response.data) {
-          this.allCustomers = response.data;
+    this.searchUserText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => this.spinnerCustomer = true),
+        switchMap(text =>
+          this.adminService.UsersAPIs.list({ username: text, role: 'customer',
+            skipLoadingInterceptor: true } as SearchUser))
+      ).subscribe({
+        next: response => {
+          if (response.data) {
+            this.allCustomers = response.data;
+          }
+          this.spinnerCustomer = false;
+          console.log(response);
+        },
+        error: err => {
+          this.spinnerCustomer = false;
+          console.log(err);
         }
-        this.spinnerCustomer = false;
-        console.log(response);
-      },
-      error: err => {
-        this.spinnerCustomer = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
   resetForm(ngform: FormGroupDirective) {

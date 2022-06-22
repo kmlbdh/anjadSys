@@ -90,7 +90,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: (response: any) => {
-              if (response.data && response.data.length === 1) {
+              if (response.data && response.data.length) {
                 this.otherService = response.data[0];
                 this.buildForm();
               }

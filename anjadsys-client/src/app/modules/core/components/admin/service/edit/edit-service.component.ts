@@ -79,8 +79,6 @@ export class EditServiceComponent implements OnInit, OnDestroy {
             this.successMsg = response.message;
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
           }
-          // this.service = response.data;
-          // this.buildForm();
           console.log(response);
         },
         error: err => {

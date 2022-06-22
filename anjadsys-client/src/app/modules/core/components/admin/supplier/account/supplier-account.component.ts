@@ -71,7 +71,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           const supplierId = params.get('id');
 
           this.selectedSupplier = params.get('fullname') || undefined;
-          console.log(this.selectedSupplier);
           if (!supplierId || !this.selectedSupplier) { this.router.navigate(['admin/supplier/show']); }
 
           this.searchConditions.supplierID = supplierId?.toUpperCase()!;
@@ -105,7 +104,9 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
           if (response.data) {
             this.accounts = response.data;
             this.pagination.total = response.total;
-            this.accountBalance = this.accounts.reduce((sum, account) => sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0), 0);
+            this.accountBalance = this.accounts.reduce((sum, account) =>
+              sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0), 0);
+            this.accountBalance = Math.round(this.accountBalance);
           }
         // console.log(response.data);
         },

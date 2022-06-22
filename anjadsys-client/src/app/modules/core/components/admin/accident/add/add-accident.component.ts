@@ -297,55 +297,57 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       else { query =  { customerID: id, skipLoadingInterceptor: true }; }
       return this.adminService.CarsAPIs.show(query);
     };
-    this.searchTextObj.searchCarText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      // distinctUntilChanged(),
-      mergeMap(text => forkJoin([
-        of(this.selectedCustomer?.id!),
-        of(text)
-      ])),
-      tap(() => this.spinner.car = true),
-      switchMap(([ id, text ]) => callback(id, text))
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.cars = response.data;
-          this.formCont('carId').enable();
+    this.searchTextObj.searchCarText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        // distinctUntilChanged(),
+        mergeMap(text => forkJoin([
+          of(this.selectedCustomer?.id!),
+          of(text)
+        ])),
+        tap(() => this.spinner.car = true),
+        switchMap(([ id, text ]) => callback(id, text))
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.cars = response.data;
+            this.formCont('carId').enable();
+          }
+          this.spinner.car = false;
+          // console.log(response);
+        },
+        error: (err: any) => {
+          this.spinner.car = false;
+          console.log(err);
         }
-        this.spinner.car = false;
-        // console.log(response);
-      },
-      error: (err: any) => {
-        this.spinner.car = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
-    this.searchTextObj.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      filter(txt => txt !== ''),
-      tap(() => this.spinner.customer = true),
-      switchMap(callback)
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.customers = response.data;
+    this.searchTextObj.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        filter(txt => txt !== ''),
+        tap(() => this.spinner.customer = true),
+        switchMap(callback)
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.customers = response.data;
+          }
+          this.spinner.customer = false;
+          // console.log(response);
+        },
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
         }
-        this.spinner.customer = false;
-        // console.log(response);
-      },
-      error: (err: any) => {
-        this.spinner.customer = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
 

@@ -100,6 +100,7 @@ export class AddOtherservicesComponent implements OnDestroy {
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
+
     this.searchTextObj.searchCustomerText$
       .pipe(
         takeUntil(this.unsubscribe$),

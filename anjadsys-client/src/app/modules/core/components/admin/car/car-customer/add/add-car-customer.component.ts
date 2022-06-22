@@ -160,11 +160,11 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
         next: response => {
           if (response.data && response.data.length) {
             this.carModels = response.data;
+            this.formCont('carModelId').enable();
           } else {
             this.carModels = [];
           }
           this.spinner.carModel = false;
-          this.formCont('carModelId').enable();
         },
         error: (err: any) => {
           this.spinner.carModel = false;
@@ -174,26 +174,28 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerAPI() {
-    this.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.spinner.customer = true),
-      switchMap(text =>
-        this.adminService.UsersAPIs.list({ username: text, role: 'customer', skipLoadingInterceptor: true }))
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.customers = response.data;
+    this.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => this.spinner.customer = true),
+        switchMap(text =>
+          this.adminService.UsersAPIs.list({ username: text, role: 'customer',
+            skipLoadingInterceptor: true }))
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.customers = response.data;
+          }
+          this.spinner.customer = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
         }
-        this.spinner.customer = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        this.spinner.customer = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
   cancelCustomerInput(event: Event): void {

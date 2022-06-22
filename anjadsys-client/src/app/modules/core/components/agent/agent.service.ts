@@ -30,8 +30,6 @@ export class AgentService {
 
   constructor(private http: HttpClient) { }
 
-  [index: string]: any;
-
   verifyLoggedIn = (token: string): Observable<any> =>
     this.http.post<string>(`${ this.url }verify-logged-in`, { token: token })
       .pipe(catchError(this.handleError));

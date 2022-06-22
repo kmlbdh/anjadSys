@@ -104,52 +104,54 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
-    this.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      filter(txt => txt !== ''),
-      tap(() => this.spinner.customer = true),
-      switchMap(callback)
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.agents = response.data;
+    this.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        filter(txt => txt !== ''),
+        tap(() => this.spinner.customer = true),
+        switchMap(callback)
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.agents = response.data;
+          }
+          this.spinner.customer = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          console.log(err);
+          this.spinner.customer = false;
         }
-        this.spinner.customer = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        console.log(err);
-        this.spinner.customer = false;
-      }
-    });
+      });
   }
 
   searchSupplierAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true, role: 'supplier' } as SearchUser);
 
-    this.searchSupplierText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      filter(txt => txt !== ''),
-      tap(() => this.spinner.supplier = true),
-      switchMap(callback)
-    ).subscribe({
-      next: (response: any) => {
-        if (response.data) {
-          this.suppliers = response.data;
+    this.searchSupplierText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        filter(txt => txt !== ''),
+        tap(() => this.spinner.supplier = true),
+        switchMap(callback)
+      ).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.suppliers = response.data;
+          }
+          this.spinner.supplier = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          console.log(err);
+          this.spinner.supplier = false;
         }
-        this.spinner.supplier = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        console.log(err);
-        this.spinner.supplier = false;
-      }
-    });
+      });
   }
 
   searchCustomer(event: Event): void {

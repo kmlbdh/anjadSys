@@ -76,15 +76,18 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {
-          if (response.data)
-          { this.successMsg = response.message; }
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          }
 
           console.log(response);
         },
         error: err => {
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          if (err.error.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
           console.log(err);
         }
       });
@@ -106,26 +109,27 @@ export class AddAgentLimitsComponent implements OnInit, OnDestroy {
   }
 
   searchAPI() {
-    this.searchAgentText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.spinnerAgent = true),
-      switchMap(text => this.adminService.AgentLimitsAPIs.listAgents(
-        { username: text, companyName: text,  skipLoadingInterceptor: true })
-      )
-    ).subscribe({
-      next: response => {
-        if (response.data) { this.agents = response.data; }
+    this.searchAgentText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => this.spinnerAgent = true),
+        switchMap(text => this.adminService.AgentLimitsAPIs.listAgents(
+          { username: text, companyName: text,  skipLoadingInterceptor: true })
+        )
+      ).subscribe({
+        next: response => {
+          if (response.data) { this.agents = response.data; }
 
-        this.spinnerAgent = false;
-        console.log(response);
-      },
-      error: err => {
-        this.spinnerAgent = false;
-        console.log(err);
-      }
-    });
+          this.spinnerAgent = false;
+          console.log(response);
+        },
+        error: err => {
+          this.spinnerAgent = false;
+          console.log(err);
+        }
+      });
   }
 
   cancelAgentInput(event: Event): void {
