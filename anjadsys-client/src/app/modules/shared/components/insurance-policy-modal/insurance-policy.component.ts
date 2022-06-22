@@ -24,9 +24,8 @@ export class InsurancePolicyComponent implements OnInit {
     this.totalWithTaxes =  Number(this.modalInsurancePolicy.totalPrice) + this.taxOnCost;
   }
 
-
-  printPage(): void{
-    window.print()
+  printPage(): void {
+    window.print();
   }
 
 }

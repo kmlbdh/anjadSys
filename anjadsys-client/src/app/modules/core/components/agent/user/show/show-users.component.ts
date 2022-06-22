@@ -14,6 +14,7 @@ import { RegionAPI } from 'src/app/modules/core/model/general';
   styleUrls: ['./show-users.component.scss']
 })
 export class ShowUsersComponent implements OnInit, OnDestroy {
+
   users: UserAPI[] = [];
   regions: RegionAPI[] = [];
 
@@ -35,9 +36,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   rolesLang:{
     [index: string]: string;
   } = {
-    'supplier':  'مورد',
-    'customer': 'زبون'
-  };
+      'supplier':  'مورد',
+      'customer': 'زبون'
+    };
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -71,54 +72,53 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-//TODO wrong response type
-  getUsers(searchConditions: SearchUser){
+  //TODO wrong response type
+  getUsers(searchConditions: SearchUser) {
     this.agentService.UsersAPI.show(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: UsersAPI) => {
-        if(response.data){
-          this.users = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error) => console.log(error)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: UsersAPI) => {
+          if (response.data) {
+            this.users = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: error => console.log(error)
+      });
   }
 
-  searchUser(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchUser(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
-    let searchConditions: SearchUser = {}
+    let searchConditions: SearchUser = {};
     keys.forEach(key => {
       searchConditions[key] = this.searchUserForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.searchConditions = searchConditions;
     this.getUsers(searchConditions);
   }
 
-  getRegions(){
+  getRegions() {
     this.agentService.GeneralAPIs.regions()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.regions = response.data;
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.regions = response.data;
+          }
         }
-      }
-    });
+      });
   }
 
   open(user: UserAPI) {
-    const refModal = this.modalService.open(UserModalComponent, this.modalOptions)
+    const refModal = this.modalService.open(UserModalComponent, this.modalOptions);
     refModal.componentInstance.customerDetails = user;
-    refModal.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
     });
   }
 
@@ -128,15 +128,15 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { skip: skip } as SearchUser;
     this.p = pageNumber;
@@ -144,9 +144,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     console.log(pageNumber);
   }
 
-  showSearch () {
+  showSearch() {
     this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40)
+    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

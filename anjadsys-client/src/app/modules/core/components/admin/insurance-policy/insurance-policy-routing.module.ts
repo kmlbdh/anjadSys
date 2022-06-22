@@ -8,17 +8,17 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditInsurancePolicyComponent,
-    data: {breadcrumb: 'تعديل بيانات بوليصة تأمين'}
+    data: { breadcrumb: 'تعديل بيانات بوليصة تأمين' }
   },
   {
     path: 'add',
     component: AddInsurancePolicyComponent,
-    data: {breadcrumb: 'اضافة بوليصة تأمين جديد'}
+    data: { breadcrumb: 'اضافة بوليصة تأمين جديد' }
   },
   {
     path: 'show',
     component: ShowInsurancePolicyComponent,
-    data: {breadcrumb: 'اظهار جميع بوالص التأمين'}
+    data: { breadcrumb: 'اظهار جميع بوالص التأمين' }
   },
 ];
 

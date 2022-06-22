@@ -12,43 +12,43 @@ const routes: Routes = [
         path: 'user',
         // loadChildren: () => UserModule
         loadChildren: () => import('./user/user.module')
-        .then(m => m.UserModule),
-        data: {breadcrumb: 'المستخدمين'}
+          .then(m => m.UserModule),
+        data: { breadcrumb: 'المستخدمين' }
       },
       {
         path: 'service',
         // loadChildren: () => ServiceModule,
         loadChildren: () => import('./service/service.module')
-        .then(m => m.ServiceModule),
-        data: {breadcrumb: 'الخدمات'}
+          .then(m => m.ServiceModule),
+        data: { breadcrumb: 'الخدمات' }
       },
       {
         path: 'car',
         // loadChildren: () => CarModule,
         loadChildren: () => import('./car/car.module')
-        .then(m => m.CarModule),
-        data: {breadcrumb: 'السيارات'}
+          .then(m => m.CarModule),
+        data: { breadcrumb: 'السيارات' }
       },
       {
         path: 'accident',
         // loadChildren: () => AccidentModule,
         loadChildren: () => import('./accident/accident.module')
-        .then(m => m.AccidentModule),
-        data: {breadcrumb: 'الحوادث'}
+          .then(m => m.AccidentModule),
+        data: { breadcrumb: 'الحوادث' }
       },
       {
         path: 'insurance-policy',
         // loadChildren: () => InsurancePolicyModule,
         loadChildren: () => import('./insurance-policy/insurance-policy.module')
-        .then(m => m.InsurancePolicyModule),
-        data: {breadcrumb: 'بوالص التأمين'}
+          .then(m => m.InsurancePolicyModule),
+        data: { breadcrumb: 'بوالص التأمين' }
       },
       {
         path: 'account',
         // loadChildren: () => AccountModule,
         loadChildren: () => import('./account/account.module')
-        .then(m => m.AccountModule),
-        data: {breadcrumb: 'المالية'}
+          .then(m => m.AccountModule),
+        data: { breadcrumb: 'المالية' }
       },
       {
         path: '',

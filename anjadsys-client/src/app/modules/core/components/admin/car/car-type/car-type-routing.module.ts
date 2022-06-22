@@ -8,17 +8,17 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditCarTypeComponent,
-    data: {breadcrumb: 'تعديل بيانات نوع السيارة'}
+    data: { breadcrumb: 'تعديل بيانات نوع السيارة' }
   },
   {
     path: 'show',
     component: ShowCarTypesComponent,
-    data: {breadcrumb: 'اظهار جميع انواع السيارات'}
+    data: { breadcrumb: 'اظهار جميع انواع السيارات' }
   },
   {
     path: 'add',
     component: AddCarTypeComponent,
-    data: {breadcrumb: 'اضافة نوع سيارة جديد'}
+    data: { breadcrumb: 'اضافة نوع سيارة جديد' }
   }
 ];
 

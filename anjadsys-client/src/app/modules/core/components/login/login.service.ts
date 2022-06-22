@@ -20,11 +20,12 @@ export interface Login{
 
 @Injectable()
 export class LoginService {
+
   private url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
-  login(data: Login): Observable<any>{
-    return this.http.post<any>(`${this.url}api/login`, data)
-  }
+  login = (data: Login): Observable<any> =>
+    this.http.post<any>(`${ this.url }api/login`, data);
+
 }

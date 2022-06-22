@@ -1,12 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
+import {
+  InsurancePolicesAPI,
+  InsurancePolicyAPI,
+  SearchInsurancePolicy
+} from '../../../../model/insurancepolicy';
 import { SearchUser, UserAPI } from '../../../../model/user';
 import { AdminService } from '../../admin.service';
-import { OtherServiceAPI, SearchOtherServices, updateOtherService } from '../../../../model/otherservices';
+import {
+  OtherServiceAPI,
+  SearchOtherServices,
+  updateOtherService
+} from '../../../../model/otherservices';
 
 @Component({
   selector: 'app-edit-otherservices',
@@ -38,20 +46,20 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   private searchTextObj = {
     searchCustomerText$: new Subject<string>(),
   };
-  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private keys = [ 'backspace', 'arrowleft', 'arrowright' ];
 
-  fileStatusArr = ['مفتوح', 'مغلق'];
-  serviceKindArr = ['خدمة تحقيق', 'خدمة متابعة'];
+  fileStatusArr = [ 'مفتوح', 'مغلق' ];
+  serviceKindArr = [ 'خدمة تحقيق', 'خدمة متابعة' ];
 
   editOtherServiceForm = this.fb.group({
-    name: ['', Validators.required],
-    fileStatus: ['', Validators.required],
-    serviceKind: [null, Validators.required],
-    descCustomer: ['', Validators.required],
-    description: ['', Validators.required],
-    cost: ['', Validators.required],
-    customerId: ['', Validators.required],
-    insurancePolicyId: ['', Validators.required]
+    name: [ '', Validators.required ],
+    fileStatus: [ '', Validators.required ],
+    serviceKind: [ null, Validators.required ],
+    descCustomer: [ '', Validators.required ],
+    description: [ '', Validators.required ],
+    cost: [ '', Validators.required ],
+    customerId: [ '', Validators.required ],
+    insurancePolicyId: [ '', Validators.required ]
   });
 
   constructor(
@@ -59,8 +67,8 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private adminService: AdminService) {
-      this.searchCustomerAPI();
-    }
+    this.searchCustomerAPI();
+  }
 
   ngOnInit(): void {
     this.getOtherServiceById();
@@ -71,25 +79,25 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  getOtherServiceById(){
+  getOtherServiceById() {
     this.route.paramMap.subscribe({
-        next: params => {
-          const otherServiceId = Number(params.get('id'));
-          console.log("otherServiceId", otherServiceId);
-          if(!otherServiceId)
-            this.router.navigate(['/admin/otherservices/show']);
-            let searchOtherServices: SearchOtherServices = {otherServiceID: otherServiceId!} as SearchOtherServices;
-            this.adminService.OtherServicesAPIs.show(searchOtherServices)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: (response: any) => {
-                if(response.data && response.data.length === 1)
+      next: params => {
+        const otherServiceId = Number(params.get('id'));
+        console.log('otherServiceId', otherServiceId);
+        if (!otherServiceId) { this.router.navigate(['/admin/otherservices/show']); }
+        let searchOtherServices: SearchOtherServices = { otherServiceID: otherServiceId! } as SearchOtherServices;
+        this.adminService.OtherServicesAPIs.show(searchOtherServices)
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: (response: any) => {
+              if (response.data && response.data.length === 1) {
                 this.otherService = response.data[0];
                 this.buildForm();
               }
-            });
-        }
-      });
+            }
+          });
+      }
+    });
   }
 
   updateOtherService = (): void => {
@@ -100,15 +108,14 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     let controlsObject = this.editOtherServiceForm.controls;
     let keys = Object.keys(controlsObject);
     keys.forEach((val: string) => {
-      if(controlsObject[val].dirty){
+      if (controlsObject[val].dirty) {
         let currValue = controlsObject[val].value;
-        if(currValue !== '' && currValue !== this.otherService[val])
-            formObj[val] = currValue;
+        if (currValue !== '' && currValue !== this.otherService[val]) { formObj[val] = currValue; }
       }
     });
 
-    if(Object.keys(formObj).length === 0){
-      this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
+    if (Object.keys(formObj).length === 0) {
+      this.errorMsg = 'يجب اجراء تغيير في المعلومات حتى يتم تحديثها!';
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
@@ -116,29 +123,30 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     this.adminService.OtherServicesAPIs.update(otherServiceID, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
-      }
-    });
+      });
 
     console.log(formObj);
-  }
+  };
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
-      this.searchTextObj.searchCustomerText$.pipe(
+    this.searchTextObj.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -147,7 +155,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -160,9 +168,9 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     // console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       // if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
@@ -170,38 +178,37 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.searchTextObj.searchCustomerText$.next(typeTxt);
     }
   }
 
-  getInsurancePolicies(){
+  getInsurancePolicies() {
     this.spinner.insurancePolicy = true;
     console.log(this.selectedCustomer);
-    if(!this.selectedCustomer){
+    if (!this.selectedCustomer) {
       this.spinner.insurancePolicy = false;
       return;
     }
 
     let customerId = this.selectedCustomer!.id;
     this.insurancePolicyNotValidMsg = undefined;
-    let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true}
+    let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true };
     this.adminService.InsurancePoliciesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          this.insurancePolicies = response.data;
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            this.insurancePolicies = response.data;
+          }
+          this.spinner.insurancePolicy = false;
+        },
+        error: (error: any) => {
+          if (error.error.message) { this.insurancePolicyNotValidMsg = error.error.message; }
+          this.spinner.insurancePolicy = false;
+          console.log(error);
         }
-        this.spinner.insurancePolicy = false;
-      },
-      error: (error: any) => {
-        if(error.error.message)
-          this.insurancePolicyNotValidMsg = error.error.message;
-        this.spinner.insurancePolicy = false;
-        console.log(error);
-      }
-    });
+      });
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any):
@@ -213,7 +220,7 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     return selectedOne;
   }
 
-  buildForm(): void{
+  buildForm(): void {
     this.editOtherServiceForm.setValue({
       name: this.otherService.name,
       fileStatus: this.otherService.fileStatus,
@@ -224,21 +231,21 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
       customerId: this.otherService.customerId,
       insurancePolicyId: this.otherService.insurancePolicyId,
     });
-    this.selectedInsurancePolicy = {id: this.otherService.insurancePolicyId} as InsurancePolicyAPI;
+    this.selectedInsurancePolicy = { id: this.otherService.insurancePolicyId } as InsurancePolicyAPI;
     this.selectedCustomer = this.otherService.Customer;
   }
 
-  fillFieldsByCustomer(event: Event){
-    if(event instanceof KeyboardEvent) return;
+  fillFieldsByCustomer(event: Event) {
+    if (event instanceof KeyboardEvent) { return; }
     console.log(event);
     setTimeout(() => {
       this.getInsurancePolicies();
     }, 0);
   }
 
-  selectInsurancePolicy(event: Event){
+  selectInsurancePolicy(event: Event) {
     // console.log('change', event);
-    if(event.type === 'change'){
+    if (event.type === 'change') {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
       // console.log(this.selectedInsurancePolicy);
@@ -262,18 +269,19 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
     this.formCont('insurancePolicyId').setValue('');
   }
 
-  formCont(controlName: string): any{
+  formCont(controlName: string): any {
     return this.editOtherServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
-    if(event instanceof KeyboardEvent){
+  acceptNumbers(event: Event): Boolean {
+    if (event instanceof KeyboardEvent) {
       const code = event.key;
       console.log(code);
-      if(Number.isNaN(+code))
-        if(!this.keys.includes(code.toLowerCase()))
-          return false;
+      if (Number.isNaN(+code)) {
+        if (!this.keys.includes(code.toLowerCase())) { return false; }
+      }
     }
     return true;
   }
+
 }

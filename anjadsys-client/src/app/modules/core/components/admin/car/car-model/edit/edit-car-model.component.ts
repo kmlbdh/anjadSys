@@ -13,6 +13,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./edit-car-model.component.scss']
 })
 export class EditCarModelComponent implements OnInit, OnDestroy {
+
   cancelInput = faTimes;
 
   errorMsg: string | undefined;
@@ -28,8 +29,8 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   editCarModelForm = this.fb.group({
-    name: ['', [Validators.required]],
-    carTypeId: ['', [Validators.required]]
+    name: [ '', [Validators.required] ],
+    carTypeId: [ '', [Validators.required] ]
   });
 
   constructor(
@@ -55,15 +56,14 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
     let controlsObject = this.editCarModelForm.controls;
     let keys = Object.keys(controlsObject);
     keys.forEach((val: string) => {
-      if(controlsObject[val].dirty){
+      if (controlsObject[val].dirty) {
         let currValue = controlsObject[val].value;
-        if(currValue !== '' && currValue !== this.carModel[val])
-            formObj[val] = currValue;
+        if (currValue !== '' && currValue !== this.carModel[val]) { formObj[val] = currValue; }
       }
     });
 
-    if(Object.keys(formObj).length === 0){
-      this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
+    if (Object.keys(formObj).length === 0) {
+      this.errorMsg = 'يجب اجراء تغيير في المعلومات حتى يتم تحديثها!';
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
@@ -71,89 +71,86 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
     this.adminService.CarModelsAPIs.update(carModelId, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: (response) => {
-          if(response.data)
+        next: response => {
+          if (response.data) {
             this.successMsg = response.message;
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
+          }
           console.log(response);
         },
-        error: (err) => {
+        error: err => {
           console.error(err.error);
-          if(err?.error?.message){
+          if (err?.error?.message) {
             this.errorMsg = err.error.message;
             setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
           }
         }
-    });
+      });
 
     console.log(formObj);
-  }
+  };
 
-  searchCarType(event: Event){
+  searchCarType(event: Event) {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       event.preventDefault();
       event.stopPropagation();
       this.selectedCarType = this.carTypes.filter(carType =>
         carType.id === Number(this.formCont('carTypeId')?.value))[0];
-      this.carTypeName = `${this.selectedCarType?.name}`;
+      this.carTypeName = `${ this.selectedCarType?.name }`;
       return;
     }
-    if(this.formCont('carTypeId')?.value === '')
-      this.carTypeName = undefined;
+    if (this.formCont('carTypeId')?.value === '') { this.carTypeName = undefined; }
 
     let carTypeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(carTypeTxt)
-      this.searchCarTypeText$.next(carTypeTxt)
+    if (carTypeTxt) { this.searchCarTypeText$.next(carTypeTxt); }
   }
 
-  searchAPI(){
+  searchAPI() {
     this.searchCarTypeText$.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(text => this.adminService.CarTypesAPIs.list({name: text}))
+      switchMap(text => this.adminService.CarTypesAPIs.list({ name: text }))
     ).subscribe({
-      next: response =>{
-        if(response.data)
-          this.carTypes = response.data;
-          console.log(response);
+      next: response => {
+        if (response.data) { this.carTypes = response.data; }
+        console.log(response);
       },
       error: err => console.log(err)
-    })
+    });
   }
 
-  getCarModelData(){
+  getCarModelData() {
     this.route.paramMap.subscribe({
       next: params => {
         const carModelId = params.get('id');
-        console.log("carModelId", carModelId);
-        if(!carModelId)
-          this.router.navigate(['/admin/car/car-model/show']);
+        console.log('carModelId', carModelId);
+        if (!carModelId) { this.router.navigate(['/admin/car/car-model/show']); }
 
-          this.adminService.CarModelsAPIs.list({carModelId:  Number(carModelId!)})
+        this.adminService.CarModelsAPIs.list({ carModelId:  Number(carModelId!) })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: response => {
-              if(response.data && response.data.length === 1)
-              this.carModel = response.data[0];
-              this.buildForm();
+              if (response.data && response.data.length === 1) {
+                this.carModel = response.data[0];
+                this.buildForm();
+              }
             }
           });
       }
     });
   }
 
-  buildForm():void{
+  buildForm():void {
     this.editCarModelForm.setValue({
       name: this.carModel.name,
-      carTypeId: this.carModel.CarType.id ,
+      carTypeId: this.carModel.CarType.id,
     });
     this.carTypeName = this.carModel.CarType.name;
   }
 
-  formCont(controlName: string): any{
+  formCont(controlName: string): any {
     return this.editCarModelForm.controls[controlName];
   }
 
@@ -164,4 +161,5 @@ export class EditCarModelComponent implements OnInit, OnDestroy {
     this.carTypeName = undefined;
     this.formCont('carTypeId')?.setValue('');
   }
+
 }

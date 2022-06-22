@@ -7,12 +7,12 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {role: 'supplier', breadcrumb: 'اظهار جميع الموردين'}
+    data: { role: 'supplier', breadcrumb: 'اظهار جميع الموردين' }
   },
   {
     path: 'account/:id',
     component: SupplierAccountComponent,
-    data: {breadcrumb: 'حساب المورد'}
+    data: { breadcrumb: 'حساب المورد' }
   },
 ];
 

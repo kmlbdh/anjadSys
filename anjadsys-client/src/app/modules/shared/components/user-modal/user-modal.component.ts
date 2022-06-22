@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserAPI } from '../../../core/model/user';
@@ -8,34 +8,32 @@ import { UserAPI } from '../../../core/model/user';
   templateUrl: './user-modal.component.html',
   styleUrls: ['./user-modal.component.scss']
 })
-export class UserModalComponent implements OnInit {
+export class UserModalComponent {
+
   printer = faPrint;
   customerDetails: UserAPI = {} as UserAPI;
   rolesLang:{
     [index: string]: string;
   } = {
-    'agent': 'وكيل',
-    'admin': 'مدير',
-    'supplier':  'مورد',
-    'customer': 'زبون'
-  };
+      'agent': 'وكيل',
+      'admin': 'مدير',
+      'supplier':  'مورد',
+      'customer': 'زبون'
+    };
 
   blocked:{
     [index: string]: string;
   } = {
-    false: 'مفعل',
-    true: 'معطل',
-  };
+      false: 'مفعل',
+      true: 'معطل',
+    };
 
-  servicesPackageArray = ['الضفة الغربية', 'القدس'];
+  servicesPackageArray = [ 'الضفة الغربية', 'القدس' ];
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit(): void {
-  }
-
-  printPage(): void{
-    window.print()
+  printPage(): void {
+    window.print();
   }
 
 }

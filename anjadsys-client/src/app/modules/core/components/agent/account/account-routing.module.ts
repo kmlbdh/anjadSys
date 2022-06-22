@@ -5,7 +5,7 @@ import { ShowAccountComponent } from './show/show-account.component';
 const routes: Routes = [{
   path: 'show',
   component: ShowAccountComponent,
-  data: {breadcrumb: 'اظهار جميع الحركات المالية'}
+  data: { breadcrumb: 'اظهار جميع الحركات المالية' }
 }];
 
 @NgModule({

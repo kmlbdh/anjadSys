@@ -11,6 +11,7 @@ import { CarTypeAPI, SearchCarType, CarTypeArrayAPI } from '../../../../../model
   styleUrls: ['./show-car-models.component.scss']
 })
 export class ShowCarModelsComponent implements OnInit, OnDestroy {
+
   carModels: CarModelAPI[] = [];
   carTypes: CarTypeAPI[] = [];
 
@@ -29,10 +30,10 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   constructor(
     private agentService: AgentService,
     private router: Router
-    ) { }
+  ) { }
 
   ngOnInit(): void {
-    this.getCarTypes({limit: 999999999999999})
+    this.getCarTypes({ limit: 999999999999999 });
   }
 
   ngOnDestroy(): void {
@@ -40,56 +41,58 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCarModel(event: Event){
+  searchCarModel(event: Event) {
     console.log(event);
     // if(event == null || event.target?.value == null) return;
     let carTypeId = Number(((event.target) as HTMLInputElement).value);
     // let formObj = this.searchCarModelForm.value;
-    this.searchConditions = {carTypeId};
+    this.searchConditions = { carTypeId };
 
     this.getCarModels(this.searchConditions);
   }
 
-  getCarModels(searchConditions: SearchCarModel){
+  getCarModels(searchConditions: SearchCarModel) {
     this.agentService.CarModelsAPIs.list(searchConditions)
-    .pipe(
-      first(),
-      takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: CarModelArrayAPI) =>{
-        if(response.data){
-          this.carModels = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error) => console.log(error)
-    })
+      .pipe(
+        first(),
+        takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: CarModelArrayAPI) => {
+          if (response.data) {
+            this.carModels = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: error => console.log(error)
+      });
   }
 
-  getCarTypes(searchConditions: SearchCarType){
+  getCarTypes(searchConditions: SearchCarType) {
     this.agentService.CarTypesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: CarTypeArrayAPI) => {
-        if(response.data){
-          this.carTypes = response.data;
-          this.searchConditions = {carTypeId: this.carTypes[0].id};
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: CarTypeArrayAPI) => {
+          if (response.data) {
+            this.carTypes = response.data;
+            this.searchConditions = { carTypeId: this.carTypes[0].id };
 
-          this.getCarModels(this.searchConditions);
-        }
-      },
-      error: (error) => console.log(error)
-    })
+            this.getCarModels(this.searchConditions);
+          }
+        },
+        error: error => console.log(error)
+      });
   }
-  trackById(index: number, el: any){
+
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarModel;
     this.p = pageNumber;
     this.getCarModels(this.searchConditions);
     // console.log(pageNumber);
   }
+
 }

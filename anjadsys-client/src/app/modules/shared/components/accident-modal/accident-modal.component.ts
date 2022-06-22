@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AccidentAPI } from 'src/app/modules/core/model/accident';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,16 +7,14 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './accident-modal.component.html',
   styleUrls: ['./accident-modal.component.scss']
 })
-export class AccidentModalComponent implements OnInit {
+export class AccidentModalComponent {
 
   modalAccident: AccidentAPI = {} as AccidentAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit(): void {
+  printPage(): void {
+    window.print();
   }
 
-  printPage(): void{
-    window.print()
-  }
 }

@@ -8,17 +8,17 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditUserComponent,
-    data: {breadcrumb: 'تعديل بيانات المستخدم'}
+    data: { breadcrumb: 'تعديل بيانات المستخدم' }
   },
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {breadcrumb: 'اظهار كافة مستخدمي النظام'}
+    data: { breadcrumb: 'اظهار كافة مستخدمي النظام' }
   },
   {
     path: 'add',
     component: AddUserComponent,
-    data: {breadcrumb: 'اضافة مستخدم جديد'}
+    data: { breadcrumb: 'اضافة مستخدم جديد' }
   },
 ];
 

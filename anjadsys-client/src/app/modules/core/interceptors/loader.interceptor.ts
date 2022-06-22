@@ -11,20 +11,22 @@ import { LoaderService } from '../services/loader.service';
 
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
+
   private requests: HttpRequest<any>[] = [];
 
   constructor(private loaderService: LoaderService) {}
 
-  removeRequest(req: HttpRequest<any>){
+  removeRequest(req: HttpRequest<any>) {
     const index = this.requests.indexOf(req);
-    if(index > -1) this.requests.splice(index, 1);
+    if (index > -1) { this.requests.splice(index, 1); }
     this.loaderService.loading.next(this.requests.length > 0);
   }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if(request.body?.skipLoadingInterceptor){
-      let {skipLoadingInterceptor, ...restOfBody} = request.body;
+    if (request.body?.skipLoadingInterceptor) {
+      //TODO unsed skiploadingInterceptor variabel need to be removed
+      let { skipLoadingInterceptor, ...restOfBody } = request.body;
       let newRequest: HttpRequest<any> = request.clone({
-        body: {...restOfBody}
+        body: { ...restOfBody }
       });
       return next.handle(newRequest);
     }
@@ -38,7 +40,7 @@ export class LoaderInterceptor implements HttpInterceptor {
       const subscription = next.handle(request)
         .subscribe({
           next: event => {
-            if(event instanceof HttpResponse){
+            if (event instanceof HttpResponse) {
               this.removeRequest(request);
               observer.next(event);
             }
@@ -53,10 +55,11 @@ export class LoaderInterceptor implements HttpInterceptor {
           }
         });
         //if request canceled, should be removed from array!
-        return () => {
-          this.removeRequest(request);
-          subscription.unsubscribe();
-        };
+      return () => {
+        this.removeRequest(request);
+        subscription.unsubscribe();
+      };
     });
   }
+
 }

@@ -8,17 +8,17 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditCarModelComponent,
-    data: {breadcrumb: 'تعديل بيانات موديل السيارة'}
+    data: { breadcrumb: 'تعديل بيانات موديل السيارة' }
   },
   {
     path: 'show',
     component: ShowCarModelsComponent,
-    data: {breadcrumb: 'اظهار جميع موديلات السيارات'}
+    data: { breadcrumb: 'اظهار جميع موديلات السيارات' }
   },
   {
     path: 'add',
     component: AddCarModelComponent,
-    data: {breadcrumb: 'اضافة موديل سيارة جديد'}
+    data: { breadcrumb: 'اضافة موديل سيارة جديد' }
   }
 ];
 

@@ -5,10 +5,11 @@ import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUnt
 import { AccidentAPI, AccidentsAPI, SearchAccident } from 'src/app/modules/core/model/accident';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { AgentService } from '../../agent.service';
-import { ServiceAccidentAPI } from '../../../../model/service';
 import { NgbModalOptions, ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
-import { AccidentModalComponent } from '../../../../../shared/components/accident-modal/accident-modal.component';
+import {
+  AccidentModalComponent
+} from '../../../../../shared/components/accident-modal/accident-modal.component';
 
 @Component({
   selector: 'app-show-accident',
@@ -16,6 +17,7 @@ import { AccidentModalComponent } from '../../../../../shared/components/acciden
   styleUrls: ['./show-accident.component.scss']
 })
 export class ShowAccidentComponent implements OnInit, OnDestroy {
+
   accidents: AccidentAPI[] = [];
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
@@ -68,9 +70,9 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     private agentService: AgentService,
     private router: Router,
     private modalService: NgbModal
-    ) {
-      this.agentName = this.agentName.companyName;
-    }
+  ) {
+    this.agentName = this.agentName.companyName;
+  }
 
   ngOnInit(): void {
     this.getAccidents(this.searchConditions);
@@ -82,11 +84,12 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
-      this.searchCustomerText$.pipe(
+    this.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -94,7 +97,7 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -107,22 +110,22 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       return;
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI{
+  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
     event.preventDefault();
     event.stopPropagation();
     let selectedOne: UserAPI;
@@ -137,14 +140,13 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.formCont('customerId').setValue('');
   }
 
-  searchAccident(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchAccident(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
-    let searchConditions: SearchAccident = {}
+    let searchConditions: SearchAccident = {};
     keys.forEach(key => {
       searchConditions[key] = this.searchAccidentForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.getAccidents(searchConditions);
@@ -153,22 +155,22 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   open(accidentId: number) {
     let searchCondition: SearchAccident = { accidentID: accidentId };
     this.agentService.AccidentsAPI.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: AccidentsAPI) => {
-        if(response.data){
-          const refModal = this.modalService.open(AccidentModalComponent, this.modalOptions);
-          refModal.componentInstance.modalAccident = response.data[0];
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: AccidentsAPI) => {
+          if (response.data) {
+            const refModal = this.modalService.open(AccidentModalComponent, this.modalOptions);
+            refModal.componentInstance.modalAccident = response.data[0];
 
-          refModal.result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+            refModal.result.then(result => {
+              this.closeResult = `Closed with: ${ result }`;
+            }, reason => {
+              this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+            });
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   private getDismissReason(reason: any): string {
@@ -177,22 +179,22 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  getAccidents(searchConditions: SearchAccident){
+  getAccidents(searchConditions: SearchAccident) {
     this.agentService.AccidentsAPI.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: AccidentsAPI) => {
-        if(response.data){
-          this.accidents = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: AccidentsAPI) => {
+          if (response.data) {
+            this.accidents = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   // deleteAccident(accident: AccidentAPI){
@@ -215,19 +217,19 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   //   })
   // }
 
-  goToAccidentEdit(id: number){
-    this.router.navigate(['agent/accident/edit', id]);
+  goToAccidentEdit(id: number) {
+    this.router.navigate([ 'agent/accident/edit', id ]);
   }
 
-  formCont(controlName: string){
+  formCont(controlName: string) {
     return this.searchAccidentForm.controls[controlName];
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccident;
     this.p = pageNumber;

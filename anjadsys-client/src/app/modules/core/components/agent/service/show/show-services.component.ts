@@ -10,12 +10,13 @@ import { SearchService } from '../../../../model/service';
   styleUrls: ['./show-services.component.scss']
 })
 export class ShowServicesComponent implements OnInit, OnDestroy {
+
   services: ServiceAPI[] = [];
   private unsubscribe$ = new Subject<void>();
 
   selectedAgentName: string | undefined;
-  currency: string = "شيكل";
-  day: string = "يوم";
+  currency: string = 'شيكل';
+  day: string = 'يوم';
 
   searchConditions : SearchService = {} as SearchService;
 
@@ -39,26 +40,26 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadServices(searchConditions : SearchService): void{
+  loadServices(searchConditions : SearchService): void {
     this.agentService.ServicesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.services = response.data;
-          this.pagination.total = response.total;
-        }
-        console.log(response.data);
-      },
-      error: err => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.services = response.data;
+            this.pagination.total = response.total;
+          }
+          console.log(response.data);
+        },
+        error: err => console.log(err)
+      });
   }
 
-  trackById(index: number, el: any): string{
+  trackById(index: number, el: any): string {
     return el._id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { skip: skip } as SearchService;
     this.p = pageNumber;

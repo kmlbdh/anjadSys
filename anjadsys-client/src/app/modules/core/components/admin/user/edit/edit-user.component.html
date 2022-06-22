@@ -60,7 +60,7 @@
             <select id="roleId" formControlName="roleId" (change)="changeForm($event.target)">
               <ng-template [ngIf]="rolesAPI">
                 <option *ngFor="let role of rolesAPI" [value]="role.id"
-                 [selected]="role.id == formCont('roleId').value">{{roles[role.name]}}</option>
+                 [selected]="role.id === (formCont('roleId').value | number)">{{roles[role.name]}}</option>
               </ng-template>
             </select>
             <div *ngIf="(form.submitted || formCont('roleId')?.touched)
@@ -75,7 +75,7 @@
             <select id="regionId" formControlName="regionId">
               <ng-template [ngIf]="regionsAPI">
                 <option *ngFor="let region of regionsAPI" [value]="region.id"
-                 [selected]="region.id == formCont('regionId').value">{{region.name}}</option>
+                 [selected]="region.id === (formCont('regionId').value | number)">{{region.name}}</option>
               </ng-template>
             </select>
 

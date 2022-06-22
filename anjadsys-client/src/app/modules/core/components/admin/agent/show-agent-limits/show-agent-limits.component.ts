@@ -11,11 +11,12 @@ import { AgentLimitsAPI, SearchAgentLimits } from '../../../../model/agentlimits
   styleUrls: ['./show-agent-limits.component.scss']
 })
 export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
+
   agentLimits: AgentLimitsAPI[] = [];
   private unsubscribe$ = new Subject<void>();
   trashIcon = faTrashAlt;
   selectedAgentName: string | undefined;
-  currency: string = "شيكل";
+  currency: string = 'شيكل';
 
   p: number = 1;
   pagination = {
@@ -41,59 +42,60 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadAgentLimitsById(searchAgentLimits: SearchAgentLimits): void{
+  loadAgentLimitsById(searchAgentLimits: SearchAgentLimits): void {
     this.route.paramMap
-    .pipe(first())
-    .subscribe({
-      next: params => {
-        const agentId = params.get('id');
+      .pipe(first())
+      .subscribe({
+        next: params => {
+          const agentId = params.get('id');
 
-       this.selectedAgentName = params.get('fullname') || undefined;
-        console.log(this.selectedAgentName);
-        if(!agentId || !this.selectedAgentName) this.router.navigate(['admin/show-agents']);
-        searchAgentLimits = {...searchAgentLimits, agentID: agentId?.toUpperCase()!, main: false};
-        this.adminService.AgentLimitsAPIs.listLimits(searchAgentLimits)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: response => {
-            if(response.data){
-              this.agentLimits = response.data;
-              this.pagination.total = response.total;
-            }
-            console.log(response.data);
-          },
-          error: err => console.log(err)
-        })
-      }
-    });
+          this.selectedAgentName = params.get('fullname') || undefined;
+          console.log(this.selectedAgentName);
+          if (!agentId || !this.selectedAgentName) { this.router.navigate(['admin/show-agents']); }
+          searchAgentLimits = { ...searchAgentLimits, agentID: agentId?.toUpperCase()!, main: false };
+          this.adminService.AgentLimitsAPIs.listLimits(searchAgentLimits)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: response => {
+                if (response.data) {
+                  this.agentLimits = response.data;
+                  this.pagination.total = response.total;
+                }
+                console.log(response.data);
+              },
+              error: err => console.log(err)
+            });
+        }
+      });
   }
 
-  deleteAgentLimits(agentLimits: AgentLimitsAPI): void{
-    const yes = confirm(`هل تريد حذف السقف المالي "${agentLimits.debit}" للوكيل؟`);
-    if(!yes) return;
+  deleteAgentLimits(agentLimits: AgentLimitsAPI): void {
+    const yes = confirm(`هل تريد حذف السقف المالي "${ agentLimits.debit }" للوكيل؟`);
+    if (!yes) { return; }
 
     this.adminService.AgentLimitsAPIs.delete(agentLimits.id)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.loadAgentLimitsById(this.searchConditions);
-        }
-        console.log(response.data);
-      },
-      error: err => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.loadAgentLimitsById(this.searchConditions);
+          }
+          console.log(response.data);
+        },
+        error: err => console.log(err)
+      });
   }
 
-  trackById(index: number, el: any): string{
+  trackById(index: number, el: any): string {
     return el._id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAgentLimits;
     this.p = pageNumber;
     this.loadAgentLimitsById(this.searchConditions);
     console.log(pageNumber);
   }
+
 }

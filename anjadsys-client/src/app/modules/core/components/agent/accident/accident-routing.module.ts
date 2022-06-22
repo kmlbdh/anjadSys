@@ -7,12 +7,12 @@ const routes: Routes = [
   {
     path: 'add',
     component: AddAccidentComponent,
-    data: {breadcrumb: 'اضافة بلاغ عن حادث جديد'}
+    data: { breadcrumb: 'اضافة بلاغ عن حادث جديد' }
   },
   {
     path: 'show',
     component: ShowAccidentComponent,
-    data: {breadcrumb: 'اظهار جميع بلاغات الحوادث'}
+    data: { breadcrumb: 'اظهار جميع بلاغات الحوادث' }
   },
 
 ];

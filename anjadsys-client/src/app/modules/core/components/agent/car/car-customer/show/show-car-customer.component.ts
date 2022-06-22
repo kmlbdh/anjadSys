@@ -14,6 +14,7 @@ import { CarModalComponent } from '../../../../../../shared/components/car-modal
   styleUrls: ['./show-car-customer.component.scss']
 })
 export class ShowCarCustomerComponent implements OnInit, OnDestroy {
+
   cars: CarAPI[] = [];
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
@@ -57,7 +58,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private agentService: AgentService,
     private modalService: NgbModal
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.getCars(this.searchConditions);
@@ -69,11 +70,12 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
-      this.searchCustomerText$.pipe(
+    this.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -81,7 +83,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -94,9 +96,9 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       this.searchCarForm.get('agentID')?.disable();
@@ -104,13 +106,13 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI{
+  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
     event.preventDefault();
     event.stopPropagation();
     let selectedOne: UserAPI;
@@ -125,40 +127,39 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     this.formCont('customerID').setValue('');
   }
 
-  searchCar(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchCar(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
     let searchConditions: SearchCar = {} as SearchCar;
     keys.forEach(key => {
       searchConditions[key] = this.searchCarForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.getCars(searchConditions);
   }
 
-  getCars(searchConditions: SearchCar){
+  getCars(searchConditions: SearchCar) {
     this.agentService.CarsAPIs.show(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: CarsAPI) => {
-        if(response.data){
-          this.cars = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: CarsAPI) => {
+          if (response.data) {
+            this.cars = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   open(car: any) {
-    const refModal = this.modalService.open(CarModalComponent, this.modalOptions)
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions);
     refModal.componentInstance.carDetails = car;
-    refModal.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
     });
   }
 
@@ -168,23 +169,24 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  formCont(controlName: string){
+  formCont(controlName: string) {
     return this.searchCarForm.controls[controlName];
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCar;
     this.p = pageNumber;
     this.getCars(this.searchConditions);
     console.log(pageNumber);
   }
+
 }

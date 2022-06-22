@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-edit-accident',
   templateUrl: './edit-accident.component.html',
   styleUrls: ['./edit-accident.component.scss']
 })
-export class EditAccidentComponent implements OnInit {
+export class EditAccidentComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

@@ -10,6 +10,7 @@ import { AgentService } from '../../../agent.service';
   styleUrls: ['./show-car-types.component.scss']
 })
 export class ShowCarTypesComponent implements OnInit, OnDestroy {
+
   carTypes: CarTypeAPI[] = [];
 
   private unsubscribe$ = new Subject<void>();
@@ -27,40 +28,41 @@ export class ShowCarTypesComponent implements OnInit, OnDestroy {
   constructor(
     private agentService: AgentService,
     private router: Router
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.getCarTypes(this.searchConditions);
   }
 
   ngOnDestroy(): void {
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
-  getCarTypes(searchConditions: SearchCarType){
+  getCarTypes(searchConditions: SearchCarType) {
     this.agentService.CarTypesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: CarTypeArrayAPI) =>{
-        if(response.data){
-          this.carTypes = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error) => console.log(error)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: CarTypeArrayAPI) => {
+          if (response.data) {
+            this.carTypes = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: error => console.log(error)
+      });
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarType;
     this.p = pageNumber;
     this.getCarTypes(this.searchConditions);
     console.log(pageNumber);
   }
+
 }

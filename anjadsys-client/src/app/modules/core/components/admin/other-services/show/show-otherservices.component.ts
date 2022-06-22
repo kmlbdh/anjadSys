@@ -8,8 +8,12 @@ import { SearchUser, UserAPI } from '../../../../model/user';
 import { SearchInsurancePolicy, InsurancePolicesAPI } from '../../../../model/insurancepolicy';
 import { faEdit, faEnvelopeOpenText, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { SearchOtherServices, OtherServiceAPI } from '../../../../model/otherservices';
-import { OtherServiceModalComponent } from '../../../../../shared/components/other-service-modal/other-service-modal.component';
-import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
+import {
+  OtherServiceModalComponent
+} from '../../../../../shared/components/other-service-modal/other-service-modal.component';
+import {
+  InsurancePolicyComponent
+} from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
 
 @Component({
   selector: 'app-show-otherservices',
@@ -61,7 +65,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
 
   private searchCustomerText$ = new Subject<string>();
 
-  fileStatusArr = ['مفتوح', 'مغلق'];
+  fileStatusArr = [ 'مفتوح', 'مغلق' ];
 
   searchOtherServiceForm = this.fb.group({
     otherServiceID: [''],
@@ -69,8 +73,8 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     customerID: [''],
     fileStatus: [''],
     serviceKind: [''],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
   });
 
   constructor(
@@ -78,7 +82,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     private adminService: AdminService,
     private router: Router,
     private modalService: NgbModal
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.getOtherServices(this.searchConditions);
@@ -90,11 +94,12 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true, role: 'customer' } as SearchUser);
 
-      this.searchCustomerText$.pipe(
+    this.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -103,7 +108,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -116,21 +121,21 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       return;
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI{
+  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
     event.preventDefault();
     event.stopPropagation();
     let selectedOne: UserAPI;
@@ -145,14 +150,13 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.formCont('customerID').setValue('');
   }
 
-  searchOtherService(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchOtherService(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
     let searchConditions: SearchOtherServices = {} as SearchOtherServices;
     keys.forEach(key => {
       searchConditions[key] = this.searchOtherServiceForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.getOtherServices(searchConditions);
@@ -161,30 +165,30 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   open(insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
     this.adminService.InsurancePoliciesAPIs.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
-          refModal.componentInstance.modalInsurancePolicy = response.data[0];
-          refModal.result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
+            refModal.componentInstance.modalInsurancePolicy = response.data[0];
+            refModal.result.then(result => {
+              this.closeResult = `Closed with: ${ result }`;
+            }, reason => {
+              this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+            });
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   openOtherService(otherService: OtherServiceAPI) {
     const refModal = this.modalService.open(OtherServiceModalComponent, this.modalOptions);
     refModal.componentInstance.modalOtherService = otherService;
-    refModal.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
     });
   }
 
@@ -194,67 +198,67 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  getOtherServices(searchConditions: SearchOtherServices){
+  getOtherServices(searchConditions: SearchOtherServices) {
     this.adminService.OtherServicesAPIs.show(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: any) => {
-        if(response.data){
-          this.otherServices = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.otherServices = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
-  deleteOtherService(otherService: any){
-    if(!otherService) return;
+  deleteOtherService(otherService: any) {
+    if (!otherService) { return; }
 
-    const yes = confirm(`هل تريد حذف الخدمة رقم ${otherService.id} باسم ${otherService.name}`);
-    if(!yes) return;
+    const yes = confirm(`هل تريد حذف الخدمة رقم ${ otherService.id } باسم ${ otherService.name }`);
+    if (!yes) { return; }
 
     this.adminService.OtherServicesAPIs.delete(otherService.id)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data)
-          this.successMsg = response.message;
-
-        this.getOtherServices(this.searchConditions);
-        console.log(response);
-      },
-      error: err => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            this.getOtherServices(this.searchConditions);
+          }
+          console.log(response);
+        },
+        error: err => console.log(err)
+      });
   }
 
-  goToOtherServiceEdit(id: number){
-    this.router.navigate(['admin/otherservices/edit', id]);
+  goToOtherServiceEdit(id: number) {
+    this.router.navigate([ 'admin/otherservices/edit', id ]);
   }
 
-  formCont(controlName: string){
+  formCont(controlName: string) {
     return this.searchOtherServiceForm.controls[controlName];
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = {...this.searchConditions, skip: skip } as SearchOtherServices;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchOtherServices;
     this.p = pageNumber;
     this.getOtherServices(this.searchConditions);
     console.log(pageNumber);
   }
 
-  showSearch () {
+  showSearch() {
     this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40)
+    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

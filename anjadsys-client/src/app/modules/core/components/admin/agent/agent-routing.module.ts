@@ -9,22 +9,22 @@ const routes: Routes = [
   {
     path: 'show-agent-limits/:id',
     component: ShowAgentLimitsComponent,
-    data: {breadcrumb: 'اظهار جميع الاسقف المالية للوكيل'}
+    data: { breadcrumb: 'اظهار جميع الاسقف المالية للوكيل' }
   },
   {
     path: 'show-agent-customers/:id',
     component: ShowAgentCustomersComponent,
-    data: {breadcrumb: 'اظهار جميع زبائن الوكيل'}
+    data: { breadcrumb: 'اظهار جميع زبائن الوكيل' }
   },
   {
     path: 'add-agent-limit',
     component: AddAgentLimitsComponent,
-    data: {breadcrumb: 'اضافة سقف مالي جديد'}
+    data: { breadcrumb: 'اضافة سقف مالي جديد' }
   },
   {
     path: 'show',
     component: ShowUsersComponent,
-    data: {role: 'agent', breadcrumb: 'اظهار جميع الوكلاء'}
+    data: { role: 'agent', breadcrumb: 'اظهار جميع الوكلاء' }
   },
 ];
 

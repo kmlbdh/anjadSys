@@ -9,6 +9,7 @@ import { AdminService } from '../admin.service';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit, OnDestroy {
+
   customers!: number;
   suppliers!: number;
   agents!: number;
@@ -36,19 +37,19 @@ export class MainComponent implements OnInit, OnDestroy {
 
   getStatistics = () => {
     this.adminService.GeneralAPIs.statistics()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.customers = response.data.customers;
-          this.suppliers = response.data.suppliers;
-          this.agents = response.data.agents;
-          this.insurancePolicies = response.data.insurancePolicies;
-          this.accidents = response.data.accidents;
-        }
-      },
-      error: (err) => console.log(err)
-    })
-  }
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.customers = response.data.customers;
+            this.suppliers = response.data.suppliers;
+            this.agents = response.data.agents;
+            this.insurancePolicies = response.data.insurancePolicies;
+            this.accidents = response.data.accidents;
+          }
+        },
+        error: err => console.log(err)
+      });
+  };
 
 }

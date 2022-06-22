@@ -6,7 +6,7 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserLoggedInAPI } from '../../core/model/general';
 
@@ -18,10 +18,10 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let newRq = request.clone();
 
-    if(!request.url.includes('login')){
+    if (!request.url.includes('login')) {
       const storedUser: string | null = localStorage.getItem('user');
 
-      if(!storedUser){
+      if (!storedUser) {
         this.router.navigate(['login']);
         return next.handle(request);
       }
@@ -36,21 +36,21 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(newRq)
       .pipe(
-          catchError((error: HttpErrorResponse) => {
-            let errorMsg = '';
-            if (error.error instanceof ErrorEvent) {
-                console.log('This is client side error');
-                errorMsg = `Error: ${error.error.message}`;
-            } else {
-                console.log('This is server side error');
-                errorMsg = `Error Code: ${error.status},  Message: ${error.message}`;
-                if(error.status === 401){
-                  localStorage.removeItem('user');
-                  this.router.navigate(['login']);
-                }
+        catchError((error: HttpErrorResponse) => {
+          if (error.error instanceof ErrorEvent) {
+            console.log('This is client side error');
+            // errorMsg = `Error: ${ error.error.message }`;
+          } else {
+            console.log('This is server side error');
+            // errorMsg = `Error Code: ${ error.status },  Message: ${ error.message }`;
+            if (error.status === 401) {
+              localStorage.removeItem('user');
+              this.router.navigate(['login']);
             }
-            return throwError(() => error);
+          }
+          return throwError(() => error);
         })
-      )
+      );
   }
+
 }

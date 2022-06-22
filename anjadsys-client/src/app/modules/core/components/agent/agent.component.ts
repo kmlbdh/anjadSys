@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTaxi, faUsers, faWrench, faAngleDown, faAngleUp, faFileMedicalAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBars,
+  faCarCrash,
+  faCarSide,
+  faFileInvoiceDollar,
+  faTaxi,
+  faUsers,
+  faWrench,
+  faAngleDown,
+  faAngleUp,
+  faFileMedicalAlt
+} from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from 'src/app/modules/shared/components/nav/nav.component';
 import { UserLoggedInAPI } from '../../model/general';
 import { AgentService } from './agent.service';
@@ -11,6 +22,7 @@ import { AgentService } from './agent.service';
   styleUrls: ['./agent.component.scss']
 })
 export class AgentComponent implements OnInit {
+
   faBarsIcon = faBars;
   angelDownIcon = faAngleDown;
   angelUpIcon = faAngleUp;
@@ -141,30 +153,28 @@ export class AgentComponent implements OnInit {
 
   ngOnInit(): void {
     const localStorageUser: string = localStorage.getItem('user') || '';
-    if(!localStorageUser)
-      this.router.navigate(['']);
+    if (!localStorageUser) { this.logout(); }
 
     this.user = JSON.parse(localStorageUser);
-    if(!this.user.accessToken)
-      this.router.navigate(['']);
+    if (!this.user.accessToken) { this.logout(); }
   }
 
-  profilePop(){
+  profilePop() {
 
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem('user');
     this.router.navigate(['login']);
   }
 
-  verifyLoggedInAdmin(user: UserLoggedInAPI){
-    this.agentService.verifyLoggedInAdmin(user.accessToken).subscribe({
-      next: (res) =>{
-        if(!res.data || res?.data?._id !== user.id)
-          this.router.navigate(['login']);
+  verifyLoggedIn(user: UserLoggedInAPI) {
+    this.agentService.verifyLoggedIn(user.accessToken).subscribe({
+      next: res => {
+        if (!res.data || res?.data?._id !== user.id) { this.logout(); }
       },
-      error: err => this.router.navigate(['login'])
-    })
+      error: () => this.logout()
+    });
   }
+
 }

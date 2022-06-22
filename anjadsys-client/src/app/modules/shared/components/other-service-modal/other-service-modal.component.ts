@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { OtherServiceAPI } from 'src/app/modules/core/model/otherservices';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,16 +7,14 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './other-service-modal.component.html',
   styleUrls: ['./other-service-modal.component.scss']
 })
-export class OtherServiceModalComponent implements OnInit {
+export class OtherServiceModalComponent {
 
   modalOtherService: OtherServiceAPI = {} as OtherServiceAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit(): void {
+  printPage(): void {
+    window.print();
   }
 
-  printPage(): void{
-    window.print()
-  }
 }

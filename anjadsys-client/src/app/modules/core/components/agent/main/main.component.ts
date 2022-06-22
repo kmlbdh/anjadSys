@@ -9,6 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit, OnDestroy {
+
   customers!: number;
   insurancePolicies!: number;
   accidents!: number;
@@ -32,16 +33,17 @@ export class MainComponent implements OnInit, OnDestroy {
 
   getStatistics = () => {
     this.agentService.GeneralAPIs.statistics()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.customers = response.data.customers;
-          this.insurancePolicies = response.data.insurancePolicies;
-          this.accidents = response.data.accidents;
-        }
-      },
-      error: (error) => console.log(error)
-    })
-  }
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.customers = response.data.customers;
+            this.insurancePolicies = response.data.insurancePolicies;
+            this.accidents = response.data.accidents;
+          }
+        },
+        error: error => console.log(error)
+      });
+  };
+
 }

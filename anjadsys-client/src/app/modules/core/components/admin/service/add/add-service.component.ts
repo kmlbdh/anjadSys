@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTrashAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
@@ -9,7 +9,8 @@ import { AdminService } from '../../admin.service';
   templateUrl: './add-service.component.html',
   styleUrls: ['./add-service.component.scss']
 })
-export class AddServiceComponent implements OnInit, OnDestroy{
+export class AddServiceComponent implements OnDestroy {
+
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
 
@@ -20,16 +21,16 @@ export class AddServiceComponent implements OnInit, OnDestroy{
 
   private unsubscribe$ = new Subject<void>();
 
-  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private keys = [ 'backspace', 'arrowleft', 'arrowright' ];
 
-  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+  packageTypeArray = [ 'الضفة الغربية', 'القدس', 'القدس والضفة الغربية' ];
 
   addServiceForm = this.fb.group({
-    name: ['', Validators.required],
-    coverageDays: ['', Validators.required],
-    cost: ['', Validators.required],
-    supplierPercentage: ['', Validators.required],
-    packageType: [0, Validators.required],
+    name: [ '', Validators.required ],
+    coverageDays: [ '', Validators.required ],
+    cost: [ '', Validators.required ],
+    supplierPercentage: [ '', Validators.required ],
+    packageType: [ 0, Validators.required ],
     note: [''],
   });
 
@@ -37,59 +38,57 @@ export class AddServiceComponent implements OnInit, OnDestroy{
     private fb: FormBuilder,
     private adminService: AdminService) { }
 
-  ngOnInit(): void {}
-
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
   addService = (ngForm: FormGroupDirective) => {
-    if(this.addServiceForm.invalid) return;
+    if (this.addServiceForm.invalid) { return; }
 
     let formObj = this.addServiceForm.value;
 
     this.adminService.ServicesAPIs.add(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        this.resetForm(ngForm);
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message)
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-
-      }
-    });
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.resetForm(ngForm);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
+        }
+      });
     console.log(this.addServiceForm.value);
     console.log(formObj);
-  }
+  };
 
-  resetForm(ngform: FormGroupDirective){
+  resetForm(ngform: FormGroupDirective) {
     this.addServiceForm.reset();
     this.addServiceForm.updateValueAndValidity();
     this.addServiceForm.markAsUntouched();
     ngform.resetForm();
   }
 
-  formCont(controlName: string): any{
+  formCont(controlName: string): any {
     return this.addServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
-    if(event instanceof KeyboardEvent){
+  acceptNumbers(event: Event): Boolean {
+    if (event instanceof KeyboardEvent) {
       const code = event.key;
       console.log(code);
-      if(Number.isNaN(+code))
-        if(!this.keys.includes(code.toLowerCase()))
-          return false;
+      if (Number.isNaN(+code)) {
+        if (!this.keys.includes(code.toLowerCase())) { return false; }
+      }
     }
     return true;
   }

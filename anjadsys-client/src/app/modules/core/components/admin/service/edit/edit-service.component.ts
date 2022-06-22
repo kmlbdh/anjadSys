@@ -12,6 +12,7 @@ import { ServiceAPI } from '../../../../model/service';
   styleUrls: ['./edit-service.component.scss']
 })
 export class EditServiceComponent implements OnInit, OnDestroy {
+
   trashIcon = faTrashAlt;
   userEditIcon = faUserEdit;
 
@@ -24,16 +25,16 @@ export class EditServiceComponent implements OnInit, OnDestroy {
 
   TIMEOUTMILISEC = 7000;
 
-  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private keys = [ 'backspace', 'arrowleft', 'arrowright' ];
 
-  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+  packageTypeArray = [ 'الضفة الغربية', 'القدس', 'القدس والضفة الغربية' ];
 
   editServiceForm = this.fb.group({
-    name: ['', Validators.required],
-    coverageDays: ['', Validators.required],
-    cost: ['', Validators.required],
-    supplierPercentage: ['', Validators.required],
-    packageType: ['', Validators.required],
+    name: [ '', Validators.required ],
+    coverageDays: [ '', Validators.required ],
+    cost: [ '', Validators.required ],
+    supplierPercentage: [ '', Validators.required ],
+    packageType: [ '', Validators.required ],
     note: [''],
   });
 
@@ -58,15 +59,14 @@ export class EditServiceComponent implements OnInit, OnDestroy {
     let controlsObject = this.editServiceForm.controls;
     let keys = Object.keys(controlsObject);
     keys.forEach((val: string) => {
-      if(controlsObject[val].dirty){
+      if (controlsObject[val].dirty) {
         let currValue = controlsObject[val].value;
-        if(currValue !== '' && currValue !== this.service[val])
-            formObj[val] = currValue;
+        if (currValue !== '' && currValue !== this.service[val]) { formObj[val] = currValue; }
       }
     });
 
-    if(Object.keys(formObj).length === 0){
-      this.errorMsg = "يجب اجراء تغيير في المعلومات حتى يتم تحديثها!";
+    if (Object.keys(formObj).length === 0) {
+      this.errorMsg = 'يجب اجراء تغيير في المعلومات حتى يتم تحديثها!';
       setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
       return;
     }
@@ -74,49 +74,48 @@ export class EditServiceComponent implements OnInit, OnDestroy {
     this.adminService.ServicesAPIs.update(this.service.id!, formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+          }
           // this.service = response.data;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        // this.buildForm();
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-        }
-      }
-    });
-
-    console.log(formObj);
-  }
-
-  getServiceById(){
-    this.route.paramMap.subscribe({
-        next: params => {
-          const serviceId = params.get('id');
-          console.log("userID", serviceId);
-          if(!serviceId)
-            this.router.navigate(['/admin/service/show']);
-
-            this.adminService.ServicesAPIs.list({serviceID: serviceId!})
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: response => {
-                if(response.data && response.data.length === 1)
-                this.service = response.data[0];
-                this.buildForm();
-              }
-            });
+          // this.buildForm();
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
       });
+
+    console.log(formObj);
+  };
+
+  getServiceById() {
+    this.route.paramMap.subscribe({
+      next: params => {
+        const serviceId = params.get('id');
+        console.log('userID', serviceId);
+        if (!serviceId) { this.router.navigate(['/admin/service/show']); }
+
+        this.adminService.ServicesAPIs.list({ serviceID: serviceId! })
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: response => {
+              if (response.data && response.data.length === 1)
+              { this.service = response.data[0]; }
+              this.buildForm();
+            }
+          });
+      }
+    });
   }
 
-  buildForm(): void{
+  buildForm(): void {
     this.editServiceForm.setValue({
       name: this.service.name,
       coverageDays: this.service.coverageDays,
@@ -127,17 +126,17 @@ export class EditServiceComponent implements OnInit, OnDestroy {
     });
   }
 
-  formCont(controlName: string): AbstractControl{
+  formCont(controlName: string): AbstractControl {
     return this.editServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
-    if(event instanceof KeyboardEvent){
+  acceptNumbers(event: Event): Boolean {
+    if (event instanceof KeyboardEvent) {
       const code = event.key;
       console.log(code);
-      if(Number.isNaN(+code))
-        if(!this.keys.includes(code.toLowerCase()))
-          return false;
+      if (Number.isNaN(+code)) {
+        if (!this.keys.includes(code.toLowerCase())) { return false; }
+      }
     }
     return true;
   }

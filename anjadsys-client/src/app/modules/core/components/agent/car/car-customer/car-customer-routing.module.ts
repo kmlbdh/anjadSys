@@ -7,12 +7,12 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowCarCustomerComponent,
-    data: {breadcrumb: 'اظهار جميع سيارات الزبائن'}
+    data: { breadcrumb: 'اظهار جميع سيارات الزبائن' }
   },
   {
     path: 'add',
     component: AddCarCustomerComponent,
-    data: {breadcrumb: 'اضافة سيارة جديد'}
+    data: { breadcrumb: 'اضافة سيارة جديد' }
   }
 ];
 

@@ -11,9 +11,10 @@ import { ServiceAPI, SearchService } from '../../../../model/service';
   styleUrls: ['./show-services.component.scss']
 })
 export class ShowServicesComponent implements OnInit, OnDestroy {
+
   services: ServiceAPI[] = [];
 
-  packageTypeArray = ['الضفة الغربية', 'القدس', 'القدس والضفة الغربية'];
+  packageTypeArray = [ 'الضفة الغربية', 'القدس', 'القدس والضفة الغربية' ];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -29,8 +30,8 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
   searchConditions: SearchService = {} as SearchService;
 
   selectedAgentName: string | undefined;
-  currency: string = "شيكل";
-  day: string = "يوم";
+  currency: string = 'شيكل';
+  day: string = 'يوم';
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -48,52 +49,53 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadServices(searchCondition: SearchService): void{
+  loadServices(searchCondition: SearchService): void {
     this.adminService.ServicesAPIs.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.services = response.data;
-          this.pagination.total = response.total;
-        }
-        console.log(response.data);
-      },
-      error: err => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.services = response.data;
+            this.pagination.total = response.total;
+          }
+          console.log(response.data);
+        },
+        error: err => console.log(err)
+      });
   }
 
-  deleteService(service: ServiceAPI): void{
-    const yes = confirm(`هل تريد حذف الخدمة "${service.name}"؟`);
-    if(!yes) return;
+  deleteService(service: ServiceAPI): void {
+    const yes = confirm(`هل تريد حذف الخدمة "${ service.name }"؟`);
+    if (!yes) { return; }
 
     this.adminService.ServicesAPIs.delete(service.id)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.loadServices(this.searchConditions);
-          this.pagination.total = response.total;
-        }
-        console.log(response.data);
-      },
-      error: err => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.loadServices(this.searchConditions);
+            this.pagination.total = response.total;
+          }
+          console.log(response.data);
+        },
+        error: err => console.log(err)
+      });
   }
 
-  trackById(index: number, el: any): string{
+  trackById(index: number, el: any): string {
     return el._id;
   }
 
-  goToEditService(service: ServiceAPI){
-    this.router.navigate([`/admin/service/edit/${service.id}`]);
+  goToEditService(service: ServiceAPI) {
+    this.router.navigate([`/admin/service/edit/${ service.id }`]);
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchService;
     this.p = pageNumber;
     this.loadServices(this.searchConditions);
     console.log(pageNumber);
   }
+
 }

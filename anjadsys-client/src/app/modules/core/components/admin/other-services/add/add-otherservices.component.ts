@@ -1,17 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { SearchUser, UserAPI } from '../../../../model/user';
-import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from 'src/app/modules/core/model/insurancepolicy';
+import {
+  InsurancePolicesAPI,
+  InsurancePolicyAPI,
+  SearchInsurancePolicy
+} from 'src/app/modules/core/model/insurancepolicy';
 
 @Component({
   selector: 'app-add-otherservices',
   templateUrl: './add-otherservices.component.html',
   styleUrls: ['./add-otherservices.component.scss']
 })
-export class AddOtherservicesComponent implements OnInit, OnDestroy {
+export class AddOtherservicesComponent implements OnDestroy {
 
   cancelInput = faTimes;
 
@@ -38,29 +42,27 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
   private searchTextObj = {
     searchCustomerText$: new Subject<string>(),
   };
-  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private keys = [ 'backspace', 'arrowleft', 'arrowright' ];
 
-  fileStatusArr = ['مفتوح', 'مغلق'];
-  serviceKindArr = ['خدمة تحقيق', 'خدمة متابعة'];
+  fileStatusArr = [ 'مفتوح', 'مغلق' ];
+  serviceKindArr = [ 'خدمة تحقيق', 'خدمة متابعة' ];
 
   addOtherServiceForm = this.fb.group({
-    name: ['', Validators.required],
-    fileStatus: [this.fileStatusArr[0], Validators.required],
-    serviceKind: [null, Validators.required],
-    descCustomer: ['', Validators.required],
-    description: ['', Validators.required],
-    cost: ['', Validators.required],
-    customerId: ['', Validators.required],
-    insurancePolicyId: ['', Validators.required]
+    name: [ '', Validators.required ],
+    fileStatus: [ this.fileStatusArr[0], Validators.required ],
+    serviceKind: [ null, Validators.required ],
+    descCustomer: [ '', Validators.required ],
+    description: [ '', Validators.required ],
+    cost: [ '', Validators.required ],
+    customerId: [ '', Validators.required ],
+    insurancePolicyId: [ '', Validators.required ]
   });
 
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService) {
-      this.searchCustomerAPI();
-    }
-
-  ngOnInit(): void {}
+    this.searchCustomerAPI();
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -68,37 +70,38 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   addOtherService = (ngForm: FormGroupDirective) => {
-    if(this.addOtherServiceForm.invalid) return;
+    if (this.addOtherServiceForm.invalid) { return; }
 
     let formObj = this.addOtherServiceForm.value;
 
     this.adminService.OtherServicesAPIs.add(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        this.resetForm(ngForm);
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message)
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-
-      }
-    });
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.resetForm(ngForm);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message)  {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
+        }
+      });
     console.log(this.addOtherServiceForm.value);
     console.log(formObj);
-  }
+  };
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.list(
       { username: val, role: 'customer', agent: true, skipLoadingInterceptor: true } as SearchUser);
-      this.searchTextObj.searchCustomerText$.pipe(
+    this.searchTextObj.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -107,7 +110,7 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -120,9 +123,9 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     // console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       // if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
@@ -130,38 +133,37 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.searchTextObj.searchCustomerText$.next(typeTxt);
     }
   }
 
-  getInsurancePolicies(){
+  getInsurancePolicies() {
     this.spinner.insurancePolicy = true;
     console.log(this.selectedCustomer);
-    if(!this.selectedCustomer){
+    if (!this.selectedCustomer) {
       this.spinner.insurancePolicy = false;
       return;
     }
 
     let customerId = this.selectedCustomer!.id;
     this.insurancePolicyNotValidMsg = undefined;
-    let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true}
+    let searchConditions: SearchInsurancePolicy = { customerID: customerId, filterOutValid: true };
     this.adminService.InsurancePoliciesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          this.insurancePolicies = response.data;
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            this.insurancePolicies = response.data;
+          }
+          this.spinner.insurancePolicy = false;
+        },
+        error: (error: any) => {
+          if (error.error.message) { this.insurancePolicyNotValidMsg = error.error.message; }
+          this.spinner.insurancePolicy = false;
+          console.log(error);
         }
-        this.spinner.insurancePolicy = false;
-      },
-      error: (error: any) => {
-        if(error.error.message)
-          this.insurancePolicyNotValidMsg = error.error.message;
-        this.spinner.insurancePolicy = false;
-        console.log(error);
-      }
-    });
+      });
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any):
@@ -173,17 +175,17 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
     return selectedOne;
   }
 
-  fillFieldsByCustomer(event: Event){
-    if(event instanceof KeyboardEvent) return;
+  fillFieldsByCustomer(event: Event) {
+    if (event instanceof KeyboardEvent) { return; }
     console.log(event);
     setTimeout(() => {
       this.getInsurancePolicies();
     }, 0);
   }
 
-  selectInsurancePolicy(event: Event){
+  selectInsurancePolicy(event: Event) {
     // console.log('change', event);
-    if(event.type === 'change'){
+    if (event.type === 'change') {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
       // console.log(this.selectedInsurancePolicy);
@@ -207,25 +209,26 @@ export class AddOtherservicesComponent implements OnInit, OnDestroy {
     this.formCont('insurancePolicyId').setValue('');
   }
 
-  resetForm(ngform: FormGroupDirective){
+  resetForm(ngform: FormGroupDirective) {
     this.addOtherServiceForm.reset();
     this.addOtherServiceForm.updateValueAndValidity();
     this.addOtherServiceForm.markAsUntouched();
     ngform.resetForm();
   }
 
-  formCont(controlName: string): any{
+  formCont(controlName: string): any {
     return this.addOtherServiceForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
-    if(event instanceof KeyboardEvent){
+  acceptNumbers(event: Event): Boolean {
+    if (event instanceof KeyboardEvent) {
       const code = event.key;
       console.log(code);
-      if(Number.isNaN(+code))
-        if(!this.keys.includes(code.toLowerCase()))
-          return false;
+      if (Number.isNaN(+code)) {
+        if (!this.keys.includes(code.toLowerCase())) { return false; }
+      }
     }
     return true;
   }
+
 }

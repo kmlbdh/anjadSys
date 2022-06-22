@@ -1,7 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from './admin.service';
-import { faUsers, faUserTie, faTaxi , faAngleDown, faAngleUp, faBars, faCarCrash, faCarSide, faFileInvoiceDollar, faTruckMoving, faWrench, faClipboardList, faFileMedicalAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUsers,
+  faUserTie,
+  faTaxi,
+  faAngleDown,
+  faAngleUp,
+  faBars,
+  faCarCrash,
+  faCarSide,
+  faFileInvoiceDollar,
+  faTruckMoving,
+  faWrench,
+  faClipboardList,
+  faFileMedicalAlt
+} from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { NavInput } from '../../../shared/components/nav/nav.component';
 
@@ -11,6 +25,7 @@ import { NavInput } from '../../../shared/components/nav/nav.component';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+
   faBarsIcon = faBars;
   angelDownIcon = faAngleDown;
   angelUpIcon = faAngleUp;
@@ -209,31 +224,31 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     const localStorageUser: string = localStorage.getItem('user') || '';
-    if(!localStorageUser)
-      this.router.navigate(['']);
+    if (!localStorageUser)
+    { this.router.navigate(['']); }
 
     this.user = JSON.parse(localStorageUser);
-    if(!this.user.accessToken)
-      this.router.navigate(['']);
+    if (!this.user.accessToken)
+    { this.router.navigate(['']); }
   }
 
-  profilePop(){
+  profilePop() {
 
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem('user');
     this.router.navigate(['login']);
   }
 
-  verifyLoggedInAdmin(user: UserLoggedInAPI){
-    this.adminService.verifyLoggedInAdmin(user.accessToken).subscribe({
-      next: (res) =>{
-        if(!res.data || res?.data?._id !== user.id)
-          this.router.navigate(['login']);
+  verifyLoggedIn(user: UserLoggedInAPI) {
+    this.adminService.verifyLoggedIn(user.accessToken).subscribe({
+      next: res => {
+        if (!res.data || res?.data?._id !== user.id)
+        { this.router.navigate(['login']); }
       },
-      error: err => this.router.navigate(['login'])
-    })
+      error: () => this.router.navigate(['login'])
+    });
   }
 
 }

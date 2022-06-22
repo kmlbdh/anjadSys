@@ -1,6 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchUser, UsersAPI, UserAPI, updateUser } from '../../../../model/user';
-import { faTrashAlt, faPeopleCarry, faMoneyBillAlt, faCopy, faUsers, faEdit, faUserSlash, faUserCheck, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrashAlt,
+  faPeopleCarry,
+  faMoneyBillAlt,
+  faCopy,
+  faUsers,
+  faEdit,
+  faUserSlash,
+  faUserCheck,
+  faEnvelopeOpenText
+} from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -61,11 +71,11 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   rolesLang:{
     [index: string]: string;
   } = {
-    'agent': 'وكيل',
-    'admin': 'مدير',
-    'supplier':  'مورد',
-    'customer': 'زبون'
-  };
+      'agent': 'وكيل',
+      'admin': 'مدير',
+      'supplier':  'مورد',
+      'customer': 'زبون'
+    };
   roles = Object.entries(this.rolesLang);
 
   searchUserForm = this.fb.group({
@@ -86,10 +96,10 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.route.data.subscribe({
       next: data => {
         this.pageTitle = data['title'];
-        this.activeAgentLimits = (!!data['role'] && data['role'] === "agent");
-        this.activeSuppliers = (!!data['role'] && data['role'] === "supplier");
+        this.activeAgentLimits = (!!data['role'] && data['role'] === 'agent');
+        this.activeSuppliers = (!!data['role'] && data['role'] === 'supplier');
         this.searchConditions['role'] = data['role'];
-        if(!data['role']){
+        if (!data['role']) {
           this.searchUserForm.addControl('role', new FormControl(''));
         }
         this.getUsers(this.searchConditions);
@@ -103,123 +113,122 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-//TODO wrong response type
-  getUsers(searchConditions: SearchUser){
+  //TODO wrong response type
+  getUsers(searchConditions: SearchUser) {
     this.users = [];
     this.pagination.total = 0;
     this.adminService.UsersAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: UsersAPI) => {
-        if(response.data && response.data.length){
-           this.users = response.data;
-           this.pagination.total = response.total;
-        }
-      },
-      error: (error) => console.log(error)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: UsersAPI) => {
+          if (response.data && response.data.length) {
+            this.users = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: error => console.log(error)
+      });
   }
 
-  deleteUser(user: any){
-    if(!user) return;
+  deleteUser(user: any) {
+    if (!user) { return; }
 
-    const yes = confirm(`هل تريد حذف المستخدم ${user.username} ورقم حسابه ${user.id}`);
-    if(!yes) return;
+    const yes = confirm(`هل تريد حذف المستخدم ${ user.username } ورقم حسابه ${ user.id }`);
+    if (!yes) { return; }
 
     this.adminService.UsersAPIs.delete(user.id)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response) => {
-        if(response.data){
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-          this.getUsers(this.searchConditions);
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.getUsers(this.searchConditions);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-        }
-      }
-    });
+      });
   }
 
-  unblockUser(user: UserAPI){
-    if(!user) return;
+  unblockUser(user: UserAPI) {
+    if (!user) { return; }
 
-    const yes = confirm(`هل تريد تفعيل حساب المستخدم ${user.username} ورقم حسابه ${user.id}`);
-    if(!yes) return;
+    const yes = confirm(`هل تريد تفعيل حساب المستخدم ${ user.username } ورقم حسابه ${ user.id }`);
+    if (!yes) { return; }
 
     this.sharedBlockUser(user, false);
   }
 
   blockUser(user: UserAPI) {
-    if(!user) return;
+    if (!user) { return; }
 
-    const yes = confirm(`هل تريد تعطيل حساب المستخدم ${user.username} ورقم حسابه ${user.id}`);
-    if(!yes) return;
+    const yes = confirm(`هل تريد تعطيل حساب المستخدم ${ user.username } ورقم حسابه ${ user.id }`);
+    if (!yes) { return; }
 
     this.sharedBlockUser(user, true);
   }
 
-  sharedBlockUser(user: UserAPI, blocked: boolean){
-    this.adminService.UsersAPIs.update(user.id, {blocked: blocked} as updateUser)
-    .subscribe({
-      next: (response) => {
-        if(response.data){
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-          this.getUsers(this.searchConditions);
+  sharedBlockUser(user: UserAPI, blocked: boolean) {
+    this.adminService.UsersAPIs.update(user.id, { blocked: blocked } as updateUser)
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.getUsers(this.searchConditions);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
         }
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message){
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-        }
-      }
-    });
+      });
   }
 
-  searchUser(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchUser(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
     let searchConditions: SearchUser = this.searchConditions;
     keys.forEach(key => {
       searchConditions[key] = this.searchUserForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
-    if(searchConditions.username) searchConditions.companyName = searchConditions.username;
+    if (searchConditions.username) { searchConditions.companyName = searchConditions.username; }
     console.log('searchConditions', searchConditions);
     this.searchConditions = searchConditions;
     this.getUsers(searchConditions);
   }
 
-  getRegions(){
+  getRegions() {
     this.adminService.GeneralAPIs.regions()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data){
-          this.regions = response.data;
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.regions = response.data;
+          }
         }
-      }
-    });
+      });
   }
 
   open(user: UserAPI) {
-    const refModal = this.modalService.open(UserModalComponent, this.modalOptions)
+    const refModal = this.modalService.open(UserModalComponent, this.modalOptions);
     refModal.componentInstance.customerDetails = user;
-    refModal.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
     });
   }
 
@@ -229,40 +238,40 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  goToUserEdit(id: string){
-    this.router.navigate(['admin/user/edit', id]);
+  goToUserEdit(id: string) {
+    this.router.navigate([ 'admin/user/edit', id ]);
   }
 
-  goToAddAgentLimits(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.companyName}`;
-    this.router.navigate([`admin/agent/add-agent-limit`, { id: agent.id, fullname }]);
+  goToAddAgentLimits(agent: UserAPI) {
+    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    this.router.navigate([ `admin/agent/add-agent-limit`, { id: agent.id, fullname } ]);
   }
 
-  goToListAgentLimits(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.companyName}`;
-    this.router.navigate([`admin/agent/show-agent-limits/${agent.id}`, {fullname}]);
+  goToListAgentLimits(agent: UserAPI) {
+    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    this.router.navigate([ `admin/agent/show-agent-limits/${ agent.id }`, { fullname } ]);
   }
 
-  goToListCustomers(agent: UserAPI){
-    const fullname = `${agent.username} | ${agent.companyName}`;
-    this.router.navigate([`admin/agent/show-agent-customers/${agent.id}`, {fullname}]);
+  goToListCustomers(agent: UserAPI) {
+    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    this.router.navigate([ `admin/agent/show-agent-customers/${ agent.id }`, { fullname } ]);
   }
 
-  goToSupplierAccount(supplier: UserAPI){
-    const fullname =  `${supplier.companyName} | ${supplier.username}`;
-    this.router.navigate([`admin/supplier/account/${supplier.id}`, { fullname }]);
+  goToSupplierAccount(supplier: UserAPI) {
+    const fullname =  `${ supplier.companyName } | ${ supplier.username }`;
+    this.router.navigate([ `admin/supplier/account/${ supplier.id }`, { fullname } ]);
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchUser;
     this.p = pageNumber;
@@ -270,9 +279,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     console.log(pageNumber);
   }
 
-  showSearch () {
+  showSearch() {
     this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40)
+    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

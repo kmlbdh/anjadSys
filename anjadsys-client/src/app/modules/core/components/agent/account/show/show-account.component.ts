@@ -7,9 +7,10 @@ import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUnt
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AgentService } from '../../agent.service';
 import { Router } from '@angular/router';
-import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from 'src/app/modules/core/model/insurancepolicy';
-import { ServicePolicyAPI } from 'src/app/modules/core/model/service';
-import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
+import { InsurancePolicesAPI, SearchInsurancePolicy } from 'src/app/modules/core/model/insurancepolicy';
+import {
+  InsurancePolicyComponent
+} from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
 
 @Component({
   selector: 'app-show-account',
@@ -17,6 +18,7 @@ import { InsurancePolicyComponent } from '../../../../../shared/components/insur
   styleUrls: ['./show-account.component.scss']
 })
 export class ShowAccountComponent implements OnInit, OnDestroy {
+
   accounts: AccountAPI[] = [];
   agentBalance: number | undefined;
   selectedCustomer: UserAPI | undefined;
@@ -64,8 +66,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     accountId: [''],
     insurancePolicyId: [''],
     customerID: [''],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
   });
 
   constructor(
@@ -73,9 +75,9 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     private agentService: AgentService,
     private router: Router,
     private modalService: NgbModal
-    ) {
-      this.agentName = this.agentName.companyName;
-     }
+  ) {
+    this.agentName = this.agentName.companyName;
+  }
 
   ngOnInit(): void {
     this.getAccount(this.searchConditions);
@@ -87,11 +89,12 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
-      this.searchCustomerText$.pipe(
+    this.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -100,7 +103,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -113,21 +116,21 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       return;
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI{
+  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
     event.preventDefault();
     event.stopPropagation();
     let selectedOne: UserAPI;
@@ -142,14 +145,13 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.formCont('customerID').setValue('');
   }
 
-  searchAccount(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchAccount(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
-    let searchConditions: SearchAccount = {}
+    let searchConditions: SearchAccount = {};
     keys.forEach(key => {
       searchConditions[key] = this.searchAccountForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.searchConditions = searchConditions;
@@ -159,22 +161,22 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   open(insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
     this.agentService.InsurancePolicesAPI.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
-          refModal.componentInstance.modalInsurancePolicy = response.data[0];
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
+            refModal.componentInstance.modalInsurancePolicy = response.data[0];
 
-          refModal.result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+            refModal.result.then(result => {
+              this.closeResult = `Closed with: ${ result }`;
+            }, reason => {
+              this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+            });
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   private getDismissReason(reason: any): string {
@@ -183,23 +185,23 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  getAccount(searchConditions: SearchAccount){
+  getAccount(searchConditions: SearchAccount) {
     this.agentService.AccountsAPI.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: AccountsAPI) => {
-        if(response.data){
-          this.accounts = response.data;
-          this.agentBalance = response.agentBalance;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: AccountsAPI) => {
+          if (response.data) {
+            this.accounts = response.data;
+            this.agentBalance = response.agentBalance;
+            this.pagination.total = response.total;
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   // deleteAccount(account: AccountAPI){
@@ -222,29 +224,29 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   //   })
   // }
 
-  goToAccountEdit(id: number){
-    this.router.navigate(['agent/account/edit', id]);
+  goToAccountEdit(id: number) {
+    this.router.navigate([ 'agent/account/edit', id ]);
   }
 
-  formCont(controlName: string){
+  formCont(controlName: string) {
     return this.searchAccountForm.controls[controlName];
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
-    this.searchConditions = {...this.searchConditions, skip: skip } as SearchAccount;
+    this.searchConditions = { ...this.searchConditions, skip: skip } as SearchAccount;
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);
   }
 
-  showSearch () {
+  showSearch() {
     this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40)
+    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

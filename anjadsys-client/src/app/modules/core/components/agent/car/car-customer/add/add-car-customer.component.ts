@@ -12,6 +12,7 @@ import { AgentService } from '../../../agent.service';
   styleUrls: ['./add-car-customer.component.scss']
 })
 export class AddCarCustomerComponent implements OnInit, OnDestroy {
+
   cancelInput = faTimes;
 
   errorMsg: string | undefined;
@@ -24,7 +25,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   selectedCarTypeId: number | undefined;
   selectedCarModel: CarModelAPI | undefined;
 
-  private keys = ['backspace', 'arrowleft', 'arrowright'];
+  private keys = [ 'backspace', 'arrowleft', 'arrowright' ];
   private unsubscribe$ = new Subject<void>();
   private searchCustomerText$ = new Subject<string>();
 
@@ -47,18 +48,18 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   };
 
   addCarForm = this.fb.group({
-    carNumber: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
-    motorNumber: ['', Validators.required, Validators.minLength(8), Validators.maxLength(8)],
-    motorPH: ['', Validators.required],
-    licenseType: ['', Validators.required],
-    serialNumber: ['', Validators.required],
-    passengersCount: ['', Validators.required],
-    productionYear: ['', Validators.required],
-    color: ['', Validators.required],
+    carNumber: [ '', [ Validators.required, Validators.minLength(5), Validators.maxLength(10) ] ],
+    motorNumber: [ '', [ Validators.required, Validators.minLength(8), Validators.maxLength(8) ] ],
+    motorPH: [ '', Validators.required ],
+    licenseType: [ '', Validators.required ],
+    serialNumber: [ '', Validators.required ],
+    passengersCount: [ '', Validators.required ],
+    productionYear: [ '', Validators.required ],
+    color: [ '', Validators.required ],
     note: [''],
-    customerId: ['', Validators.required],
-    carTypeId: ['', Validators.required],
-    carModelId: [{value: '', disabled: true}, Validators.required],
+    customerId: [ '', Validators.required ],
+    carTypeId: [ '', Validators.required ],
+    carModelId: [ { value: '', disabled: true }, Validators.required ],
   });
 
   constructor(
@@ -77,114 +78,118 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
 
   addCar = (ngform: FormGroupDirective) => {
     console.log(this.addCarForm);
-    if (this.addCarForm.invalid) return;
+    if (this.addCarForm.invalid) { return; }
 
     let formObj = this.addCarForm.value;
     let keys = Object.keys(formObj);
     keys.forEach(k => {
-      if(formObj[k] === "") delete formObj[k]
+      if (formObj[k] === '') { delete formObj[k]; }
     });
 
-   this.agentService.CarsAPIs.add(formObj)
-   .pipe(takeUntil(this.unsubscribe$))
-   .subscribe({
-      next: (response) => {
-        if(response.data)
-          this.successMsg = response.message;
-          setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-        this.resetForm(ngform);
-        console.log(response);
-      },
-      error: (err) => {
-        console.error(err.error);
-        if(err?.error?.message)
-          this.errorMsg = err.error.message;
-          setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
-
-      }
-    });
+    this.agentService.CarsAPIs.add(formObj)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.resetForm(ngform);
+          }
+          console.log(response);
+        },
+        error: err => {
+          console.error(err.error);
+          if (err?.error?.message) {
+            this.errorMsg = err.error.message;
+            setTimeout(() => this.errorMsg = undefined, this.TIMEOUTMILISEC);
+          }
+        }
+      });
     console.log(this.addCarForm.value);
     console.log(formObj);
-  }
+  };
 
 
-  searchCustomer(event: Event){
+  searchCustomer(event: Event) {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.customers.filter((customer: any) => customer.id == controlValue)[0];
       return;
     }
 
     let customerText = ((event.target as HTMLInputElement).value)?.trim();
-    if(customerText && customerText !== ''){
+    if (customerText && customerText !== '') {
       this.spinner.customer = true;
       this.searchCustomerText$.next(customerText);
     }
   }
 
-  getCarTypes(){
+  getCarTypes() {
     this.spinner.carType = true;
-    this.agentService.CarTypesAPIs.list({skipLoadingInterceptor: true})
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data && response.data.length){
-          this.carTypes = response.data;
+    this.agentService.CarTypesAPIs.list({ skipLoadingInterceptor: true })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data && response.data.length) {
+            this.carTypes = response.data;
+          }
+          this.spinner.carType = false;
+        },
+        error: (err: any) => {
+          this.spinner.carType = false;
+          console.log(err);
         }
-        this.spinner.carType = false;
-      },
-      error: (err: any) => {
-        this.spinner.carType = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
-  searchCarModelAPI(){
+  searchCarModelAPI() {
     this.agentService.CarModelsAPIs.list({
-        carTypeId: Number(this.selectedCarTypeId),
-        skipLoadingInterceptor: true
-      })
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data && response.data.length){
-          this.carModels = response.data;
-        } else{
-          this.carModels = [];
+      carTypeId: Number(this.selectedCarTypeId),
+      skipLoadingInterceptor: true
+    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data && response.data.length) {
+            this.carModels = response.data;
+            this.formCont('carModelId').enable();
+          } else {
+            this.carModels = [];
+          }
+          this.spinner.carModel = false;
+        },
+        error: (err: any) => {
+          this.spinner.carModel = false;
+          console.log(err);
         }
-        this.spinner.carModel = false;
-        this.formCont('carModelId').enable();
-      },
-      error: (err: any) => {
-        this.spinner.carModel = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
-  searchCustomerAPI(){
-    this.searchCustomerText$.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.spinner.customer = true),
-      switchMap(text => this.agentService.UsersAPI.show({username: text, skipLoadingInterceptor: true}))
-    ).subscribe({
-      next: (response: any) =>{
-        if(response.data){
-          this.customers = response.data;
+  searchCustomerAPI() {
+    this.searchCustomerText$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => this.spinner.customer = true),
+        switchMap(text =>
+          this.agentService.UsersAPI.show({ username: text, skipLoadingInterceptor: true })
+        )
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.customers = response.data;
+          }
+          this.spinner.customer = false;
+          console.log(response);
+        },
+        error: (err: any) => {
+          this.spinner.customer = false;
+          console.log(err);
         }
-        this.spinner.customer = false;
-        console.log(response);
-      },
-      error: (err: any) => {
-        this.spinner.customer = false;
-        console.log(err);
-      }
-    });
+      });
   }
 
   cancelCustomerInput(event: Event): void {
@@ -194,7 +199,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     this.formCont('customerId').setValue('');
   }
 
-  resetForm(ngform: FormGroupDirective){
+  resetForm(ngform: FormGroupDirective) {
     this.selectedCarTypeId = undefined;
     this.selectedCustomer = undefined;
     this.addCarForm.reset();
@@ -203,26 +208,26 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     ngform.resetForm();
   }
 
-  formCont(controlName: string): any{
+  formCont(controlName: string): any {
     return this.addCarForm.controls[controlName];
   }
 
-  acceptNumbers(event: Event): Boolean{
-    if(event instanceof KeyboardEvent){
+  acceptNumbers(event: Event): Boolean {
+    if (event instanceof KeyboardEvent) {
       const code = event.key;
       console.log(code);
-      if(Number.isNaN(+code))
-        if(!this.keys.includes(code.toLowerCase()))
-          return false;
+      if (Number.isNaN(+code)) {
+        if (!this.keys.includes(code.toLowerCase())) { return false; }
+      }
     }
     return true;
   }
 
-  toggleModel(event: Event){
-     this.selectedCarTypeId = this.formCont('carTypeId').value;
-    if(!this.selectedCarTypeId)
-      this.formCont('carModelId').disable();
-    else{
+  toggleModel() {
+    this.selectedCarTypeId = this.formCont('carTypeId').value;
+    if (!this.selectedCarTypeId)
+    { this.formCont('carModelId').disable(); }
+    else {
       this.formCont('carModelId').enable();
       this.spinner.carModel = true;
       this.searchCarModelAPI();

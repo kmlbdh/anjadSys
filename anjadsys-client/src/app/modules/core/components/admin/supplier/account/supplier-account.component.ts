@@ -13,6 +13,7 @@ import { SupplierAccountAPI, SupplierAccountsAPI } from '../../../../model/accou
   styleUrls: ['./supplier-account.component.scss']
 })
 export class SupplierAccountComponent implements OnInit, OnDestroy {
+
   accounts: SupplierAccountAPI[] = [];
   accountBalance = 0;
   trashIcon = faTrashAlt;
@@ -21,14 +22,14 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   selectedSupplier: string | undefined;
 
-  currency: string = "شيكل";
-  days: string = "يوم";
+  currency: string = 'شيكل';
+  days: string = 'يوم';
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
 
   showPercentage = true;
-  searchConditions: SearchSupplierAccount = {flag: 'policy'} as SearchSupplierAccount;
+  searchConditions: SearchSupplierAccount = { flag: 'policy' } as SearchSupplierAccount;
 
   p: number = 1;
   pagination = {
@@ -42,9 +43,9 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
 
   searchSupplierAccountForm = this.fb.group({
-    flag: ['policy', Validators.required],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0,10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0,10)],
+    flag: [ 'policy', Validators.required ],
+    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
+    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
   });
 
   constructor(
@@ -62,62 +63,60 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  loadSupplierAccountId(): void{
+  loadSupplierAccountId(): void {
     this.route.paramMap
-    .pipe(first())
-    .subscribe({
-      next: params => {
-        const supplierId = params.get('id');
+      .pipe(first())
+      .subscribe({
+        next: params => {
+          const supplierId = params.get('id');
 
-        this.selectedSupplier = params.get('fullname') || undefined;
-        console.log(this.selectedSupplier);
-        if(!supplierId || !this.selectedSupplier) this.router.navigate(['admin/supplier/show']);
+          this.selectedSupplier = params.get('fullname') || undefined;
+          console.log(this.selectedSupplier);
+          if (!supplierId || !this.selectedSupplier) { this.router.navigate(['admin/supplier/show']); }
 
-        this.searchConditions.supplierID = supplierId?.toUpperCase()!;
-        this.listSupplierAccountAPI();
-      }
-    });
+          this.searchConditions.supplierID = supplierId?.toUpperCase()!;
+          this.listSupplierAccountAPI();
+        }
+      });
   }
 
   searchSupplierAccount = () => {
-   if(this.searchSupplierAccountForm.invalid) return;
+    if (this.searchSupplierAccountForm.invalid) { return; }
 
-   let formObj = this.searchSupplierAccountForm.value;
-   let keys = Object.keys(formObj);
-  //  console.log('formObj 1', formObj)
+    let formObj = this.searchSupplierAccountForm.value;
+    let keys = Object.keys(formObj);
+    //  console.log('formObj 1', formObj)
 
-   keys.forEach( (key: any) => {
-    if(formObj[key] == null || formObj[key] === '') delete formObj[key]
-   });
-   let supplierID = this.searchConditions.supplierID
-  //  console.log('formObj 2', formObj)
-  //  console.log('searchConditions 1', this.searchConditions)
-   this.searchConditions = {...formObj, supplierID};
-  //  console.log('searchConditions 2', this.searchConditions)
-   this.listSupplierAccountAPI();
-  }
+    keys.forEach( (key: any) => {
+      if (formObj[key] == null || formObj[key] === '') { delete formObj[key]; }
+    });
+    let supplierID = this.searchConditions.supplierID;
+    //  console.log('formObj 2', formObj)
+    //  console.log('searchConditions 1', this.searchConditions)
+    this.searchConditions = { ...formObj, supplierID };
+    //  console.log('searchConditions 2', this.searchConditions)
+    this.listSupplierAccountAPI();
+  };
 
   listSupplierAccountAPI = () => {
-   this.listSupplierAccounts()
-    .subscribe({
-      next: (response: SupplierAccountsAPI) => {
-        if(response.data){
-          this.accounts = response.data;
-          this.pagination.total = response.total;
-          this.accountBalance = this.accounts.reduce((sum, account) => sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0) , 0)
-        }
+    this.listSupplierAccounts()
+      .subscribe({
+        next: (response: SupplierAccountsAPI) => {
+          if (response.data) {
+            this.accounts = response.data;
+            this.pagination.total = response.total;
+            this.accountBalance = this.accounts.reduce((sum, account) => sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0), 0);
+          }
         // console.log(response.data);
-      },
-      error: (err: any) => console.log(err)
-    });
-  }
+        },
+        error: (err: any) => console.log(err)
+      });
+  };
 
-  listSupplierAccounts = (): any => {
-    return this.adminService.SuppliersAPIs.listAccount(this.searchConditions)
+  listSupplierAccounts = (): any => this.adminService.SuppliersAPIs.listAccount(this.searchConditions)
     .pipe(takeUntil(this.unsubscribe$));
-  }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchSupplierAccount;
     this.p = pageNumber;
@@ -125,27 +124,29 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     // console.log(pageNumber);
   }
 
-  trackById(index: number, el: any): string{
+  trackById(index: number, el: any): string {
     return el._id;
   }
 
-  printPage(): void{
+  printPage(): void {
     // let accounts:SupplierAccountAPI[] = [];
     this.searchConditions = { ...this.searchConditions, limit: 999999999999999, skip: undefined } as SearchSupplierAccount;
     this.listSupplierAccounts()
-    .subscribe({
-      next: (response: SupplierAccountsAPI) => {
-        if(response.data){
-          this.accounts = response.data;
-          this.pagination = {...this.pagination, itemsPerPage: response.total};
-          this.accountBalance = this.accounts.reduce((sum, account) => sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0) , 0)
-          setTimeout(()=> this.printAfterLoad(), 0);
-        }
-      },
-      error: (err: any) => console.log(err)
-    });
+      .subscribe({
+        next: (response: SupplierAccountsAPI) => {
+          if (response.data) {
+            this.accounts = response.data;
+            this.pagination = { ...this.pagination, itemsPerPage: response.total };
+            this.accountBalance = this.accounts
+              .reduce((sum, account) =>
+                sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0), 0);
+            setTimeout(() => this.printAfterLoad(), 0);
+          }
+        },
+        error: (err: any) => console.log(err)
+      });
   }
-  printAfterLoad(){
+  printAfterLoad() {
     let divToPrint = document.getElementsByClassName('print')[0]!;
     let newWin = window.open('', 'Print-Window')!;
     newWin.document.open();
@@ -277,15 +278,15 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
       </style>
     </head>
     <body onload="window.print()">
-    ${divToPrint.innerHTML}
+    ${ divToPrint.innerHTML }
     </body></html>`);
-    const node = document.createElement("div");
+    const node = document.createElement('div');
     node.setAttribute('class', 'date');
 
-    const childNode1 = document.createElement("span");
-    const childNode2 = document.createElement("span");
-    const textnode1 = document.createTextNode(`من : ${this.formCont('startDate').value}`);
-    const textnode2 = document.createTextNode(`الى : ${this.formCont('endDate').value}`);
+    const childNode1 = document.createElement('span');
+    const childNode2 = document.createElement('span');
+    const textnode1 = document.createTextNode(`من : ${ this.formCont('startDate').value }`);
+    const textnode2 = document.createTextNode(`الى : ${ this.formCont('endDate').value }`);
     childNode1.appendChild(textnode1);
     childNode2.appendChild(textnode2);
     node.appendChild(childNode1);
@@ -295,16 +296,17 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     newWin.focus();
     newWin.print();
     newWin.close();
-    setTimeout(() => this.reloadPageAfterPrint(), 0)
+    setTimeout(() => this.reloadPageAfterPrint(), 0);
   }
 
-  reloadPageAfterPrint(){
+  reloadPageAfterPrint() {
     this.searchConditions = { ...this.searchConditions, skip: undefined, limit: undefined } as SearchSupplierAccount;
-    this.pagination = {...this.pagination, itemsPerPage: 10}
+    this.pagination = { ...this.pagination, itemsPerPage: 10 };
     this.listSupplierAccountAPI();
   }
 
   formCont(controlName: string): any {
     return this.searchSupplierAccountForm.controls[controlName];
   }
+
 }

@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowCarModelsComponent,
-    data: {breadcrumb: 'اظهار جميع موديلات السيارات'}
+    data: { breadcrumb: 'اظهار جميع موديلات السيارات' }
   }
 ];
 

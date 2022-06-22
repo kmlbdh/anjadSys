@@ -2,13 +2,18 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
-import { SearchInsurancePolicy, InsurancePolicyAPI, InsurancePolicesAPI } from '../../../../model/insurancepolicy';
+import {
+  SearchInsurancePolicy,
+  InsurancePolicyAPI,
+  InsurancePolicesAPI
+} from '../../../../model/insurancepolicy';
 import { AdminService } from '../../admin.service';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { ServicePolicyAPI } from 'src/app/modules/core/model/service';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
-import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
+import {
+  InsurancePolicyComponent
+} from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
 
 @Component({
   selector: 'app-show-insurance-policy',
@@ -16,6 +21,7 @@ import { InsurancePolicyComponent } from '../../../../../shared/components/insur
   styleUrls: ['./show-insurance-policy.component.scss']
 })
 export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
+
   closeResult!: string;
   modalOptions: NgbModalOptions = {
     size: 'lg',
@@ -55,6 +61,8 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   successMsg: string | undefined;
   searchConditions: SearchInsurancePolicy = {};
 
+  TIMEOUTMILISEC = 7000;
+
   searchInsurancePolicyForm = this.fb.group({
     insurancePolicyId: [''],
     customerID: [''],
@@ -62,12 +70,12 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     agentID: [''],
   });
 
-    constructor(
+  constructor(
       private fb: FormBuilder,
       private adminService: AdminService,
       private router: Router,
       private modalService: NgbModal
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.getInsurancePolices(this.searchConditions);
@@ -80,11 +88,12 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI(){
+  searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
 
-      this.searchCustomerText$.pipe(
+    this.searchCustomerText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -92,7 +101,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.customers = response.data;
           }
           this.spinner.customer = false;
@@ -105,9 +114,9 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchCustomer(event: Event): void{
+  searchCustomer(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       this.searchInsurancePolicyForm.get('agentID')?.disable();
@@ -115,17 +124,18 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  searchAgentAPI(){
+  searchAgentAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
-      this.searchAgentText$.pipe(
+    this.searchAgentText$
+      .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
@@ -133,7 +143,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
-          if(response.data){
+          if (response.data) {
             this.agents = response.data;
           }
           this.spinner.agent = false;
@@ -146,9 +156,9 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchAgent(event: Event): void{
+  searchAgent(event: Event): void {
     console.log(event);
-    if(!(event instanceof KeyboardEvent)){
+    if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('agentID')?.value;
       this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
       this.searchInsurancePolicyForm.get('customerID')?.disable();
@@ -156,13 +166,13 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     }
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
-    if(typeTxt && typeTxt !== ''){
+    if (typeTxt && typeTxt !== '') {
       this.spinner.agent = true;
       this.searchAgentText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI{
+  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
     event.preventDefault();
     event.stopPropagation();
     let selectedOne: UserAPI;
@@ -186,14 +196,13 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     this.searchInsurancePolicyForm.get('customerID')?.enable();
   }
 
-  searchInsurancePolicy(form: FormGroupDirective){
-    if(form.invalid) return;
+  searchInsurancePolicy(form: FormGroupDirective) {
+    if (form.invalid) { return; }
     let keys = Object.keys(form.value);
-    let searchConditions: SearchInsurancePolicy = {}
+    let searchConditions: SearchInsurancePolicy = {};
     keys.forEach(key => {
       searchConditions[key] = this.searchInsurancePolicyForm.get(key)?.value;
-      if(!searchConditions[key] || searchConditions[key] === '')
-        delete searchConditions[key];
+      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
     console.log('searchConditions', searchConditions);
     this.getInsurancePolices(searchConditions);
@@ -202,21 +211,21 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   open(insurancePolicyId: number) {
     let searchCondition: SearchInsurancePolicy = { insurancePolicyId: insurancePolicyId };
     this.adminService.InsurancePoliciesAPIs.list(searchCondition)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
-          refModal.componentInstance.modalInsurancePolicy = response.data[0];
-          refModal.result.then((result) => {
-            this.closeResult = `Closed with: ${result}`;
-          }, (reason) => {
-            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-          });
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
+            refModal.componentInstance.modalInsurancePolicy = response.data[0];
+            refModal.result.then(result => {
+              this.closeResult = `Closed with: ${ result }`;
+            }, reason => {
+              this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+            });
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
   private getDismissReason(reason: any): string {
@@ -225,57 +234,58 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
       return 'by clicking on a backdrop';
     } else {
-      return  `with: ${reason}`;
+      return  `with: ${ reason }`;
     }
   }
 
-  getInsurancePolices(searchConditions: SearchInsurancePolicy){
+  getInsurancePolices(searchConditions: SearchInsurancePolicy) {
     this.adminService.InsurancePoliciesAPIs.list(searchConditions)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response: InsurancePolicesAPI) => {
-        if(response.data){
-          this.insurancePolices = response.data;
-          this.pagination.total = response.total;
-        }
-      },
-      error: (error: any) => console.log(error)
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: InsurancePolicesAPI) => {
+          if (response.data) {
+            this.insurancePolices = response.data;
+            this.pagination.total = response.total;
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
   }
 
-  deleteInsurancePolicy(insurancePolicy: InsurancePolicyAPI){
-    if(!insurancePolicy) return;
+  deleteInsurancePolicy(insurancePolicy: InsurancePolicyAPI) {
+    if (!insurancePolicy) { return; }
 
-    const yes = confirm(`هل تريد حذف بوليصة التأمين رقم ${insurancePolicy.id} للزبون ${insurancePolicy.Customer.username}`);
-    if(!yes) return;
+    const yes = confirm(`هل تريد حذف بوليصة التأمين رقم ${ insurancePolicy.id } للزبون ${ insurancePolicy.Customer.username }`);
+    if (!yes) { return; }
 
     this.adminService.InsurancePoliciesAPIs.delete(insurancePolicy.id)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: response => {
-        if(response.data)
-          this.successMsg = response.message;
-
-        this.getInsurancePolices(this.searchConditions);
-        console.log(response);
-      },
-      error: (err: any) => console.log(err)
-    })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: response => {
+          if (response.data) {
+            this.successMsg = response.message;
+            setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
+            this.getInsurancePolices(this.searchConditions);
+          }
+          console.log(response);
+        },
+        error: (err: any) => console.log(err)
+      });
   }
 
-  goToInsurancePolicyEdit(id: number){
-    this.router.navigate(['admin/insurance-policy/edit', id]);
+  goToInsurancePolicyEdit(id: number) {
+    this.router.navigate([ 'admin/insurance-policy/edit', id ]);
   }
 
-  trackById(index: number, el: any){
+  trackById(index: number, el: any) {
     return el.id;
   }
 
-  formCont(controlName: string){
+  formCont(controlName: string) {
     return this.searchInsurancePolicyForm.controls[controlName];
   }
 
-  getPage(pageNumber: number){
+  getPage(pageNumber: number) {
     let skip = (pageNumber - 1 ) * this.pagination.itemsPerPage;
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchInsurancePolicy;
     this.p = pageNumber;

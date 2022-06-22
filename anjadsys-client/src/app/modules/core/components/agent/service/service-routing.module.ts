@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: 'show',
     component: ShowServicesComponent,
-    data: {breadcrumb: 'اظهار جميع الخدمات'}
+    data: { breadcrumb: 'اظهار جميع الخدمات' }
   }
 ];
 
