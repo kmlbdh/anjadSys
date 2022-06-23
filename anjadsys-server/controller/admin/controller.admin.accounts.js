@@ -80,6 +80,7 @@ module.exports = {
               },
               {
                 model: User,
+                as: 'Agent',
                 required: false,
                 // where: { id: req.body.agentID },
                 attributes: { exclude: ['passowrd']}

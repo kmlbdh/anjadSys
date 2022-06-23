@@ -7,6 +7,8 @@ const { Op } = sequelize;
 
 const Account = db.Account;
 const sequelizeDB = db.sequelize;
+const User = db.User;
+const Region = db.Region;
 
 const INTERR = 'INT_ERR';
 const LIMIT = 10;
@@ -70,6 +72,8 @@ module.exports = {
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
 
+      if(req.body.accountId) query.where.id = req.body.accountId;
+
       if (req.body.main) query.where.debit = { [Op.ne]: null };
   
       query = { ...query, 
@@ -78,6 +82,22 @@ module.exports = {
         limit: limit,
       };
 
+      if(req.body.accountId){
+        query.include = [
+          {
+            model: User,
+            as: 'Agent',
+            required: true,
+            include: [
+              {
+                model: Region,
+                required: true
+              }
+            ]
+          }
+        ];
+      }
+      
       if (req.body.agentID) query.where = {agentId: req.body.agentID};
 
       const { count, rows: agentLimits } = await Account.findAndCountAll(query);

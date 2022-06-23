@@ -72,6 +72,7 @@ module.exports = {
             },
             {
               model: User,
+              as: 'Agent',
               required: false,
               attributes: { exclude: ['passowrd']}
             },

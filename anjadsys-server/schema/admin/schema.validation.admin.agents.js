@@ -7,6 +7,7 @@ const agentSchema = {
   }),
   agentLimitID: Joi.any().required(),
   list: Joi.object().keys({
+    accountId: Joi.number().optional(),
     agentID: Joi.string().trim().min(9).max(9).optional(),
     main: Joi.boolean().optional(),
     skip: Joi.number().optional(),

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Account.belongsTo(models.User,  { 
         foreignKey: 'agentId',
+        as: 'Agent',
         allowNull: true,
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
