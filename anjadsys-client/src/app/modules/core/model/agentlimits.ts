@@ -1,3 +1,4 @@
+import { UserAPI } from './user';
 export interface NewAgentLimits{
   debit: number;
   agentID: string;
@@ -7,6 +8,7 @@ export interface AgentLimitsAPI {
   id: string;
   debit: number;
   credit: string;
+  Agent?: UserAPI;
   service?: {
     serviceID: string;
     userID: string;
@@ -23,8 +25,9 @@ export interface AgentLimitsArrayAPI{
 }
 
 export interface SearchAgentLimits {
-  agentID: string;
-  main: boolean;
-  skip?: number,
-  limit?: number,
+  accountId?: number;
+  agentID?: string;
+  main?: boolean;
+  skip?: number;
+  limit?: number;
 }

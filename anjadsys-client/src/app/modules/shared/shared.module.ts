@@ -10,6 +10,7 @@ import { OtherServiceModalComponent } from './components/other-service-modal/oth
 import { CarModalComponent } from './components/car-modal/car-modal.component';
 import { UserModalComponent } from './components/user-modal/user-modal.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { AgentLimitsModalComponent } from './components/agent-limits-modal/agent-limits-modal.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     CarModalComponent,
     UserModalComponent,
     BreadcrumbComponent,
+    AgentLimitsModalComponent,
   ],
   imports: [
     CommonModule,

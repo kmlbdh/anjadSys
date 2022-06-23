@@ -111,7 +111,7 @@
          trackBy: trackById" class="table-row">
           <div class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
           <div class="col-custom col-custom-4" data-label="Date">{{ account.createdAt| date: 'dd-MM-yyyy' }}</div>
-          <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
+          <div class="col-custom col-custom-5 clickable" data-label="Account Transaction Type">
             <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
               <p style="text-decoration: underline;" (click)="open(account.insurancePolicyId)">
@@ -120,6 +120,9 @@
             </ng-container>
             <ng-container *ngIf="account.agentId">
              سقف مالي
+             <p style="text-decoration: underline;" (click)="openAgentLimits(account.id)">
+              رقم: {{ account.id }}
+             </p>
             </ng-container>
           </div>
           <div class="col-custom col-custom-2" data-label="Debit">{{account.debit || 0}}</div>

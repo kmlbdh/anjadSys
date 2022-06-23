@@ -1,0 +1,72 @@
+<div class="modal-header">
+  <div class="title-date-insuId">
+    <h4 class="modal-title" id="modal-basic-title">السقف المالي</h4>
+    <div class="date-id">
+      <div>
+        <label>التاريخ: </label>
+        <span>{{modalAgentLimits.createdAt | date: 'dd-MM-yyyy'}}</span>
+      </div>
+      <div>
+        <label>رقم الحركة: </label>
+        <span>{{modalAgentLimits.id}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="company-header">
+    <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
+    <span>فلسطين - العيزرية</span>
+    <span>هاتف: 0227900000</span>
+    <span>فاكس: 0227900001</span>
+    <span>injad@palestine-vip.com</span>
+  </div>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div id="print-content" class="modal-body">
+  <div class="container-background-accident">
+    INJAD
+  </div>
+
+  <div class="main-data-section card agent-container">
+    <div class="agent-section">
+      <div>
+        <label>اسم الوكيل: </label>
+        <span>{{modalAgentLimits.Agent?.companyName}}</span>
+      </div>
+      <div>
+        <label>العنوان : </label>
+        <span>{{modalAgentLimits.Agent?.Region?.name}} / {{modalAgentLimits.Agent?.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{modalAgentLimits.Agent?.jawwal1}}
+          <ng-container *ngIf="modalAgentLimits.Agent?.jawwal2">
+            /
+          </ng-container>
+          {{modalAgentLimits.Agent?.jawwal2}}</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات الحركة المالية</h5>
+      </div>
+      <div class="data-section">
+        <div class="each-data">
+          <label>السقف المالي</label>
+          <span>{{modalAgentLimits.debit}} شيكل</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة</button>
+</div>

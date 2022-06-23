@@ -13,9 +13,13 @@ import {
   tap
 } from 'rxjs';
 import { InsurancePolicesAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
+import { AgentLimitsArrayAPI, SearchAgentLimits } from 'src/app/modules/core/model/agentlimits';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router } from '@angular/router';
+import {
+  AgentLimitsModalComponent
+} from '../../../../../shared/components/agent-limits-modal/agent-limits-modal.component';
 import {
   InsurancePolicyComponent
 } from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
@@ -227,6 +231,26 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
           if (response.data) {
             const refModal = this.modalService.open(InsurancePolicyComponent, this.modalOptions);
             refModal.componentInstance.modalInsurancePolicy = response.data[0];
+            refModal.result.then(result => {
+              this.closeResult = `Closed with: ${ result }`;
+            }, reason => {
+              this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+            });
+          }
+        },
+        error: (error: any) => console.log(error)
+      });
+  }
+
+  openAgentLimits(agentLimitId: number) {
+    let searchCondition: SearchAgentLimits = { accountId: agentLimitId } as SearchAgentLimits;
+    this.adminService.AgentLimitsAPIs.listLimits(searchCondition)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response: AgentLimitsArrayAPI) => {
+          if (response.data) {
+            const refModal = this.modalService.open(AgentLimitsModalComponent, this.modalOptions);
+            refModal.componentInstance.modalAgentLimits = response.data[0];
             refModal.result.then(result => {
               this.closeResult = `Closed with: ${ result }`;
             }, reason => {

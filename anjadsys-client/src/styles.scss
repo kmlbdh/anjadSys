@@ -58,12 +58,11 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       }
       .date-id{
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: nowrap;
-        justify-content: flex-start;
-        align-items: center;
+        align-items: flex-start;
         flex-basis: 100%;
-        gap: 30%;
+        justify-content: flex-start;
 
         & > div {
           display: flex;
@@ -90,8 +89,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       height: 35px;
     }
     .modal-body{
-      padding-top: 0;
-      padding-bottom: 0;
+      padding: 0;
       position: relative;
 
       .container-background-accident,
