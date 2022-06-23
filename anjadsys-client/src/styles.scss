@@ -23,10 +23,13 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
 .insurance-policy-modal{
   -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
   size: auto;
   margin: 0;
   .modal-header{
-
+    border-bottom: none;
+    padding-bottom: 0;
+    background-color: #fff;
     .company-header{
       display: flex;
       flex-direction: column;
@@ -40,13 +43,46 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         margin: auto;
       }
     }
-
-    .modal-title{
+    .title-date-insuId{
       flex-basis: 77%;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: auto;
+      .modal-title{
+        width: 100%;
+        text-align: right;
+        margin-bottom: auto;
+        font-weight: 600;
+        font-size: 1.3rem;
+      }
+      .date-id{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        flex-basis: 100%;
+        gap: 30%;
+
+        & > div {
+          display: flex;
+          flex-direction: row;
+          label{
+            font-size: 14px;
+            font-weight: 700;
+          }
+          span{
+            margin: 0 0.4rem;
+          }
+        }
+      }
     }
+
   }
   .modal-content {
+    background-color: #fff;
+
     button.close{
       @include button-primary;
       border-radius: 50%;
@@ -54,6 +90,29 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       height: 35px;
     }
     .modal-body{
+      padding-top: 0;
+      padding-bottom: 0;
+      position: relative;
+
+      .container-background-accident,
+      .container-background{
+        position: absolute;
+        top: 20%;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        z-index: 0;
+        transform: rotate(300deg);
+        -webkit-transform: rotate(300deg);
+        color: gray;
+        font-size: 20rem;
+        opacity: 0.08;
+      }
+
+      .container-background-accident{
+        top:0;
+      }
+
       .padd-l-r-7{
         padding: 0 0.7rem;
       }
@@ -68,6 +127,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         flex-wrap: nowrap;
         padding: 0;
         margin: 0;
+        z-index: 99;
       }
 
       .agent-container{
@@ -75,27 +135,6 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         flex-direction: column;
         gap: 20px;
         padding: 1rem 1.25rem 1.25rem 1.25rem;
-
-        .date-id{
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          justify-content: space-between;
-          align-items: center;
-          flex-basis: 40%;
-
-          & > div {
-            display: flex;
-            flex-direction: row;
-            label{
-              font-size: 14px;
-              font-weight: 700;
-            }
-            span{
-              margin: 0 0.4rem;
-            }
-          }
-        }
 
         .agent-section{
           display: flex;
@@ -122,6 +161,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
           margin-bottom: 0;
           padding: 0.5rem;
           box-shadow: none;
+          background: none;
+          z-index: 99;
         }
         .header-section{
           margin-bottom: 15px;
@@ -234,6 +275,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             justify-content: space-between;
             align-items: stretch;
             flex-basis: 22%;
+            margin-bottom: auto;
 
             label{
               font-size: 14px;
@@ -254,17 +296,19 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
           justify-content: flex-start;
           height: max-content;
           width: 100%;
-          column-gap: 20%;
+          column-gap: 17%;
           row-gap: 21px;
         }
       }
+    }
 
-      .condition{
-        width:100%;
-        font-weight: 600;
-        font-size: 14.5px;
-        margin:0;
-        > li::marker {
+    .condition{
+      width:100%;
+      font-size: 14.5px;
+      margin: 0 0 15px 0;
+      > li{
+        font-weight: 700;
+        &::marker {
           font-size: 1.5rem;
         }
       }
@@ -272,6 +316,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
     .modal-footer{
       justify-content: flex-start;
+      background-color: #fff;
       .button-primary{
         @include button-primary;
         width: fit-content;

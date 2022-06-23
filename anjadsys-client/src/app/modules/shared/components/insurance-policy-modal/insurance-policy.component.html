@@ -1,38 +1,44 @@
 <div class="modal-header">
+  <div class="title-date-insuId">
+      <h4 class="modal-title" id="modal-basic-title">بوليصة أصلية</h4>
+      <div class="date-id">
+        <div>
+          <label>التاريخ: </label>
+          <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+        <div>
+          <label>رقم البوليصة: </label>
+          <span>{{modalInsurancePolicy.id}}</span>
+        </div>
+      </div>
+  </div>
   <div class="company-header">
     <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
     <span>فلسطين - العيزرية</span>
     <span>هاتف: 0227900000</span>
     <span>فاكس: 0227900001</span>
     <span>injad@palestine-vip.com</span>
   </div>
-  <h4 class="modal-title" id="modal-basic-title">بوليصة أصلية</h4>
   <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
+  <div class="container-background">
+    INJAD
+  </div>
 
   <div class="main-data-section card agent-container">
-    <div class="date-id">
-      <div>
-        <label>التاريخ: </label>
-        <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
-      </div>
-      <div>
-        <label>رقم البوليصة: </label>
-        <span>{{modalInsurancePolicy.id}}</span>
-      </div>
-    </div>
 
     <div class="agent-section padd-l-r-7">
       <div>
         <label>اسم الوكيل: </label>
-        <span>{{modalInsurancePolicy.Agent.companyName}}</span>
+        <span style="font-weight: 600;">{{modalInsurancePolicy.Agent.companyName}}</span>
       </div>
       <div>
         <label>عنوانه : </label>
-        <span>{{modalInsurancePolicy.Agent.Region.name}} / {{modalInsurancePolicy.Agent.address}}</span>
+        <span>{{modalInsurancePolicy.Agent.Region.name}} - {{modalInsurancePolicy.Agent.address}}</span>
       </div>
       <div>
         <label>رقم الهوية : </label>
@@ -184,7 +190,10 @@
 </div>
 <ul class="condition">
   <li>
-    المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحغظ يجب ان يسدد لتعتبر البوليصة  سارية
+    المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحفظ يجب ان يسدد لتعتبر البوليصة  سارية.
+  </li>
+  <li>
+    شروط الوثائق في الكتيب المرفق اجباري الحصول على نسخة والاطلاع.
   </li>
 </ul>
 <div class="modal-footer d-print-none">
