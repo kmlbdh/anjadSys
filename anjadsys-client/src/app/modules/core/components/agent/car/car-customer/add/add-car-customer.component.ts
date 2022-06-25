@@ -228,7 +228,6 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     if (!this.selectedCarTypeId)
     { this.formCont('carModelId').disable(); }
     else {
-      this.formCont('carModelId').enable();
       this.spinner.carModel = true;
       this.searchCarModelAPI();
     }
