@@ -22,8 +22,8 @@ module.exports = {
       const skip = req.body.skip || SKIP;
         
       if (req.body.name) 
-        query.where.name = {[Op.substring]: req.body.name}
-      
+        query.where.name = {[Op.substring]: req.body.name};
+
       if (req.body.carTypeId)
         query.where.carTypeId = req.body.carTypeId;   
 
