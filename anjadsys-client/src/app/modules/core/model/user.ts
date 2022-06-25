@@ -75,7 +75,7 @@ export interface updateUser{
   jawwal2?: number;
   tel?: number;
   fax?: number;
-  email?: number;
+  email?: string;
   address?: string;
   note?: string;
   agentId?: string | null;
