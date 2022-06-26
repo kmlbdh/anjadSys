@@ -36,7 +36,7 @@ module.exports = {
     const { userID } = req.params;
     query = { where: { id: userID }};
   
-    await sharedUser.deleteUser(res, query);
+    await sharedUser.delete(res, query);
   },
   update: async(req, res) => {
     try {
