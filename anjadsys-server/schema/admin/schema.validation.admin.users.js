@@ -9,7 +9,7 @@ const userSchema = {
     .allow(null),
     username: Joi.string().trim().required().min(3),
     companyName: Joi.string().trim().min(3).optional().allow(null),
-    password: Joi.string().trim().optional().label('password'),
+    password: Joi.string().trim().optional().label('password').allow(null),
     confirmPassword: Joi.any()
       .equal(Joi.ref('password'))
       .optional()
@@ -36,7 +36,7 @@ const userSchema = {
     agentId: Joi.string().trim().optional().allow(null),
     regionId: Joi.number().min(1).required(),
     roleId: Joi.number().min(1).required(),
-    servicesPackage: Joi.number().optional(),
+    servicesPackage: Joi.number().optional().allow(null),
     blocked: Joi.boolean().required(),
   }),
   userID: Joi.any().required(),
