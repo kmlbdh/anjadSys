@@ -182,7 +182,10 @@ export class AddUserComponent implements OnInit, OnDestroy {
     identityNum?.updateValueAndValidity();
     pass?.updateValueAndValidity();
     conPass?.updateValueAndValidity();
-    this.addUserForm.updateValueAndValidity() ;
+    this.addUserForm.updateValueAndValidity();
+
+    this.addUserForm.reset({ roleId: role });
+    this.addUserForm.markAsUntouched();
   }
 
   resetForm(ngform: FormGroupDirective) {
