@@ -146,12 +146,14 @@ export class AddUserComponent implements OnInit, OnDestroy {
       this.addUserForm.removeValidators(ConfirmedValidator('password', 'confirmPassword'));
       pass?.clearValidators();
       conPass?.clearValidators();
-      pass?.setValue('');
-      conPass?.setValue('');
-      servicesPackage?.setValue('');
+      pass?.disable();
+      conPass?.disable();
+      servicesPackage?.disable();
       servicesPackage?.clearValidators();
       identityNum?.addValidators([ Validators.required, Validators.minLength(9), Validators.maxLength(9) ]);
     } else if (roleString === 'agent' || roleString === 'admin') {
+      pass?.enable();
+      conPass?.enable();
       pass?.addValidators([Validators.required]);
       conPass?.addValidators([Validators.required]);
       this.addUserForm.addValidators(ConfirmedValidator('password', 'confirmPassword'));
@@ -172,6 +174,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
       servicesPackage?.setValue('');
       servicesPackage?.clearValidators();
     } else if (roleString === 'agent') {
+      servicesPackage?.enable();
       servicesPackage?.addValidators([Validators.required]);
       servicesPackage?.setValue(0);
       companyName?.addValidators([Validators.required]);
