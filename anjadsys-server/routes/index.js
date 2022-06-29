@@ -18,6 +18,7 @@ adminRouter
   .use('/car', require('./admin/route.admin.cars'))
   .use('/accident', require('./admin/route.admin.accidents'))
   .use('/insurance-policy', require('./admin/route.admin.insurancepolicies'))
+  .use('/endorsement', require('./admin/route.admin.endorsements'))
   .use('/account', require('./admin/route.admin.accounts'));
 
 agentRouter

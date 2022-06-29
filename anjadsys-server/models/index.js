@@ -19,6 +19,7 @@ const models = [
   require('./carmodel')(sequelize, Sequelize),
   require('./cartype')(sequelize, Sequelize),
   require('./insurancepolicy')(sequelize, Sequelize),
+  require('./endorsement')(sequelize, Sequelize),
   require('./otherservices')(sequelize, Sequelize),
   require('./region')(sequelize, Sequelize),
   require('./role')(sequelize, Sequelize),

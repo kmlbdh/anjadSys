@@ -15,6 +15,7 @@ const CarType = db.CarType;
 const InsurancePolicy = db.InsurancePolicy;
 const Region = db.Region;
 const ServicePolicy = db.ServicePolicy;
+const Endorsement = db.Endorsement;
 const sequelizeDB = db.sequelize;
 
 const INTERR = 'INT_ERR';
@@ -267,6 +268,17 @@ module.exports = {
               as: 'Supplier',
               required: true,
               attributes: ['id', 'username', 'companyName']
+            }
+          ]
+        },
+        {
+          model: Endorsement,
+          required: true,
+          separate: true,
+          include: [
+            {
+              model: Car,
+              required: true,
             }
           ]
         },

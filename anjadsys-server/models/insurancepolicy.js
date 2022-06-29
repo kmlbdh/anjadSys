@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
+      InsurancePolicy.hasMany(models.Endorsement, { 
+        foreignKey: 'insurancePolicyId',
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+      });
       InsurancePolicy.hasMany(models.ServicePolicy, { 
         foreignKey: 'insurancePolicyId',
         onDelete: 'RESTRICT',

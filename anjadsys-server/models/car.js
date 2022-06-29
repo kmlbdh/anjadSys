@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
+      Car.hasMany(models.Endorsement,  { 
+        foreignKey: 'carId',
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+      });
       Car.hasMany(models.Accident,  { 
         foreignKey: 'carId',
         onDelete: 'RESTRICT',

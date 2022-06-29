@@ -1,47 +1,49 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Account extends Model {
+  class Endorsement extends Model {
     static associate(models) {
-      Account.belongsTo(models.InsurancePolicy,  { 
+      Endorsement.belongsTo(models.InsurancePolicy,{ 
         foreignKey: 'insurancePolicyId',
-        allowNull: true,
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
-      Account.belongsTo(models.Endorsement,  { 
+      Endorsement.belongsTo(models.Car, { 
+        foreignKey: 'carId',
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+      });
+      Endorsement.hasOne(models.Account, { 
         foreignKey: 'endorsementId',
-        allowNull: true,
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT'
-      });
-      Account.belongsTo(models.User,  { 
-        foreignKey: 'agentId',
-        as: 'Agent',
-        allowNull: true,
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
       });
     }
   }
-  Account.init({
+  Endorsement.init({
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true
     },
-    credit: {
-      type: DataTypes.DECIMAL,
+    totalPrice: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true
     },
-    debit: {
-      type: DataTypes.DECIMAL,
+    expireDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    endorsementType:{
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
     },
     note: {
       type: DataTypes.TEXT,
-    },
+    }
   }, {
     sequelize,
-    modelName: 'Account',
+    modelName: 'Endorsement',
   });
-  return Account;
+  return Endorsement;
 };

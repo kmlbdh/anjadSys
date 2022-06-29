@@ -4,6 +4,7 @@ const accountSchema = {
   list: Joi.object().keys({
     accountId: Joi.number().optional(),
     insurancePolicyId: Joi.number().optional(),
+    endorsementId: Joi.number().optional(),
     otherServiceId: Joi.number().optional(),
     customerID: Joi.string().optional(),
     supplierID: Joi.string().optional(),
