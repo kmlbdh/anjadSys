@@ -89,13 +89,13 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: params => {
           const insurancePolicyId = params.get('insurancePolicyId');
-          if (Number(insurancePolicyId) != null) {
+          if (insurancePolicyId != null && insurancePolicyId != '' && Number(insurancePolicyId)) {
             this.searchConditions.insurancePolicyId = Number(insurancePolicyId);
             this.formCont('insurancePolicyId').setValue(insurancePolicyId);
             this.showSearch();
-            this.getEndorsements(this.searchConditions);
           }
-        }
+        },
+        complete: () => this.getEndorsements(this.searchConditions)
       });
   }
 
