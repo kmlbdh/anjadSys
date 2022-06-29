@@ -87,11 +87,16 @@
           <div class="col-custom col-custom-1" data-label="Insurance Policy Id">{{insurancePolicy.id}}</div>
           <div class="col-custom col-custom-2" data-label="Customer Number">{{insurancePolicy.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Car Owner">{{insurancePolicy.Customer.username}}</div>
-          <div class="col-custom col-custom-4" data-label="Agent Name">{{ insurancePolicy.Agent.username }}/{{ insurancePolicy.Agent.companyName }}</div>
+          <div class="col-custom col-custom-4" data-label="Agent Name">{{ insurancePolicy.Agent.companyName }}</div>
           <div class="col-custom col-custom-5" data-label="Insurance Policy Expire Date">{{ (insurancePolicy.expireDate | date: 'dd-MM-yyyy') }}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-primary" title="ملف البوليصة" (click)="open(insurancePolicy.id)">
               <fa-icon [icon]="openIcon"></fa-icon>
+            </button>
+
+            <button class="btn-primary flex-btn" title="الملاحق" (click)="goToEndorsements(insurancePolicy.id)">
+              <span>({{insurancePolicy.Endorsements.length}})</span>
+              <fa-icon [icon]="endorsementIcon"></fa-icon>
             </button>
 
             <button class="btn-primary" title="تعديل بيانات بوليصة التأمين " (click)="goToInsurancePolicyEdit(insurancePolicy.id)">

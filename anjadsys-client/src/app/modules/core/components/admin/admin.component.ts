@@ -14,7 +14,8 @@ import {
   faTruckMoving,
   faWrench,
   faClipboardList,
-  faFileMedicalAlt
+  faFileMedicalAlt,
+  faFolderOpen
 } from '@fortawesome/free-solid-svg-icons';
 import { UserLoggedInAPI } from '../../model/general';
 import { NavInput } from '../../../shared/components/nav/nav.component';
@@ -207,6 +208,24 @@ export class AdminComponent implements OnInit {
     },
     {
       id: 10,
+      name: 'الملاحق',
+      faIcon: faFolderOpen,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار الكل',
+          link: 'endorsement/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة ملحق',
+          link: 'endorsement/add'
+        },
+      ]
+    },
+    {
+      id: 11,
       name: 'المالية',
       faIcon: faFileInvoiceDollar,
       hide: true,

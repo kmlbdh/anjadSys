@@ -1,0 +1,153 @@
+<div class="modal-header">
+  <div class="title-date-insuId">
+      <h4 class="modal-title" id="modal-basic-title">ملحق {{endorsementTypeArray[modalEndorsement.endorsementType]}}</h4>
+      <div class="date-id">
+        <div>
+          <label>التاريخ: </label>
+          <span>{{modalEndorsement.createdAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+        <div>
+          <label>رقم الملحق: </label>
+          <span>{{modalEndorsement.id}}</span>
+        </div>
+      </div>
+  </div>
+  <div class="company-header">
+    <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
+    <span>فلسطين - العيزرية</span>
+    <span>info@injad.ps</span>
+  </div>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container-background">
+    INJAD
+  </div>
+
+  <div class="main-data-section card agent-container">
+
+    <div class="agent-section padd-l-r-7">
+      <div>
+        <label>اسم الوكيل: </label>
+        <span style="font-weight: 600;">{{modalEndorsement.InsurancePolicy.Agent.companyName}}</span>
+      </div>
+      <div>
+        <label>عنوانه : </label>
+        <span>{{modalEndorsement.InsurancePolicy.Agent.Region.name}} -
+          {{modalEndorsement.InsurancePolicy.Agent.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهوية : </label>
+        <span>{{modalEndorsement.InsurancePolicy.Agent.identityNum}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{modalEndorsement.InsurancePolicy.Agent.jawwal1}}
+          <ng-container *ngIf="modalEndorsement.InsurancePolicy.Agent.jawwal2">
+            /
+          </ng-container>
+           {{modalEndorsement.InsurancePolicy.Agent.jawwal2}}</span>
+      </div>
+      <div>
+        <label>كود الوكيل : </label>
+        <span>{{modalEndorsement.InsurancePolicy.Agent.id}}</span>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات الزبون</h5>
+      </div>
+      <div class="data-section padd-l-r-7">
+        <div class="each-data">
+          <label>رقم هوية الزبون</label>
+          <span>{{modalEndorsement.InsurancePolicy.Customer.identityNum}}</span>
+        </div>
+        <div class="each-data">
+          <label>اسم الزبون</label>
+          <span>{{modalEndorsement.InsurancePolicy.Customer.username}}</span>
+        </div>
+        <div class="each-data">
+          <label>عنوان الزبون</label>
+          <span>{{modalEndorsement.InsurancePolicy.Customer.Region.name}} /
+            {{modalEndorsement.InsurancePolicy.Customer.address}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الجوال</label>
+          <span>{{modalEndorsement.InsurancePolicy.Customer.jawwal1}}
+            <ng-container *ngIf="modalEndorsement.InsurancePolicy.Customer.jawwal2">
+              /
+            </ng-container>
+            {{modalEndorsement.InsurancePolicy.Customer.jawwal2}}</span>
+        </div>
+      </div>
+
+      <div class="data-section padd-l-r-7">
+
+        <div class="each-data">
+          <label>رقم المركبة</label>
+          <span>{{modalEndorsement.Car.carNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>النوع</label>
+          <span>{{modalEndorsement.Car.CarType.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>الموديل</label>
+          <span>{{modalEndorsement.Car.CarModel.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>سنة التصنيع</label>
+          <span>{{modalEndorsement.Car.productionYear | date: 'yyyy'}}</span>
+        </div>
+
+      </div>
+
+      <div class="data-section padd-l-r-7">
+
+        <div class="each-data">
+          <label>رقم الشصي</label>
+          <span>{{modalEndorsement.Car.serialNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>Kg/cc</label>
+          <span>{{modalEndorsement.Car.motorPH}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>اللون</label>
+          <span>{{modalEndorsement.Car.color}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>أصل المركبة</label>
+          <span>{{modalEndorsement.Car.licenseType}}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!-- <ul class="condition">
+  <li>
+    المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحفظ يجب ان يسدد لتعتبر البوليصة  سارية.
+  </li>
+  <li>
+    شروط الوثائق في الكتيب المرفق اجباري الحصول على نسخة والاطلاع.
+  </li>
+</ul> -->
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة الملحق</button>
+</div>

@@ -1,10 +1,11 @@
 import { UserAPI } from './user';
 import { CarAPI } from './car';
 import { ServicePolicyAPI, NewServicePolicy, updateServicePolicy } from './service';
+import { EndorsementAPI } from './endorsement';
 
 
 export interface InsurancePolicyAPI {
-  [index: string]: number | string | Date | undefined | UserAPI | CarAPI | ServicePolicyAPI[],
+  [index: string]: number | string | Date | undefined | UserAPI | CarAPI | ServicePolicyAPI[] | EndorsementAPI[],
   id: number,
   totalPrice: number,
   expireDate: Date,
@@ -16,6 +17,7 @@ export interface InsurancePolicyAPI {
   Customer: UserAPI,
   Agent: UserAPI,
   Car: CarAPI,
+  Endorsements: EndorsementAPI[],
   createdAt: Date,
   updatedAt: Date,
 }

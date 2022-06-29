@@ -34,6 +34,7 @@ import {
   OtherServicesAPI
 } from '../../model/otherservices';
 import { environment } from '../../../../../environments/environment';
+import { NewEndorsement, updateEndorsement, SearchEndorsement, EndorsementsAPI } from '../../model/endorsement';
 
 @Injectable()
 export class AdminService {
@@ -208,6 +209,25 @@ export class AdminService {
 
     delete: (insurancePolicyId: number): Observable<any> =>
       this.http.delete<any>(`${ this.url }insurance-policy/${ insurancePolicyId }`)
+        .pipe(catchError(this.handleError)),
+
+  };
+
+  EndorsementsAPIs = {
+    add: (endorsementData: NewEndorsement):Observable<any> =>
+      this.http.post<any>(`${ this.url }endorsement/add`, endorsementData)
+        .pipe(catchError(this.handleError)),
+
+    update: (endorsementId: number, endorsementData: updateEndorsement):Observable<any> =>
+      this.http.put<any>(`${ this.url }endorsement/${ endorsementId }`, endorsementData)
+        .pipe(catchError(this.handleError)),
+
+    list: (searchBy: SearchEndorsement):Observable<EndorsementsAPI> =>
+      this.http.post<EndorsementsAPI>(`${ this.url }endorsement/list`, searchBy)
+        .pipe(catchError(this.handleError)),
+
+    delete: (endorsementId: number): Observable<any> =>
+      this.http.delete<any>(`${ this.url }endorsement/${ endorsementId }`)
         .pipe(catchError(this.handleError)),
 
   };

@@ -11,6 +11,7 @@ import { CarModalComponent } from './components/car-modal/car-modal.component';
 import { UserModalComponent } from './components/user-modal/user-modal.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { AgentLimitsModalComponent } from './components/agent-limits-modal/agent-limits-modal.component';
+import { EndorsementModalComponent } from './components/endorsement-modal/endorsement-modal.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { AgentLimitsModalComponent } from './components/agent-limits-modal/agent
     UserModalComponent,
     BreadcrumbComponent,
     AgentLimitsModalComponent,
+    EndorsementModalComponent,
   ],
   imports: [
     CommonModule,

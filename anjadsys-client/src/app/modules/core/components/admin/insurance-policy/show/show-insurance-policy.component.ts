@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
 import {
   SearchInsurancePolicy,
@@ -39,6 +39,7 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   trashIcon = faTrashAlt;
   carEditIcon = faEdit;
   cancelInput = faTimes;
+  endorsementIcon = faFolderOpen;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -275,6 +276,10 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   goToInsurancePolicyEdit(id: number) {
     this.router.navigate([ 'admin/insurance-policy/edit', id ]);
+  }
+
+  goToEndorsements(id: number) {
+    this.router.navigate([ 'admin/endorsement/show', { insurancePolicyId: id } ]);
   }
 
   trackById(index: number, el: any) {

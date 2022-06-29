@@ -73,6 +73,13 @@ const routes: Routes = [
         data: { breadcrumb: 'المالية' }
       },
       {
+        path: 'endorsement',
+        // loadChildren: () => AccountModule,
+        loadChildren: () => import('./endorsement/endorsement.module')
+          .then(m => m.EndorsementModule),
+        data: { breadcrumb: 'الملحقات' }
+      },
+      {
         path: '',
         component: MainComponent,
       },
