@@ -19,9 +19,7 @@ export class NavComponent {
 
   chevronLeftIcon = faChevronLeft;
 
-  constructor() {
-    console.log('nav state', this.state);
-  }
+  constructor() { }
 
   trackById(index: number, el: any) {
     return el.id;
