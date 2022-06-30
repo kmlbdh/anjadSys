@@ -2,7 +2,7 @@
   <nav id="header"  class="dont-print">
     <div class="nav-wrapper">
       <div class="navbar-logo" [ngClass]="{'mini-logo': miniNavBar}">
-        <a routerLink="/admin" *ngIf="!miniNavBar">
+        <a routerLink="/agent" *ngIf="!miniNavBar">
           <img src="../../../../../assets/logo-injad.png" alt="logo" width="160">
         </a>
         <a class="menu-bar-container clickable" (click)="minimizeNavBar()">
