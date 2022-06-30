@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faCarCrash, faFileContract, faTruckMoving, faUsers, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faCarCrash, faFileContract, faTruckMoving, faUsers, faUserTie, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { takeUntil, Subject } from 'rxjs';
 import { AdminService } from '../admin.service';
 
@@ -15,12 +15,14 @@ export class MainComponent implements OnInit, OnDestroy {
   agents!: number;
   insurancePolicies!: number;
   accidents!: number;
+  endorsements!: number;
 
   customersIcon = faUsers;
   agentsIcon = faUserTie;
   suppliersIcon = faTruckMoving;
   accidentIcon = faCarCrash;
   insurancePoliciesIcon = faFileContract;
+  endorsementsIcon = faFolderOpen;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -46,6 +48,7 @@ export class MainComponent implements OnInit, OnDestroy {
             this.agents = response.data.agents;
             this.insurancePolicies = response.data.insurancePolicies;
             this.accidents = response.data.accidents;
+            this.endorsements = response.data.endorsements;
           }
         },
         error: err => console.log(err)
