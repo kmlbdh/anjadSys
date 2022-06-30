@@ -10,7 +10,8 @@ import {
   faWrench,
   faAngleDown,
   faAngleUp,
-  faFileMedicalAlt
+  faFileMedicalAlt,
+  faFolderOpen
 } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from 'src/app/modules/shared/components/nav/nav.component';
 import { UserLoggedInAPI } from '../../model/general';
@@ -29,6 +30,8 @@ export class AgentComponent implements OnInit {
 
   user!: UserLoggedInAPI;
   openDropdownMenu = false;
+  miniNavBar = false;
+  state: 'small' | 'large' = 'large';
 
   navData: NavInput[] = [
     {
@@ -40,11 +43,13 @@ export class AgentComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الزبائن',
+          shortName: 'اظهار',
           link: 'user/show'
         },
         {
           id: 2,
-          name: 'اضافة زبون جديد',
+          name: 'اضافة زبون',
+          shortName: 'اضافة',
           link: 'user/add'
         },
       ]
@@ -57,7 +62,8 @@ export class AgentComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار الخدمات',
+          name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'service/show'
         }
       ]
@@ -70,12 +76,14 @@ export class AgentComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار سيارات الزبائن',
+          name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'car/car-customer/show'
         },
         {
           id: 2,
-          name: 'اضافة سيارة جديدة ',
+          name: 'اضافة سيارة',
+          shortName: 'اضافة',
           link: 'car/car-customer/add'
         },
       ]
@@ -88,12 +96,14 @@ export class AgentComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار انواع السيارات',
+          name: 'اظهار كل الانواع',
+          shortName: 'الانواع',
           link: 'car/car-type/show'
         },
         {
           id: 3,
-          name: 'اظهار موديلات السيارات',
+          name: 'اظهار كل الموديلات',
+          shortName: 'الموديلات',
           link: 'car/car-model/show'
         }
       ]
@@ -106,36 +116,60 @@ export class AgentComponent implements OnInit {
       children: [
         {
           id: 1,
-          name: 'اظهار بلاغات الحوادث',
+          name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'accident/show'
         },
         {
           id: 2,
-          name: 'اضافة بلاغ عن حادث جديد ',
+          name: 'اضافة بلاغ حادث',
+          shortName: 'اضافة',
           link: 'accident/add'
         }
       ]
     },
     {
       id: 7,
-      name: 'بوليصة التأمين',
+      name: 'بوالص التأمين',
       faIcon: faFileMedicalAlt,
       hide: true,
       children: [
         {
           id: 1,
-          name: 'اظهار بوالص التأمين',
+          name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'insurance-policy/show'
         },
         {
           id: 2,
-          name: 'اضافة بوليصة تأمين جديدة ',
+          name: 'اضافة بوليصة تأمين',
+          shortName: 'اضافة',
           link: 'insurance-policy/add'
         }
       ]
     },
+    // {
+    //   id: 8,
+    //   name: 'الملاحق',
+    //   faIcon: faFolderOpen,
+    //   hide: true,
+    //   children: [
+    //     {
+    //       id: 1,
+    //       name: 'اظهار الكل',
+    //       shortName: 'اظهار',
+    //       link: 'endorsement/show'
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'اضافة ملحق',
+    //       shortName: 'اضافة',
+    //       link: 'endorsement/add'
+    //     },
+    //   ]
+    // },
     {
-      id: 8,
+      id: 9,
       name: 'المالية',
       faIcon: faFileInvoiceDollar,
       hide: true,
@@ -143,6 +177,7 @@ export class AgentComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الحساب المالي ',
+          shortName: 'اظهار',
           link: 'account/show'
         }
       ]
@@ -159,8 +194,9 @@ export class AgentComponent implements OnInit {
     if (!this.user.accessToken) { this.logout(); }
   }
 
-  profilePop() {
-
+  minimizeNavBar() {
+    this.miniNavBar = !this.miniNavBar;
+    this.state = this.miniNavBar ? 'small': 'large';
   }
 
   logout() {

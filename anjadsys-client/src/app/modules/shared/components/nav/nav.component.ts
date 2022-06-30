@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../models/nav';
 export { NavInput } from '../../models/nav';
@@ -11,10 +11,17 @@ export { NavInput } from '../../models/nav';
 })
 export class NavComponent {
 
+  @Input()
+  @HostBinding('attr.data-state') state: 'small' | 'large' = 'large';
+
   @Input() navData!: NavInput[];
+  @Input() miniNavBar: Boolean = false;
+
   chevronLeftIcon = faChevronLeft;
 
-  constructor() { }
+  constructor() {
+    console.log('nav state', this.state);
+  }
 
   trackById(index: number, el: any) {
     return el.id;

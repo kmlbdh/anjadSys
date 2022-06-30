@@ -2,7 +2,7 @@
 
 :host {
   app-nav{
-      flex-grow: 1;
+    flex-grow: 1;
     flex-basis: 257px;
   }
 }
@@ -39,19 +39,22 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: nowrap;
-
+        &.mini-logo {
+          flex-basis: 94px;
+        }
         a{
           &:first-child{
             flex-grow: 11;
           }
-          &:last-child{
+          &.menu-bar-container{
             flex-grow: 1;
-          }
-          fa-icon{
-            width: 100%;
-            color: #fff;
-            font-size: 20px;
-            margin: 0 8px;
+            text-align: center;
+            fa-icon{
+              width: 100%;
+              color: #fff;
+              font-size: 1.6rem;
+              margin: 0 8px;
+            }
           }
         }
       }
@@ -177,5 +180,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     background-color: #f3f3f3;
+    &.mini {
+      flex-basis: 92.65%;
+    }
   }
 }

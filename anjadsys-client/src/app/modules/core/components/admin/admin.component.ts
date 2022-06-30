@@ -33,6 +33,8 @@ export class AdminComponent implements OnInit {
 
   user!: UserLoggedInAPI;
   openDropdownMenu = false;
+  miniNavBar = false;
+  state: 'small' | 'large' = 'large';
 
   navData: NavInput[] = [
     {
@@ -44,11 +46,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'user/show'
         },
         {
           id: 2,
           name: 'اضافة مستخدم',
+          shortName: 'اضافة',
           link: 'user/add'
         },
       ]
@@ -62,11 +66,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'agent/show'
         },
         {
           id: 2,
           name: 'اضافة سقف مالي',
+          shortName: 'اضافة',
           link: 'agent/add-agent-limit'
         },
       ]
@@ -80,6 +86,7 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'supplier/show'
         },
         // {
@@ -97,11 +104,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'service/show'
         },
         {
           id: 2,
           name: 'اضافة خدمة',
+          shortName: 'اضافة',
           link: 'service/add'
         },
       ]
@@ -115,11 +124,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'otherservices/show'
         },
         {
           id: 2,
           name: 'اضافة خدمة',
+          shortName: 'اضافة',
           link: 'otherservices/add'
         },
       ]
@@ -133,11 +144,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'car/car-customer/show'
         },
         {
           id: 2,
           name: 'اضافة سيارة',
+          shortName: 'اضافة',
           link: 'car/car-customer/add'
         },
       ]
@@ -151,21 +164,25 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار كل الانواع',
+          shortName: 'الانواع',
           link: 'car/car-type/show'
         },
         {
           id: 2,
           name: 'اضافة نوع',
+          shortName: 'اضافة',
           link: 'car/car-type/add'
         },
         {
           id: 3,
           name: 'اظهار كل الموديلات',
+          shortName: 'الموديلات',
           link: 'car/car-model/show'
         },
         {
           id: 4,
           name: 'اضافة موديل',
+          shortName: 'اضافة',
           link: 'car/car-model/add'
         },
       ]
@@ -179,11 +196,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'accident/show'
         },
         {
           id: 2,
           name: 'اضافة بلاغ حادث',
+          shortName: 'اضافة',
           link: 'accident/add'
         }
       ]
@@ -197,11 +216,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'insurance-policy/show'
         },
         {
           id: 2,
           name: 'اضافة بوليصة تأمين',
+          shortName: 'اضافة',
           link: 'insurance-policy/add'
         }
       ]
@@ -215,11 +236,13 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار الكل',
+          shortName: 'اظهار',
           link: 'endorsement/show'
         },
         {
           id: 2,
           name: 'اضافة ملحق',
+          shortName: 'اضافة',
           link: 'endorsement/add'
         },
       ]
@@ -233,6 +256,7 @@ export class AdminComponent implements OnInit {
         {
           id: 1,
           name: 'اظهار كل الحساب',
+          shortName: 'اظهار',
           link: 'account/show'
         }
       ]
@@ -251,8 +275,9 @@ export class AdminComponent implements OnInit {
     { this.router.navigate(['']); }
   }
 
-  profilePop() {
-
+  minimizeNavBar() {
+    this.miniNavBar = !this.miniNavBar;
+    this.state = this.miniNavBar ? 'small': 'large';
   }
 
   logout() {

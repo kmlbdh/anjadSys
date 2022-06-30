@@ -1,11 +1,11 @@
 <div id="main-container">
-  <nav id="header">
+  <nav id="header"  class="dont-print">
     <div class="nav-wrapper">
-      <div class="navbar-logo">
-        <a routerLink="/agent">
+      <div class="navbar-logo" [ngClass]="{'mini-logo': miniNavBar}">
+        <a routerLink="/admin" *ngIf="!miniNavBar">
           <img src="../../../../../assets/logo-injad.png" alt="logo" width="160">
         </a>
-        <a (click)="profilePop()">
+        <a class="menu-bar-container clickable" (click)="minimizeNavBar()">
           <fa-icon [icon]="faBarsIcon"></fa-icon>
         </a>
       </div>
@@ -28,8 +28,8 @@
     </div>
   </nav>
   <div id="main-content">
-    <app-nav [navData]="navData"></app-nav>
-    <div id="page-container">
+    <app-nav [attr.data-state]="state" [miniNavBar]="miniNavBar" class="dont-print" [navData]="navData"></app-nav>
+    <div id="page-container" [ngClass]="{'mini': miniNavBar}">
       <app-loader></app-loader>
       <router-outlet>
         <app-breadcrumb></app-breadcrumb>

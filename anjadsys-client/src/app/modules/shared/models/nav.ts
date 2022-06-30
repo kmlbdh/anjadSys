@@ -1,6 +1,7 @@
 interface ChildNav{
   id: number,
   name: string,
+  shortName: string,
   link: string
 }
 
