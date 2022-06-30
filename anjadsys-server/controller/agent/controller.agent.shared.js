@@ -8,6 +8,7 @@ const User = db.User;
 const Accident = db.Accident;
 const InsurancePolicy = db.InsurancePolicy;
 const Region = db.Region;
+const Endorsement = db.Endorsement;
 
 const listStatisticsLog = util.debuglog("controller.admin-ListStatistics");
 const listRegionsLog = util.debuglog("controller.admin-ListRegions");
@@ -32,11 +33,23 @@ module.exports = {
   },
   statistics: async(req, res) => {
       try {
-        const customers = await User.count({ where: {roleId: 3, agentId: req.agent.id}});
-        const insurancePolicies = await InsurancePolicy.count({ where: {agentId: req.agent.id}});
-        const accidents = await Accident.count({ where: { agentId: req.agent.id}});
-    
-        if(customers == null || insurancePolicies == null || accidents == null) 
+        const customers = await User.count({ where: {roleId: 3, agentId: req.agent.id }});
+        const insurancePolicies = await InsurancePolicy.count({ where: { agentId: req.agent.id }});
+        const accidents = await Accident.count({ where: { agentId: req.agent.id }});
+        const endorsements = await Endorsement.count({
+          include:[
+            {
+              model: InsurancePolicy,
+              required: true,
+              where: { agentId: req.agent.id }
+            }
+          ]
+        });
+
+        if(customers == null ||
+          insurancePolicies == null ||
+          accidents == null ||
+          endorsements == null) 
           throw new customError("Failed! can't get Statistics!");
   
         res.status(200).json({
@@ -44,7 +57,8 @@ module.exports = {
           data: {
             customers,
             insurancePolicies,
-            accidents
+            accidents,
+            endorsements
           }
         });   
       } catch(error){
