@@ -7,6 +7,7 @@ import { Subject, takeUntil, debounceTime, tap, switchMap, distinctUntilChanged,
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { NewEndorsement } from '../../../../model/endorsement';
+import { requiredDisabledInput } from '../required-disabled-input.validator';
 
 @Component({
   selector: 'app-add-endorsement',
@@ -60,7 +61,7 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
     insurancePolicyId: [ { value:'', disabled: true }, Validators.required ],
     endorsementType: [ 0, Validators.required ],
     carId: [ { value:'', disabled: true }, Validators.required ],
-  });
+  }, { validators: requiredDisabledInput([ 'carId', 'insurancePolicyId' ]) });
 
   constructor(
     private fb: FormBuilder,
@@ -243,7 +244,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.addEndorsementForm.get('agentId')?.setValue(this.selectedCustomer?.Agent?.id);
-      this.searchTextObj.searchCarText$.next('');
     }, 0);
   }
 
@@ -281,14 +281,13 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
     this.selectedInsurancePolicy = undefined;
     this.selectedAgent = undefined;
 
-    this.formCont('insurancePolicyId').setValue('');
-
     this.customerElement.nativeElement.value = '';
     this.agentElement.nativeElement.value = '';
 
     this.formCont('carId').disable();
     this.formCont('insurancePolicyId').disable();
 
+    this.cancelInsurancePolicyInput(event);
     this.cancelCarInput(event);
   }
 
