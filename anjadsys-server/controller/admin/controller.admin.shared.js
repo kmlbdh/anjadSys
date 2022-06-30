@@ -9,6 +9,7 @@ const Role = db.Role;
 const Accident = db.Accident;
 const InsurancePolicy = db.InsurancePolicy;
 const Region = db.Region;
+const Endorsement = db.Endorsement;
 
 const listStatisticsLog = util.debuglog("controller.admin-ListStatistics");
 const listRegionsLog = util.debuglog("controller.admin-ListRegions");
@@ -38,12 +39,14 @@ module.exports = {
       const suppliers = await User.count({ where: {roleId: 4}});
       const insurancePolicies = await InsurancePolicy.count();
       const accidents = await Accident.count();
+      const endorsements = await Endorsement.count();
   
       if(agents == null ||
           customers == null ||
           suppliers == null ||
           insurancePolicies == null ||
-          accidents == null) 
+          accidents == null ||
+          endorsements == null) 
         throw new customError("Failed! can't get Statistics!");
 
       res.status(200).json({
@@ -53,7 +56,8 @@ module.exports = {
           customers,
           suppliers,
           insurancePolicies,
-          accidents
+          accidents,
+          endorsements
         }
       });   
     } catch(error){
