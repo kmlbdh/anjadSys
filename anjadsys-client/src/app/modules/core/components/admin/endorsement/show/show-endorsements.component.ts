@@ -242,7 +242,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   }
 
   goToEndorsementEdit(id: number) {
-    // this.router.navigate([ 'admin/endorsement/edit', id ]);
+    this.router.navigate([ 'admin/endorsement/edit', id ]);
   }
 
   formCont(controlName: string) {
