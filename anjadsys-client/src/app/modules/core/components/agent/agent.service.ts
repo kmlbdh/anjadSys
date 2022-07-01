@@ -22,6 +22,7 @@ import { SearchSuppliers } from '../../model/supplier';
 import { NewUser, SearchUser, UsersAPI, UsersLightAPI } from '../../model/user';
 import { AccountsAPI, SearchAccount } from '../../model/account';
 import { environment } from '../../../../../environments/environment';
+import { EndorsementsAPI, NewEndorsement, SearchEndorsement, updateEndorsement } from '../../model/endorsement';
 
 @Injectable()
 export class AgentService {
@@ -114,6 +115,17 @@ export class AgentService {
 
     list: (searchBy: SearchInsurancePolicy):Observable<InsurancePolicesAPI> =>
       this.http.post<InsurancePolicesAPI>(`${ this.url }insurance-policy/list`, searchBy)
+        .pipe(catchError(this.handleError)),
+
+  };
+
+  EndorsementsAPIs = {
+    add: (endorsementData: NewEndorsement):Observable<any> =>
+      this.http.post<any>(`${ this.url }endorsement/add`, endorsementData)
+        .pipe(catchError(this.handleError)),
+
+    list: (searchBy: SearchEndorsement):Observable<EndorsementsAPI> =>
+      this.http.post<EndorsementsAPI>(`${ this.url }endorsement/list`, searchBy)
         .pipe(catchError(this.handleError)),
 
   };

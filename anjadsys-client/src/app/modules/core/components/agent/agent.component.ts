@@ -148,26 +148,26 @@ export class AgentComponent implements OnInit {
         }
       ]
     },
-    // {
-    //   id: 8,
-    //   name: 'الملاحق',
-    //   faIcon: faFolderOpen,
-    //   hide: true,
-    //   children: [
-    //     {
-    //       id: 1,
-    //       name: 'اظهار الكل',
-    //       shortName: 'اظهار',
-    //       link: 'endorsement/show'
-    //     },
-    //     {
-    //       id: 2,
-    //       name: 'اضافة ملحق',
-    //       shortName: 'اضافة',
-    //       link: 'endorsement/add'
-    //     },
-    //   ]
-    // },
+    {
+      id: 8,
+      name: 'الملاحق',
+      faIcon: faFolderOpen,
+      hide: true,
+      children: [
+        {
+          id: 1,
+          name: 'اظهار الكل',
+          shortName: 'اظهار',
+          link: 'endorsement/show'
+        },
+        {
+          id: 2,
+          name: 'اضافة ملحق',
+          shortName: 'اضافة',
+          link: 'endorsement/add'
+        },
+      ]
+    },
     {
       id: 9,
       name: 'المالية',

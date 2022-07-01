@@ -44,6 +44,13 @@ const routes: Routes = [
         data: { breadcrumb: 'بوالص التأمين' }
       },
       {
+        path: 'endorsement',
+        // loadChildren: () => InsurancePolicyModule,
+        loadChildren: () => import('./endorsement/endorsement.module')
+          .then(m => m.EndorsementModule),
+        data: { breadcrumb: 'الملاحق' }
+      },
+      {
         path: 'account',
         // loadChildren: () => AccountModule,
         loadChildren: () => import('./account/account.module')
