@@ -252,6 +252,9 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
     this.addEndorsementForm.updateValueAndValidity();
     this.addEndorsementForm.markAsUntouched();
     addEndrosementFormDirective.resetForm();
+
+    this.customerElement.nativeElement.value = null;
+    this.agentElement.nativeElement.value = null;
     this.selectedCustomer = undefined;
     this.selectedAgent = undefined;
     this.selectedCar = undefined;
