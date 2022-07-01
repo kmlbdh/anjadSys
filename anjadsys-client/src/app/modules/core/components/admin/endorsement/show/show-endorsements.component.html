@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-control-group">
-          <label for="customerID">الزبون:</label>
+          <label for="customerId">الزبون:</label>
           <div class="input" *ngIf="selectedCustomer">
             {{selectedCustomer.username}}
             <span (click)="cancelCustomerInput($event)">
@@ -32,8 +32,8 @@
             </span>
           </div>
           <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
-             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerId" formControlName="customerId" autocomplete="off"/>
             <span *ngIf="spinner.customer" class="spinner"></span>
           </div>
           <datalist id="customerList">

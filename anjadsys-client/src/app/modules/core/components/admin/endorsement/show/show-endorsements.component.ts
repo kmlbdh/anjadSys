@@ -61,7 +61,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   searchEndorsementForm = this.fb.group({
     endorsementId: [''],
     insurancePolicyId: [''],
-    customerID: [''],
+    customerId: [''],
     endorsementType: [''],
   });
 
@@ -129,7 +129,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   searchCustomer(event: Event): void {
     console.log(event);
     if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
+      const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
       return;
     }
@@ -152,7 +152,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.selectedCustomer = undefined;
-    this.formCont('customerID').setValue('');
+    this.formCont('customerId').setValue('');
   }
 
   searchEndorsement(form: FormGroupDirective) {
