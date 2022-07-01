@@ -31,7 +31,8 @@ agentRouter
   .use("/car", require('./agent/route.agent.cars'))
   .use("/accident", require('./agent/route.agent.accidents'))
   .use("/insurance-policy", require('./agent/route.agent.insurancepolicies'))
-  .use("/account", require('./agent/route.agent.accounts'));
+  .use("/account", require('./agent/route.agent.accounts'))
+  .use("/endorsement", require('./agent/route.agent.endorsements'));
 
 loginRouter
     .post("", verifyLoginValidation, loginController.login);
