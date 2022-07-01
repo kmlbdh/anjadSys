@@ -21,6 +21,7 @@ const endorsementSchema = {
   list: Joi.object().keys({
     endorsementId: Joi.any().optional(),
     expireDate: Joi.date().optional(),
+    customerId: Joi.string().optional(),
     endorsementType: Joi.number().optional(),
     carId: Joi.number().optional(),
     insurancePolicyId: Joi.number().optional(),

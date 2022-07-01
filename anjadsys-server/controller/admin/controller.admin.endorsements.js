@@ -157,6 +157,8 @@ module.exports = {
   },
   list: async(req, res) => {
     try{
+
+      let customerWhere = {};
       let query = {where:{}};
       const limit = req.body.limit || LIMIT;
       const skip = req.body.skip || SKIP;
@@ -170,9 +172,8 @@ module.exports = {
       if (req.body.carID) 
         query.where.carId = req.body.carID;
 
-      //TODO bring it from insurance join - later
-      // if (req.body.customerID)
-      //   query.where.customerId = req.body.customerID;
+      if (req.body.customerId)
+        customerWhere = { 'id': req.body.customerId };
 
       if(req.body.filterOutValid){
         query.where.expireDate = {[Op.gte]: new Date().setHours(0, 0, 0, 0)}
@@ -235,6 +236,7 @@ module.exports = {
                   required: true
                 }
               ],
+              where: customerWhere,
               attributes: { exclude: ['password', 'note'] }
             },
             {
