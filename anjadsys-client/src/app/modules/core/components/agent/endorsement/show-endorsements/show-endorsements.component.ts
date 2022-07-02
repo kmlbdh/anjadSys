@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { InsurancePolicesAPI, SearchInsurancePolicy } from '../../../../model/insurancepolicy';
 import { InsurancePolicyComponent } from '../../../../../shared/components/insurance-policy-modal/insurance-policy.component';
 import { EndorsementModalComponent } from '../../../../../shared/components/endorsement-modal/endorsement-modal.component';
+import { CarModalComponent } from '../../../../../shared/components/car-modal/car-modal.component';
 
 @Component({
   selector: 'app-show-endorsements',
@@ -181,6 +182,17 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => console.log(error)
       });
+  }
+
+  openCar(endorsement: EndorsementAPI) {
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions);
+    refModal.componentInstance.carDetails = { ...endorsement.Car, User: endorsement.InsurancePolicy.Customer };
+
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+    });
   }
 
   openEndorsement(endorsement: EndorsementAPI) {

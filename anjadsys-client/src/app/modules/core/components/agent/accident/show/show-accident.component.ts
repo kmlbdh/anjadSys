@@ -10,6 +10,7 @@ import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import {
   AccidentModalComponent
 } from '../../../../../shared/components/accident-modal/accident-modal.component';
+import { CarModalComponent } from '../../../../../shared/components/car-modal/car-modal.component';
 
 @Component({
   selector: 'app-show-accident',
@@ -173,6 +174,17 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
       });
   }
 
+  openCar(accident: AccidentAPI) {
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions);
+    refModal.componentInstance.carDetails = { ...accident.Car, User: accident.Customer };
+
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+    });
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -195,30 +207,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => console.log(error)
       });
-  }
-
-  // deleteAccident(accident: AccidentAPI){
-  //   if(!accident) return;
-
-  //   const yes = confirm(`هل تريد حذف بلاغ حادث رقم ${accident.id} للزبون ${accident.Customer.username}`);
-  //   if(!yes) return;
-
-  //   this.agentService.deleteAccident(accident.id)
-  //   .pipe(takeUntil(this.unsubscribe$))
-  //   .subscribe({
-  //     next: response => {
-  //       if(response.data)
-  //         this.successMsg = response.message;
-
-  //       this.getAccidents(this.searchConditions);
-  //       console.log(response);
-  //     },
-  //     error: (err: any) => console.log(err)
-  //   })
-  // }
-
-  goToAccidentEdit(id: number) {
-    this.router.navigate([ 'agent/accident/edit', id ]);
   }
 
   formCont(controlName: string) {

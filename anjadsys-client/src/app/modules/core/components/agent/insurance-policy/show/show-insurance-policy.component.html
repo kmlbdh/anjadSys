@@ -65,7 +65,7 @@
       <ng-template [ngIf]="insurancePolices.length > 0">
         <li *ngFor="let insurancePolicy of insurancePolices | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1 clickable" data-label="Insurance Policy Id" (click)="open(insurancePolicy.id)">{{insurancePolicy.id}}</div>
+          <div class="col-custom col-custom-1 clickable underline-text" data-label="Insurance Policy Id" (click)="open(insurancePolicy.id)">{{insurancePolicy.id}}</div>
           <div class="col-custom col-custom-2" data-label="Car Number">{{insurancePolicy.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Customer">{{insurancePolicy.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Total Cost">{{ insurancePolicy.totalPrice }} {{ currency }}</div>

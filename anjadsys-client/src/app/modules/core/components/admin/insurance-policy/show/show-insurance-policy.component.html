@@ -34,7 +34,7 @@
         <div class="form-control-group">
           <label for="agentID">الوكيل:</label>
           <div class="input" *ngIf="selectedAgent">
-            {{selectedAgent.companyName}} / {{selectedAgent.username}}
+            {{selectedAgent.companyName}}
             <span (click)="cancelAgentInput($event)">
               <fa-icon [icon]="cancelInput"></fa-icon>
             </span>
@@ -46,7 +46,7 @@
           </div>
           <datalist id="agentList">
             <option *ngFor="let agent of agents;" [value]="agent.id">
-              {{agent.companyName}} / {{agent.username}}
+              {{agent.companyName}}
             </option>
           </datalist>
         </div>

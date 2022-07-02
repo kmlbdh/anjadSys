@@ -87,7 +87,7 @@
         <li *ngFor="let endorsement of endorsements | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
           <div class="col-custom col-custom-1" data-label="Endorsement Id">{{endorsement.id}}</div>
-          <div class="col-custom col-custom-2" data-label="Car Id">{{endorsement.Car.carNumber}}</div>
+          <div class="col-custom col-custom-2 clickable underline-text" data-label="Car Id" (click)="openCar(endorsement)">{{endorsement.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Customer Name">{{endorsement.InsurancePolicy.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Endorsement Type">{{endorsementTypeArray[endorsement.endorsementType]}}</div>
           <div class="col-custom col-custom-5" data-label="Date">{{ endorsement.createdAt| date: 'dd-MM-yyyy' }}</div>

@@ -92,7 +92,7 @@
           <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
             <ng-container *ngIf="account.insurancePolicyId">
               بوليصة تأمين
-              <p style="text-decoration: underline;" (click)="open(account.insurancePolicyId)">
+              <p class="underline-text" (click)="open(account.insurancePolicyId)">
                  رقم: {{ account.insurancePolicyId }}
               </p>
             </ng-container>

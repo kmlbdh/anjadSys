@@ -7,9 +7,8 @@ import { AccidentAPI, SearchAccident, AccidentsAPI } from '../../../../model/acc
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SearchUser, UserAPI } from 'src/app/modules/core/model/user';
 import { FormBuilder, FormGroupDirective } from '@angular/forms';
-import {
-  AccidentModalComponent
-} from '../../../../../shared/components/accident-modal/accident-modal.component';
+import { CarModalComponent } from '../../../../../shared/components/car-modal/car-modal.component';
+import { AccidentModalComponent } from '../../../../../shared/components/accident-modal/accident-modal.component';
 
 @Component({
   selector: 'app-show-accident',
@@ -229,6 +228,17 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => console.log(error)
       });
+  }
+
+  openCar(accident: AccidentAPI) {
+    const refModal = this.modalService.open(CarModalComponent, this.modalOptions);
+    refModal.componentInstance.carDetails = { ...accident.Car, User: accident.Customer };
+
+    refModal.result.then(result => {
+      this.closeResult = `Closed with: ${ result }`;
+    }, reason => {
+      this.closeResult = `Dismissed ${ this.getDismissReason(reason) }`;
+    });
   }
 
   private getDismissReason(reason: any): string {

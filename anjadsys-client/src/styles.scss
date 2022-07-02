@@ -20,6 +20,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 .clickable{
   cursor: pointer;
 }
+.underline-text {
+  text-decoration: underline;
+}
 
 .insurance-policy-modal{
   -webkit-print-color-adjust: exact;

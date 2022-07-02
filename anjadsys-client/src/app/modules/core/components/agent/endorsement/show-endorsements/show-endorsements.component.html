@@ -85,13 +85,13 @@
       <ng-template [ngIf]="endorsements.length > 0">
         <li *ngFor="let endorsement of endorsements | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
          trackBy: trackById" class="table-row">
-          <div class="col-custom col-custom-1 clickable" data-label="Endorsement Id" (click)="openEndorsement(endorsement)">{{endorsement.id}}</div>
-          <div class="col-custom col-custom-2" data-label="Car Id">{{endorsement.Car.carNumber}}</div>
+          <div class="col-custom col-custom-1 clickable underline-text" data-label="Endorsement Id" (click)="openEndorsement(endorsement)">{{endorsement.id}}</div>
+          <div class="col-custom col-custom-2 clickable underline-text" data-label="Car Id" (click)="openCar(endorsement)">{{endorsement.Car.carNumber}}</div>
           <div class="col-custom col-custom-3" data-label="Customer Name">{{endorsement.InsurancePolicy.Customer.username}}</div>
           <div class="col-custom col-custom-4" data-label="Endorsement Type">{{endorsementTypeArray[endorsement.endorsementType]}}</div>
           <div class="col-custom col-custom-5" data-label="Date">{{ endorsement.createdAt| date: 'dd-MM-yyyy' }}</div>
-          <div class="col-custom col-custom-6" [ngClass]="{'clickable': endorsement.insurancePolicyId}"
-          style="text-decoration: underline;" data-label="Account Transaction Type" (click)="open(endorsement.insurancePolicyId!)">
+          <div class="col-custom col-custom-6" [ngClass]="{'clickable underline-text': endorsement.insurancePolicyId}"
+           data-label="Account Transaction Type" (click)="open(endorsement.insurancePolicyId!)">
             <ng-container *ngIf="endorsement.insurancePolicyId">
                 {{ endorsement.insurancePolicyId }}
             </ng-container>

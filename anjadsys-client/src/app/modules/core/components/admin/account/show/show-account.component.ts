@@ -287,26 +287,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
       });
   }
 
-  // deleteAccount(account: AccountAPI){
-  //   if(!account) return;
-
-  //   const yes = confirm(`هل تريد حذف الحركة المالية رقم ${account.id} للزبون ${account.Agent.username}`);
-  //   if(!yes) return;
-
-  //   this.agentService.deleteAccount(account.id)
-  //   .pipe(takeUntil(this.unsubscribe$))
-  //   .subscribe({
-  //     next: response => {
-  //       if(response.data)
-  //         this.successMsg = response.message;
-
-  //       this.getAccidents(this.searchConditions);
-  //       console.log(response);
-  //     },
-  //     error: (err: any) => console.log(err)
-  //   })
-  // }
-
   fillFieldsByCustomer(event: Event) {
     if (event instanceof KeyboardEvent) { return; }
 

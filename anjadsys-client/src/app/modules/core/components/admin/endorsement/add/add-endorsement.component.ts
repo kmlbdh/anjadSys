@@ -84,7 +84,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
   }
 
   addEndorsement = (ngform: FormGroupDirective) => {
-    console.log(this.addEndorsementForm);
     if (this.addEndorsementForm.invalid) { return; }
 
     let formObj: NewEndorsement = this.addEndorsementForm.value;

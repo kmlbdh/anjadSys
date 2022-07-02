@@ -250,22 +250,22 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   }
 
   goToAddAgentLimits(agent: UserAPI) {
-    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    const fullname = `${ agent.companyName }`;
     this.router.navigate([ `admin/agent/add-agent-limit`, { id: agent.id, fullname } ]);
   }
 
   goToListAgentLimits(agent: UserAPI) {
-    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    const fullname = `${ agent.companyName }`;
     this.router.navigate([ `admin/agent/show-agent-limits/${ agent.id }`, { fullname } ]);
   }
 
   goToListCustomers(agent: UserAPI) {
-    const fullname = `${ agent.username } | ${ agent.companyName }`;
+    const fullname = `${ agent.companyName }`;
     this.router.navigate([ `admin/agent/show-agent-customers/${ agent.id }`, { fullname } ]);
   }
 
   goToSupplierAccount(supplier: UserAPI) {
-    const fullname =  `${ supplier.companyName } | ${ supplier.username }`;
+    const fullname =  `${ supplier.companyName }`;
     this.router.navigate([ `admin/supplier/account/${ supplier.id }`, { fullname } ]);
   }
 
