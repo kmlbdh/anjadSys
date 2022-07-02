@@ -6,11 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginModule } from './modules/core/components/login/login.module';
 import { AuthInterceptor } from './modules/core/interceptors/auth.interceptor';
 import { SharedModule } from './modules/shared/shared.module';
 import { LoaderInterceptor } from './modules/core/interceptors/loader.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoginModule } from './modules/login/login.module';
 
 @NgModule({
   declarations: [

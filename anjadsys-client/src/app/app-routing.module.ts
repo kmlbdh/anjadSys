@@ -9,12 +9,12 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    loadChildren: () => import('./modules/core/components/admin/admin.module')
+    loadChildren: () => import('./modules/admin/admin.module')
       .then(m => m.AdminModule),
   },
   {
     path: 'agent',
-    loadChildren: () => import('./modules/core/components/agent/agent.module')
+    loadChildren: () => import('./modules/agent/agent.module')
       .then(m => m.AgentModule),
   }
 ];

@@ -3,6 +3,11 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "@environments/*": ["./src/environments/*"],
+      "@models/*": ["./src/app/modules/core/model/*"],
+      "@shared/*": ["./src/app/modules/shared/*"],
+    },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,

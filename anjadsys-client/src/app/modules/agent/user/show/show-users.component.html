@@ -1,0 +1,92 @@
+<div id="main-container" class="d-print-none">
+  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="userID">رقم الحساب</label>
+          <input id="userID" type="text"
+           name="userID" formControlName="userID"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="identityNum">رقم الهوية</label>
+          <input id="identityNum" type="number"
+           name="identityNum" formControlName="identityNum"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="username">اسم المستخدم</label>
+          <input id="username" type="text"
+           name="username" formControlName="username"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="regionID">المنطقة</label>
+          <select id="regionID" name="regionID" formControlName="regionID">
+            <option value="">اختر من القائمة</option>
+            <option *ngFor="let region of regions" [value]="region.id">{{region.name}}</option>
+          </select>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الزبون</div>
+        <div class="col-custom col-custom-2">اسم الزبون</div>
+        <div class="col-custom col-custom-3">رقم الجوال</div>
+        <div class="col-custom col-custom-4">العنوان</div>
+        <div class="col-custom col-custom-5">تاريخ الانضمام</div>
+      </li>
+      <ng-template [ngIf]="users.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="users.length > 0">
+        <li [ngClass]="{'blocked-user': user.blocked}" *ngFor="let user of users | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1 clickable underline-text" data-label="Id" (click)="open(user)">{{user.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{user.username}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Jawwal">{{user.jawwal1}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Address">{{user.Region.name}} - {{user.address}}</div>
+          <div class="col-custom col-custom-5" data-label="Customer Role">{{ user.createdAt | date: 'dd-MM-yyyy' }}</div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

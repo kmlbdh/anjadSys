@@ -1,0 +1,129 @@
+<div id="main-container" class="d-print-none">
+  <div class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchEndorsementForm" #form="ngForm"
+      (ngSubmit)="searchEndorsement(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="endorsementId">رقم الملحق</label>
+          <input id="endorsementId" type="text"
+           name="endorsementId" formControlName="endorsementId"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endorsementType">نوع الملحق</label>
+          <select id="endorsementType" formControlName="endorsementType">
+            <option *ngFor="let endorsType of endorsementTypeArray; let i = index" [ngValue]="i">{{endorsType}}</option>
+          </select>
+        </div>
+
+        <div class="form-control-group">
+          <label for="insurancePolicyId">بوليصة التأمين</label>
+          <input id="insurancePolicyId" type="text"
+           name="insurancePolicyId" formControlName="insurancePolicyId"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="customerId">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerId" formControlName="customerId" autocomplete="off"/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+  </div>
+
+  <div class="page-content card dont-print">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">الرقم</div>
+        <div class="col-custom col-custom-2">رقم السيارة الجديدة</div>
+        <div class="col-custom col-custom-3">رقم السيارة السابق</div>
+        <div class="col-custom col-custom-4">الزبون</div>
+        <div class="col-custom col-custom-5">نوع الملحق</div>
+        <div class="col-custom col-custom-6">تاريخ الملحق</div>
+        <div class="col-custom col-custom-7">رقم البوليصة</div>
+        <div class="col-custom col-custom-8">التحكم</div>
+      </li>
+      <ng-template [ngIf]="endorsements.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="endorsements.length > 0">
+        <li *ngFor="let endorsement of endorsements | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Endorsement Id">{{endorsement.id}}</div>
+          <div class="col-custom col-custom-2 clickable underline-text" data-label="Car Id" (click)="openCar(endorsement.Car, endorsement.InsurancePolicy.Customer)">{{endorsement.Car.carNumber}}</div>
+          <div class="col-custom col-custom-3 clickable underline-text" data-label="Previous Car Id" (click)="openCar(endorsement.InsurancePolicy.Car, endorsement.InsurancePolicy.Customer)">{{endorsement.InsurancePolicy.Car.carNumber}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Name">{{endorsement.InsurancePolicy.Customer.username}}</div>
+          <div class="col-custom col-custom-5" data-label="Endorsement Type">{{endorsementTypeArray[endorsement.endorsementType]}}</div>
+          <div class="col-custom col-custom-6" data-label="Date">{{ endorsement.createdAt| date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-7" [ngClass]="{'clickable': endorsement.insurancePolicyId}"
+          style="text-decoration: underline;" data-label="Account Transaction Type" (click)="open(endorsement.insurancePolicyId!)">
+            <ng-container *ngIf="endorsement.insurancePolicyId">
+                {{ endorsement.insurancePolicyId }}
+            </ng-container>
+          </div>
+          <div class="col-custom col-custom-8 control" data-label="Control">
+            <button class="btn-primary" title="بيانات الملحق" (click)="openEndorsement(endorsement)">
+              <fa-icon [icon]="openIcon"></fa-icon>
+            </button>
+
+            <button class="btn-primary" title="تعديل بيانات الملحق" (click)="goToEndorsementEdit(endorsement.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+            <button class="btn-error" title="حذف الملحق" (click)="deleteEndorsement(endorsement)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>
