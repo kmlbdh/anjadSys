@@ -1,13 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AdminService } from './admin.service';
+import { Component } from '@angular/core';
 import {
   faUsers,
   faUserTie,
   faTaxi,
-  faAngleDown,
-  faAngleUp,
-  faBars,
   faCarCrash,
   faCarSide,
   faFileInvoiceDollar,
@@ -17,7 +12,6 @@ import {
   faFileMedicalAlt,
   faFolderOpen
 } from '@fortawesome/free-solid-svg-icons';
-import { UserLoggedInAPI } from '@models/general';
 import { NavInput } from '@shared/components/nav/nav.component';
 
 @Component({
@@ -25,14 +19,8 @@ import { NavInput } from '@shared/components/nav/nav.component';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent {
 
-  faBarsIcon = faBars;
-  angelDownIcon = faAngleDown;
-  angelUpIcon = faAngleUp;
-
-  user!: UserLoggedInAPI;
-  openDropdownMenu = false;
   miniNavBar = false;
   state: 'small' | 'large' = 'large';
 
@@ -262,37 +250,6 @@ export class AdminComponent implements OnInit {
       ]
     },
   ];
-  constructor(private adminService: AdminService, private router: Router) {
-  }
-
-  ngOnInit(): void {
-    const localStorageUser: string = localStorage.getItem('user') || '';
-    if (!localStorageUser)
-    { this.router.navigate(['']); }
-
-    this.user = JSON.parse(localStorageUser);
-    if (!this.user.accessToken)
-    { this.router.navigate(['']); }
-  }
-
-  minimizeNavBar() {
-    this.miniNavBar = !this.miniNavBar;
-    this.state = this.miniNavBar ? 'small': 'large';
-  }
-
-  logout() {
-    localStorage.removeItem('user');
-    this.router.navigate(['login']);
-  }
-
-  verifyLoggedIn(user: UserLoggedInAPI) {
-    this.adminService.verifyLoggedIn(user.accessToken).subscribe({
-      next: res => {
-        if (!res.data || res?.data?._id !== user.id)
-        { this.router.navigate(['login']); }
-      },
-      error: () => this.router.navigate(['login'])
-    });
-  }
+  constructor() { }
 
 }

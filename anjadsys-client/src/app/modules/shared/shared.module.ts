@@ -12,6 +12,7 @@ import { UserModalComponent } from './components/user-modal/user-modal.component
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { AgentLimitsModalComponent } from './components/agent-limits-modal/agent-limits-modal.component';
 import { EndorsementModalComponent } from './components/endorsement-modal/endorsement-modal.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { EndorsementModalComponent } from './components/endorsement-modal/endors
     BreadcrumbComponent,
     AgentLimitsModalComponent,
     EndorsementModalComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
@@ -35,6 +37,7 @@ import { EndorsementModalComponent } from './components/endorsement-modal/endors
     NavComponent,
     LoaderComponent,
     BreadcrumbComponent,
+    HeaderComponent
   ]
 })
 export class SharedModule { }

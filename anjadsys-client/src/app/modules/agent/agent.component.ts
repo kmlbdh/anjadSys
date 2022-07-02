@@ -1,35 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import {
-  faBars,
   faCarCrash,
   faCarSide,
   faFileInvoiceDollar,
   faTaxi,
   faUsers,
   faWrench,
-  faAngleDown,
-  faAngleUp,
   faFileMedicalAlt,
   faFolderOpen
 } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '@shared/components/nav/nav.component';
-import { UserLoggedInAPI } from '@models/general';
-import { AgentService } from './agent.service';
 
 @Component({
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']
 })
-export class AgentComponent implements OnInit {
+export class AgentComponent {
 
-  faBarsIcon = faBars;
-  angelDownIcon = faAngleDown;
-  angelUpIcon = faAngleUp;
-
-  user!: UserLoggedInAPI;
-  openDropdownMenu = false;
   miniNavBar = false;
   state: 'small' | 'large' = 'large';
 
@@ -183,34 +171,7 @@ export class AgentComponent implements OnInit {
       ]
     },
   ];
-  constructor(private agentService: AgentService, private router: Router) {
-  }
 
-  ngOnInit(): void {
-    const localStorageUser: string = localStorage.getItem('user') || '';
-    if (!localStorageUser) { this.logout(); }
-
-    this.user = JSON.parse(localStorageUser);
-    if (!this.user.accessToken) { this.logout(); }
-  }
-
-  minimizeNavBar() {
-    this.miniNavBar = !this.miniNavBar;
-    this.state = this.miniNavBar ? 'small': 'large';
-  }
-
-  logout() {
-    localStorage.removeItem('user');
-    this.router.navigate(['login']);
-  }
-
-  verifyLoggedIn(user: UserLoggedInAPI) {
-    this.agentService.verifyLoggedIn(user.accessToken).subscribe({
-      next: res => {
-        if (!res.data || res?.data?._id !== user.id) { this.logout(); }
-      },
-      error: () => this.logout()
-    });
-  }
+  constructor() { }
 
 }

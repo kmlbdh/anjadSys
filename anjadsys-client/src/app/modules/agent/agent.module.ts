@@ -9,7 +9,6 @@ import { AgentService } from './agent.service';
 import { MainComponent } from './main/main.component';
 import { SharedModule } from '@shared/shared.module';
 
-
 @NgModule({
   declarations: [
     AgentComponent,
