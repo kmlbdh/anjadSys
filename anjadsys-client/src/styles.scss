@@ -105,7 +105,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         z-index: 0;
         transform: rotate(300deg);
         -webkit-transform: rotate(300deg);
-        color: gray;
+        color: #0284c7;
         font-size: 20rem;
         opacity: 0.08;
       }
@@ -324,9 +324,29 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       }
     }
   }
+
+  .margin-top-modal{
+    display: none;
+  }
+
+  footer {
+    display: none;
+  }
 }
 
 @media print {
+  .margin-top-modal{
+    height: 50px;
+    display: block !important;
+  }
+  footer {
+    display: block !important;
+    position: fixed;
+    bottom: -12%;
+    right: 10%;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
   .modal {
     position: absolute;
     left: 0;

@@ -1,18 +1,19 @@
+<div class="margin-top-modal"></div>
 <div class="modal-header">
   <div class="title-date-insuId">
-      <h4 class="modal-title" id="modal-basic-title">بوليصة أصلية</h4>
+      <h4 class="modal-title dont-print" id="modal-basic-title">بوليصة أصلية</h4>
       <div class="date-id">
         <div>
           <label>التاريخ: </label>
           <span>{{modalInsurancePolicy.createdAt | date: 'dd-MM-yyyy'}}</span>
         </div>
-        <div>
+        <div class="dont-print">
           <label>رقم البوليصة: </label>
           <span>{{modalInsurancePolicy.id}}</span>
         </div>
       </div>
   </div>
-  <div class="company-header">
+  <div class="company-header dont-print">
     <img src="../../../../../assets/logo-injad.png" width="80%">
     <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
     <span>فلسطين - العيزرية</span>
@@ -197,3 +198,7 @@
 <div class="modal-footer d-print-none">
   <button type="button" class="button-primary" (click)="printPage()">طباعة البوليصة</button>
 </div>
+
+<footer>
+  <span>{{modalInsurancePolicy.id}}</span>
+</footer>
