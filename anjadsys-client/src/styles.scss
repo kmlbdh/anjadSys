@@ -152,6 +152,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             }
             span{
               margin: 0 0.4rem;
+              font-size: 0.9rem;
             }
           }
         }
@@ -161,13 +162,13 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
         &.card{
           @include card;
           margin-bottom: 0;
-          padding: 0.5rem;
+          padding: 0 0.5rem;
           box-shadow: none;
           background: none;
           z-index: 99;
         }
         .header-section{
-          margin-bottom: 15px;
+          margin-bottom: 5px;
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
@@ -181,7 +182,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             margin: 0;
           }
           h5{
-            font-size: 17.5px;
+            font-size: 1rem;
           }
 
           .expire-date{
@@ -234,6 +235,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             height: auto;
             font-size: 14.5px;
 
+            table {
+              margin-bottom: 0;
+            }
             tr.total-cost{
               th{
                 padding-left:0;
@@ -245,6 +249,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
             .right-total-cost{
               margin-top: 0.5rem;
+              font-size: 0.85rem;
               display: flex;
               flex-direction: column;
               flex-wrap: nowrap;
@@ -258,6 +263,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             }
             .left-total-cost{
               margin-top: 0.5rem;
+              font-size: 0.85rem;
               display: flex;
               flex-direction: column;
               border: 1px solid gray;
@@ -310,6 +316,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
       margin: 0 0 15px 0;
       > li{
         font-weight: 700;
+        line-height: 1.2rem;
+        font-size: 0.85rem;
         &::marker {
           font-size: 1.5rem;
         }
@@ -389,6 +397,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
     margin-right: auto;
     border-left: none;
     padding-left: 0;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
   }
   tr.total-cost > td div.left-total-cost{
     display: flex;
@@ -400,6 +410,8 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
     margin-right: 0;
     border-right: none;
     padding-right: 0;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
   }
 
   .dont-print{

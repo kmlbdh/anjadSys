@@ -58,7 +58,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     note: {
       type: DataTypes.TEXT,
-    }
+    },
+    // printed: {
+    //   type: DataTypes.BOOLEAN,
+    //   allowNull: false
+    // },
   }, {
     sequelize,
     modelName: 'InsurancePolicy',
