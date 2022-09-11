@@ -16,8 +16,8 @@
   },
   "production": {
     "username": "injad_admin",
-    "password": "injad@123",
-    "database": "injad_injaddb",
+    "password": "injad@12345#",
+    "database": "injad_db",
     "host": "localhost",
     "dialect": "mysql"
   }
