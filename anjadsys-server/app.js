@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const db = require("./models");
-const { adminRouter, agentRouter, loginRouter} = require('./routes');
+const { adminRouter, agentRouter, loginRouter } = require('./routes');
 
 db.sequelize.sync({force: false}).then( () => {
   console.log("Drop and re-sync db");

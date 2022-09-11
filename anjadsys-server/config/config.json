@@ -15,9 +15,9 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "albayraq_injad_user",
+    "username": "injad_admin",
     "password": "injad@123",
-    "database": "albayraq_injaddb",
+    "database": "injad_injaddb",
     "host": "localhost",
     "dialect": "mysql"
   }
