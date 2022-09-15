@@ -66,7 +66,11 @@
           <span>{{modalInsurancePolicy.Customer.username}}</span>
         </div>
         <div class="each-data">
-          <label>عنوان الزبون</label>
+          <label>رقم الهوية</label>
+          <span>{{modalInsurancePolicy.Customer.identityNum}}</span>
+        </div>
+        <div class="each-data">
+          <label>العنوان</label>
           <span>{{modalInsurancePolicy.Customer.Region.name}} / {{modalInsurancePolicy.Customer.address}}</span>
         </div>
         <div class="each-data">
@@ -76,10 +80,6 @@
               /
             </ng-container>
             {{modalInsurancePolicy.Customer.jawwal2}}</span>
-        </div>
-        <div class="each-data">
-          <!-- <label>رقم هوية الزبون</label>
-          <span>{{modalInsurancePolicy.Customer.identityNum}}</span> -->
         </div>
       </div>
 

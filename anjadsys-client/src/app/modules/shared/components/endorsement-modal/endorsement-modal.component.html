@@ -39,10 +39,10 @@
         <span>{{modalEndorsement.InsurancePolicy.Agent.Region.name}} -
           {{modalEndorsement.InsurancePolicy.Agent.address}}</span>
       </div>
-      <div>
+      <!-- <div>
         <label>رقم الهوية : </label>
         <span>{{modalEndorsement.InsurancePolicy.Agent.identityNum}}</span>
-      </div>
+      </div> -->
       <div>
         <label>رقم الهاتف : </label>
         <span>{{modalEndorsement.InsurancePolicy.Agent.jawwal1}}
@@ -66,15 +66,15 @@
       </div>
       <div class="data-section padd-l-r-7">
         <div class="each-data">
-          <label>رقم هوية الزبون</label>
-          <span>{{modalEndorsement.InsurancePolicy.Customer.identityNum}}</span>
-        </div>
-        <div class="each-data">
           <label>اسم الزبون</label>
           <span>{{modalEndorsement.InsurancePolicy.Customer.username}}</span>
         </div>
         <div class="each-data">
-          <label>عنوان الزبون</label>
+          <label>رقم الهوية </label>
+          <span>{{modalEndorsement.InsurancePolicy.Customer.identityNum}}</span>
+        </div>
+        <div class="each-data">
+          <label>العنوان</label>
           <span>{{modalEndorsement.InsurancePolicy.Customer.Region.name}} /
             {{modalEndorsement.InsurancePolicy.Customer.address}}</span>
         </div>
