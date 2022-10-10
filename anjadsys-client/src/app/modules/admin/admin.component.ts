@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   faUsers,
   faUserTie,
@@ -17,7 +17,8 @@ import { NavInput } from '@shared/components/nav/nav.component';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+  styleUrls: ['./admin.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminComponent {
 

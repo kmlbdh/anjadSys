@@ -1,8 +1,7 @@
 <div id="main-container">
   <app-header [routeLinker]="'admin'" [(miniNavBar)]="miniNavBar" [(navBarState)]="state"></app-header>
   <div id="main-content">
-    <app-nav [attr.data-state]="state" [miniNavBar]="miniNavBar" class="dont-print"
-      [navData]="navData"></app-nav>
+    <app-nav [attr.data-state]="state" [miniNavBar]="miniNavBar" class="dont-print" [navData]="navData"></app-nav>
     <div id="page-container" [ngClass]="{'mini': miniNavBar}">
       <app-loader></app-loader>
       <router-outlet>
