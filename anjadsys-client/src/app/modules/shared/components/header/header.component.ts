@@ -1,5 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { faAngleDown, faAngleUp, faBars } from '@fortawesome/free-solid-svg-icons';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 export interface userLocalStorage {
@@ -13,7 +12,8 @@ export interface userLocalStorage {
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
 
@@ -25,9 +25,6 @@ export class HeaderComponent {
 
   @Input() routeLinker!: string;
 
-  faBarsIcon = faBars;
-  angelDownIcon = faAngleDown;
-  angelUpIcon = faAngleUp;
   openDropdownMenu = false;
   user: userLocalStorage = {} as userLocalStorage;
 
@@ -47,6 +44,10 @@ export class HeaderComponent {
 
   getUsename() {
     this.user = JSON.parse(localStorage.getItem('user') || '');
+  }
+
+  openProfileDropdown() {
+    this.openDropdownMenu = !this.openDropdownMenu;
   }
 
 }
