@@ -1,4 +1,4 @@
-interface ChildNav{
+export interface ChildNav{
   id: number,
   name: string,
   shortName: string,
