@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { faCarCrash, faFileContract, faTruckMoving, faUsers, faUserTie, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { takeUntil, Subject } from 'rxjs';
 import { AdminService } from '../admin.service';
@@ -6,7 +6,8 @@ import { AdminService } from '../admin.service';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+  styleUrls: ['./main.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent implements OnInit, OnDestroy {
 
@@ -26,9 +27,10 @@ export class MainComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.cd.detach();
     this.getStatistics();
   }
 
@@ -49,6 +51,7 @@ export class MainComponent implements OnInit, OnDestroy {
             this.insurancePolicies = response.data.insurancePolicies;
             this.accidents = response.data.accidents;
             this.endorsements = response.data.endorsements;
+            this.cd.reattach();
           }
         },
         error: err => console.log(err)
