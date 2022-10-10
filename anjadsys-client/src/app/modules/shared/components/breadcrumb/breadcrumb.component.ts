@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { IBreadCrumb } from '../../models/breadcrumb';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
@@ -6,7 +6,8 @@ import { filter, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-breadcrumb',
   templateUrl: './breadcrumb.component.html',
-  styleUrls: ['./breadcrumb.component.scss']
+  styleUrls: ['./breadcrumb.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BreadcrumbComponent implements OnInit {
 
@@ -14,7 +15,8 @@ export class BreadcrumbComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private activiatedRoute: ActivatedRoute
+    private activiatedRoute: ActivatedRoute,
+    private cd: ChangeDetectorRef
   ) {
     this.breadcrumbs = this.buildBreadCrumb(this.activiatedRoute.root);
   }
@@ -25,7 +27,10 @@ export class BreadcrumbComponent implements OnInit {
         filter((event: any) => event instanceof NavigationEnd),
         distinctUntilChanged(),
       )
-      .subscribe(() => this.breadcrumbs = this.buildBreadCrumb(this.activiatedRoute.root));
+      .subscribe(() => {
+        this.breadcrumbs = this.buildBreadCrumb(this.activiatedRoute.root);
+        this.cd.markForCheck();
+      });
   }
 
   buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrumb[] = []): IBreadCrumb[] {
