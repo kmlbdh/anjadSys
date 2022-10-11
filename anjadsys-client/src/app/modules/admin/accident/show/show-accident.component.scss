@@ -100,7 +100,7 @@
         justify-content: space-between;
         align-items: center;
 
-        fa-icon {
+        i {
           vertical-align: sub;
           cursor: pointer;
         }
@@ -213,7 +213,7 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
               // margin-left: 10px;
               font-size: 20px;

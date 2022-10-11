@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
-import { faTrashAlt, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { first, Subject, takeUntil } from 'rxjs';
-import { FormBuilder, Validators } from '@angular/forms';
 import { SearchSupplierAccount } from '@models/supplier';
 import { SupplierAccountAPI, SupplierAccountsAPI } from '@models/account';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-supplier-account',
@@ -16,8 +15,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
 
   accounts: SupplierAccountAPI[] = [];
   accountBalance = 0;
-  trashIcon = faTrashAlt;
-  printer = faPrint;
 
   private unsubscribe$ = new Subject<void>();
   selectedSupplier: string | undefined;
@@ -29,7 +26,15 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   successMsg: string | undefined;
 
   showPercentage = true;
-  searchConditions: SearchSupplierAccount = { flag: 'policy' } as SearchSupplierAccount;
+
+  private currentDate = new Date();
+  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+  searchConditions: SearchSupplierAccount = {
+    flag: 'policy',
+    startDate: this.firstDayOfMonth,
+    endDate: this.lastDayOfMonth
+  } as SearchSupplierAccount;
 
   p: number = 1;
   pagination = {
@@ -37,19 +42,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
-  private currentDate = new Date();
-
-  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
-
-  searchSupplierAccountForm = this.fb.group({
-    flag: [ 'policy', Validators.required ],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
-  });
-
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute) { }
@@ -79,21 +72,14 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchSupplierAccount = () => {
-    if (this.searchSupplierAccountForm.invalid) { return; }
-
-    let formObj = this.searchSupplierAccountForm.value;
-    let keys = Object.keys(formObj);
-    //  console.log('formObj 1', formObj)
-
-    keys.forEach( (key: any) => {
-      if (formObj[key] == null || formObj[key] === '') { delete formObj[key]; }
-    });
-    let supplierID = this.searchConditions.supplierID;
+  searchSupplierAccount = (searchConditions: SearchSupplierAccount) => {
+    let lastSearchConditions = { ...this.searchConditions, ...searchConditions };
+    // let supplierID = this.searchConditions.supplierID;
     //  console.log('formObj 2', formObj)
     //  console.log('searchConditions 1', this.searchConditions)
-    this.searchConditions = { ...formObj, supplierID };
+    // this.searchConditions = { ...formObj, supplierID };
     //  console.log('searchConditions 2', this.searchConditions)
+    this.searchConditions = lastSearchConditions;
     this.listSupplierAccountAPI();
   };
 
@@ -147,6 +133,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
         error: (err: any) => console.log(err)
       });
   }
+
   printAfterLoad() {
     let divToPrint = document.getElementsByClassName('print')[0]!;
     let newWin = window.open('', 'Print-Window')!;
@@ -278,7 +265,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
         }
       </style>
     </head>
-    <body onload="window.print()">
+    <body>
     ${ divToPrint.innerHTML }
     </body></html>`);
     const node = document.createElement('div');
@@ -286,8 +273,8 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
 
     const childNode1 = document.createElement('span');
     const childNode2 = document.createElement('span');
-    const textnode1 = document.createTextNode(`من : ${ this.formCont('startDate').value }`);
-    const textnode2 = document.createTextNode(`الى : ${ this.formCont('endDate').value }`);
+    const textnode1 = document.createTextNode(`من : ${ formatDate(this.searchConditions.startDate!, 'dd-MM-YYYY', 'en') }`);
+    const textnode2 = document.createTextNode(`الى : ${ formatDate(this.searchConditions.endDate!, 'dd-MM-YYYY', 'en')  }`);
     childNode1.appendChild(textnode1);
     childNode2.appendChild(textnode2);
     node.appendChild(childNode1);
@@ -296,7 +283,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     newWin.document.close();
     newWin.focus();
     newWin.print();
-    newWin.close();
+    setTimeout(() => newWin.close(), 0);
     setTimeout(() => this.reloadPageAfterPrint(), 0);
   }
 
@@ -304,10 +291,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: undefined, limit: undefined } as SearchSupplierAccount;
     this.pagination = { ...this.pagination, itemsPerPage: 10 };
     this.listSupplierAccountAPI();
-  }
-
-  formCont(controlName: string): any {
-    return this.searchSupplierAccountForm.controls[controlName];
   }
 
 }

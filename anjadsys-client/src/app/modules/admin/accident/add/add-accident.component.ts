@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -31,10 +30,6 @@ import {
   styleUrls: ['./add-accident.component.scss']
 })
 export class AddAccidentComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
-  addServiceBtnIcon = faPlus;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;

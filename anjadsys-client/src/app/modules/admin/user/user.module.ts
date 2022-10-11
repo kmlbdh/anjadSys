@@ -5,23 +5,22 @@ import { UserRoutingModule } from './user-routing.module';
 import { AddUserComponent } from './add/add-user.component';
 import { EditUserComponent } from './edit/edit-user.component';
 import { ShowUsersComponent } from './show/show-users.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-
+import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [
     AddUserComponent,
     EditUserComponent,
-    ShowUsersComponent
+    ShowUsersComponent,
   ],
   imports: [
     CommonModule,
     NgxPaginationModule,
-    FontAwesomeModule,
     ReactiveFormsModule,
-    UserRoutingModule
+    UserRoutingModule,
+    SharedModule
   ]
 })
 export class UserModule { }

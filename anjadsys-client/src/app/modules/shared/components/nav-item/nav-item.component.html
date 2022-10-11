@@ -1,0 +1,19 @@
+<li>
+  <p [ngClass]="{'large-nav': miniNavBar}" (click)="toggleNav($event)">
+    <!-- <fa-icon [icon]="navItem.faIcon"></fa-icon> -->
+    <i [ngClass]="{'large-icon': miniNavBar}" [innerHTML]="svgIcon"></i>
+    <span *ngIf="!miniNavBar">{{navItem.name}}</span>
+  </p>
+  <ul [class.close]="!navItem.hide" [routerLinkActive]="'close'">
+    <app-nav-item-child  *ngFor="let child of navItem.children; let i = index; trackBy: trackById"
+      [navItemChild]="child"
+      [miniNavBar]="miniNavBar"
+      [navItemHide]="hideNav"
+      >
+    </app-nav-item-child>
+  </ul>
+</li>
+
+
+
+

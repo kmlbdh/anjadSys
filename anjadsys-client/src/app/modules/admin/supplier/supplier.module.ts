@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { SupplierRoutingModule } from './supplier-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SupplierAccountComponent } from './account/supplier-account.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     SupplierRoutingModule,
     ReactiveFormsModule,
-    FontAwesomeModule
+    SharedModule
   ]
 })
 export class SupplierModule { }

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import {
   SearchInsurancePolicy,
   InsurancePolicyAPI,
@@ -10,7 +9,6 @@ import {
 import { AdminService } from '../../admin.service';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SearchUser, UserAPI } from '@models/user';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import {
   InsurancePolicyComponent
 } from '@shared/components/insurance-policy-modal/insurance-policy.component';
@@ -35,23 +33,12 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   customers: UserAPI[] = [];
   agents: UserAPI[] = [];
 
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
-  endorsementIcon = faFolderOpen;
-
   private unsubscribe$ = new Subject<void>();
 
   p: number = 1;
   pagination = {
     total: 0,
     itemsPerPage: 10,
-  };
-
-  spinner = {
-    customer: false,
-    agent: false
   };
 
   private searchCustomerText$ = new Subject<string>();
@@ -64,15 +51,10 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   TIMEOUTMILISEC = 7000;
 
-  searchInsurancePolicyForm = this.fb.group({
-    insurancePolicyId: [''],
-    customerID: [''],
-    carID: [''],
-    agentID: [''],
-  });
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
+  spinnerAgent$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-      private fb: FormBuilder,
       private adminService: AdminService,
       private router: Router,
       private modalService: NgbModal
@@ -89,9 +71,17 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
+
+  getSelectedAgent(event: UserAPI | undefined) {
+    if (event) { this.selectedAgent = event; }
+  }
+
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
-      { username: val, skipLoadingInterceptor: true } as SearchUser);
+      { username: val, role: 'customer', skipLoadingInterceptor: true } as SearchUser);
 
     this.searchCustomerText$
       .pipe(
@@ -99,34 +89,28 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() => this.spinnerCustomer$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.customers = response.data;
           }
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      this.searchInsurancePolicyForm.get('agentID')?.disable();
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
@@ -141,72 +125,37 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() => this.spinnerAgent$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.agents = response.data;
           }
-          this.spinner.agent = false;
+          this.spinnerAgent$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.agent = false;
+          this.spinnerAgent$.next(false);
         }
       });
   }
 
   searchAgent(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('agentID')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      this.searchInsurancePolicyForm.get('customerID')?.disable();
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.agent = true;
       this.searchAgentText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
 
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerID').setValue('');
-    this.searchInsurancePolicyForm.get('agentID')?.enable();
-  }
-
-  cancelAgentInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedAgent = undefined;
-    this.formCont('agentID').setValue('');
-    this.searchInsurancePolicyForm.get('customerID')?.enable();
-  }
-
-  searchInsurancePolicy(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchInsurancePolicy = {};
-    keys.forEach(key => {
-      searchConditions[key] = this.searchInsurancePolicyForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getInsurancePolices(searchConditions);
+  searchInsurancePolicy(searchConditions: SearchInsurancePolicy) {
+    let lastSearchConditions = { ...searchConditions, ... this.searchConditions };
+    console.log('searchConditions', lastSearchConditions);
+    this.getInsurancePolices(lastSearchConditions);
   }
 
   open(insurancePolicyId: number) {
@@ -284,10 +233,6 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
 
   trackById(index: number, el: any) {
     return el.id;
-  }
-
-  formCont(controlName: string) {
-    return this.searchInsurancePolicyForm.controls[controlName];
   }
 
   getPage(pageNumber: number) {

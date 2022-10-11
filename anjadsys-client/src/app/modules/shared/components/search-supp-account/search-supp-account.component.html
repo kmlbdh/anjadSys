@@ -1,0 +1,42 @@
+<div class="card search-container dont-print" [@openClosed]="isOpen ? 'open': 'closed'">
+  <a *ngIf="!isOpen" class="open-search clickable flexRight" (click)="showSearch()">
+    فتح البحث
+  </a>
+  <form [@showHideForm]="isOpen ? 'show': 'hide'" [ngClass]="{'open': isOpen}"
+    [formGroup]="searchSupplierAccountForm" #form="ngForm" (ngSubmit)="searchSupplierAccount()">
+    <div class="form-sec1">
+
+      <div class="form-control-group">
+        <label for="flag">اظهار الحساب/الخدمات حسب:</label>
+        <select id="flag" formControlName="flag">
+          <option *ngFor="let service of accountByService; trackBy: trackByServiceId" [value]="service.key">{{service.value}}</option>
+        </select>
+      </div>
+
+      <div class="form-control-group">
+        <label for="startDate">من تاريخ</label>
+        <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="endDate">الى تاريخ</label>
+        <input id="endDate" type="date" name="endDate" formControlName="endDate">
+      </div>
+
+    </div>
+
+
+    <div class="form-sec2">
+
+      <div class="btn-container">
+        <button type="submit">
+          <span>بحث</span>
+        </button>
+      </div>
+
+    </div>
+  </form>
+  <a *ngIf="isOpen" class="open-search clickable" (click)="showSearch()">
+    اغلاق البحث
+  </a>
+</div>

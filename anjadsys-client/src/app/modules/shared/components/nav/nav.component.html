@@ -1,18 +1,6 @@
 <div id="nav">
   <ul class="first-nav">
-    <li *ngFor="let nav of navData; trackBy: trackById">
-      <p (click)="nav.hide = !nav.hide">
-        <fa-icon [ngClass]="{'large-icon': miniNavBar}" [icon]="nav.faIcon"></fa-icon>
-        <span *ngIf="!miniNavBar">{{nav.name}}</span>
-      </p>
-      <ul [class.close]="!nav.hide" [routerLinkActive]="'close'">
-          <li *ngFor="let child of nav.children; let i = index; trackBy: trackById"
-            [routerLink]="[child.link]" [routerLinkActive]="'active'" #child{{i}}>
-            <fa-icon [ngClass]="{'large-icon': miniNavBar}" [icon]="chevronLeftIcon"></fa-icon>
-
-            <span>{{miniNavBar? child.shortName : child.name}}</span>
-          </li>
-      </ul>
-    </li>
+    <app-nav-item [navItem]="nav" [miniNavBar]="miniNavBar"
+      *ngFor="let nav of navData; trackBy: trackById"></app-nav-item>
   </ul>
 </div>

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { AccountAPI, AccountsAPI, SearchAccount } from '@models/account';
 import { UserAPI, SearchUser } from '@models/user';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -10,11 +9,11 @@ import {
   distinctUntilChanged,
   filter,
   switchMap,
-  tap
+  tap,
+  BehaviorSubject
 } from 'rxjs';
 import { InsurancePolicesAPI, SearchInsurancePolicy } from '@models/insurancepolicy';
 import { AgentLimitsArrayAPI, SearchAgentLimits } from '@models/agentlimits';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router } from '@angular/router';
 import {
@@ -38,15 +37,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   agents: UserAPI[] = [];
   suppliers: UserAPI[] = [];
 
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
-
-  private currentDate = new Date();
-
-  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
-
   closeResult!: string;
   modalOptions: NgbModalOptions = {
     size: 'lg',
@@ -69,25 +59,13 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
-  spinner = {
-    customer: false,
-    supplier: false,
-  };
+  spinnerAgent$ = new BehaviorSubject<boolean>(false);
+  spinnerSupplier$ = new BehaviorSubject<boolean>(false);
 
-  private searchCustomerText$ = new Subject<string>();
+  private searchAgentText$ = new Subject<string>();
   private searchSupplierText$ = new Subject<string>();
 
-  searchAccountForm = this.fb.group({
-    accountId: [''],
-    insurancePolicyId: [''],
-    agentID: [''],
-    supplierID: [''],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
-  });
-
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private modalService: NgbModal
@@ -95,7 +73,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAccount(this.searchConditions);
-    this.searchCustomerAPI();
+    this.searchAgentAPI();
     this.searchSupplierAPI();
   }
 
@@ -104,29 +82,37 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  searchCustomerAPI() {
+  getSelectedSupplier(event: UserAPI | undefined) {
+    if (event) { this.selectedSupplier = event; }
+  }
+
+  getSelectedAgent(event: UserAPI | undefined) {
+    if (event) { this.selectedAgent = event; }
+  }
+
+  searchAgentAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, companyName: val, skipLoadingInterceptor: true, role: 'agent' } as SearchUser);
 
-    this.searchCustomerText$
+    this.searchAgentText$
       .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
-        tap(() => this.spinner.customer = true),
+        tap(() => this.spinnerAgent$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.agents = response.data;
           }
-          this.spinner.customer = false;
+          this.spinnerAgent$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.customer = false;
+          this.spinnerAgent$.next(false);
         }
       });
   }
@@ -141,44 +127,34 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
-        tap(() => this.spinner.supplier = true),
+        tap(() => this.spinnerSupplier$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.suppliers = response.data;
           }
-          this.spinner.supplier = false;
+          this.spinnerSupplier$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.supplier = false;
+          this.spinnerSupplier$.next(false);
         }
       });
   }
 
-  searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('agentID')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      return;
-    }
+  searchAgent(event: Event): void {
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.searchCustomerText$.next(typeTxt);
+      this.searchAgentText$.next(typeTxt);
     }
   }
 
   searchSupplier(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('supplierID')?.value;
-      this.selectedSupplier = this.mouseEventOnSearch(event, this.suppliers!, controlValue) as UserAPI;
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
@@ -186,40 +162,10 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedAgent = undefined;
-    this.formCont('agentID').setValue('');
-  }
-
-  cancelSupplierInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedSupplier = undefined;
-    this.formCont('supplierID').setValue('');
-  }
-
-  searchAccount(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchAccount = {};
-    keys.forEach(key => {
-      searchConditions[key] = this.searchAccountForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '')
-      { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.searchConditions = searchConditions;
-    this.getAccount(searchConditions);
+  searchAccount(searchConditions: SearchAccount) {
+    let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
+    // this.searchConditions = lastSearchConditions;
+    this.getAccount(lastSearchConditions);
   }
 
   open(insurancePolicyId: number) {
@@ -287,20 +233,8 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
       });
   }
 
-  fillFieldsByCustomer(event: Event) {
-    if (event instanceof KeyboardEvent) { return; }
-
-    setTimeout(() => {
-      this.searchAccountForm.get('agentID')?.setValue(this.selectedAgent?.id);
-    }, 0);
-  }
-
   goToAccountEdit(id: number) {
     this.router.navigate([ 'agent/account/edit', id ]);
-  }
-
-  formCont(controlName: string) {
-    return this.searchAccountForm.controls[controlName];
   }
 
   trackById(index: number, el: any) {
@@ -313,11 +247,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getAccount(this.searchConditions);
     console.log(pageNumber);
-  }
-
-  showSearch() {
-    this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
   printPage(): void {

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -29,9 +28,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
   [index: string]: any;
 
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
-  addServiceBtnIcon = faPlus;
   errorMsg: string | undefined;
   successMsg: string | undefined;
   days = 'يوم';

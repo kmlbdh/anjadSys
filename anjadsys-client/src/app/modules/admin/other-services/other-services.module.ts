@@ -6,8 +6,8 @@ import { AddOtherservicesComponent } from './add/add-otherservices.component';
 import { ShowOtherservicesComponent } from './show/show-otherservices.component';
 import { EditOtherservicesComponent } from './edit/edit-otherservices.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -20,8 +20,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CommonModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    FontAwesomeModule,
-    OtherServicesRoutingModule
+    OtherServicesRoutingModule,
+    SharedModule
   ]
 })
 export class OtherServicesModule { }

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -19,8 +18,6 @@ import { UserAPI } from '@models/user';
   styleUrls: ['./add-car-customer.component.scss']
 })
 export class AddCarCustomerComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;

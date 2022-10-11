@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faEdit, faEnvelopeOpenText, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { SearchUser, UserAPI } from '@models/user';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged, filter, tap, switchMap, first } from 'rxjs';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged, filter, tap, switchMap, first, BehaviorSubject } from 'rxjs';
 import { EndorsementAPI, SearchEndorsement } from '@models/endorsement';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { AdminService } from '../../admin.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InsurancePolicesAPI, SearchInsurancePolicy } from '@models/insurancepolicy';
@@ -23,11 +21,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   endorsements: EndorsementAPI[] = [];
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
-
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -60,15 +53,10 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
 
   endorsementTypeArray = ['نقل ملكية'];
 
-  searchEndorsementForm = this.fb.group({
-    endorsementId: [''],
-    insurancePolicyId: [''],
-    customerId: [''],
-    endorsementType: [''],
-  });
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
+  // spinnerAgent$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute,
@@ -85,6 +73,10 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
+
   getOptionalParams() {
     this.route.paramMap
       .pipe(first())
@@ -93,8 +85,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
           const insurancePolicyId = params.get('insurancePolicyId');
           if (insurancePolicyId != null && insurancePolicyId != '' && Number(insurancePolicyId)) {
             this.searchConditions.insurancePolicyId = Number(insurancePolicyId);
-            this.formCont('insurancePolicyId').setValue(insurancePolicyId);
-            this.showSearch();
+            // this.formCont('insurancePolicyId').setValue(insurancePolicyId);
           }
         },
         complete: () => this.getEndorsements(this.searchConditions)
@@ -129,12 +120,7 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerId')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
@@ -142,31 +128,10 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerId').setValue('');
-  }
-
-  searchEndorsement(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchEndorsement = {} as SearchEndorsement;
-    keys.forEach(key => {
-      searchConditions[key] = this.searchEndorsementForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getEndorsements(searchConditions);
+  searchEndorsement(searchConditions: SearchEndorsement) {
+    let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
+    // console.log('searchConditions', lastSearchConditions);
+    this.getEndorsements(lastSearchConditions);
   }
 
   open(insurancePolicyId: number) {
@@ -258,10 +223,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
     this.router.navigate([ 'admin/endorsement/edit', id ]);
   }
 
-  formCont(controlName: string) {
-    return this.searchEndorsementForm.controls[controlName];
-  }
-
   trackById(index: number, el: any) {
     return el.id;
   }
@@ -272,11 +233,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getEndorsements(this.searchConditions);
     console.log(pageNumber);
-  }
-
-  showSearch() {
-    this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

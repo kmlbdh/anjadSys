@@ -2,69 +2,9 @@
   <!-- <div class="page-header card"> -->
     <!-- <p>{{pageTitle}}</p>
   </div> -->
-
-  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
-    <form [ngClass]="{'open': showBottom}" [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
-      <div class="form-sec1">
-
-        <div class="form-control-group">
-          <label for="userID">رقم الحساب</label>
-          <input id="userID" type="text"
-           name="userID" formControlName="userID"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="identityNum">رقم الهوية</label>
-          <input id="identityNum" type="number"
-           name="identityNum" formControlName="identityNum"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="username">اسم المستخدم</label>
-          <input id="username" type="text"
-           name="username" formControlName="username"/>
-        </div>
-
-        <div class="form-control-group" *ngIf="!activeSuppliers && !activeAgentLimits">
-          <label for="role">نوع الحساب</label>
-          <select id="role" name="role" formControlName="role">
-            <option value="">اختر من القائمة</option>
-            <option *ngFor="let role of roles" [value]="role[0]">{{role[1]}}</option>
-          </select>
-        </div>
-
-        <div class="form-control-group">
-          <label for="regionID">المنطقة</label>
-          <select id="regionID" name="regionID" formControlName="regionID">
-            <option value="">اختر من القائمة</option>
-            <option *ngFor="let region of regions" [value]="region.id">{{region.name}}</option>
-          </select>
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
-      <ng-container *ngIf="!showBottom">
-        فتح البحث
-      </ng-container>
-      <ng-container *ngIf="showBottom">
-        اغلاق البحث
-      </ng-container>
-
-    </a>
-  </div>
-
+  <app-search *ngIf="regions.length" [regions]="regions" [active]="!activeSuppliers && !activeAgentLimits" [role]="roleExist"
+    (submittedSearch)="searchUser($event)"></app-search>
+  
   <div class="page-content card">
     <ul class="responsive-table" [ngClass]="{'agent':activeAgentLimits, 'supplier':!activeAgentLimits}">
       <li class="table-header">
@@ -90,46 +30,82 @@
           <div class="col-custom col-custom-5 control" data-label="Control">
 
             <button class="btn-primary" title="بيانات المستخدم" (click)="open(user)">
-              <fa-icon [icon]="openIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path fill="currentColor" d="M176 216h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16H176c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16zm-16 80c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16H176c-8.84 0-16 7.16-16 16v16zm96 121.13c-16.42 0-32.84-5.06-46.86-15.19L0 250.86V464c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V250.86L302.86 401.94c-14.02 10.12-30.44 15.19-46.86 15.19zm237.61-254.18c-8.85-6.94-17.24-13.47-29.61-22.81V96c0-26.51-21.49-48-48-48h-77.55c-3.04-2.2-5.87-4.26-9.04-6.56C312.6 29.17 279.2-.35 256 0c-23.2-.35-56.59 29.17-73.41 41.44-3.17 2.3-6 4.36-9.04 6.56H96c-26.51 0-48 21.49-48 48v44.14c-12.37 9.33-20.76 15.87-29.61 22.81A47.995 47.995 0 0 0 0 200.72v10.65l96 69.35V96h320v184.72l96-69.35v-10.65c0-14.74-6.78-28.67-18.39-37.77z"></path>
+                </svg>
+              </i>
             </button>
 
             <button class="btn-primary" title="تعديل بيانات المستخدم" (click)="goToUserEdit(user.id)">
-              <fa-icon [icon]="userEditIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                  <path fill="currentColor" d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"></path>
+                </svg>
+              </i>
             </button>
 
             <ng-template [ngIf]="activeAgentLimits">
               <button class="btn-primary" title="اضافة سقف مالي للوكيل" (click)="goToAddAgentLimits(user)">
-                <fa-icon [icon]="addAgentLimitIcon"></fa-icon>
+                <i>
+                  <svg style="width: 1.6rem;" role="img" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="money-bill-alt" class="svg-inline--fa fa-money-bill-alt fa-w-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                    <path fill="currentColor" d="M352 288h-16v-88c0-4.42-3.58-8-8-8h-13.58c-4.74 0-9.37 1.4-13.31 4.03l-15.33 10.22a7.994 7.994 0 0 0-2.22 11.09l8.88 13.31a7.994 7.994 0 0 0 11.09 2.22l.47-.31V288h-16c-4.42 0-8 3.58-8 8v16c0 4.42 3.58 8 8 8h64c4.42 0 8-3.58 8-8v-16c0-4.42-3.58-8-8-8zM608 64H32C14.33 64 0 78.33 0 96v320c0 17.67 14.33 32 32 32h576c17.67 0 32-14.33 32-32V96c0-17.67-14.33-32-32-32zM48 400v-64c35.35 0 64 28.65 64 64H48zm0-224v-64h64c0 35.35-28.65 64-64 64zm272 192c-53.02 0-96-50.15-96-112 0-61.86 42.98-112 96-112s96 50.14 96 112c0 61.87-43 112-96 112zm272 32h-64c0-35.35 28.65-64 64-64v64zm0-224c-35.35 0-64-28.65-64-64h64v64z"></path>
+                  </svg>
+                </i>
               </button>
 
               <button class="btn-primary" title="اظهار جميع الاسقف المالية للوكيل" (click)="goToListAgentLimits(user)">
-                <fa-icon [icon]="agentLimitsListIcon"></fa-icon>
+                <i>
+                  <svg style="width: 1.2rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path fill="currentColor" d="M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z"></path>
+                  </svg>
+                </i>
               </button>
 
               <button class="btn-primary" title="زبائن الوكيل" (click)="goToListCustomers(user)">
-                <fa-icon [icon]="customersIcon"></fa-icon>
+                <i>
+                  <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                    <path fill="currentColor" d="M96 224c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm448 0c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm32 32h-64c-17.6 0-33.5 7.1-45.1 18.6 40.3 22.1 68.9 62 75.1 109.4h66c17.7 0 32-14.3 32-32v-32c0-35.3-28.7-64-64-64zm-256 0c61.9 0 112-50.1 112-112S381.9 32 320 32 208 82.1 208 144s50.1 112 112 112zm76.8 32h-8.3c-20.8 10-43.9 16-68.5 16s-47.6-6-68.5-16h-8.3C179.6 288 128 339.6 128 403.2V432c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-28.8c0-63.6-51.6-115.2-115.2-115.2zm-223.7-13.4C161.5 263.1 145.6 256 128 256H64c-35.3 0-64 28.7-64 64v32c0 17.7 14.3 32 32 32h65.9c6.3-47.4 34.9-87.3 75.2-109.4z"></path>
+                  </svg>
+                </i>
               </button>
 
             </ng-template>
 
             <ng-template [ngIf]="activeSuppliers">
               <button class="btn-primary" title="اظهار حساب المورد" (click)="goToSupplierAccount(user)">
-                <fa-icon [icon]="supplierPartsIcon"></fa-icon>
+                <i>
+                  <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                    <path fill="currentColor" d="M128 96c26.5 0 48-21.5 48-48S154.5 0 128 0 80 21.5 80 48s21.5 48 48 48zm384 0c26.5 0 48-21.5 48-48S538.5 0 512 0s-48 21.5-48 48 21.5 48 48 48zm125.7 372.1l-44-110-41.1 46.4-2 18.2 27.7 69.2c5 12.5 17 20.1 29.7 20.1 4 0 8-.7 11.9-2.3 16.4-6.6 24.4-25.2 17.8-41.6zm-34.2-209.8L585 178.1c-4.6-20-18.6-36.8-37.5-44.9-18.5-8-39-6.7-56.1 3.3-22.7 13.4-39.7 34.5-48.1 59.4L432 229.8 416 240v-96c0-8.8-7.2-16-16-16H240c-8.8 0-16 7.2-16 16v96l-16.1-10.2-11.3-33.9c-8.3-25-25.4-46-48.1-59.4-17.2-10-37.6-11.3-56.1-3.3-18.9 8.1-32.9 24.9-37.5 44.9l-18.4 80.2c-4.6 20 .7 41.2 14.4 56.7l67.2 75.9 10.1 92.6C130 499.8 143.8 512 160 512c1.2 0 2.3-.1 3.5-.2 17.6-1.9 30.2-17.7 28.3-35.3l-10.1-92.8c-1.5-13-6.9-25.1-15.6-35l-43.3-49 17.6-70.3 6.8 20.4c4.1 12.5 11.9 23.4 24.5 32.6l51.1 32.5c4.6 2.9 12.1 4.6 17.2 5h160c5.1-.4 12.6-2.1 17.2-5l51.1-32.5c12.6-9.2 20.4-20 24.5-32.6l6.8-20.4 17.6 70.3-43.3 49c-8.7 9.9-14.1 22-15.6 35l-10.1 92.8c-1.9 17.6 10.8 33.4 28.3 35.3 1.2.1 2.3.2 3.5.2 16.1 0 30-12.1 31.8-28.5l10.1-92.6 67.2-75.9c13.6-15.5 19-36.7 14.4-56.7zM46.3 358.1l-44 110c-6.6 16.4 1.4 35 17.8 41.6 16.8 6.6 35.1-1.7 41.6-17.8l27.7-69.2-2-18.2-41.1-46.4z"></path>
+                  </svg>
+                </i>
               </button>
             </ng-template>
 
             <button *ngIf="user.Role.name !== 'admin' && !activeAgentLimits && !activeSuppliers" class="btn-error" title="حذف المستخدم" (click)="deleteUser(user)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.2rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                </svg>
+              </i>
             </button>
 
             <button *ngIf="!user.blocked" class="btn-primary" title="تعطيل حساب المستخدم"
             (click)="blockUser(user)">
-             <fa-icon [icon]="deactivateUserIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                  <path fill="currentColor" d="M633.8 458.1L362.3 248.3C412.1 230.7 448 183.8 448 128 448 57.3 390.7 0 320 0c-67.1 0-121.5 51.8-126.9 117.4L45.5 3.4C38.5-2 28.5-.8 23 6.2L3.4 31.4c-5.4 7-4.2 17 2.8 22.4l588.4 454.7c7 5.4 17 4.2 22.5-2.8l19.6-25.3c5.4-6.8 4.1-16.9-2.9-22.3zM96 422.4V464c0 26.5 21.5 48 48 48h350.2L207.4 290.3C144.2 301.3 96 356 96 422.4z"></path>
+                </svg>
+              </i>
            </button>
 
            <button *ngIf="user.blocked" class="btn-primary" title="تفعيل حساب المستخدم"
             (click)="unblockUser(user)">
-             <fa-icon [icon]="activateUserIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                  <path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4zm323-128.4l-27.8-28.1c-4.6-4.7-12.1-4.7-16.8-.1l-104.8 104-45.5-45.8c-4.6-4.7-12.1-4.7-16.8-.1l-28.1 27.9c-4.7 4.6-4.7 12.1-.1 16.8l81.7 82.3c4.6 4.7 12.1 4.7 16.8.1l141.3-140.2c4.6-4.7 4.7-12.2.1-16.8z"></path>
+                </svg>
+              </i>
            </button>
 
           </div>

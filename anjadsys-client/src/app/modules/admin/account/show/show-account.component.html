@@ -1,96 +1,19 @@
 <div id="main-container">
-  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
-    <form [ngClass]="{'open': showBottom}" [formGroup]="searchAccountForm" #form="ngForm" (ngSubmit)="searchAccount(form)">
-      <div class="form-sec1">
 
-        <div class="form-control-group">
-          <label for="accountId">رقم الحركة المالية</label>
-          <input id="accountId" type="text"
-           name="accountId" formControlName="accountId"/>
-        </div>
+  <app-search-accounts
+    (searchAgentEvent)="searchAgent($event)"
+    [agents]="agents"
+    (selectedAgent)="getSelectedAgent($event)"
+    [spinnerAgent]="spinnerAgent$"
 
-        <div class="form-control-group">
-          <label for="insurancePolicyId">رقم البوليصة</label>
-          <input id="insurancePolicyId" type="text"
-           name="insurancePolicyId" formControlName="insurancePolicyId"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="agentID">الوكيل:</label>
-          <div class="input" *ngIf="selectedAgent">
-            {{selectedAgent.companyName}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedAgent}" id="agentID" type="text"
-            (keyup)="searchCustomer($event)" list="agentsList" name="agentID"
-            formControlName="agentID" (change)="fillFieldsByCustomer($event)" autocomplete="off"/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
-          </div>
-
-          <datalist id="agentsList">
-            <option *ngFor="let agent of agents;" [value]="agent.id">
-                {{agent.companyName}}
-            </option>
-          </datalist>
-        </div>
-
-        <div class="form-control-group">
-          <label for="supplierID">المورد:</label>
-          <div class="input" *ngIf="selectedSupplier">
-            {{selectedSupplier.companyName}}
-            <span (click)="cancelSupplierInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedSupplier}" id="supplierID" type="text" (keyup)="searchSupplier($event)"
-             list="supplierList" name="supplierID" formControlName="supplierID" autocomplete="off"/>
-            <span *ngIf="spinner.supplier" class="spinner"></span>
-          </div>
-          <datalist id="supplierList">
-            <option *ngFor="let supplier of suppliers;" [value]="supplier.id">
-                {{supplier.companyName}}
-            </option>
-          </datalist>
-        </div>
-
-        <div class="form-control-group">
-          <label for="startDate">من تاريخ</label>
-          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="endDate">الى تاريخ</label>
-          <input id="endDate" type="date" name="endDate" formControlName="endDate">
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
-      <ng-container *ngIf="!showBottom">
-        فتح البحث
-      </ng-container>
-      <ng-container *ngIf="showBottom">
-        اغلاق البحث
-      </ng-container>
-
-    </a>
-  </div>
-
+    (searchSupplierEvent)="searchSupplier($event)"
+    [suppliers]="suppliers"
+    (selectedSupplier)="getSelectedSupplier($event)"
+    [spinnerSupplier]="spinnerSupplier$"
+    
+    (submittedSearch)="searchAccount($event)">
+  </app-search-accounts>
+  
   <div class="page-content card dont-print">
     <ul class="responsive-table">
       <li class="table-header">

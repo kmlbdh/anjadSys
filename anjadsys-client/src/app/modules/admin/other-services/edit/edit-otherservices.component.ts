@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import {
   InsurancePolicesAPI,
@@ -22,8 +21,6 @@ import {
   styleUrls: ['./edit-otherservices.component.scss']
 })
 export class EditOtherservicesComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;

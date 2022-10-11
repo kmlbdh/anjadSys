@@ -1,6 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { SearchUser, UserAPI } from '@models/user';
@@ -16,8 +15,6 @@ import {
   styleUrls: ['./add-otherservices.component.scss']
 })
 export class AddOtherservicesComponent implements OnDestroy {
-
-  cancelInput = faTimes;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;

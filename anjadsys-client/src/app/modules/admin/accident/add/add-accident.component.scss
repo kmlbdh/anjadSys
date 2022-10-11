@@ -21,9 +21,6 @@
       margin: auto;
       align-self: center;
       flex-basis: fit-content;
-      fa-icon{
-        vertical-align: sub;
-      }
     }
     button{
       @include button-primary;
@@ -154,7 +151,7 @@
         line-height: normal;
         padding: 5.3px 12px;
 
-        fa-icon {
+        i {
           vertical-align: sub;
           cursor: pointer;
         }
@@ -186,9 +183,6 @@
           margin: auto;
           align-self: center;
           flex-basis: fit-content;
-          fa-icon{
-            vertical-align: sub;
-          }
         }
         button{
           @include button-primary;
@@ -198,8 +192,8 @@
             @include button-primary-disabled;
             width: fit-content;
           }
-          &.mg-top39{
-            margin-top: 39%;
+          &.mg-top1rem{
+            margin-top: 1rem;
           }
         }
       }
@@ -277,7 +271,7 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
               // margin-left: 10px;
               font-size: 20px;

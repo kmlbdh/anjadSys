@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -21,8 +20,6 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./edit-car-customer.component.scss']
 })
 export class EditCarCustomerComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -173,7 +170,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         switchMap(text =>
-          this.adminService.UsersAPIs.list({ username: text, skipLoadingInterceptor: true }))
+          this.adminService.UsersAPIs.list({ username: text, role: 'customer', skipLoadingInterceptor: true }))
       ).subscribe({
         next: (response: any) => {
           if (response.data) {

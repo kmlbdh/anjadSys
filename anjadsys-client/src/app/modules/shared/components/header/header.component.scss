@@ -19,7 +19,8 @@ nav#header{
 
     .navbar-logo{
       background-color: $mainBlueColor;
-      flex-basis: 256px;
+      // flex-basis: 256px;
+      width: 20%;
       flex-grow: 0;
       flex-shrink: 0;
       padding: 5px;
@@ -29,7 +30,8 @@ nav#header{
       align-items: center;
       flex-wrap: nowrap;
       &.mini-logo {
-        flex-basis: 94px;
+        // flex-basis: 94px;
+        width: 7.5%
       }
       a{
         &:first-child{
@@ -116,10 +118,7 @@ nav#header{
           &.open-profile{
             background-color: $mainBlueColor;
             color: #fff;
-            p{
-              color: #fff;
-            }
-            i {
+            p, i{
               color: #fff;
             }
           }

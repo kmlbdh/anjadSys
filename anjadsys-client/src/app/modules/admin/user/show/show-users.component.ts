@@ -1,22 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchUser, UsersAPI, UserAPI, updateUser } from '@models/user';
-import {
-  faTrashAlt,
-  faPeopleCarry,
-  faMoneyBillAlt,
-  faCopy,
-  faUsers,
-  faEdit,
-  faUserSlash,
-  faUserCheck,
-  faEnvelopeOpenText
-} from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../admin.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ModalDismissReasons, NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserModalComponent } from '@shared/components/user-modal/user-modal.component';
-import { FormBuilder, FormControl, FormGroupDirective } from '@angular/forms';
 import { RegionAPI } from '@models/general';
 
 @Component({
@@ -26,16 +14,6 @@ import { RegionAPI } from '@models/general';
 })
 
 export class ShowUsersComponent implements OnInit, OnDestroy {
-
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  userEditIcon = faEdit;
-  deactivateUserIcon = faUserSlash;
-  activateUserIcon = faUserCheck;
-  addAgentLimitIcon = faMoneyBillAlt;
-  agentLimitsListIcon = faCopy;
-  customersIcon = faUsers;
-  supplierPartsIcon = faPeopleCarry;
 
   users: UserAPI[] = [];
   regions: RegionAPI[] = [];
@@ -65,8 +43,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   pageTitle!: string;
   activeAgentLimits: boolean = false;
   activeSuppliers: boolean = false;
-  showTop = false;
-  showBottom = false;
 
   rolesLang:{
     [index: string]: string;
@@ -77,20 +53,14 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       'customer': 'زبون'
     };
   roles = Object.entries(this.rolesLang);
-
-  searchUserForm = this.fb.group({
-    userID: [''],
-    username: [''],
-    regionID: [''],
-    identityNum: [''],
-  });
+  roleExist: boolean = false;
 
   constructor(
     private adminService: AdminService,
     private router: Router,
     private route: ActivatedRoute,
-    private modalService: NgbModal,
-    private fb: FormBuilder) {}
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe({
@@ -100,7 +70,8 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
         this.activeSuppliers = (!!data['role'] && data['role'] === 'supplier');
         this.searchConditions['role'] = data['role'];
         if (!data['role']) {
-          this.searchUserForm.addControl('role', new FormControl(''));
+          this.roleExist = true;
+          // this.searchUserForm.addControl('role', new FormControl(''));
         }
         this.getUsers(this.searchConditions);
         this.getRegions();
@@ -196,18 +167,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchUser(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchUser = this.searchConditions;
-    keys.forEach(key => {
-      searchConditions[key] = this.searchUserForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    if (searchConditions.username) { searchConditions.companyName = searchConditions.username; }
-    console.log('searchConditions', searchConditions);
-    this.searchConditions = searchConditions;
-    this.getUsers(searchConditions);
+  searchUser(searchConditions: SearchUser) {
+    let lastSearchCondition = { ...this.searchConditions, ...searchConditions };
+    this.getUsers(lastSearchCondition);
   }
 
   getRegions() {
@@ -275,11 +237,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
     this.p = pageNumber;
     this.getUsers(this.searchConditions);
     console.log(pageNumber);
-  }
-
-  showSearch() {
-    this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40);
   }
 
 }

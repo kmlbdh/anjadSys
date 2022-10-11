@@ -8,7 +8,7 @@ export interface ChildNav{
 export interface NavInput{
   id: number,
   name: string,
-  faIcon: any,
+  svgIcon: any,
   hide: boolean,
   children: ChildNav[]
 }

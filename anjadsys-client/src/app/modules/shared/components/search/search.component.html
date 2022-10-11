@@ -1,0 +1,59 @@
+<div id="search-container" class="card search-container" [@openClosed]="isOpen ? 'open': 'closed'">
+  <a *ngIf="!isOpen" class="open-search clickable flexRight" (click)="showSearch()">
+    فتح البحث
+  </a>
+  <form [@showHideForm]="isOpen ? 'show': 'hide'" [ngClass]="{'open': isOpen}" 
+    [formGroup]="searchUserForm" #form="ngForm" (ngSubmit)="searchUser(form)">
+    <div class="form-sec1">
+
+      <div class="form-control-group">
+        <label for="userID">رقم الحساب</label>
+        <input id="userID" type="text"
+         name="userID" formControlName="userID"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="identityNum">رقم الهوية</label>
+        <input id="identityNum" type="number"
+         name="identityNum" formControlName="identityNum"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="username">اسم المستخدم</label>
+        <input id="username" type="text"
+         name="username" formControlName="username"/>
+      </div>
+
+      <div class="form-control-group" *ngIf="active">
+        <label for="role">نوع الحساب</label>
+        <select id="role" name="role" formControlName="role">
+          <option value="">اختر من القائمة</option>
+          <option *ngFor="let role of roles" [value]="role[0]">{{role[1]}}</option>
+        </select>
+      </div>
+
+      <div class="form-control-group">
+        <label for="regionID">المنطقة</label>
+        <select id="regionID" name="regionID" formControlName="regionID">
+          <option value="">اختر من القائمة</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{region.name}}</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-sec2">
+
+      <div class="btn-container">
+        <button type="submit">
+          <span>بحث</span>
+        </button>
+      </div>
+
+    </div>
+  </form>
+  <a *ngIf="isOpen" class="open-search clickable" (click)="showSearch()">
+    اغلاق البحث
+  </a>
+  
+</div>

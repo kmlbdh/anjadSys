@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { CarAPI, SearchCar } from '@models/car';
 import { InsurancePolicesAPI, InsurancePolicyAPI, SearchInsurancePolicy } from '@models/insurancepolicy';
 import { SearchUser, UserAPI } from '@models/user';
@@ -20,8 +19,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
   @ViewChild('customerId', { static: true }) customerElement: ElementRef;
   @ViewChild('agentId', { static: true }) agentElement: ElementRef;
 
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
   errorMsg: string | undefined;
   successMsg: string | undefined;
   days = 'يوم';

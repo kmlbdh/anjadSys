@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTimes, faTrashAlt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { AccidentAPI, SearchAccident, AccidentsAPI } from '@models/accident';
 import { NgbModalOptions, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SearchUser, UserAPI } from '@models/user';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { CarModalComponent } from '@shared/components/car-modal/car-modal.component';
 import { AccidentModalComponent } from '@shared/components/accident-modal/accident-modal.component';
 
@@ -22,11 +20,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   customers: UserAPI[] = [];
   selectedAgent: UserAPI | undefined;
   agents: UserAPI[] = [];
-
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -47,31 +40,15 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
-  spinner = {
-    customer: false,
-    agent: false
-  };
-
   private searchCustomerText$ = new Subject<string>();
   private searchAgentText$ = new Subject<string>();
 
   TIMEOUTMILISEC = 7000;
 
-  searchAccidentForm = this.fb.group({
-    accidentID: [''],
-    accidentPlace: [''],
-    accidentDate: [''],
-    registerAccidentDate: [''],
-    driverName: [''],
-    driverIdentity: [''],
-    regionID: [''],
-    customerID: [''],
-    agentID: [''],
-    carID: [''],
-  });
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
+  spinnerAgent$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private modalService: NgbModal
@@ -88,9 +65,17 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
+
+  getSelectedAgent(event: UserAPI | undefined) {
+    if (event) { this.selectedAgent = event; }
+  }
+
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
-      { username: val, skipLoadingInterceptor: true } as SearchUser);
+      { username: val, role: 'customer', skipLoadingInterceptor: true } as SearchUser);
 
     this.searchCustomerText$
       .pipe(
@@ -98,34 +83,28 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() =>  this.spinnerCustomer$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.customers = response.data;
           }
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      this.searchAccidentForm.get('agentID')?.disable();
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
@@ -140,73 +119,36 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() =>  this.spinnerAgent$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.agents = response.data;
           }
-          this.spinner.agent = false;
+          this.spinnerAgent$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.agent = false;
+          this.spinnerAgent$.next(false);
         }
       });
   }
 
   searchAgent(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('agentID')?.value;
-      this.selectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
-      this.searchAccidentForm.get('customerID')?.disable();
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.agent = true;
       this.searchAgentText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerID').setValue('');
-    this.formCont('agentID').enable();
-  }
-
-  cancelAgentInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedAgent = undefined;
-    this.formCont('agentID').setValue('');
-    this.formCont('customerID')?.enable();
-  }
-
-  searchAccident(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchAccident = {};
-    keys.forEach(key => {
-      searchConditions[key] = this.searchAccidentForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '')
-      { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getAccidents(searchConditions);
+  searchAccident(searchConditions: SearchAccident) {
+    let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
+    // console.log('searchConditions', lastSearchConditions);
+    this.getAccidents(lastSearchConditions);
   }
 
   open(accidentId: number) {
@@ -294,10 +236,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   goToAccidentEdit(id: number) {
     this.router.navigate([ 'admin/accident/edit', id ]);
-  }
-
-  formCont(controlName: string) {
-    return this.searchAccidentForm.controls[controlName];
   }
 
   trackById(index: number, el: any) {

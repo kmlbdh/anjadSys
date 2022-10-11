@@ -1,21 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
-import {
-  faEdit,
-  faEnvelopeOpenText,
-  faTimes,
-  faTrashAlt
-} from '@fortawesome/free-solid-svg-icons';
 import { CarAPI, CarsAPI, SearchCar } from '@models/car';
 import { AdminService } from '../../../admin.service';
 import { Router } from '@angular/router';
 import {
+  BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
   filter,
   Subject,
   switchMap,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs';
 import { SearchUser, UserAPI } from '@models/user';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -34,11 +29,6 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
 
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
-
   private unsubscribe$ = new Subject<void>();
 
   p: number = 1;
@@ -47,9 +37,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
-  spinner = {
-    customer: false,
-  };
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -66,14 +54,7 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
 
   TIMEOUTMILISEC = 7000;
 
-  searchCarForm = this.fb.group({
-    customerID: [''],
-    carNumber: [''],
-    serialNumber: [''],
-  });
-
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private modalService: NgbModal
@@ -89,9 +70,13 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
+
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
-      { username: val, skipLoadingInterceptor: true } as SearchUser);
+      { username: val, role: 'customer', skipLoadingInterceptor: true } as SearchUser);
 
     this.searchCustomerText$
       .pipe(
@@ -99,63 +84,35 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() => this.spinnerCustomer$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.customers = response.data;
           }
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      this.searchCarForm.get('agentID')?.disable();
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerID').setValue('');
-  }
-
-  searchCar(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchCar = {} as SearchCar;
-    keys.forEach(key => {
-      searchConditions[key] = this.searchCarForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getCars(searchConditions);
+  searchCar(searchConditions: SearchCar) {
+    let lastSearchCondition = { ...this.searchConditions, ...searchConditions };
+    this.getCars(lastSearchCondition);
   }
 
   getCars(searchConditions: SearchCar) {
@@ -215,10 +172,6 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
 
   goToCarEdit(id: number) {
     this.router.navigate([ 'admin/car/car-customer/edit', id ]);
-  }
-
-  formCont(controlName: string) {
-    return this.searchCarForm.controls[controlName];
   }
 
   trackById(index: number, el: any) {

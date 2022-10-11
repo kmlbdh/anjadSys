@@ -13,6 +13,18 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
 import { AgentLimitsModalComponent } from './components/agent-limits-modal/agent-limits-modal.component';
 import { EndorsementModalComponent } from './components/endorsement-modal/endorsement-modal.component';
 import { HeaderComponent } from './components/header/header.component';
+import { NavItemComponent } from './components/nav-item/nav-item.component';
+import { NavItemChildComponent } from './components/nav-item-child/nav-item-child.component';
+import { SearchComponent } from './components/search/search.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SearchOtherServicesComponent } from './components/search-other-services/search-other-services.component';
+import { SearchCarsComponent } from './components/search-cars/search-cars.component';
+import { SearchAccidentsComponent } from './components/search-accidents/search-accidents.component';
+import { SearchInsurancePoliciesComponent } from './components/search-insurance-policies/search-insurance-policies.component';
+import { SearchEndorsementComponent } from './components/search-endorsement/search-endorsement.component';
+import { SearchAccountsComponent } from './components/search-accounts/search-accounts.component';
+import { SearchSuppAccountComponent } from './components/search-supp-account/search-supp-account.component';
+import { StatisticsItemComponent } from './components/statistics-item/statistics-item.component';
 
 @NgModule({
   declarations: [
@@ -26,18 +38,39 @@ import { HeaderComponent } from './components/header/header.component';
     BreadcrumbComponent,
     AgentLimitsModalComponent,
     EndorsementModalComponent,
-    HeaderComponent
+    HeaderComponent,
+    NavItemComponent,
+    NavItemChildComponent,
+    SearchComponent,
+    SearchOtherServicesComponent,
+    SearchCarsComponent,
+    SearchAccidentsComponent,
+    SearchInsurancePoliciesComponent,
+    SearchEndorsementComponent,
+    SearchAccountsComponent,
+    SearchSuppAccountComponent,
+    StatisticsItemComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     FontAwesomeModule,
+    ReactiveFormsModule,
   ],
   exports: [
     NavComponent,
     LoaderComponent,
     BreadcrumbComponent,
-    HeaderComponent
+    HeaderComponent,
+    SearchComponent,
+    SearchOtherServicesComponent,
+    SearchCarsComponent,
+    SearchAccidentsComponent,
+    SearchInsurancePoliciesComponent,
+    SearchEndorsementComponent,
+    SearchAccountsComponent,
+    SearchSuppAccountComponent,
+    StatisticsItemComponent
   ]
 })
 export class SharedModule { }

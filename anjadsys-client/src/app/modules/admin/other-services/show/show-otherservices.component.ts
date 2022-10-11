@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap, BehaviorSubject } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { SearchUser, UserAPI } from '@models/user';
 import { SearchInsurancePolicy, InsurancePolicesAPI } from '@models/insurancepolicy';
-import { faEdit, faEnvelopeOpenText, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { SearchOtherServices, OtherServiceAPI } from '@models/otherservices';
 import {
   OtherServiceModalComponent
@@ -26,16 +24,6 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
 
-  openIcon = faEnvelopeOpenText;
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
-
-  private currentDate = new Date();
-
-  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
-
   closeResult!: string;
   modalOptions: NgbModalOptions = {
     size: 'lg',
@@ -49,8 +37,6 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   errorMsg: string | undefined;
   successMsg: string | undefined;
   searchConditions: SearchOtherServices = {} as SearchOtherServices;
-  showTop = false;
-  showBottom = false;
 
   p: number = 1;
   pagination = {
@@ -59,26 +45,13 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
   };
 
   spinner = {
-    customer: false,
     insurancePolicy: false,
   };
 
   private searchCustomerText$ = new Subject<string>();
-
-  fileStatusArr = [ 'مفتوح', 'مغلق' ];
-
-  searchOtherServiceForm = this.fb.group({
-    otherServiceID: [''],
-    insurancePolicyId: [''],
-    customerID: [''],
-    fileStatus: [''],
-    serviceKind: [''],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
-  });
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private fb: FormBuilder,
     private adminService: AdminService,
     private router: Router,
     private modalService: NgbModal
@@ -94,6 +67,10 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
+
   searchCustomerAPI() {
     let callback = (val: string) => this.adminService.UsersAPIs.lightlist(
       { username: val, skipLoadingInterceptor: true, role: 'customer' } as SearchUser);
@@ -104,30 +81,25 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
-        tap(() => this.spinner.customer = true),
+        tap(() => this.spinnerCustomer$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.customers = response.data;
           }
-          this.spinner.customer = false;
-          console.log(response);
+          this.spinnerCustomer$.next(false);
+          // console.log(response);
         },
         error: (err: any) => {
-          console.log(err);
-          this.spinner.customer = false;
+          // console.log(err);
+          this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      return;
-    }
+    // console.log(event);
 
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
@@ -135,31 +107,9 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerID').setValue('');
-  }
-
-  searchOtherService(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchOtherServices = {} as SearchOtherServices;
-    keys.forEach(key => {
-      searchConditions[key] = this.searchOtherServiceForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getOtherServices(searchConditions);
+  searchOtherService(searchConditions: SearchOtherServices) {
+    let lastSearchCondition = { ...this.searchConditions, ...searchConditions };
+    this.getOtherServices(lastSearchCondition);
   }
 
   open(insurancePolicyId: number) {
@@ -240,10 +190,6 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.router.navigate([ 'admin/otherservices/edit', id ]);
   }
 
-  formCont(controlName: string) {
-    return this.searchOtherServiceForm.controls[controlName];
-  }
-
   trackById(index: number, el: any) {
     return el.id;
   }
@@ -253,12 +199,7 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchOtherServices;
     this.p = pageNumber;
     this.getOtherServices(this.searchConditions);
-    console.log(pageNumber);
-  }
-
-  showSearch() {
-    this.showTop = !this.showTop;
-    setTimeout(() => this.showBottom = !this.showBottom, 40);
+    // console.log(pageNumber);
   }
 
 }

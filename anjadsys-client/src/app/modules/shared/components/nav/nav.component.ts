@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { NavInput } from '../../models/nav';
 export { NavInput } from '../../models/nav';
 
@@ -17,11 +16,9 @@ export class NavComponent {
   @Input() navData!: NavInput[];
   @Input() miniNavBar: Boolean = false;
 
-  chevronLeftIcon = faChevronLeft;
-
   constructor() { }
 
-  trackById(index: number, el: any) {
+  trackById(_index: number, el: any) {
     return el.id;
   }
 
