@@ -194,7 +194,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
         if (!carId) { this.redirect(); }
 
         let car$ = this.adminService.CarsAPIs.show({ carId:  Number(carId!) }) as Observable<CarsAPI>;
-        let carType$ = this.adminService.CarTypesAPIs.list({}) as Observable<CarTypeArrayAPI>;
+        let carType$ = this.adminService.CarTypesAPIs.list({ limit: 999999999999999 }) as Observable<CarTypeArrayAPI>;
 
         forkJoin([ car$, carType$ ])
           .pipe(takeUntil(this.unsubscribe$))

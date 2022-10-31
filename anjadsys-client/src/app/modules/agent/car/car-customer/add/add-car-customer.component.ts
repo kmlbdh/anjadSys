@@ -127,7 +127,7 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
 
   getCarTypes() {
     this.spinner.carType = true;
-    this.agentService.CarTypesAPIs.list({ skipLoadingInterceptor: true })
+    this.agentService.CarTypesAPIs.list({ skipLoadingInterceptor: true, limit: 999999999999999 })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {

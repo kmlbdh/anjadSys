@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { CarTypeAPI, CarTypeArrayAPI, SearchCarType } from '@models/car';
 import { AgentService } from '../../../agent.service';
@@ -25,10 +24,7 @@ export class ShowCarTypesComponent implements OnInit, OnDestroy {
   successMsg: string | undefined;
   searchConditions: SearchCarType = {};
 
-  constructor(
-    private agentService: AgentService,
-    private router: Router
-  ) { }
+  constructor( private agentService: AgentService ) { }
 
   ngOnInit(): void {
     this.getCarTypes(this.searchConditions);
