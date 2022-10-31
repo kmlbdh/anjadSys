@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from './login.service';
@@ -10,7 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy {
 
   errorMsg: string | undefined;
   private unsubscribe$ = new Subject<void>();
@@ -21,10 +21,16 @@ export class LoginComponent implements OnDestroy {
     username: [ '', [ Validators.required, Validators.minLength(6) ] ],
     password: [ '', Validators.required ]
   });
+
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private router: Router) {}
+    private router: Router,
+    private cd: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.cd.detach();
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -32,8 +38,11 @@ export class LoginComponent implements OnDestroy {
   }
 
   onLogin() {
+    this.cd.reattach();
     this.errorMsg = undefined;
-    if (this.loginForm.invalid) { return this.validationMessageOnSubmit(); }
+    if (this.loginForm.invalid) {
+      return this.validationMessageOnSubmit();
+    }
     this.loginService.login(this.loginForm.value)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
