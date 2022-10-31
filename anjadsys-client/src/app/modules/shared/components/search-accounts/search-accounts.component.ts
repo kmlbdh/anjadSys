@@ -115,24 +115,24 @@ export class SearchAccountsComponent {
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
+    // event.preventDefault();
+    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelAgentInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
+    // event.preventDefault();
+    // event.stopImmediatePropagation();
     this.internalSelectedAgent = undefined;
     this.formCont('agentID').setValue('');
     this.selectedAgent.emit(this.internalSelectedAgent);
   }
 
   cancelSupplierInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
+    // event.preventDefault();
+    // event.stopImmediatePropagation();
     this.internalSelectedSupplier = undefined;
     this.formCont('supplierID').setValue('');
     this.selectedSupplier.emit(this.internalSelectedSupplier);
