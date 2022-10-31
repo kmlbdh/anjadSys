@@ -239,42 +239,35 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
             table {
               margin-bottom: 0;
             }
-            tr.total-cost{
-              th{
-                padding-left:0;
-              }
-              td{
-                padding-right:0;
+            .total-cost-wrapper {
+              display: flex;
+              width:100%;
+              flex-flow: row-reverse nowrap;
+              .total-cost{
+                display: flex;
+                flex-flow: row nowrap;
+                border: 1px solid #000;
+                margin-top: 0.5rem;
+                padding: 0.5rem 0.2rem;
+                flex: 0 0 37%;
+                .right-total-cost{
+                  font-size: 0.85rem;
+                  display: flex;
+                  flex-flow: column nowrap;
+                  flex: 1;
+                  font-weight: bold;
+                  align-items: flex-start;
+                }
+                .left-total-cost{
+                  font-size: 0.85rem;
+                  display: flex;
+                  flex-flow: column nowrap;
+                  flex: 1;
+                  align-items: flex-end;
+                }
               }
             }
 
-            .right-total-cost{
-              margin-top: 0.5rem;
-              font-size: 0.85rem;
-              display: flex;
-              flex-direction: column;
-              flex-wrap: nowrap;
-              border: 1px solid gray;
-              width: 30%;
-              align-items: flex-start;
-              margin-left: 0;
-              margin-right: auto;
-              border-left: none;
-              padding-left: 0;
-            }
-            .left-total-cost{
-              margin-top: 0.5rem;
-              font-size: 0.85rem;
-              display: flex;
-              flex-direction: column;
-              border: 1px solid gray;
-              width: 30%;
-              align-items: flex-end;
-              margin-left: auto;
-              margin-right: 0;
-              border-right: none;
-              padding-right: 0;
-            }
           }
 
           .each-data{
@@ -380,38 +373,33 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   thead { display: table-row-group; }
   tfoot { display: table-footer-group }
 
-  tr.total-cost > th{
-    padding-left:0;
-  }
-  tr.total-cost >  td{
-    padding-right:0;
+  .total-cost-wrapper {
+    display: flex;
+    width:100%;
+    flex-flow: row-reverse nowrap;
   }
 
-  tr.total-cost > th div.right-total-cost{
+  .total-cost {
+    display: flex;
+    flex-flow: row nowrap;
+    border: 1px solid #000;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.2rem;
+    flex: 0 0 100%;
+  }
+
+  .total-cost > div.right-total-cost{
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    border: 1px solid gray;
-    width: 30%;
     align-items: flex-start;
-    margin-left: 0;
-    margin-right: auto;
-    border-left: none;
-    padding-left: 0;
-    margin-top: 0.5rem;
     font-size: 0.85rem;
+    font-weight: bold;
   }
-  tr.total-cost > td div.left-total-cost{
+  .total-cost > div.left-total-cost{
     display: flex;
     flex-direction: column;
-    border: 1px solid gray;
-    width: 30%;
     align-items: flex-end;
-    margin-left: auto;
-    margin-right: 0;
-    border-right: none;
-    padding-right: 0;
-    margin-top: 0.5rem;
     font-size: 0.85rem;
   }
 

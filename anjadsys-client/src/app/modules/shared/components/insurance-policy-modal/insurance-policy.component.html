@@ -150,7 +150,7 @@
               <th>الخدمة</th>
               <th>التغطية</th>
               <th>المورد</th>
-              <th>تكلفة الخدمة</th>
+              <th class="dont-print">تكلفة الخدمة</th>
             </tr>
           </thead>
 
@@ -159,26 +159,25 @@
               <td>{{service.Service.name}}</td>
               <td>{{service.Service.coverageDays + service.additionalDays}}</td>
               <td>{{service.Supplier.companyName}}</td>
-              <td>{{service.cost}}</td>
+              <td class="dont-print">{{service.cost}}</td>
             </tr>
           </tbody>
-          <tr class="total-cost">
-            <th colspan="3">
-              <div class="right-total-cost">
-                <span>المبلغ قبل الضريبة</span>
-                <span>ضريبة المبيعات</span>
-                <span>الاجمالي</span>
-              </div>
-            </th>
-            <td>
-              <div class="left-total-cost">
-                <span>{{modalInsurancePolicy.totalPrice}}</span>
-                <span>{{taxOnCost}}</span>
-                <span>{{totalWithTaxes}}</span>
-              </div>
-            </td>
-          </tr>
         </table>
+        <div class="total-cost-wrapper">
+          <div class="total-cost">
+            <div class="right-total-cost">
+              <span>المبلغ قبل الضريبة</span>
+              <span>ضريبة المبيعات</span>
+              <span>الاجمالي</span>
+            </div>
+            <div class="left-total-cost">
+              <span>{{modalInsurancePolicy.totalPrice}}</span>
+              <span>{{taxOnCost}}</span>
+              <span>{{totalWithTaxes}}</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
