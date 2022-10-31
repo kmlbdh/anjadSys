@@ -5,11 +5,11 @@
       <h3>Injad Logistics</h3>
       <div>
         <label for="username">رقم الحساب</label>
-        <input id="username" type="text" name="username" formControlName="username"/>
+        <input id="username" type="text" name="username" formControlName="username" autocomplete="username"/>
       </div>
       <div>
           <label for="password">كلمة المرور</label>
-          <input id="password" type="password" name="password" formControlName="password"/>
+          <input id="password" type="password" name="password" formControlName="password" autocomplete="current-password"/>
       </div>
       <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
       <div class="btn-container">
