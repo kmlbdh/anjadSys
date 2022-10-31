@@ -207,6 +207,7 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
               this.selectedCarModel = this.car.CarModel;
               this.carTypes =  carType.data;
 
+              this.selectedCustomer = this.car.User;
               this.searchCarModelAPI(true);
             }
           });
