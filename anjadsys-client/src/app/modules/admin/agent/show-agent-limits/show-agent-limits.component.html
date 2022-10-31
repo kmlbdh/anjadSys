@@ -1,0 +1,45 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p style="margin-top: 10px">الوكيل :
+      <span style="font-weight: 400;">{{selectedAgentName}}</span>
+    </p>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الحركة</div>
+        <div class="col-custom col-custom-2">السقف المالي</div>
+        <div class="col-custom col-custom-3">تاريخ الحركة</div>
+        <div class="col-custom col-custom-4">التحكم</div>
+      </li>
+      <ng-template [ngIf]="agentLimits.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="agentLimits.length > 0">
+        <li *ngFor="let agentLimit of agentLimits | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="ID">{{i+1}}</div>
+          <div class="col-custom col-custom-2" data-label="Total Limits">{{agentLimit.debit}} {{currency}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Role">{{agentLimit.createdAt | date}}</div>
+          <div class="col-custom col-custom-4 control" data-label="Control">
+            <button class="btn-error" title="حذف السقف المالي" (click)="deleteAgentLimits(agentLimit)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

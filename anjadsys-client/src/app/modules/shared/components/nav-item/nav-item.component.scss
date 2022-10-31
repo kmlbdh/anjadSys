@@ -1,0 +1,58 @@
+@import 'shared';
+
+li{
+  font-size: 16px;
+  color: #fff;
+  display: block;
+  padding: 0.5rem 0 0.5rem 0;
+
+  > p {
+    cursor: pointer;
+    margin: 0;
+    padding: 8px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    
+    &.large-nav{
+      margin: 0 0 1rem 0;
+    }
+    i {
+      flex-basis: 10%;
+      > svg {
+        width: 1.4rem;
+      }        
+      &.large-icon{
+        flex-basis: 100%;
+        > svg {
+          width: 1.5rem;
+          &:first-child{
+            width: 2.6rem;
+          }
+        } 
+      }
+    }
+    span{
+      font-size: 15px;
+      font-weight: 500;
+      flex-basis: 80%;
+      margin-right: 8%
+    }
+  }
+  > ul{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin:0;
+    padding: 0;
+    max-height: 0;
+    overflow-y: hidden;
+    @include prefix(transition, moz webkit o, max-height 0.5s ease-in-out);
+    &.close {
+      max-height: 155px;
+    }
+  }
+}

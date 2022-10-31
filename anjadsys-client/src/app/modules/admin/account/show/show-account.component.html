@@ -1,0 +1,74 @@
+<div id="main-container">
+
+  <app-search-accounts
+    (searchAgentEvent)="searchAgent($event)"
+    [agents]="agents"
+    (selectedAgent)="getSelectedAgent($event)"
+    [spinnerAgent]="spinnerAgent$"
+
+    (searchSupplierEvent)="searchSupplier($event)"
+    [suppliers]="suppliers"
+    (selectedSupplier)="getSelectedSupplier($event)"
+    [spinnerSupplier]="spinnerSupplier$"
+    
+    (submittedSearch)="searchAccount($event)">
+  </app-search-accounts>
+  
+  <div class="page-content card dont-print">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الحركة</div>
+        <div class="col-custom col-custom-4">تاريخ الحركة</div>
+        <div class="col-custom col-custom-5">نوع الحركة</div>
+        <div class="col-custom col-custom-2">المبلغ (له)</div>
+        <div class="col-custom col-custom-3">المبلغ (عليه)</div>
+
+      </li>
+      <ng-template [ngIf]="accounts.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accounts.length > 0">
+        <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
+          <div class="col-custom col-custom-4" data-label="Date">{{ account.createdAt| date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-5 clickable" data-label="Account Transaction Type">
+            <ng-container *ngIf="account.insurancePolicyId">
+              بوليصة تأمين
+              <p style="text-decoration: underline;" (click)="open(account.insurancePolicyId)">
+                 رقم: {{ account.insurancePolicyId }}
+              </p>
+            </ng-container>
+            <ng-container *ngIf="account.agentId">
+             سقف مالي
+             <p style="text-decoration: underline;" (click)="openAgentLimits(account.id)">
+              رقم: {{ account.id }}
+             </p>
+            </ng-container>
+          </div>
+          <div class="col-custom col-custom-2" data-label="Debit">{{account.debit || 0}}</div>
+          <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
+
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="this.selectedAgent?.companyName && agentBalance">
+        <li class="table-row">
+          <div class="col-custom col-custom-2" data-label="Agent Balance" style="font-weight: bold;">الرصيد المالي</div>
+          <div class="col-custom col-custom-5" data-label="Agent Balance" style="font-weight: bold;">{{agentBalance}} {{currency}}</div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

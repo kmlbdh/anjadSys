@@ -1,0 +1,90 @@
+<div id="main-container">
+  <div class="page-content card">
+      <form [formGroup]="editServiceForm" #form="ngForm" (ngSubmit)="updateService()">
+        <div class="form-sec1">
+          <div class="form-control-group">
+            <label for="name">الخدمة</label>
+            <input id="name" type="text" name="name" formControlName="name"
+             required/>
+
+             <div *ngIf="(form.submitted || formCont('name')?.touched) &&
+             formCont('name')?.invalid" class="alert alert-danger">
+
+              <div *ngIf="formCont('name').hasError('required')">اسم الخدمة مطلوب تعبئته</div>
+            </div>
+
+          </div>
+          <div class="form-control-group">
+            <label for="coverageDays">عدد أيام تغطية الخدمة</label>
+            <input id="coverageDays" type="text" name="coverageDays"
+            formControlName="coverageDays" (keydown)="acceptNumbers($event)" required/>
+
+            <div *ngIf="(form.submitted || formCont('coverageDays')?.touched) &&
+            formCont('coverageDays')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('coverageDays').hasError('required')">عدد أيام تغطية الخدمة مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="cost">التكلفة الاجمالية</label>
+            <input id="cost" type="number" name="cost" formControlName="cost"
+            (keydown)="acceptNumbers($event)" required />
+
+            <div *ngIf="(form.submitted || formCont('cost')?.touched) &&
+            formCont('cost')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('cost').hasError('required')">التكلفة الاجمالية مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+        </div>
+
+        <div class="form-sec2">
+
+          <div class="form-control-group">
+            <label for="supplierPercentage">نسبة المورد</label>
+            <input id="supplierPercentage" type="text" name="supplierPercentage"
+            (keyup)="acceptNumbers($event)" placeholder="اضافة النسبة كمثال: 0.6 وهي 60%"
+            formControlName="supplierPercentage" required/>
+
+            <div *ngIf="(form.submitted || formCont('supplierPercentage')?.touched) &&
+            formCont('supplierPercentage')?.invalid" class="alert alert-danger">
+
+             <div *ngIf="formCont('supplierPercentage').hasError('required')">نسبة المورد مطلوب تعبئته</div>
+           </div>
+
+          </div>
+
+          <div class="form-control-group">
+            <label for="packageType">اضافة الى حزمة خدمات:</label>
+            <select id="packageType" name="packageType" formControlName="packageType">
+              <option *ngFor="let package of packageTypeArray; let i = index" [value]="i">{{package}}</option>
+            </select>
+
+            <div *ngIf="(form.submitted || formCont('packageType')?.touched)
+            && formCont('packageType')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('packageType').hasError('required')">
+            مطلوب الاختيار في حقل حزمة الخدمات</div>
+           </div>
+          </div>
+
+          <div class="form-control-group">
+            <label for="note">ملاحظات</label>
+            <textarea id="note" formControlName="note"></textarea>
+          </div>
+        </div>
+
+        <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+        <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+        <div class="btn-container">
+          <button type="submit">
+            <span>تحديث</span>
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

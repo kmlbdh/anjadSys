@@ -1,0 +1,12 @@
+@import 'shared';
+
+:host {
+  flex-grow: 11;
+}
+#main-container{
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 33px;
+}

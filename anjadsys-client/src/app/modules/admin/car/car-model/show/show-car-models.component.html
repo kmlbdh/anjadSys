@@ -1,0 +1,59 @@
+<div id="main-container">
+  <div class="card search-car-type-container">
+    <form>
+      <div class="form-sec1">
+        <div class="form-control-group">
+          <label for="carTypeId">نوع السيارة</label>
+          <select id="carTypeId" name="carTypeId" (change)="searchCarModel($event)">
+            <option *ngFor="let carType of carTypes" [value]="carType.id">{{carType.name}}</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم النوع</div>
+        <div class="col-custom col-custom-2">موديل السيارة</div>
+        <div class="col-custom col-custom-3">نوع السيارة</div>
+        <div class="col-custom col-custom-4">التحكم</div>
+      </li>
+      <ng-template [ngIf]="carModels.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="carModels.length > 0">
+        <li *ngFor="let carModel of carModels | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+          trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Car Number">{{carModel.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{carModel.name}}</div>
+          <div class="col-custom col-custom-3" data-label="Car Type">{{ carModel.CarType?.name }}</div>
+          <div class="col-custom col-custom-4 control" data-label="Control">
+
+            <button class="btn-primary" title="تعديل بيانات نوع السيارة" (click)="goToCarModelEdit(carModel.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button>
+
+            <button class="btn-error" title="حذف  موديل السيارة" (click)="deleteCarModel(carModel)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

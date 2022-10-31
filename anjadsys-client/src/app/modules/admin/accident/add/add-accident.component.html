@@ -1,0 +1,377 @@
+<div id="main-container">
+  <div class="page-content card">
+    <form id="accident-form" [formGroup]="addAccidentForm" #form="ngForm" (ngSubmit)="addAccident(form)">
+      <div class="form-sec0">
+
+        <div class="form-control-group">
+          <label for="customerId">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
+            (keyup)="searchCustomer($event)" list="customerList" name="customerId"
+            formControlName="customerId" (change)="fillFieldsByCustomer($event)" autocomplete="off" required/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('customerId')?.touched)
+          && formCont('customerId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="agentId">الوكيل:</label>
+          </div>
+          <input type="text" [value]="selectedAgent?.companyName" disabled/>
+          <input class="hide" type="agentId" id="agentId" name="agentId" formControlName="agentId"
+           required autocomplete="off"/>
+
+           <div *ngIf="(form.submitted || formCont('agentId')?.touched)
+           && formCont('agentId')?.invalid" class="alert alert-danger">
+             <div *ngIf="formCont('agentId').hasError('required')">الوكيل مطلوب تعبئته</div>
+           </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="carId">رقم السيارة :</label>
+          <div class="input" *ngIf="selectedCar">
+            {{selectedCar.carNumber}}
+            <span (click)="cancelCarInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="searchCar($event)"
+            list="carList" name="carId" formControlName="carId" autocomplete="off" required/>
+            <span *ngIf="spinner.car" class="spinner"></span>
+          </div>
+          <datalist id="carList">
+            <option *ngFor="let car of cars;" [value]="car.id">
+                {{car.carNumber}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('carId')?.touched) &&
+            formCont('carId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('carId').hasError('required')">رقم السيارة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="insurancePolicyId">رقم بوليصة التأمين :</label>
+          <div class="input" *ngIf="selectedInsurancePolicy">
+            {{selectedInsurancePolicy.id}}
+            <span (click)="cancelInsurancePolicyInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedInsurancePolicy || false}" id="insurancePolicyId" type="text"
+             (change)="selectInsurancePolicy($event)" list="insurancePolicyList"
+              name="insurancePolicyId" formControlName="insurancePolicyId" autocomplete="off" required/>
+            <span *ngIf="spinner.insurancePolicy" class="spinner"></span>
+          </div>
+          <datalist id="insurancePolicyList">
+            <option *ngFor="let insurancePolicy of insurancePolicies;" [value]="insurancePolicy.id">
+                {{insurancePolicy.id}}
+            </option>
+          </datalist>
+
+          <div *ngIf="!insurancePolicyNotValidMsg && (form.submitted || formCont('insurancePolicyId')?.touched) &&
+            formCont('insurancePolicyId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('insurancePolicyId').hasError('required')">رقم البوليصة مطلوب تعبئته</div>
+          </div>
+          <div *ngIf="insurancePolicyNotValidMsg" class="alert alert-danger">
+            <div>{{insurancePolicyNotValidMsg}}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="driverName">اسم السائق</label>
+          <input id="driverName" type="text" name="driverName" formControlName="driverName"
+          required/>
+
+          <div *ngIf="(form.submitted || formCont('driverName')?.touched) &&
+            formCont('driverName')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('driverName').hasError('required')">اسم السائق مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="driverIdentity">رقم هوية السائق</label>
+          <input id="driverIdentity" type="text" name="driverIdentity"
+            (keydown)="acceptNumbers($event)" formControlName="driverIdentity" required/>
+
+          <div *ngIf="(form.submitted || formCont('driverIdentity')?.touched) &&
+            formCont('driverIdentity')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('driverIdentity').hasError('minlength') || formCont('driverIdentity').hasError('maxlength')">
+              رقم الهوية الشخصية مكون من ٩ أرقام.</div>
+            <div *ngIf="formCont('driverIdentity').hasError('required')">
+              رقم هوية السائق السائق مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <!-- <div class="form-control-group">
+          <label for="name">اسم الحادث</label>
+          <input id="name" type="text" name="name" formControlName="name" required/>
+
+          <div *ngIf="(form.submitted || formCont('name')?.touched)
+            && formCont('name')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('name').hasError('required')">
+              اسم الحادث مطلوب تعبئته</div>
+          </div>
+        </div> -->
+
+        <div class="form-control-group">
+          <label for="regionId">منطقة الحادث</label>
+          <select id="regionId" formControlName="regionId">
+            <ng-template [ngIf]="regions">
+              <option value="">اختر المنطقة</option>
+              <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+            </ng-template>
+          </select>
+
+          <div *ngIf="(form.submitted || formCont('regionId')?.touched)
+            && formCont('regionId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('regionId').hasError('required')">منطقة الحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="accidentPlace">مكان الحادث</label>
+          <input id="accidentPlace" type="text" name="accidentPlace" formControlName="accidentPlace"
+            required/>
+
+          <div *ngIf="(form.submitted || formCont('accidentPlace')?.touched)
+            && formCont('accidentPlace')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('accidentPlace').hasError('required')">
+              مكان الحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-sec2">
+
+        <div class="form-control-group">
+          <label for="accidentDate">تاريخ الحادث</label>
+          <input id="accidentDate" type="date" name="accidentDate"
+          formControlName="accidentDate" min="{{ firstDayOfYear | date: 'yyyy-MM-dd'}}"
+            max="{{ lastDayOfYear | date: 'yyyy-MM-dd'}}" required/>
+
+          <div *ngIf="(form.submitted || formCont('accidentDate')?.touched)
+            && formCont('accidentDate')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('accidentDate').hasError('required')">
+              تاريخ الحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="registerAccidentDate">تاريخ تسجيل الحادث</label>
+          <input id="registerAccidentDate" type="date" name="registerAccidentDate"
+            formControlName="registerAccidentDate" min="{{ firstDayOfYear | date: 'yyyy-MM-dd'}}"
+            max="{{ lastDayOfYear | date: 'yyyy-MM-dd'}}" required/>
+
+          <div *ngIf="(form.submitted || formCont('registerAccidentDate')?.touched)
+            && formCont('registerAccidentDate')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('registerAccidentDate').hasError('required')">
+              تاريخ تسجيل الحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="expectedCost">التكلفة المتوقعة للحادث</label>
+          <input id="expectedCost" type="text" name="expectedCost" formControlName="expectedCost"
+          (keydown)="acceptNumbers($event)" required/>
+
+          <div *ngIf="(form.submitted || formCont('expectedCost')?.touched)
+            && formCont('expectedCost')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('expectedCost').hasError('required')">
+              التكلفة المتوقعة للحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="accidentDescription">تفاصيل الحادث</label>
+          <textarea id="accidentDescription" formControlName="accidentDescription"></textarea>
+
+          <div *ngIf="(form.submitted || formCont('accidentDescription')?.touched)
+          && formCont('accidentDescription')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('accidentDescription').hasError('required')">تفاصيل الحادث مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="note">ملاحظات</label>
+          <textarea id="note" formControlName="note" resizable="none"></textarea>
+        </div>
+
+      </div>
+
+      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+      <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+    </form>
+  </div>
+
+  <div class="page-content card">
+    <form [formGroup]="addServiceAccidentForm" #formS="ngForm" (ngSubmit)="addServiceAccident(formS)">
+      <div *ngIf="!selectedInsurancePolicy" class="alert alert-danger" style="width:100%">
+       <div>يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
+     </div>
+      <div class="form-sec0 custom-row">
+
+        <div class="form-control-group">
+          <label for="serviceId">الخدمة:</label>
+          <select id="serviceId" type="text" name="serviceId" formControlName="serviceId"
+            (change)="selectAccidentService($event)">
+            <ng-template [ngIf]="servicesPolicies">
+              <option [value]="null">اختر خدمة من القائمة</option>
+              <ng-container *ngFor="let servicePolicy of servicesPolicies">
+                <option *ngIf="!servicePolicy.propertiesUI!.hide"
+                  [value]="servicePolicy.Service.id">
+                    {{ servicePolicy.Service.name }}
+                </option>
+              </ng-container>
+            </ng-template>
+          </select>
+
+          <div *ngIf="(formS.submitted || formContS('serviceId')?.touched)
+           && formContS('serviceId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('serviceId').hasError('required')">الخدمة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="coverageDays">عدد أيام التغطية (اقصى عدد: {{this.maxDays}})</label>
+          <select id="coverageDays" type="text" name="coverageDays" formControlName="coverageDays">
+            <option>اختر عدد الأيام من القائمة</option>
+            <ng-container *ngFor="let _ of [].constructor(maxDays); let i = index">
+              <option [value]="i+1">
+                  {{ i+1 }}
+              </option>
+            </ng-container>
+          </select>
+
+          <div *ngIf="(formS.submitted || formContS('coverageDays')?.touched)
+           && formContS('coverageDays')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('coverageDays').hasError('required')">
+              عدد أيام التغطية مطلوب تعبئته
+            </div>
+            <div *ngIf="formContS('coverageDays').hasError('max')">
+              اقصى عدد لأيام التغطية:  {{ this.maxDays }} ايام
+            </div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="supplierId">المورد:</label>
+          <select id="supplierId" type="text" name="supplierId" formControlName="supplierId">
+            <ng-template [ngIf]="servicesPolicies">
+              <option>اختر مورد الخدمة من القائمة</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}</option>
+            </ng-template>
+          </select>
+
+          <div *ngIf="(formS.submitted || formContS('supplierId')?.touched)
+           && formContS('supplierId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('supplierId').hasError('required')">
+              المورد مطلوب تعبئته
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-container center">
+          <button class="mg-top1rem" type="submit"
+            [disabled]="formS.invalid
+            || formContS('coverageDays').disabled
+            || formContS('supplierId').disabled
+            || formContS('serviceId').disabled
+            ">
+            <span>
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path>
+                </svg>
+              </i>
+            </span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الخدمة</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <!-- <div class="col-custom col-custom-3">اجمالي التكلفة</div> -->
+        <div class="col-custom col-custom-4">عدد ايام التغطية</div>
+        <div class="col-custom col-custom-5">المورد</div>
+        <div class="col-custom col-custom-6">التحكم</div>
+      </li>
+      <ng-template [ngIf]="servicesAccident.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="servicesAccident.length > 0">
+        <li *ngFor="let serviceAccident of servicesAccident; let i = index; trackBy: trackByServiceId" class="table-row">
+          <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
+          <div class="col-custom col-custom-2" data-label="Service Name">{{serviceAccident['Service']?.name || ''}}</div>
+          <!-- <div class="col-custom col-custom-3" data-label="Cost">{{serviceAccident.cost}} {{currency}}</div> -->
+          <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ serviceAccident.coverageDays }} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="Supplier Name">{{ serviceAccident['Service']?.supplierText || ''}}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
+            <button class="btn-error" title="حذف الخدمة" (click)="deleteAccidentService(i)">
+              <i>
+                <svg style="width: 1.2rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                </svg>
+              </i>
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+  <div class="btn-container">
+    <button type="submit" form="accident-form" [disabled]="form.invalid">
+      <span>حفظ</span>
+    </button>
+  </div>
+</div>

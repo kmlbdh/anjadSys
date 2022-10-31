@@ -1,0 +1,85 @@
+<div id="main-container" class="print">
+  <div class="page-header card" style="padding: 0.8rem">
+    <span style="font-weight: 400;">{{selectedSupplier}}</span>
+  </div>
+
+  <app-search-supp-account
+    class="d-print-none"
+    (submittedSearch)="searchSupplierAccount($event)">
+  </app-search-supp-account>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">الرقم</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div  *ngIf="searchConditions.flag==='policy'" class="col-custom col-custom-3 clickable" (click)="showPercentage = !showPercentage">
+          <ng-container *ngIf="showPercentage">
+            المبلغ مع النسبة (له)
+          </ng-container>
+          <ng-container *ngIf="!showPercentage">
+            المبلغ (له)
+          </ng-container>
+        </div>
+        <div class="col-custom col-custom-4">التغطية</div>
+        <div class="col-custom col-custom-5">تاريخ الحركة</div>
+      </li>
+      <ng-template [ngIf]="accounts.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accounts.length > 0">
+        <li *ngFor="let account of accounts| paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+          trackBy: trackById; let i = index;" class="table-row">
+          <div class="col-custom col-custom-1" data-label="الرقم">{{account.id || i+1}}</div>
+          <div class="col-custom col-custom-2" data-label="الخدمة">{{account.Service.name}}</div>
+          <div *ngIf="searchConditions.flag==='policy'" class="col-custom col-custom-3" data-label="المبلغ مع النسبة (له)">
+            <ng-container *ngIf="showPercentage">
+              {{((account.cost! * (account.supplierPercentage || 1)) || 0) | number: '1.0-0'}}
+            </ng-container>
+            <ng-container *ngIf="!showPercentage">
+              {{account.cost || 0}}
+            </ng-container>
+            {{currency}}
+          </div>
+          <div class="col-custom col-custom-4" data-label="التغطية">
+            <ng-template [ngIf]="searchConditions.flag==='accident'">
+              {{(account.coverageDays | number) }}
+            </ng-template>
+            <ng-template [ngIf]="searchConditions.flag==='policy'">
+              {{(account.additionalDays + account.Service.coverageDays | number)}}
+            </ng-template>
+          </div>
+          <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date: 'dd-MM-yyyy'}}</div>
+          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
+             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
+              <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(account.id)"></fa-icon>
+          </div> -->
+        </li>
+        <li class="table-row" *ngIf="accounts.length > 0 && searchConditions.flag==='policy'">
+          <div class="col-custom col-custom-total-label" data-label="المجموع">المجموع</div>
+          <div class="col-custom col-custom-total" data-label="المجموع بالشيكل">{{accountBalance}} {{currency}}</div>
+        </li>
+
+        <div class="d-print-none print-btn">
+          <button type="button" class="btn-primary" (click)="printPage()">
+            <i>
+              <svg role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M448 192V77.25c0-8.49-3.37-16.62-9.37-22.63L393.37 9.37c-6-6-14.14-9.37-22.63-9.37H96C78.33 0 64 14.33 64 32v160c-35.35 0-64 28.65-64 64v112c0 8.84 7.16 16 16 16h48v96c0 17.67 14.33 32 32 32h320c17.67 0 32-14.33 32-32v-96h48c8.84 0 16-7.16 16-16V256c0-35.35-28.65-64-64-64zm-64 256H128v-96h256v96zm0-224H128V64h192v48c0 8.84 7.16 16 16 16h48v96zm48 72c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z"></path></svg>
+            </i>
+            طباعة الحساب
+          </button>
+        </div>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

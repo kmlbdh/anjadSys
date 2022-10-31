@@ -1,0 +1,78 @@
+<div id="search-container" class="card search-container" [@openClosed]="isOpen ? 'open': 'closed'">
+  <a *ngIf="!isOpen" class="open-search clickable flexRight" (click)="showSearch()">
+    فتح البحث
+  </a>
+  <form [@showHideForm]="isOpen ? 'show': 'hide'" [ngClass]="{'open': isOpen}"
+    [formGroup]="searchOtherServiceForm" #form="ngForm" (ngSubmit)="searchOtherService(form)">
+    <div class="form-sec1">
+
+      <div class="form-control-group">
+        <label for="otherServiceID">رقم الخدمة</label>
+        <input id="otherServiceID" type="text"
+         name="otherServiceID" formControlName="otherServiceID"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="fileStatus">حالة الملف</label>
+        <select id="fileStatus" formControlName="fileStatus">
+          <option *ngFor="let fileStatus of fileStatusArr" [ngValue]="fileStatus">{{fileStatus}}</option>
+        </select>
+      </div>
+
+      <div class="form-control-group">
+        <label for="serviceKind">نوع الخدمة</label>
+        <input id="serviceKind" type="text"
+         name="serviceKind" formControlName="serviceKind"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="customerID">الزبون:</label>
+        <div class="input" *ngIf="internalSelectedCustomer">
+          {{internalSelectedCustomer.username}}
+          <span (click)="cancelCustomerInput($event)">
+            <i>
+              <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+              </svg>
+            </i>
+          </span>
+        </div>
+        <div class="input-with-spinner">
+          <input [ngClass]="{'hide': internalSelectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
+           list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
+          <span *ngIf="spinner | async" class="spinner"></span>
+        </div>
+        <datalist id="customerList">
+          <option *ngFor="let customer of customers;" [value]="customer.id">
+              {{customer.username}}
+          </option>
+        </datalist>
+      </div>
+
+      <div class="form-control-group">
+        <label for="startDate">من تاريخ</label>
+        <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+      </div>
+
+      <div class="form-control-group">
+        <label for="endDate">الى تاريخ</label>
+        <input id="endDate" type="date" name="endDate" formControlName="endDate">
+      </div>
+
+    </div>
+
+
+    <div class="form-sec2">
+
+      <div class="btn-container">
+        <button type="submit">
+          <span>بحث</span>
+        </button>
+      </div>
+
+    </div>
+  </form>
+  <a *ngIf="isOpen" class="open-search clickable" (click)="showSearch()">
+    اغلاق البحث
+  </a>
+</div>

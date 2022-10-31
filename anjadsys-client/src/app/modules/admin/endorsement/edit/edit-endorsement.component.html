@@ -1,0 +1,145 @@
+<div id="main-container">
+  <div class="page-content card">
+    <form id="accident-form" [formGroup]="editEndorsementForm" #form="ngForm" (ngSubmit)="updateEndorsement(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="endorsementType">نوع الملحق</label>
+          <select id="endorsementType" formControlName="endorsementType" placeholder="" required>
+            <option [value]="null">اختر من القائمة</option>
+            <option *ngFor="let endorsType of endorsementTypeArray; let i = index" [ngValue]="i">{{endorsType}}</option>
+          </select>
+
+          <div *ngIf="(form.submitted || formCont('endorsementType')?.touched) &&
+          formCont('endorsementType')?.invalid" class="alert alert-danger">
+
+           <div *ngIf="formCont('endorsementType').hasError('required')">نوع الملحق مطلوب تعبئته</div>
+         </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="customerId">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" #customerId type="text" (keyup)="searchCustomer($event)" list="customerList"
+            name="customerId" (change)="fillFieldsByCustomer($event)" autocomplete="off" required/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('customerId')?.touched)
+          && formCont('customerId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="agentId">الوكيل:</label>
+          </div>
+          <input type="text" [value]="selectedAgent?.companyName" disabled/>
+          <input class="hide" type="agentId" id="agentId" #agentId name="agentId" required/>
+
+           <div *ngIf="(form.submitted || formCont('agentId')?.touched)
+           && formCont('agentId')?.invalid" class="alert alert-danger">
+             <div *ngIf="formCont('agentId').hasError('required')">الوكيل مطلوب تعبئته</div>
+           </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="insurancePolicyId">رقم البوليصة:</label>
+          <div class="input" *ngIf="selectedInsurancePolicy">
+            {{selectedInsurancePolicy.id}}
+            <span (click)="cancelInsurancePolicyInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedInsurancePolicy}" id="insurancePolicyId" type="text"
+            (keyup)="selectInsurancePolicy($event)" list="insurancePolicyList" name="insurancePolicyId"
+            formControlName="insurancePolicyId" autocomplete="off" required/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="insurancePolicyList">
+            <option *ngFor="let insuPolicy of insurancePolicies;" [value]="insuPolicy.id">
+                {{insuPolicy.id}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('insurancePolicyId')?.touched)
+          && formCont('insurancePolicyId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('insurancePolicyId').hasError('required')">رقم البوليصة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-sec2">
+
+
+        <div class="form-control-group">
+          <label for="carId">رقم السيارة :</label>
+          <div class="input" *ngIf="selectedCar">
+            {{selectedCar.carNumber}}
+            <span (click)="cancelCarInput($event)">
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="selectCar($event, form)"
+            list="carList" name="carId" formControlName="carId" autocomplete="off" required/>
+            <span *ngIf="spinner.car" class="spinner"></span>
+          </div>
+          <datalist id="carList">
+            <option *ngFor="let car of cars;" [value]="car.id">
+                {{car.carNumber}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('carId')?.touched) &&
+            formCont('carId')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('carId').hasError('required')">رقم السيارة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="note">ملاحظات</label>
+          <textarea id="note" formControlName="note" style="max-width:100%;width: auto;" resizable="none"></textarea>
+        </div>
+
+      </div>
+
+      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+      <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+
+    </form>
+  </div>
+
+  <div class="btn-container">
+    <button type="submit" form="accident-form" [disabled]="form.invalid">
+      <span>تحديث</span>
+    </button>
+  </div>
+</div>

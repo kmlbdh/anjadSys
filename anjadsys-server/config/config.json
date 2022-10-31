@@ -1,0 +1,25 @@
+{
+  "development": {
+    "username": "root",
+    "password": "OBADAKAMAL--=1988",
+    "database": "injad_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "injad_admin",
+    "password": "injad@12345#",
+    "database": "injad_db",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
+

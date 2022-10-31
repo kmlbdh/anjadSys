@@ -1,0 +1,152 @@
+@import 'shared';
+
+:host {
+  width: min-content;
+  flex-grow: 12.3;
+}
+#main-container {
+  padding: 5px 25px 25px 25px;
+  background-color:#f3f3f3;
+  height: max-content;
+
+  .card{
+    @include card;
+  }
+
+  .page-header{
+    font-size: 17px;
+    color: #000;
+    width:100%;
+    margin-bottom: 30px;
+    text-align: right;
+    font-weight: 700;
+
+    p {
+      margin:0;
+    }
+  }
+
+  .page-content{
+    width: 100%;
+    min-height: 80%;
+
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-self: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: stretch;
+      height: 100%;
+
+      .form-sec1,
+      .form-sec2 {
+        flex-basis: 40%;
+      }
+      .form-sec2 {
+        flex-basis: 55%;
+      }
+
+      div.form-control-group {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        align-items: stretch;
+        margin-bottom: 15px;
+
+        .input-with-spinner{
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          align-items: center;
+          > input, select, textarea{
+            flex-basis: 100%;
+          }
+        }
+
+        label{
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+      }
+
+      input, textarea, select, div.input{
+        line-height: 22px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        @include box-shadow(
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(60 66 87 / 16%) 0px 0px 0px 1px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+        rgb(0 0 0 / 0%) 0px 0px 0px 0px
+        );
+
+        &.hide{
+          display: none;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      div.input {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        line-height: normal;
+        padding: 5.3px 12px;
+
+        i {
+          vertical-align: sub;
+          cursor: pointer;
+        }
+      }
+
+      div.alert{
+        margin: 10px 2px;
+        font-size: 0.85rem;
+      }
+
+      div.alert-danger{
+        color: $mainRedColor;
+      }
+
+      .ng-valid[required], .ng-valid.required  {
+        border-left: 5px solid $mainGreenColor;
+      }
+
+      .ng-invalid:not(form)  {
+        border-left: 5px solid $mainRedColor;
+      }
+
+      div.btn-container{
+        margin-top: 14px;
+        margin-bottom: 14px;
+        flex-basis: 100%;
+
+        button{
+          @include button-primary;
+        }
+      }
+
+      div.error{
+        @include messageBox($mainRedColor);
+      }
+      div.success{
+        @include messageBox($mainGreenColor);
+      }
+    }
+  }
+
+}

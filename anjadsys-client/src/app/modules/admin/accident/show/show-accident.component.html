@@ -1,0 +1,77 @@
+<div id="main-container">
+
+  <app-search-accidents
+  (searchCustomerEvent)="searchCustomer($event)"
+  [customers]="customers"
+  (selectedCustomer)="getSelectedCustomer($event)"
+  [spinnerCustomer]="spinnerCustomer$"
+
+  (searchAgentEvent)="searchAgent($event)"
+  [agents]="agents"
+  (selectedAgent)="getSelectedAgent($event)"
+  [spinnerAgent]="spinnerAgent$"
+  
+  (submittedSearch)="searchAccident($event)"
+  ></app-search-accidents>
+
+  <div class="page-content card dont-print">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم البلاغ</div>
+        <div class="col-custom col-custom-2">رقم السيارة</div>
+        <div class="col-custom col-custom-3">اسم صاحب السيارة</div>
+        <div class="col-custom col-custom-4">اسم الوكيل</div>
+        <div class="col-custom col-custom-5">تاريخ البلاغ</div>
+        <div class="col-custom col-custom-6">التحكم</div>
+      </li>
+      <ng-template [ngIf]="accidents.length === 0">
+        <li class="no-data" style="width: 100%;" *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accidents.length > 0">
+        <li *ngFor="let accident of accidents | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Car Accident Id">{{accident.id}}</div>
+          <div class="col-custom col-custom-2 clickable underline-text" data-label="Car Number" (click)="openCar(accident)">{{accident.Car.carNumber}}</div>
+          <div class="col-custom col-custom-3" data-label="Car Owner">{{accident.Customer.username}}</div>
+          <div class="col-custom col-custom-4" data-label="Agent Name">{{ accident.Agent.companyName }}</div>
+          <div class="col-custom col-custom-5" data-label="Car Accident Registration Date">{{ accident.registerAccidentDate | date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
+
+            <button class="btn-primary" title="ملف الحادث" (click)="open(accident.id)">
+              <i>
+                <svg style="width: 1.4rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path fill="currentColor" d="M176 216h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16H176c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16zm-16 80c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16H176c-8.84 0-16 7.16-16 16v16zm96 121.13c-16.42 0-32.84-5.06-46.86-15.19L0 250.86V464c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V250.86L302.86 401.94c-14.02 10.12-30.44 15.19-46.86 15.19zm237.61-254.18c-8.85-6.94-17.24-13.47-29.61-22.81V96c0-26.51-21.49-48-48-48h-77.55c-3.04-2.2-5.87-4.26-9.04-6.56C312.6 29.17 279.2-.35 256 0c-23.2-.35-56.59 29.17-73.41 41.44-3.17 2.3-6 4.36-9.04 6.56H96c-26.51 0-48 21.49-48 48v44.14c-12.37 9.33-20.76 15.87-29.61 22.81A47.995 47.995 0 0 0 0 200.72v10.65l96 69.35V96h320v184.72l96-69.35v-10.65c0-14.74-6.78-28.67-18.39-37.77z"></path>
+                </svg>
+              </i>
+            </button>
+
+            <!-- <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)">
+              <fa-icon [icon]="carEditIcon"></fa-icon>
+            </button> -->
+
+            <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
+              <i>
+                <svg style="width: 1.2rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                </svg>
+              </i>
+            </button>
+
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

@@ -1,0 +1,96 @@
+<div class="modal-header">
+  <div class="title-date-insuId">
+    <h4 class="modal-title" id="modal-basic-title">بيانات السيارة</h4>
+  </div>
+  <div class="company-header">
+    <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
+    <span>فلسطين - العيزرية</span>
+    <span>info@injad.ps</span>
+  </div>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="main-data-section card agent-container">
+    <div class="agent-section">
+      <div>
+        <label>اسم الزبون : </label>
+        <span>{{carDetails.User.username}}</span>
+      </div>
+      <div>
+        <label>العنوان : </label>
+        <span>{{carDetails.User.Region.name}} / {{carDetails.User.address}}</span>
+      </div>
+      <div>
+        <label>رقم الهاتف : </label>
+        <span>{{carDetails.User.jawwal1}}
+          <ng-container *ngIf="carDetails.User.jawwal2">
+            /
+          </ng-container>
+           {{carDetails.User.jawwal2}}</span>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات السيارة</h5>
+      </div>
+      <div class="data-section-car">
+        <div class="each-data">
+          <label>رقم السيارة : </label>
+          <span>{{carDetails.carNumber}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الماتور : </label>
+          <span>{{carDetails.motorNumber}}</span>
+        </div>
+        <div class="each-data">
+          <label>قوة الماتور : </label>
+          <span>{{carDetails.motorPH}}</span>
+        </div>
+        <div class="each-data">
+          <label>نوع الترخيص : </label>
+          <span>{{carDetails.licenseType}}</span>
+        </div>
+        <div class="each-data">
+          <label>رقم الشصي : </label>
+          <span>{{carDetails.serialNumber}}</span>
+        </div>
+        <div class="each-data">
+          <label>عدد الركاب : </label>
+          <span>{{carDetails.passengersCount}}</span>
+        </div>
+        <div class="each-data">
+          <label>لون السيارة : </label>
+          <span>{{carDetails.color}}</span>
+        </div>
+        <div class="each-data">
+          <label>سنة التصنيع : </label>
+          <span>{{carDetails.productionYear}}</span>
+        </div>
+        <div class="each-data">
+          <label>نوع السيارة : </label>
+          <span>{{carDetails.CarType.name}}</span>
+        </div>
+        <div class="each-data">
+          <label>موديل السيارة : </label>
+          <span>{{carDetails.CarModel.name}}</span>
+        </div>
+        <div class="each-data">
+          <label>ملاحظات : </label>
+          <span>{{carDetails.note  || '--'}}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة تفاصيل السيارة</button>
+</div>

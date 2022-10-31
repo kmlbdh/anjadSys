@@ -1,0 +1,6 @@
+<div id="nav">
+  <ul class="first-nav">
+    <app-nav-item [navItem]="nav" [miniNavBar]="miniNavBar"
+      *ngFor="let nav of navData; trackBy: trackById"></app-nav-item>
+  </ul>
+</div>

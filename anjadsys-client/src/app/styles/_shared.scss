@@ -1,0 +1,224 @@
+@import 'variables';
+
+@mixin prefix($property, $prefixes, $value...) {
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value
+}
+
+@mixin box-shadow($value...) {
+  @include prefix(box-shadow, moz webkit, $value);
+}
+
+@mixin card(){
+  border-radius: 5px;
+  // -webkit-box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
+  // box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
+  @include box-shadow(0 1px 20px 0 rgb(69 90 100 / 8%));
+  border: none;
+  margin-bottom: 20px;
+  background: #fff;
+  padding: 1rem 1.25rem 1.25rem 1.25rem;
+}
+
+@mixin share-alert{
+  color: #fff;
+  padding: 9px;
+  flex-basis: 80%;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+@mixin btn-primary(){
+  border: none;
+  background-color: $mainBlueColor;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(2 132 199) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px2, 132, 1992, 132, 1992, 132, 199
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
+@mixin btn-success{
+  border: none;
+  background-color: $mainGreenColor;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(0, 204, 119) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
+@mixin btn-primary-disabled{
+  @include btn-primary;
+  border: none;
+  background-color: $mainGrayColorDisabled;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(141, 150, 160) 0px 0px 0px 1px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px
+  );
+  cursor: not-allowed;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
+@mixin btn-error{
+  border: none;
+  background-color: $mainRedColor;
+  @include box-shadow(
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 12%) 0px 1px 1px 0px,
+  rgb(254 93 112) 0px 0px 0px 1px,#0284c7
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(0 0 0 / 0%) 0px 0px 0px 0px,
+  rgb(60 66 87 / 8%) 0px 2px 5px 0px
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 30px;
+  width: 93px;
+  font-size: 17px;
+}
+
+@mixin btn-primary-span{
+  height: 100%;
+  margin: auto;
+  width: 100%;
+  vertical-align: sub;
+}
+
+@mixin messageBox($color) {
+  @include share-alert;
+  background-color: $color;
+}
+
+@mixin button-primary(){
+  @include btn-primary;
+  span{
+    @include btn-primary-span
+  }
+}
+
+@mixin button-success(){
+  @include btn-success;
+  span{
+    @include btn-primary-span
+  }
+}
+
+@mixin button-primary-disabled(){
+  @include btn-primary-disabled;
+  span{
+    @include btn-primary-span;
+  }
+}
+
+@mixin button-error(){
+  @include btn-error;
+  span{
+    @include btn-primary-span
+  }
+}
+
+@mixin loader($height, $width, $thick) {
+  margin: auto;
+  border: $thick solid #f3f3f3;
+  border-top: $thick solid $mainBlueColor;
+  border-radius: 50%;
+  width: $width;
+  height: $height;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+@mixin pagination() {
+  .custom-pagination ::ng-deep .ngx-pagination {
+    text-align: center;
+    li {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      height: 33px;
+      width: 39px;
+
+      a {
+        margin: auto;
+        vertical-align: sub;
+        height: 33px;
+        width: 33px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      span:last-child{
+        vertical-align: middle;
+      }
+      &.pagination-next,
+      &.pagination-next.disabled
+      &.pagination-previous,
+      &.pagination-previous.disabled{
+        height: 33px;
+        width: 33px;
+        a::after{
+          vertical-align: middle;
+        }
+        a::before{
+          vertical-align: middle;
+        }
+      }
+      &.pagination-next.disabled::after,
+      &.pagination-previous.disabled::before{
+        vertical-align: middle;
+      }
+      &.pagination-previous a::before,
+      &.pagination-previous.disabled::before {
+        margin: auto;
+        vertical-align: middle;
+      }
+    }
+    .current {
+      background-color: $goldColor;
+      color: white;
+      border-radius: 5px;
+    }
+  }
+}
+

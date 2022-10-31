@@ -1,131 +1,127 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/config.auth");
-const db = require("../model");
+const db = require("../models");
 const util = require("util");
 const customError = require("../classes/customError");
 const errorHandler = require("../classes/errorhandler");
 const validation = require("./middleware.validation");
-const { schema } = require("../schema/schema.validation");
+const { login } = require("../schema/schema.validation.shared");
+const { Op } = require("sequelize");
 
-const User = db.userModel;
-// const Role = db.roleModel;
-const StaticRoles = db.ROLES;
+const User = db.User;
+const Role = db.Role;
+
 const INTERR = "INT_ERR";
 
 //debugging NOT FOR PRODUCTION
 const verifyTokenLog = util.debuglog("middleware.auth-VerifyToken");
-const isAdminLog = util.debuglog("middleware.auth-isAdmin");
+const isUserTypeLog = util.debuglog("middleware.auth-isUserType");
+const checkRoleLog = util.debuglog("middleware.checkRole");
 const checkDuplicateLog = util.debuglog("middleware.auth-checkDuplicateUsernameOrNickname");
 
+const isUserType = (roleName) => {
+  return async (req, res, next) => {
+    let errorCode;
+    try{
+      const done = await checkRole(roleName, req, res);
+      isUserTypeLog(done);
+      if(done) next();
+      else{
+        errorCode = 401;
+        throw new customError("Unauthorized!", INTERR);
+      } 
+    } catch(error){
+      isUserTypeLog(error);
+      errorHandler(res, error, `Failed! can't get ${roleName} privilege!`, errorCode);
+    }
+  }
+}
+
 const auth = {
-  isAdmin: async (req, res, next) => {
-    try{
-      const done = await checkRole(2, req, res);
-      if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
-    } catch(error){
-      console.log(error);
-      errorHandler(res, error, "Failed! can't get admin privilege!");
-    }
-  },
-  isAgent: async (req, res, next) => {
-    try{
-      const done = await checkRole(1, req, res);
-      if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
-    } catch(error){
-      console.log(error);
-      errorHandler(res, error, "Failed! can't get agent privilege!");
-    }
-  },
-  isCustomer: async (req, res, next) => {
-    try{
-      const done = await checkRole(0, req, res);;
-      if(done) next();
-      else throw new customError("Unauthorized!", INTERR);
-    } catch(error){
-      console.log(error);
-      errorHandler(res, error, "Failed! can't get customer privilege!");
-    }
-  },
+  isAdmin: isUserType('admin'),
+  isAgent: isUserType('agent'),
+  isCustomer: isUserType('customer'),
   verifyToken: (req, res, next) => {
+    let errorCode;
     try{
       let token = req.headers['x-access-token'];
       verifyTokenLog(token);
   
-      if(!token)
+      if(!token){
+        errorCode = 401;
         throw new customError("No token provided!", INTERR);
+      }
       
-      jwt.verify(token, config.secret, (error, decoded) => {
-        if(error)
+      jwt.verify(token, process.env.TOKEN_SECRET, (error, decoded) => {
+        if(error){
+          errorCode = 401;
           throw new customError("Unauthorized!", INTERR);
-    
-          req.id = decoded.id;
-          next();
+        }
+      
+        req.id = decoded.id;
+        next();
       });
     } catch(error){
       verifyTokenLog(error);
-      errorHandler(res, error, "Failed! can't get token!");
+      errorHandler(res, error, "Failed! can't get token!", errorCode);
     }
   }
 };
 
-const verifyCreateUser = {
-  checkDuplicateUsernameOrNickname: async(req, res, next) => {
-    try{
-      const OR = [];
-      if(req.body.username) OR.push({'username': req.body.username});
-      if(req.body.nickname) OR.push({'nickname': req.body.nickname});
-      let fieldName = null;
-      const user = await User.findOne({$or:OR});
-      checkDuplicateLog(user);
-      if(user){
-        fieldName = user.username === req.body.username ? 'username' : 'nickname';
-        return res.status(400).json({message: `${fieldName} is exist!`});
-      }
-  
-      next();
-    } catch(error){
-      errorHandler(res, error, "Failed! can't verify user existance", 400);
-    }
-  },
-  validateCreateUser: validation(schema.createUser, 'body')
-};
-
-
-const verifyLogin = {
-  validateLogin: validation(schema.login, 'body')
-};
-
-const checkRole = async(roleIndex, req, res) => {
-  const roleString = StaticRoles[roleIndex];
-  isAdminLog(roleIndex);
+const checkDuplicateUsernameOrNickname = async(req, res, next) => {
   try{
-    isAdminLog(roleString);
-    isAdminLog(req.id);
-
-    const user = await User.findOne({_id:req.id}).exec();
-
-    isAdminLog(user);
-
-    if(!user || !user.role || user.role !== roleString)
-      throw new customError(`Require ${roleString} Role!`, INTERR);
+    const query = {where: {[Op.or]: []}};
+    if(req.body.username) query.where[Op.or].push({username: req.body.username});
+    if(req.body.companyName) query.where[Op.or].push({companyName: req.body.companyName});
     
-    const {_id, username, nickname, role} = user;
- 
-    if(roleIndex === 2){
-      req.admin = {_id, username, nickname, role};
-    }
-    else if(roleIndex === 1){
-      req.agent = {_id, username, nickname, role};
-    }
-    isAdminLog(req.admin, req.agent);
+    checkDuplicateLog(query);
 
-    return (req.admin || req.agent);//TODO wrong behaviour, fail on customer check 
+    let fieldName = null;
+    const user = await User.findOne(query);
+
+    checkDuplicateLog(user);
+
+    if(user){
+      fieldName = user.username === req.body.username ? 'username' : 'companyName';
+      return res.status(400).json({message: `${fieldName} is exist!`});
+    }
+
+    next();
   } catch(error){
-    isAdminLog(error);
+    errorHandler(res, error, "Failed! can't verify user existance", 400);
+  }
+};
+
+const verifyLoginValidation =  validation(login, 'body');
+
+const checkRole = async(roleName, req, res) => {
+  try{
+    const user = await User.findOne({
+      where: { id: req.id },
+      include: [{
+        model: Role,
+        required: true,
+        where: { name: {
+          [Op.substring]: roleName
+        }}
+      }]
+    });
+
+    if(!user || !user.Role || user.Role.name !== roleName)
+      throw new customError(`Require ${roleName} Role!`, INTERR);
+    
+    const { id, username, companyName, Role: {name: role}, servicesPackage } = user;
+ 
+    if(roleName === 'admin'){
+      req.admin = { id, username, companyName, role};
+    } else if(roleName === 'agent'){
+      req.agent = { id, username, companyName, role, servicesPackage};
+    }
+
+    return (req.admin || req.agent); //TODO wrong behaviour, fail on customer check 
+  } catch(error){
+    checkRoleLog(error);
     errorHandler(res, error, "Failed! can't get role!");
   }
 };
 
-module.exports = {auth, verifyLogin, verifyCreateUser};
+module.exports = { auth, verifyLoginValidation, checkDuplicateUsernameOrNickname };

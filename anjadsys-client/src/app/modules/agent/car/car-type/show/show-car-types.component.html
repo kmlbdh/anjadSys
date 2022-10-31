@@ -1,0 +1,32 @@
+<div id="main-container">
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم النوع</div>
+        <div class="col-custom col-custom-2">نوع السيارة</div>
+      </li>
+      <ng-template [ngIf]="carTypes.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="carTypes.length > 0">
+        <li *ngFor="let carType of carTypes | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Car Number">{{carType.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{carType.name}}</div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>

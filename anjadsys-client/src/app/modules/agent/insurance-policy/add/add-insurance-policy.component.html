@@ -1,0 +1,220 @@
+<div id="main-container">
+  <div class="page-content card">
+    <form id="accident-form" [formGroup]="addInsurancePolicyForm" #form="ngForm" (ngSubmit)="addInsurancePolicy(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="customerId">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text" (keyup)="searchCustomer($event)" list="customerList"
+            name="customerId" formControlName="customerId" (change)="fillFieldsByCustomer($event)" autocomplete="off" required/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('customerId')?.touched)
+          && formCont('customerId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="carId">رقم السيارة :</label>
+          <div class="input" *ngIf="selectedCar">
+            {{selectedCar.carNumber}}
+            <span (click)="cancelCarInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCar}" id="carId" type="text" (keyup)="searchCar($event)"
+            list="carList" name="carId" formControlName="carId" autocomplete="off" required/>
+            <span *ngIf="spinner.car" class="spinner"></span>
+          </div>
+          <datalist id="carList">
+            <option *ngFor="let car of cars;" [value]="car.id">
+                {{car.carNumber}}
+            </option>
+          </datalist>
+
+          <div *ngIf="(form.submitted || formCont('carId')?.touched) &&
+            formCont('carId')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('carId').hasError('required')">رقم السيارة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-sec2">
+
+        <div class="form-control-group">
+          <label for="expireDate">تاريخ انتهاء البوليصة</label>
+          <input id="expireDate" type="date" name="expireDate" formControlName="expireDate"
+           required/>
+
+          <div *ngIf="(form.submitted || formCont('expireDate')?.touched) &&
+            formCont('expireDate')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('expireDate').hasError('required')">تاريخ انتهاء البوليصة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="totalPrice">تكلفة البوليصة</label>
+          <input type="number" [value]="formCont('totalPrice').value" disabled/>
+          <input class="hide" id="totalPrice" type="text" name="totalPrice" formControlName="totalPrice"
+           required/>
+
+          <div *ngIf="(form.submitted || formCont('totalPrice')?.touched) &&
+            formCont('totalPrice')?.invalid" class="alert alert-danger">
+
+            <div *ngIf="formCont('totalPrice').hasError('required')">تكلفة البوليصة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <label for="note">ملاحظات</label>
+          <textarea id="note" formControlName="note" style="max-width:100%;width: auto;" resizable="none"></textarea>
+        </div>
+
+      </div>
+
+      <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+      <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+
+    </form>
+  </div>
+
+  <div class="page-content card">
+    <form [formGroup]="addServicePolicyForm" #formS="ngForm" (ngSubmit)="addServicePolicy(formS)">
+      <div *ngIf="suppliers.length === 0" class="alert alert-danger" style="width:100%">
+        <div style="font-weight:600">
+           اختر الزبون لاظهار الموردين
+        </div>
+      </div>
+
+      <div class="form-sec0 custom-row">
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="serviceId">الخدمة:</label>
+          </div>
+          <select id="serviceId" type="text" name="serviceId" formControlName="serviceId"
+            (change)="selectServicePolicy($event)">
+            <ng-template [ngIf]="services">
+              <option>اختر خدمة من القائمة</option>
+              <ng-container *ngFor="let service of services">
+                <option *ngIf="!service.propertiesUI!.hide"
+                  [value]="service.id">
+                    {{ service.name }}
+                </option>
+              </ng-container>
+            </ng-template>
+          </select>
+
+          <div *ngIf="(formS.submitted || formContS('serviceId')?.touched)
+           && formContS('serviceId')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('serviceId').hasError('required')">الخدمة مطلوب تعبئته</div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="additionalDays">عدد ايام التغطية الاضافية:</label>
+          </div>
+          <input type="text" id="additionalDays" name="additionalDays"   formControlName="additionalDays" (keydown)="acceptNumbers($event)"
+            (keyup)="totalCostPerServicePolicy($event)" required/>
+
+          <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
+            && formContS('additionalDays')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('additionalDays').hasError('required')">
+              عدد الايام مطلوب تعبئته
+            </div>
+          </div>
+        </div>
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="cost">التكلفة الأجمالية:</label>
+          </div>
+          <input type="number" [value]="formContS('cost').value" disabled/>
+          <input class="hide" type="number" id="cost" name="cost" formControlName="cost" required/>
+        </div>
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="supplierId">المورد:</label>
+          </div>
+          <select id="supplierId" type="text" name="supplierId" formControlName="supplierId" required>
+            <ng-template [ngIf]="services">
+              <option>اختر مورد الخدمة من القائمة</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.companyName }}</option>
+            </ng-template>
+          </select>
+
+          <div *ngIf="(formS.submitted || formContS('additionalDays')?.touched)
+           && formContS('additionalDays')?.invalid" class="alert alert-danger">
+            <div *ngIf="formContS('additionalDays').hasError('required')">
+              المورد مطلوب تعبئته
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-container center">
+          <button class="mg-top39" type="submit" [disabled]="formS.invalid">
+            <span><fa-icon [icon]="addServiceBtnIcon"></fa-icon></span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الخدمة</div>
+        <div class="col-custom col-custom-2">الخدمة</div>
+        <div class="col-custom col-custom-3">اجمالي التكلفة</div>
+        <div class="col-custom col-custom-4">عدد ايام التغطية</div>
+        <div class="col-custom col-custom-5">المورد</div>
+        <div class="col-custom col-custom-6">التحكم</div>
+      </li>
+      <ng-template [ngIf]="servicesPolicy.length === 0">
+        <li class="no-data" style="width: 100%;">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="servicesPolicy.length > 0">
+        <li *ngFor="let servicePolicy of servicesPolicy; let i = index; trackBy: trackByServiceId" class="table-row">
+          <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Number">{{serviceText(servicePolicy.serviceId)}}</div>
+          <div class="col-custom col-custom-3" data-label="Cost">{{servicePolicy.cost}} {{currency}}</div>
+          <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ totalCoverageDays(servicePolicy.serviceId) }} {{days}}</div>
+          <div class="col-custom col-custom-5" data-label="Car Registration Date Role">{{ supplierText(servicePolicy.supplierId) }}</div>
+          <div class="col-custom col-custom-6 control" data-label="Control">
+            <button class="btn-error" title="حذف الخدمة" (click)="deleteServicePolicy(i)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+  <div class="btn-container">
+    <button type="submit" form="accident-form" [disabled]="form.invalid">
+      <span>حفظ</span>
+    </button>
+  </div>
+</div>

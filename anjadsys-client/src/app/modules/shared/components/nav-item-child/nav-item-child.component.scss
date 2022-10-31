@@ -1,0 +1,45 @@
+@import 'shared';
+
+:host {
+  width: 80%;
+}
+
+li{
+  padding: 8px;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 800;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+
+  &.large-nav {
+    padding: 8px 0;
+  }
+  &:hover{
+    background-color: $goldColor;
+  }
+  &.active{
+    background-color: $goldColor;
+    span{
+      font-weight: 700;
+    }
+  }
+  i {
+    flex-basis: 10%;
+    svg {
+      width: 0.5rem;
+    }
+  }
+  span{
+    font-size: 0.75rem;
+    font-weight: 400;
+    flex-basis: 90%;
+    margin-right: 0;
+  }
+
+}

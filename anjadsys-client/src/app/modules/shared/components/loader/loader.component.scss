@@ -1,0 +1,20 @@
+@import 'shared';
+
+#main-content{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  top:0;
+  right:0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: space-around;
+  align-items: center;
+  background: rgba(141, 150, 160, 0.7);
+
+  .loader{
+    @include loader(120px, 120px, 16px);
+  }
+}

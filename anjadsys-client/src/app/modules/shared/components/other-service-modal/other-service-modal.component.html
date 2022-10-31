@@ -1,0 +1,107 @@
+<div class="modal-header">
+  <div class="title-date-insuId">
+    <h4 class="modal-title" id="modal-basic-title">خدمات أخرى - {{modalOtherService.name}}</h4>
+  </div>
+  <div class="company-header">
+    <img src="../../../../../assets/logo-injad.png" width="80%">
+    <span style="font-weight: 600;">شركة انجاد لوجيستك</span>
+    <span>فلسطين - العيزرية</span>
+    <span>info@injad.ps</span>
+  </div>
+  <button type="button" class="close d-print-none" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="main-data-section card">
+    <div class="card-body">
+      <div class="header-section">
+        <h5>بيانات الزبون</h5>
+      </div>
+      <div class="data-section" style="margin-bottom: 25px;">
+        <div class="each-data">
+          <label>اسم الزبون</label>
+          <span>{{modalOtherService.Customer.username}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الهوية</label>
+          <span>{{modalOtherService.Customer.identityNum}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الجوال</label>
+          <span>{{modalOtherService.Customer.jawwal1}}
+            <ng-container *ngIf="modalOtherService.Customer.jawwal2">
+              /
+            </ng-container>
+            {{modalOtherService.Customer.jawwal2}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>العنوان</label>
+          <span>{{modalOtherService.Customer.Region.name}} / {{modalOtherService.Customer.address}}</span>
+        </div>
+
+      </div>
+
+      <div class="data-section">
+
+        <div class="each-data">
+          <label>رقم المركبة</label>
+          <span>{{modalOtherService.InsurancePolicy.Car.carNumber}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>النوع/الموديل</label>
+          <span>{{modalOtherService.InsurancePolicy.Car.CarType.name}}
+            / {{modalOtherService.InsurancePolicy.Car.CarModel.name}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>سنة التصنيع</label>
+          <span>{{modalOtherService.InsurancePolicy.Car.productionYear | date: 'yyyy'}}</span>
+        </div>
+
+        <div class="each-data">
+          <label>رقم الشصي</label>
+          <span>{{modalOtherService.InsurancePolicy.Car.serialNumber}}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="main-data-section card">
+    <div class="header-section">
+      <h5>بيانات الخدمة</h5>
+    </div>
+    <div class="data-section-2">
+      <div class="each-data">
+        <label>نوع الخدمة</label>
+        <span>{{modalOtherService.serviceKind}}</span>
+      </div>
+      <div class="each-data">
+        <label>حالة الملف</label>
+        <span>{{modalOtherService.fileStatus}}</span>
+      </div>
+      <div class="each-data">
+        <label>تاريخ الخدمة:</label>
+        <span>{{modalOtherService.createdAt | date:'dd-MM-yyyy'}}</span>
+      </div>
+      <div class="each-data" style="width: 100%">
+        <label>افادة الزبون</label>
+        <span>{{modalOtherService.descCustomer}}</span>
+      </div>
+      <div class="each-data" style="width: 100%">
+        <label>افادة المفتش</label>
+        <span>{{modalOtherService.description}}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="modal-footer d-print-none">
+  <button type="button" class="button-primary" (click)="printPage()">طباعة الخدمة</button>
+</div>

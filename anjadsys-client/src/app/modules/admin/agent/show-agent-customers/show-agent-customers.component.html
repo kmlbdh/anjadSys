@@ -1,0 +1,104 @@
+<div id="main-container">
+  <div class="page-header card">
+    <p><span style="font-weight: 400;">{{selectedAgentName}}</span></p>
+  </div>
+
+  <div class="card add-user-container">
+    <form [formGroup]="addCustomerToAgentForm" #form="ngForm" (ngSubmit)="addCustomerToAgent(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <div class="label-with-data">
+            <label for="customerId">اضافة زبون الى الوكيل</label>
+          </div>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerId" type="text"
+            (keyup)="searchCustomer($event)" list="customerList" name="customerId"
+            formControlName="customerId" placeholder="قم بالبحث عن الزبون بادخال اسمه"
+            autocomplete="off" required/>
+            <span *ngIf="spinnerCustomer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of allCustomers;" [value]="customer.id">
+               {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>اضافة</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div *ngIf="(form.submitted || formCont('customerId')?.touched) &&
+      formCont('customerId')?.invalid" class="alert alert-danger">
+
+       <div *ngIf="formCont('customerId').hasError('required')">الزبون مطلوب تعبئته</div>
+     </div>
+
+      <div class="error" *ngIf="errorMsg || errorMsgForAddUser">{{errorMsg || errorMsgForAddUser}}</div>
+      <div class="success" *ngIf="successMsg || successMsgForAddUser">{{successMsg || successMsgForAddUser}}</div>
+    </form>
+
+  </div>
+
+  <div class="page-content card">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الزبون</div>
+        <div class="col-custom col-custom-2">اسم الزبون</div>
+        <div class="col-custom col-custom-3">ارقم الهاتف</div>
+        <div class="col-custom col-custom-4">العنوان</div>
+        <div class="col-custom col-custom-5">التحكم</div>
+      </li>
+      <ng-template [ngIf]="customers.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="customers.length > 0">
+        <li *ngFor="let customer of customers | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Id">{{customer.id}}</div>
+          <div class="col-custom col-custom-2" data-label="Customer Name">{{customer.username}}</div>
+          <div class="col-custom col-custom-3" data-label="Customer Jawwal">{{customer.jawwal1}}</div>
+          <div class="col-custom col-custom-4" data-label="Customer Address and Region">{{customer.Region.name}} - {{customer.address}}</div>
+          <div class="col-custom col-custom-5 control" data-label="Control">
+            <button class="btn-error" title="ازالة الزبون من قائمة الوكيل" (click)="removeCustomerFromAgent(customer)">
+              <fa-icon [icon]="userMinus"></fa-icon>
+            </button>
+            <button class="btn-primary" title="تعديل بيانات الزبون" (click)="goToUserEdit(customer.id)">
+              <fa-icon [icon]="userEditIcon"></fa-icon>
+            </button>
+            <!-- <button class="btn-error" title="حذف الزبون نهائي" (click)="deleteUser(customer)">
+              <fa-icon [icon]="trashIcon"></fa-icon>
+            </button> -->
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+</div>

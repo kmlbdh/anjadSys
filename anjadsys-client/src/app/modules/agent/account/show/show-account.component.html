@@ -1,0 +1,125 @@
+<div id="main-container">
+  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
+    <form [ngClass]="{'open': showBottom}" [formGroup]="searchAccountForm" #form="ngForm" (ngSubmit)="searchAccount(form)">
+      <div class="form-sec1">
+
+        <div class="form-control-group">
+          <label for="accountId">رقم الحركة المالية</label>
+          <input id="accountId" type="text"
+           name="accountId" formControlName="accountId"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="insurancePolicyId">رقم البوليصة</label>
+          <input id="insurancePolicyId" type="text"
+           name="insurancePolicyId" formControlName="insurancePolicyId"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="customerID">الزبون:</label>
+          <div class="input" *ngIf="selectedCustomer">
+            {{selectedCustomer.username}}
+            <span (click)="cancelCustomerInput($event)">
+              <fa-icon [icon]="cancelInput"></fa-icon>
+            </span>
+          </div>
+          <div class="input-with-spinner">
+            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
+             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
+            <span *ngIf="spinner.customer" class="spinner"></span>
+          </div>
+          <datalist id="customerList">
+            <option *ngFor="let customer of customers;" [value]="customer.id">
+                {{customer.username}}
+            </option>
+          </datalist>
+        </div>
+
+        <div class="form-control-group">
+          <label for="startDate">من تاريخ</label>
+          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="form-control-group">
+          <label for="endDate">الى تاريخ</label>
+          <input id="endDate" type="date" name="endDate" formControlName="endDate">
+        </div>
+
+      </div>
+
+
+      <div class="form-sec2">
+
+        <div class="btn-container">
+          <button type="submit">
+            <span>بحث</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
+      <ng-container *ngIf="!showBottom">
+        فتح البحث
+      </ng-container>
+      <ng-container *ngIf="showBottom">
+        اغلاق البحث
+      </ng-container>
+
+    </a>
+
+  </div>
+
+  <div class="page-content card dont-print">
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col-custom col-custom-1">رقم الحركة</div>
+        <div class="col-custom col-custom-4">تاريخ الحركة</div>
+        <div class="col-custom col-custom-5">نوع الحركة</div>
+        <div class="col-custom col-custom-2">المبلغ (له)</div>
+        <div class="col-custom col-custom-3">المبلغ (عليه)</div>
+      </li>
+      <ng-template [ngIf]="accounts.length === 0">
+        <li class="no-data" style="width: 100%;"  *ngFor="let one of [1] | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems:0}">
+          <p>لا يوجد بيانات!</p>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="accounts.length > 0">
+        <li *ngFor="let account of accounts | paginate: { itemsPerPage: pagination.itemsPerPage, currentPage: p, totalItems: pagination.total};
+         trackBy: trackById" class="table-row">
+          <div class="col-custom col-custom-1" data-label="Account Id">{{account.id}}</div>
+          <div class="col-custom col-custom-4" data-label="Date">{{ account.createdAt| date: 'dd-MM-yyyy' }}</div>
+          <div class="col-custom col-custom-5" [ngClass]="{'clickable': account.insurancePolicyId}" data-label="Account Transaction Type">
+            <ng-container *ngIf="account.insurancePolicyId">
+              بوليصة تأمين
+              <p class="underline-text" (click)="open(account.insurancePolicyId)">
+                 رقم: {{ account.insurancePolicyId }}
+              </p>
+            </ng-container>
+            <ng-container *ngIf="account.agentId">
+             سقف مالي
+            </ng-container>
+          </div>
+          <div class="col-custom col-custom-2" data-label="Debit">{{account.debit || 0}}</div>
+          <div class="col-custom col-custom-3" data-label="Credit">{{account.credit || 0}}</div>
+        </li>
+      </ng-template>
+      <ng-template [ngIf]="agentBalance">
+        <li class="table-row">
+          <div class="col-custom col-custom-2" data-label="Agent Balance" style="font-weight: bold;">الرصيد المالي</div>
+          <div class="col-custom col-custom-5" data-label="Agent Balance" style="font-weight: bold;">{{agentBalance}} {{currency}}</div>
+        </li>
+      </ng-template>
+    </ul>
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="getPage($event)"
+      [autoHide] = "true"
+      previousLabel = ""
+      nextLabel = ""
+    ></pagination-controls>
+    <div class="error" *ngIf="errorMsg">{{errorMsg}}</div>
+    <div class="success" *ngIf="successMsg">{{successMsg}}</div>
+  </div>
+
+</div>
