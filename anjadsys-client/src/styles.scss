@@ -196,6 +196,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
 
             h6{
               font-weight: 600;
+              font-size: 0.96rem
             }
 
             span{
@@ -249,8 +250,12 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
                 border: 1px solid #000;
                 margin-top: 0.5rem;
                 padding: 0.5rem 0.2rem;
-                flex: 0 0 37%;
-                .right-total-cost{
+                flex: 0 0 35%;
+                background-color: lightgray;
+
+                .right-total-cost,
+                .left-total-cost
+                {
                   font-size: 0.85rem;
                   display: flex;
                   flex-flow: column nowrap;
@@ -259,10 +264,6 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
                   align-items: flex-start;
                 }
                 .left-total-cost{
-                  font-size: 0.85rem;
-                  display: flex;
-                  flex-flow: column nowrap;
-                  flex: 1;
                   align-items: flex-end;
                 }
               }
@@ -345,7 +346,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   footer {
     display: block !important;
     position: fixed;
-    bottom: -1%;
+    bottom: -1.5%;
     right: 4%;
     font-size: 1.5rem;
     font-weight: 500;
@@ -373,35 +374,14 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   thead { display: table-row-group; }
   tfoot { display: table-footer-group }
 
-  .total-cost-wrapper {
-    display: flex;
-    width:100%;
-    flex-flow: row-reverse nowrap;
-  }
-
   .total-cost {
-    display: flex;
-    flex-flow: row nowrap;
-    border: 1px solid #000;
-    margin-top: 0.5rem;
-    padding: 0.5rem 0.2rem;
     flex: 0 0 100%;
   }
 
-  .total-cost > div.right-total-cost{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-    font-size: 0.85rem;
-    font-weight: bold;
-  }
-  .total-cost > div.left-total-cost{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-size: 0.85rem;
-  }
+  // .total-cost > div.right-total-cost{
+  // }
+  // .total-cost > div.left-total-cost{
+  // }
 
   .dont-print{
     display: none !important;
