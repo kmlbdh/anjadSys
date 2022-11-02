@@ -11,9 +11,9 @@ export class EndorsementModalComponent implements OnInit {
 
   currency = 'شيكل';
 
-  tax = 0.16;
-  taxOnCost!: number;
-  totalWithTaxes!: number;
+  // tax = 0.16;
+  // taxOnCost!: number;
+  // totalWithTaxes!: number;
 
   endorsementTypeArray = ['نقل ملكية'];
 
