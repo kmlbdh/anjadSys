@@ -11,7 +11,7 @@ export class InsurancePolicyComponent implements OnInit {
 
   currency = 'شيكل';
 
-  tax = 0.16;
+  // tax = 0.16;
   // taxOnCost!: number;
   totalWithTaxes!: number;
 
@@ -20,8 +20,7 @@ export class InsurancePolicyComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-    const taxOnCost = Math.round(Number(this.modalInsurancePolicy.totalPrice) * this.tax);
-    this.totalWithTaxes =  Number(this.modalInsurancePolicy.totalPrice) + taxOnCost;
+    this.totalWithTaxes =  Number(this.modalInsurancePolicy.totalPrice);
   }
 
   printPage(): void {
