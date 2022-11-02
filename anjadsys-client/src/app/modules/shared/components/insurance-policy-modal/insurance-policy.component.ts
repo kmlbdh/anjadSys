@@ -18,7 +18,7 @@ export class InsurancePolicyComponent implements OnInit {
   conditions: Array<string> = [
     'المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحفظ يجب ان يسدد لتعتبر البوليصة  سارية.',
     'شروط الوثائق في الكتيب المرفق اجباري الحصول على نسخة والاطلاع.',
-    'تغطية الزجاج تشمل زجاج المركبة ولا تشمل الأضوية والمرايا.'
+    'تغطية الزجاج تشمل زجاج المركبة ولا تشمل الأضوية والمرايا وفتحة السقف.'
   ];
 
   modalInsurancePolicy: InsurancePolicyAPI = {} as InsurancePolicyAPI;
