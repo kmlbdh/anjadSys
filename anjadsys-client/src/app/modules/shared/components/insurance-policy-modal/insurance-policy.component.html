@@ -179,11 +179,8 @@
   </div>
 </div>
 <ul class="condition">
-  <li>
-    المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحفظ يجب ان يسدد لتعتبر البوليصة  سارية.
-  </li>
-  <li>
-    شروط الوثائق في الكتيب المرفق اجباري الحصول على نسخة والاطلاع.
+  <li *ngFor="let condition of conditions">
+    {{condition}}
   </li>
 </ul>
 <div class="modal-footer d-print-none">

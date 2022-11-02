@@ -15,6 +15,12 @@ export class InsurancePolicyComponent implements OnInit {
   // taxOnCost!: number;
   totalWithTaxes!: number;
 
+  conditions: Array<string> = [
+    'المبلغ الاجمالي المترصد هو بناء على طلبكم وبمجرد الحفظ يجب ان يسدد لتعتبر البوليصة  سارية.',
+    'شروط الوثائق في الكتيب المرفق اجباري الحصول على نسخة والاطلاع.',
+    'تغطية الزجاج تشمل زجاج المركبة ولا تشمل الأضوية والمرايا.'
+  ];
+
   modalInsurancePolicy: InsurancePolicyAPI = {} as InsurancePolicyAPI;
 
   constructor(public activeModal: NgbActiveModal) { }

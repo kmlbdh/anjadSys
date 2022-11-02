@@ -250,7 +250,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
                 border: 1px solid #000;
                 margin-top: 0.5rem;
                 padding: 0.5rem 0.2rem;
-                flex: 0 0 35%;
+                flex: 0 0 36%;
                 background-color: lightgray;
 
                 .right-total-cost,
@@ -262,6 +262,9 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
                   flex: 1;
                   font-weight: bold;
                   align-items: flex-start;
+                }
+                .right-total-cost{
+                  flex-basis: 54%;
                 }
                 .left-total-cost{
                   align-items: flex-end;
@@ -308,7 +311,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
     .condition{
       width:100%;
       font-size: 14.5px;
-      margin: 0 0 15px 0;
+      margin: 1.3rem 0 1rem 0;
       > li{
         font-weight: 700;
         line-height: 1.2rem;
@@ -346,7 +349,7 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   footer {
     display: block !important;
     position: fixed;
-    bottom: -1.5%;
+    bottom: -1.05%;
     right: 4%;
     font-size: 1.5rem;
     font-weight: 500;
@@ -375,11 +378,12 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   tfoot { display: table-footer-group }
 
   .total-cost {
-    flex: 0 0 100%;
+    flex: 0 0 37%;
   }
 
-  // .total-cost > div.right-total-cost{
-  // }
+  .total-cost > div.right-total-cost{
+      flex-basis: 54%;
+  }
   // .total-cost > div.left-total-cost{
   // }
 
