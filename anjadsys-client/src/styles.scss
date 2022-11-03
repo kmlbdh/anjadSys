@@ -7,6 +7,24 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   font-family: 'Tajawal', "Helvetica Neue", sans-serif;
 }
 
+//projected svg needs a global css in nav-item component
+app-nav-item {
+  li{
+    > p {
+      i {
+        svg {
+          width: 1.4rem;
+        }
+        &.large-icon{
+          svg {
+            width: 2rem;
+          }
+        }
+      }
+    }
+  }
+}
+
 .spinner{
   @include loader(30px, 30px, 5px);
   margin-right: 3px;
@@ -384,8 +402,6 @@ html, body { height: 100%; padding: 0; margin: 0; direction: rtl; box-sizing: bo
   .total-cost > div.right-total-cost{
       flex-basis: 54%;
   }
-  // .total-cost > div.left-total-cost{
-  // }
 
   .dont-print{
     display: none !important;
