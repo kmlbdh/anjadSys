@@ -23,15 +23,12 @@ export class AddOtherservicesComponent implements OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   insurancePolicies: InsurancePolicyAPI[] = [];
-  // agents: UserAPI[] = [];
   customers: UserAPI[] = [];
   selectedCustomer: UserAPI | undefined;
-  // selectedAgent: UserAPI | undefined | null;
   selectedInsurancePolicy: InsurancePolicyAPI | undefined;
 
   spinner = {
     customer: false,
-    // agent: false,
     insurancePolicy: false,
   };
 
@@ -112,7 +109,6 @@ export class AddOtherservicesComponent implements OnDestroy {
             this.customers = response.data;
           }
           this.spinner.customer = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.customer = false;
@@ -122,11 +118,9 @@ export class AddOtherservicesComponent implements OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      // if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
       return;
     }
 
@@ -182,11 +176,9 @@ export class AddOtherservicesComponent implements OnDestroy {
   }
 
   selectInsurancePolicy(event: Event) {
-    // console.log('change', event);
     if (event.type === 'change') {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
-      // console.log(this.selectedInsurancePolicy);
       return;
     }
   }

@@ -6,7 +6,6 @@ import { AddCarModelComponent } from './add/add-car-model.component';
 import { EditCarModelComponent } from './edit/edit-car-model.component';
 import { ShowCarModelsComponent } from './show/show-car-models.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -21,7 +20,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     CarModelRoutingModule,
     ReactiveFormsModule,
-    FontAwesomeModule,
   ]
 })
 export class CarModelModule { }

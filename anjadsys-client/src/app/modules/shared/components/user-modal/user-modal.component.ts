@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserAPI } from '../../../core/model/user';
 
@@ -10,7 +9,6 @@ import { UserAPI } from '../../../core/model/user';
 })
 export class UserModalComponent {
 
-  printer = faPrint;
   customerDetails: UserAPI = {} as UserAPI;
   rolesLang:{
     [index: string]: string;

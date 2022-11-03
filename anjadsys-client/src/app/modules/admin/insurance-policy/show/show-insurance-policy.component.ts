@@ -107,8 +107,6 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
@@ -143,8 +141,6 @@ export class ShowInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchAgent(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchAgentText$.next(typeTxt);

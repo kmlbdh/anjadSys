@@ -156,7 +156,6 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
             this.customers = response.data;
           }
           this.spinner.customer = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.customer = false;
@@ -166,11 +165,9 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      // if(this.selectedCustomer) this.selectedAgent = this.selectedCustomer.Agent;
       return;
     }
 
@@ -241,11 +238,9 @@ export class EditOtherservicesComponent implements OnInit, OnDestroy {
   }
 
   selectInsurancePolicy(event: Event) {
-    // console.log('change', event);
     if (event.type === 'change') {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
-      // console.log(this.selectedInsurancePolicy);
       return;
     }
   }

@@ -89,18 +89,14 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
             this.customers = response.data;
           }
           this.spinnerCustomer$.next(false);
-          // console.log(response);
         },
         error: (err: any) => {
-          // console.log(err);
           this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
@@ -199,7 +195,6 @@ export class ShowOtherservicesComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchOtherServices;
     this.p = pageNumber;
     this.getOtherServices(this.searchConditions);
-    // console.log(pageNumber);
   }
 
 }

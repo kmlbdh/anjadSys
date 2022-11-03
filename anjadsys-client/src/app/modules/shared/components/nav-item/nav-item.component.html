@@ -1,6 +1,5 @@
 <li>
   <p [ngClass]="{'large-nav': miniNavBar}" (click)="toggleNav($event)">
-    <!-- <fa-icon [icon]="navItem.faIcon"></fa-icon> -->
     <i [ngClass]="{'large-icon': miniNavBar}" [innerHTML]="svgIcon"></i>
     <span *ngIf="!miniNavBar">{{navItem.name}}</span>
   </p>

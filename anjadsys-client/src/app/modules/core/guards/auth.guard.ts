@@ -34,6 +34,7 @@ export class AuthGuard implements CanActivate {
 
 }
 
+//TODO
 // verifyLoggedIn(user: UserLoggedInAPI) {
 //   this.adminService.verifyLoggedIn(user.accessToken).subscribe({
 //     next: res => {

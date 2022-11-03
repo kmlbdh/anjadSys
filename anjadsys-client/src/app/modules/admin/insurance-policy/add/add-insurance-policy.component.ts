@@ -55,7 +55,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   private searchTextObj = {
     searchCarText$:  new Subject<string>(),
     searchCustomerText$: new Subject<string>(),
-    // searchAgentText$: new Subject<string>()
   };
 
   TIMEOUTMILISEC = 7000;
@@ -84,7 +83,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.searchCarAPI();
     this.searchCustomerAPI();
-    // this.searchAgentAPI();
   }
 
   ngOnDestroy(): void {
@@ -111,7 +109,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
             this.resetInsurancePolicyForm(ngform);
           }
-          // console.log(response);
         },
         error: (err: any) => {
           console.error(err.error);
@@ -121,20 +118,16 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(formObj);
-    // console.log(this.addServicePolicyForm.value);
   };
 
   addServicePolicy = (ngform: FormGroupDirective) => {
     if (this.addServicePolicyForm.invalid) { return; }
 
     let formObj: NewServicePolicy = this.addServicePolicyForm.value;
-    // console.log(formObj);
     let currentService = this.services.filter(service => service.id == formObj.serviceId)[0];
     formObj.supplierPercentage = currentService.supplierPercentage;
     if (!formObj.additionalDays) { formObj.additionalDays = 0; }
 
-    // console.log(formObj);
     this.servicesPolicy.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.totalCostForAllServices();
@@ -144,10 +137,8 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   serviceShowStatusWhenMaintainPolicy() {
     this.services.map(service => {
       let existService = this.servicesPolicy.some(servicePolicy =>
-        // console.log(servicePolicy.serviceId);
         Number(servicePolicy.serviceId) === Number(service.id)
       );
-      // console.log(service.id, existService);
       service['propertiesUI'] = { hide: existService };
       return service;
     });
@@ -156,17 +147,14 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   totalCoverageDays(serviceId: number): number {
     let serviceDefualtDays = Number(this.services.filter(service =>  service.id === Number(serviceId))[0].coverageDays);
     let serviceDays = Number(this.servicesPolicy.filter(service => service.serviceId === serviceId)[0].additionalDays);
-    // console.log('totalCoverageDays');
     return serviceDefualtDays + serviceDays;
   }
 
   serviceText(serviceId: number): string {
-    // console.log('serviceText');
     return this.services.filter(service =>  service.id === Number(serviceId))[0].name;
   }
 
   supplierText(supplierId: string): string {
-    // console.log('supplierText');
     return this.suppliers.filter(supplier =>  supplier.id === supplierId)[0].companyName!;
   }
 
@@ -177,7 +165,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCar(event: Event) {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('carId')?.value;
       this.selectedCar = this.mouseEventOnSearch(event, this.cars!, controlValue) as CarAPI;
@@ -191,7 +178,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -239,7 +225,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
             this.formCont('carId').enable();
           }
           this.spinner.car = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.car = false;
@@ -266,7 +251,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
             this.customers = response.data;
           }
           this.spinner.customer = false;
-          // console.log(response);
         },
         error: (err: any) => {
           console.log(err);
@@ -286,7 +270,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
             response.data.forEach(service => service['propertiesUI'] = { hide: false });
             this.services = response.data;
           }
-        // console.log(response.data);
         },
         error: err => console.log(err)
       });
@@ -303,7 +286,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   selectServicePolicy(event: Event) {
-    // console.log(event, event.target)
     let serviceId = ((event.target as HTMLInputElement).value)?.trim();
     this.selectedService = this.services.filter(service => service.id === Number(serviceId) )[0];
 
@@ -316,7 +298,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   totalCostPerServicePolicy(event: Event) {
-    // if(!(event instanceof KeyboardEvent)) return;
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
     this.sharedTotalCostPerServicePolicy(additionalDays);
   }
@@ -333,7 +314,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     perDayCost = coverageDays === 0 ? 1 : Number((cost / coverageDays).toFixed(2));
 
     let total = Math.round(cost + (perDayCost * (additionalDays * 0.25)));
-    // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
   }
 
@@ -387,7 +367,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   acceptNumbers(event: Event): Boolean {
     if (event instanceof KeyboardEvent) {
       const code = event.key;
-      // console.log(code);
       if (Number.isNaN(+code)) {
         if (!this.keys.includes(code.toLowerCase())) { return false; }
       }

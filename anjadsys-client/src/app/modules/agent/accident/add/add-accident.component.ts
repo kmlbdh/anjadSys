@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -28,10 +27,6 @@ import { InsurancePolicesAPI, SearchInsurancePolicy, InsurancePolicyAPI } from '
   styleUrls: ['./add-accident.component.scss']
 })
 export class AddAccidentComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
-  addServiceBtnIcon = faPlus;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;
@@ -74,7 +69,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   TIMEOUTMILISEC = 7000;
 
   addAccidentForm = this.fb.group({
-    // name: ['', [Validators.required]],
     accidentPlace: [ '', Validators.required ],
     accidentDate: [ '', Validators.required ],
     registerAccidentDate: [ (new Date()).toISOString().substring(0, 10), Validators.required ],
@@ -92,9 +86,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   addServiceAccidentForm = this.fb.group({
     serviceId: [ { value: '', disabled: true }, Validators.required ],
     coverageDays: [ { value: '', disabled: true }, Validators.required ],
-    // note: [''],
-    // cost: [0, Validators.required],
-    // supplierPercentage: ['', Validators.required],
     supplierId: [ { value: '', disabled: true }, Validators.required ],
   });
 
@@ -115,7 +106,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   addAccident = (ngform: FormGroupDirective) => {
-    // console.log(this.addAccidentForm);
     if (this.addAccidentForm.invalid) { return; }
 
     let formObj: NewAccident = this.addAccidentForm.value;
@@ -130,9 +120,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       formObj.services.push(serviceAccident);
     });
 
-    // formObj.services = this.servicesAccident;
-    // delete formObj['insurancePolicyId'];
-
     this.agentService.AccidentsAPI.add(formObj)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -142,7 +129,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
             this.resetAccientForm(ngform);
           }
-        // console.log(response);
         },
         error: (err: any) => {
           console.error(err.error);
@@ -152,12 +138,9 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(this.addAccidentForm.value);
-    // console.log(formObj);
   };
 
   addServiceAccident = (ngform: FormGroupDirective) => {
-    // console.log(this.addServiceAccidentForm);
     if (this.addServiceAccidentForm.invalid) { return; }
 
     let formObj: NewServiceAccident = this.addServiceAccidentForm.value;
@@ -179,8 +162,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
     this.servicesAccident.push(formObj);
     this.serviceShowStatusWhenMaintainPolicy();
     this.resetAccidentServiceForm(ngform);
-    // console.log(this.addServiceAccidentForm.value);
-    // console.log('formObj',formObj);
   };
 
   serviceShowStatusWhenMaintainPolicy(): void {
@@ -212,7 +193,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCar(event: Event) {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('carId')?.value;
       this.selectedCar = this.mouseEventOnSearch(event, this.cars!, controlValue) as CarAPI;
@@ -227,11 +207,9 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   selectInsurancePolicy(event: Event) {
-    // console.log('change', event);
     if (event.type === 'change') {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
-      // console.log(this.selectedInsurancePolicy);
       this.loadInsurancePolicyServices(this.selectedInsurancePolicy);
       setTimeout(() => {
         this.addServiceAccidentForm.get('supplierId')?.enable();
@@ -247,11 +225,9 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       newServicePolicy.propertiesUI = { hide: false };
       return newServicePolicy;
     });
-    // console.log('servicesPolicies', this.servicesPolicies)
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerId')?.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -297,7 +273,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
             this.formCont('carId').enable();
           }
           this.spinner.car = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.car = false;
@@ -323,7 +298,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
             this.customers = response.data;
           }
           this.spinner.customer = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.customer = false;
@@ -338,7 +312,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
       .subscribe({
         next: response => {
           if (response.data) { this.regions = response.data; }
-        //  console.log(response);
         },
         error: (err: any) => console.error(err.error)
       });
@@ -388,7 +361,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   }
 
   selectAccidentService(event: Event) {
-    // console.log(event, event.target)
     let serviceId = ((event.target as HTMLInputElement).value)?.trim();
     this.selectedServicePolicy = this.getServicePolicyById(Number(serviceId));
     this.maxDays = Number(this.selectedServicePolicy.additionalDays) +  Number(this.selectedServicePolicy.Service.coverageDays);
@@ -433,7 +405,6 @@ export class AddAccidentComponent implements OnInit, OnDestroy {
   acceptNumbers(event: Event): Boolean {
     if (event instanceof KeyboardEvent) {
       const code = event.key;
-      // console.log(code);
       if (Number.isNaN(+code)) {
         if (!this.keys.includes(code.toLowerCase())) { return false; }
       }

@@ -86,13 +86,10 @@ export class SearchOtherServicesComponent {
       if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
 
-    // console.log('searchConditions', searchConditions);
-
     this.submittedSearch.emit(searchConditions);
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.internalSelectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -103,16 +100,12 @@ export class SearchOtherServicesComponent {
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    // event.preventDefault();
-    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelCustomerInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedCustomer = undefined;
     this.formCont('customerID').setValue('');
     this.selectedCustomer.emit(this.internalSelectedCustomer);

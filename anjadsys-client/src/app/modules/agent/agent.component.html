@@ -1,4 +1,4 @@
-<div id="main-container">
+<!-- <div id="main-container">
   <app-header [routeLinker]="'agent'" [(miniNavBar)]="miniNavBar" [(navBarState)]="state"></app-header>
   <div id="main-content">
     <app-nav [attr.data-state]="state" [miniNavBar]="miniNavBar" class="dont-print" [navData]="navData"></app-nav>
@@ -9,4 +9,25 @@
       </router-outlet>
     </div>
   </div>
-</div>
+</div> -->
+
+<main [class.small]="miniNavBar">
+  <app-nav
+    class="dont-print"
+    [navData]="navData"
+    [routeLinker]="'agent'"
+    (tiggerState)="toggleSidebar($event)"
+  ></app-nav>
+
+  <article>
+    <app-header></app-header>
+
+    <section>
+      <app-loader></app-loader>
+      <router-outlet>
+        <app-breadcrumb></app-breadcrumb>
+      </router-outlet>
+    </section>
+  </article>
+</main>
+

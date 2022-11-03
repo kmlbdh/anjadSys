@@ -14,23 +14,15 @@ li{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    
+
     &.large-nav{
       margin: 0 0 1rem 0;
+      text-align: center;
     }
     i {
       flex-basis: 10%;
-      > svg {
-        width: 1.4rem;
-      }        
       &.large-icon{
         flex-basis: 100%;
-        > svg {
-          width: 1.5rem;
-          &:first-child{
-            width: 2.6rem;
-          }
-        } 
       }
     }
     span{

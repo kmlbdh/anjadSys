@@ -1,55 +1,12 @@
 <div id="main-container" class="d-print-none">
-  <div class="card search-car-container">
-    <form [formGroup]="searchCarForm" #form="ngForm" (ngSubmit)="searchCar(form)">
-      <div class="form-sec1">
-
-        <div class="form-control-group">
-          <label for="carNumber">رقم لوحة السيارة</label>
-          <input id="carNumber" type="text"
-           name="carNumber" formControlName="carNumber" placeholder="قم بالبحث عن السيارة بادخال رقم اللوحة"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="serialNumber">رقم الشصي </label>
-          <input id="serialNumber" type="text"
-           name="serialNumber" formControlName="serialNumber" placeholder="قم بالبحث عن السيارة بادخال رقم الشصي"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="customerID">الزبون:</label>
-          <div class="input" *ngIf="selectedCustomer">
-            {{selectedCustomer.username}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
-             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
-          </div>
-          <datalist id="customerList">
-            <option *ngFor="let customer of customers;" [value]="customer.id">
-                {{customer.username}}
-            </option>
-          </datalist>
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-
-  </div>
+  <app-search-cars 
+  (searchCustomerEvent)="searchCustomer($event)" 
+  (submittedSearch)="searchCar($event)" 
+  [customers]="customers"
+  [spinner]="spinnerCustomer$" 
+  (selectedCustomer)="getSelectedCustomer($event)"
+  >
+  </app-search-cars>
 
   <div class="page-content card">
     <ul class="responsive-table">

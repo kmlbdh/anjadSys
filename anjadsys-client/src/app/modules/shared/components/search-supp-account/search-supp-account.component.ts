@@ -43,8 +43,6 @@ import { SearchSupplierAccount } from '@models/supplier';
 })
 export class SearchSuppAccountComponent {
 
-  // @Input() role!: boolean;
-  // @Input() active!: boolean;
   @Output() submittedSearch = new EventEmitter<SearchSupplierAccount>();
 
   isOpen = false;
@@ -92,7 +90,6 @@ export class SearchSuppAccountComponent {
 
     let formObj = this.searchSupplierAccountForm.value;
     let keys = Object.keys(formObj);
-    //  console.log('formObj 1', formObj)
 
     keys.forEach( (key: any) => {
       if (formObj[key] == null || formObj[key] === '') { delete formObj[key]; }

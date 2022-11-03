@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 12.4;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -61,12 +57,6 @@
       .col-custom-2 {
         flex-basis: 65%;
       }
-      // .col-custom-3 {
-      //   flex-basis: 20%;
-      // }
-      // .col-custom-4 {
-      //   flex-basis: 10%;
-      // }
       .col-custom-3 {
         flex-basis: 15%;
         text-align: center;
@@ -81,9 +71,8 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
-              // margin-left: 10px;
               font-size: 20px;
               margin: auto;
               display: flex;
@@ -114,9 +103,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

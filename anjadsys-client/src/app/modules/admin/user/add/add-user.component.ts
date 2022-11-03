@@ -93,7 +93,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
       if (formObj[k] === '') { delete formObj[k]; }
     });
     let dataAPI$!: Observable<any>;
-    // console.log("here is ", this.removePassword);
 
     if (Number(formObj.roleId) !== 4) {
       dataAPI$ = this.adminService.UsersAPIs.add(formObj);
@@ -121,14 +120,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(this.addUserForm.value);
-    // console.log(formObj);
   };
 
   changeForm(roleFormControl: any) {
     const role = roleFormControl.value;
     const roleString = this.rolesAPI.filter(roleAPI => roleAPI.id == role)[0]?.name;
-    // console.log('role', role, roleString);
     if (!roleString) { return; }
 
     this.removePassword = !(roleString === 'supplier' || roleString === 'customer');

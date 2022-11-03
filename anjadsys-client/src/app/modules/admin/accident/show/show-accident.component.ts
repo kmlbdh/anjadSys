@@ -101,8 +101,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
@@ -137,8 +135,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   }
 
   searchAgent(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchAgentText$.next(typeTxt);
@@ -147,7 +143,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
 
   searchAccident(searchConditions: SearchAccident) {
     let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
-    // console.log('searchConditions', lastSearchConditions);
     this.getAccidents(lastSearchConditions);
   }
 

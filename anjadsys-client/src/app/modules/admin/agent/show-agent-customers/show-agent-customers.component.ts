@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, first, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { faTimes, faTrashAlt, faUserEdit, faUserMinus } from '@fortawesome/free-solid-svg-icons';
 import { SearchUser, updateUser, UserAPI } from '@models/user';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 
@@ -13,10 +12,6 @@ import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 })
 export class ShowAgentCustomersComponent implements OnInit, OnDestroy {
 
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
-  userEditIcon = faUserEdit;
-  userMinus = faUserMinus;
 
   selectedAgentName: string | undefined;
   selectedAgent: UserAPI | undefined;

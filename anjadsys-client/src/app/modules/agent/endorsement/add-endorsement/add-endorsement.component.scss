@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 1.56;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -21,9 +17,6 @@
       margin: auto;
       align-self: center;
       flex-basis: fit-content;
-      fa-icon{
-        vertical-align: sub;
-      }
     }
     button{
       @include button-primary;
@@ -33,8 +26,8 @@
         @include button-primary-disabled;
         width: fit-content;
       }
-      &.mg-top39{
-        margin-top: 39%;
+      &.mg-top1rem{
+        margin-top: 1rem;
       }
     }
   }
@@ -156,7 +149,7 @@
         line-height: normal;
         padding: 5.3px 12px;
 
-        fa-icon {
+        i {
           vertical-align: sub;
           cursor: pointer;
         }
@@ -188,9 +181,6 @@
           margin: auto;
           align-self: center;
           flex-basis: fit-content;
-          fa-icon{
-            vertical-align: sub;
-          }
         }
         button{
           @include button-primary;

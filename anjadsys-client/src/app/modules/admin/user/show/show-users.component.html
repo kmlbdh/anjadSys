@@ -1,7 +1,4 @@
 <div id="main-container"  class="d-print-none">
-  <!-- <div class="page-header card"> -->
-    <!-- <p>{{pageTitle}}</p>
-  </div> -->
   <app-search *ngIf="regions.length" [regions]="regions" [active]="!activeSuppliers && !activeAgentLimits" [role]="roleExist"
     (submittedSearch)="searchUser($event)"></app-search>
   

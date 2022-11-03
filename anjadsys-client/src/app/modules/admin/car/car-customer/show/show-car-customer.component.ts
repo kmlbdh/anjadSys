@@ -102,8 +102,6 @@ export class ShowCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);

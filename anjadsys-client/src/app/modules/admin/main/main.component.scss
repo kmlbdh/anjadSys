@@ -1,9 +1,6 @@
 @import 'shared';
 
-:host {
-  flex-grow: 11;
-}
-#main-container{
+#page-main {
   padding: 20px;
   display: flex;
   flex-direction: row;

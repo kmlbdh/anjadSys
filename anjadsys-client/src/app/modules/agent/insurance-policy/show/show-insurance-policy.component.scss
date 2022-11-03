@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 10.3;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -100,7 +96,7 @@
         justify-content: space-between;
         align-items: center;
 
-        fa-icon {
+        i {
           vertical-align: sub;
           cursor: pointer;
         }
@@ -125,8 +121,6 @@
 
 
       div.btn-container{
-        // margin-top: 14px;
-        // margin-bottom: 14px;
         margin: 1px 0;
         flex-basis: 100%;
 
@@ -208,9 +202,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }
@@ -237,16 +228,3 @@
   }
 
 }
-
-
-// @media print {
-//   body.modal-open {
-//       visibility: hidden;
-//   }
-
-//   body.modal-open .modal .modal-header,
-//   body.modal-open .modal .modal-body {
-//       visibility: visible;
-//   }
-// }
-

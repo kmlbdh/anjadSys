@@ -6,7 +6,6 @@ import { ShowAgentLimitsComponent } from './show-agent-limits/show-agent-limits.
 import { ShowAgentCustomersComponent } from './show-agent-customers/show-agent-customers.component';
 import { AddAgentLimitsComponent } from './add-agent-limits/add-agent-limits.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -21,7 +20,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     AgentRoutingModule,
     ReactiveFormsModule,
-    FontAwesomeModule
   ]
 })
 export class AgentModule { }

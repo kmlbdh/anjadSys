@@ -1,11 +1,15 @@
 <div id="main-container">
 
   <app-search-accounts
+    [isCustomerActive]="false"
+  
+    [isAgentActive]="true"
     (searchAgentEvent)="searchAgent($event)"
     [agents]="agents"
     (selectedAgent)="getSelectedAgent($event)"
     [spinnerAgent]="spinnerAgent$"
 
+    [isSupplierActive]="true"
     (searchSupplierEvent)="searchSupplier($event)"
     [suppliers]="suppliers"
     (selectedSupplier)="getSelectedSupplier($event)"

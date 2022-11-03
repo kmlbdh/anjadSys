@@ -49,9 +49,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
 
   searchCarModel(event: Event) {
     console.log(event);
-    // if(event == null || event.target?.value == null) return;
     let carTypeId = Number(((event.target) as HTMLInputElement).value);
-    // let formObj = this.searchCarModelForm.value;
     this.searchConditions = { carTypeId };
 
     this.getCarModels(this.searchConditions);
@@ -96,7 +94,6 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarModel;
     this.p = pageNumber;
     this.getCarModels(this.searchConditions);
-    // console.log(pageNumber);
   }
 
 }

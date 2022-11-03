@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './modules/core/interceptors/auth.interceptor';
@@ -21,7 +20,6 @@ import { LoginModule } from './modules/login/login.module';
     NgbModule,
     AppRoutingModule,
     HttpClientModule,
-    FontAwesomeModule,
     LoginModule,
     BrowserAnimationsModule,
     SharedModule

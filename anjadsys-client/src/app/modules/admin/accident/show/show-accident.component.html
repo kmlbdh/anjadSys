@@ -6,11 +6,12 @@
   (selectedCustomer)="getSelectedCustomer($event)"
   [spinnerCustomer]="spinnerCustomer$"
 
+  [isAgentActive]="true"
   (searchAgentEvent)="searchAgent($event)"
   [agents]="agents"
   (selectedAgent)="getSelectedAgent($event)"
   [spinnerAgent]="spinnerAgent$"
-  
+
   (submittedSearch)="searchAccident($event)"
   ></app-search-accidents>
 
@@ -46,10 +47,6 @@
                 </svg>
               </i>
             </button>
-
-            <!-- <button class="btn-primary" title="تعديل بيانات بلاع الحادث" (click)="goToAccidentEdit(accident.id)">
-              <fa-icon [icon]="carEditIcon"></fa-icon>
-            </button> -->
 
             <button class="btn-error" title="حذف بلاغ الحادث" (click)="deleteAccident(accident)">
               <i>

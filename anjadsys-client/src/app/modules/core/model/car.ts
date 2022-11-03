@@ -62,7 +62,7 @@ export interface CarsAPI{
   total: number;
 }
 
-export interface NewCar{ //CreateCarData
+export interface NewCar{ //TODO CreateCarData
   carNumber: string,
   motorNumber: string,
   motorPH: number,

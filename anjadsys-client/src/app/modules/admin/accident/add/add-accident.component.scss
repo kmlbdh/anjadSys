@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 1.56;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -273,7 +269,6 @@
 
             i {
               cursor: pointer;
-              // margin-left: 10px;
               font-size: 20px;
               margin: auto;
               display: flex;
@@ -304,9 +299,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

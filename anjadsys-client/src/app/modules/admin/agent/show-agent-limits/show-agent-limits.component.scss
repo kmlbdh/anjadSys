@@ -1,8 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 9;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -73,9 +70,6 @@
       .col-custom-2 {
         flex-basis: 30%;
       }
-      // .col-custom-3 {
-      //   flex-basis: 32%;
-      // }
       .col-custom-3 {
         flex-basis: 17%;
       }
@@ -93,9 +87,8 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
-              // margin-left: 10px;
               font-size: 20px;
               margin: auto;
               display: flex;

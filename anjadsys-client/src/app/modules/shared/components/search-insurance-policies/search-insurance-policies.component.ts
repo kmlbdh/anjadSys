@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroupDirective } from '@angular/forms';
 import { UserAPI } from '@models/user';
 import { BehaviorSubject } from 'rxjs';
 import { SearchInsurancePolicy } from '../../../core/model/insurancepolicy';
@@ -43,17 +43,22 @@ import { SearchInsurancePolicy } from '../../../core/model/insurancepolicy';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchInsurancePoliciesComponent {
+export class SearchInsurancePoliciesComponent implements OnInit {
 
   @Output() submittedSearch = new EventEmitter<SearchInsurancePolicy>();
+
   @Output() searchCustomerEvent = new EventEmitter<Event>();
-  @Output() searchAgentEvent = new EventEmitter<Event>();
   @Output() selectedCustomer = new EventEmitter<UserAPI | undefined>();
+
+  @Output() searchAgentEvent = new EventEmitter<Event>();
   @Output() selectedAgent = new EventEmitter<UserAPI | undefined>();
+
   @Input() customers: UserAPI[] = [];
   @Input() agents: UserAPI[] = [];
+
   @Input() spinnerCustomer = new BehaviorSubject<boolean>(false);
   @Input() spinnerAgent = new BehaviorSubject<boolean>(false);
+  @Input() isAgentActive:boolean = false;
 
   internalSelectedCustomer: UserAPI | undefined = undefined;
   internalSelectedAgent: UserAPI | undefined = undefined;
@@ -63,10 +68,13 @@ export class SearchInsurancePoliciesComponent {
     insurancePolicyId: [''],
     customerID: [''],
     carID: [''],
-    agentID: [''],
   });
 
   constructor(private fb: FormBuilder) { }
+
+  ngOnInit(): void {
+    if (this.isAgentActive) { this.searchInsurancePolicyForm.addControl('agentID', new FormControl('')); }
+  }
 
   showSearch() {
     this.isOpen = !this.isOpen;
@@ -84,12 +92,10 @@ export class SearchInsurancePoliciesComponent {
       searchConditions[key] = this.searchInsurancePolicyForm.get(key)?.value;
       if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
     });
-    console.log('searchConditions', searchConditions);
     this.submittedSearch.emit(searchConditions);
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.internalSelectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -100,7 +106,6 @@ export class SearchInsurancePoliciesComponent {
   }
 
   searchAgent(event: Event): void {
-    console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('agentID')?.value;
       this.internalSelectedAgent = this.mouseEventOnSearch(event, this.agents!, controlValue) as UserAPI;
@@ -111,25 +116,19 @@ export class SearchInsurancePoliciesComponent {
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    // event.preventDefault();
-    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelCustomerInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedCustomer = undefined;
     this.formCont('customerID').setValue('');
-    this.formCont('agentID').enable();
+    if (this.isAgentActive) { this.formCont('agentID').enable(); }
     this.selectedCustomer.emit(this.internalSelectedCustomer);
   }
 
   cancelAgentInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedAgent = undefined;
     this.formCont('agentID').setValue('');
     this.formCont('customerID')?.enable();

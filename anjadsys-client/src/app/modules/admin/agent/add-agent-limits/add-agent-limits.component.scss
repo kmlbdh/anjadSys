@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 12.4;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -108,8 +104,7 @@
         line-height: normal;
         padding: 5.3px 12px;
 
-        fa-icon {
-          vertical-align: sub;
+        i {
           cursor: pointer;
         }
       }

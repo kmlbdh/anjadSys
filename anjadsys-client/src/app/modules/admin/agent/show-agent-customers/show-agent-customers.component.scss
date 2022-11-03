@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 7.9;
-  height: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -105,8 +101,7 @@
         justify-content: space-between;
         align-items: center;
 
-        fa-icon {
-          vertical-align: sub;
+         i {
           cursor: pointer;
         }
       }
@@ -130,8 +125,6 @@
 
 
       div.btn-container{
-        // margin-top: 14px;
-        // margin-bottom: 14px;
         margin: 1px 0;
         flex-basis: 100%;
 
@@ -187,7 +180,6 @@
         @include box-shadow(0px 0px 9px 0px rgba(0,0,0,0.1));
       }
       div[class*=col-custom-]{
-        // margin: auto;
         margin:0;
         text-align: center;
       }
@@ -217,9 +209,8 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
-              // margin-left: 10px;
               font-size: 20px;
               margin: auto;
               display: flex;
@@ -250,9 +241,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

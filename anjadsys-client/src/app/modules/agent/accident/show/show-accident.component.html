@@ -1,51 +1,13 @@
 <div id="main-container">
-  <div class="card search-accident-container">
-    <form [formGroup]="searchAccidentForm" #form="ngForm" (ngSubmit)="searchAccident(form)">
-      <div class="form-sec1">
+  <app-search-accidents
+    (searchCustomerEvent)="searchCustomer($event)"
+    [customers]="customers"
+    (selectedCustomer)="getSelectedCustomer($event)"
+    [spinnerCustomer]="spinnerCustomer$"
 
-        <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="accidentID">رقم بلاغ الحادث</label>
-          </div>
-          <input id="accidentID" type="text"
-           name="accidentID" formControlName="accidentID" placeholder="قم بالبحث عن الحادث بادخال رقمه"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="customerID">الزبون:</label>
-          <div class="input" *ngIf="selectedCustomer">
-            {{selectedCustomer.username}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
-             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
-          </div>
-          <datalist id="customerList">
-            <option *ngFor="let customer of customers;" [value]="customer.id">
-                {{customer.username}}
-            </option>
-          </datalist>
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-
-  </div>
+    [isAgentActive]="false"
+    (submittedSearch)="searchAccident($event)"
+  ></app-search-accidents>
 
   <div class="page-content card dont-print">
     <ul class="responsive-table">

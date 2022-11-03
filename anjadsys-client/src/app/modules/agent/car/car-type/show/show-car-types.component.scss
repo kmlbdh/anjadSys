@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 12.4;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -67,9 +63,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

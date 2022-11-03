@@ -55,7 +55,6 @@ export interface ServiceAccidentAPI {
   accidentId?: number,
   serviceId?: number,
   supplierId?: string,
-  // Accident: AccidentAPI,
   Service: ServiceAPI,
   Supplier: UserAPI
 }
@@ -95,7 +94,6 @@ export interface NewServicePolicy {
   serviceId: number,
   supplierId: string,
 }
-// insurancePolicyId?: number,
 
 export interface updateServicePolicy {
   [index: string]: string | number | undefined;

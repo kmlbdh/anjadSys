@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { ServiceAPI, SearchService } from '@models/service';
@@ -23,9 +22,6 @@ export class ShowServicesComponent implements OnInit, OnDestroy {
     total: 0,
     itemsPerPage: 10,
   };
-
-  trashIcon = faTrashAlt;
-  editServiceIcon = faEdit;
 
   searchConditions: SearchService = {} as SearchService;
 

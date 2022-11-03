@@ -1,51 +1,12 @@
 <div id="main-container">
-  <div class="card search-insurance-policy-container">
-    <form [formGroup]="searchInsurancePolicyForm" #form="ngForm" (ngSubmit)="searchInsurancePolicy(form)">
-      <div class="form-sec1">
-
-        <div class="form-control-group">
-          <div class="label-with-data">
-            <label for="insurancePolicyId">رقم بوليصة التأمين</label>
-          </div>
-          <input id="insurancePolicyId" type="text"
-           name="insurancePolicyId" formControlName="insurancePolicyId" placeholder="قم بالبحث عن البوليصة بادخال رقمها"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="customerID">الزبون:</label>
-          <div class="input" *ngIf="selectedCustomer">
-            {{selectedCustomer.username}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
-             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
-          </div>
-          <datalist id="customerList">
-            <option *ngFor="let customer of customers;" [value]="customer.id">
-                {{customer.username}}
-            </option>
-          </datalist>
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-
-  </div>
+  <app-search-insurance-policies
+  (searchCustomerEvent)="searchCustomer($event)"
+  [customers]="customers"
+  (selectedCustomer)="getSelectedCustomer($event)"
+  [spinnerCustomer]="spinnerCustomer$"
+  [isAgentActive]="false"
+  (submittedSearch)="searchInsurancePolicy($event)">
+  </app-search-insurance-policies>
 
   <div class="page-content card d-print-none">
     <ul class="responsive-table">

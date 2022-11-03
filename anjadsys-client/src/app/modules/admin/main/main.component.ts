@@ -74,7 +74,6 @@ export class MainComponent implements OnInit, OnDestroy {
         next: response => {
           if (response.data) {
             let keys = Object.keys(response.data);
-            // console.log(keys);
             for (let key of keys) {
               let changed = this.statisticsMainPageArr.get(key)!;
               changed.statistics! = response.data[key];

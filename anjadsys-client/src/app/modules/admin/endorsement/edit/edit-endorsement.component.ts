@@ -89,7 +89,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe({
       next: params => {
         const endorsementID = Number(params.get('id'));
-        // console.log("insurancePolicyID", insurancePolicyID);
         if (!endorsementID) { this.router.navigate(['/admin/endorsement/show']); }
         this.getEndorsement(endorsementID!);
       }
@@ -143,7 +142,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
             this.successMsg = response.message;
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
           }
-          // console.log(response);
         },
         error: (err: any) => {
           console.error(err.error);
@@ -153,8 +151,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(formObj);
-    // console.log(this.addServicePolicyForm.value);
   };
 
   selectCar(event: Event, ngform: FormGroupDirective) {
@@ -172,7 +168,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
   }
 
   selectInsurancePolicy(event: Event) {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
@@ -186,7 +181,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.customerElement.nativeElement.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -258,7 +252,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
             this.formCont('carId').enable();
           }
           this.spinner.car = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.car = false;
@@ -286,7 +279,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
             this.formCont('insurancePolicyId').enable();
           }
           this.spinner.insurancePolicy = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.insurancePolicy = false;
@@ -310,7 +302,6 @@ export class EditEndorsementComponent implements OnInit, OnDestroy {
   acceptNumbers(event: Event): Boolean {
     if (event instanceof KeyboardEvent) {
       const code = event.key;
-      // console.log(code);
       if (Number.isNaN(+code)) {
         if (!this.keys.includes(code.toLowerCase())) { return false; }
       }

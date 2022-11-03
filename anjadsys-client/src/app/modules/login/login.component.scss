@@ -86,10 +86,6 @@
           color: $mainRedColor;
         }
 
-        // .ng-invalid:not(form)  {
-        //   border-left: 5px solid $mainRedColor;
-        // }
-
         &.error{
           @include messageBox($mainRedColor);
         }

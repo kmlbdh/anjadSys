@@ -250,8 +250,8 @@
   <div class="page-content card">
     <form [formGroup]="addServiceAccidentForm" #formS="ngForm" (ngSubmit)="addServiceAccident(formS)">
       <div *ngIf="!selectedInsurancePolicy" class="alert alert-danger" style="width:100%">
-       <div>يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
-     </div>
+        <div>يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
+      </div>
       <div class="form-sec0 custom-row">
 
         <div class="form-control-group">
@@ -259,7 +259,7 @@
           <select id="serviceId" type="text" name="serviceId" formControlName="serviceId"
             (change)="selectAccidentService($event)">
             <ng-template [ngIf]="servicesPolicies">
-              <option [value]="null">اختر خدمة من القائمة</option>
+              <option>اختر خدمة من القائمة</option>
               <ng-container *ngFor="let servicePolicy of servicesPolicies">
                 <option *ngIf="!servicePolicy.propertiesUI!.hide"
                   [value]="servicePolicy.Service.id">

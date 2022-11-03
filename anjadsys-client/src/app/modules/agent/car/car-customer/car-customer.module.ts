@@ -5,8 +5,8 @@ import { CarCustomerRoutingModule } from './car-customer-routing.module';
 import { AddCarCustomerComponent } from './add/add-car-customer.component';
 import { ShowCarCustomerComponent } from './show/show-car-customer.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedModule } from '../../../shared/shared.module';
 
 
 @NgModule({
@@ -19,7 +19,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     CarCustomerRoutingModule,
     ReactiveFormsModule,
-    FontAwesomeModule,
+    SharedModule
   ]
 })
 export class CarCustomerModule { }

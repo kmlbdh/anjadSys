@@ -41,7 +41,7 @@ export interface UsersLightAPI{
   total: number;
 }
 
-export interface NewUser{ //CreateUserData
+export interface NewUser{ //TODO CreateUserData
     identityNum: number,
     username: string;
     companyName?: string;

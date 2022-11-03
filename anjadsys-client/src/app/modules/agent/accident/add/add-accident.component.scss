@@ -1,9 +1,5 @@
 @import 'shared';
 
-:host {
-  flex-grow: 1.56;
-  width: min-content;
-}
 #main-container {
   padding: 5px 25px 25px 25px;
   background-color:#f3f3f3;
@@ -21,9 +17,6 @@
       margin: auto;
       align-self: center;
       flex-basis: fit-content;
-      fa-icon{
-        vertical-align: sub;
-      }
     }
     button{
       @include button-primary;
@@ -110,8 +103,13 @@
           flex-wrap: nowrap;
           justify-content: space-between;
           align-items: center;
+          > .spinner{
+            margin-right: 5px;
+          }
           > input, select, textarea{
             flex-basis: 90%;
+            flex-grow: 12;
+            flex-shrink: 10;
           }
         }
       }
@@ -149,7 +147,7 @@
         line-height: normal;
         padding: 5.3px 12px;
 
-        fa-icon {
+        i {
           vertical-align: sub;
           cursor: pointer;
         }
@@ -181,9 +179,6 @@
           margin: auto;
           align-self: center;
           flex-basis: fit-content;
-          fa-icon{
-            vertical-align: sub;
-          }
         }
         button{
           @include button-primary;
@@ -193,8 +188,8 @@
             @include button-primary-disabled;
             width: fit-content;
           }
-          &.mg-top39{
-            margin-top: 39%;
+          &.mg-top1rem{
+            margin-top: 1rem;
           }
         }
       }
@@ -272,9 +267,8 @@
             margin-right: 14px;
             $btnWidth: 50px;
 
-            fa-icon{
+            i {
               cursor: pointer;
-              // margin-left: 10px;
               font-size: 20px;
               margin: auto;
               display: flex;
@@ -305,9 +299,6 @@
         .table-header {
           display: none;
         }
-        // .table-row{
-
-        // }
         li {
           display: block;
         }

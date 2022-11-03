@@ -10,7 +10,6 @@ import { NavInput } from '@shared/components/nav/nav.component';
 export class AdminComponent {
 
   miniNavBar = false;
-  state: 'small' | 'large' = 'large';
 
   navData: NavInput[] = [
     {
@@ -65,10 +64,6 @@ export class AdminComponent {
           shortName: 'اظهار',
           link: 'supplier/show'
         },
-        // {
-        //   name: 'اضافة قطع جديدة للمورد',
-        //   link: 'supplier/add-supplier-parts'
-        // },
       ]
     },
     {
@@ -239,5 +234,9 @@ export class AdminComponent {
     },
   ];
   constructor() { }
+
+  toggleSidebar(event: any) {
+    this.miniNavBar = event;
+  }
 
 }

@@ -49,7 +49,6 @@ export interface SearchEndorsement {
   insurancePolicyId?: number,
   endorsementType?: number,
   customerID?: string,
-  // agentID?: string,
   carID?: number,
   skip?: number,
   limit?: number,

@@ -107,7 +107,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe({
       next: params => {
         const insurancePolicyID = params.get('id');
-        // console.log("insurancePolicyID", insurancePolicyID);
         if (!insurancePolicyID) { this.router.navigate(['/admin/insurance-policy/show']); }
         this.getData(insurancePolicyID!);
       }
@@ -236,7 +235,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
         console.log(servicePolicy.serviceId);
         return Number(servicePolicy.serviceId) === Number(service.id);
       });
-      // console.log(service.id, existService);
       service['propertiesUI'] = { hide: existService };
       return service;
     });
@@ -327,7 +325,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       });
-    // this.sharedSearchAPI('cars', this.searchTextObj.searchCarText$,  callback);
   }
 
   searchCustomerAPI() {
@@ -353,7 +350,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       });
-    // this.sharedSearchAPI('customers', this.searchTextObj.searchCustomerText$, callback);
   }
 
 
@@ -398,7 +394,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   totalCostPerServicePolicy(event: Event) {
-    // if(!(event instanceof KeyboardEvent)) return;
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
     this.sharedTotalCostPerServicePolicy(additionalDays);
   }
@@ -416,7 +411,6 @@ export class EditInsurancePolicyComponent implements OnInit, OnDestroy {
     perDayCost = coverageDays === 0 ? 1 : Number((cost / coverageDays).toFixed(2));
 
     let total = Math.round(cost + (perDayCost * (additionalDays * 0.25)));
-    // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
   }
 

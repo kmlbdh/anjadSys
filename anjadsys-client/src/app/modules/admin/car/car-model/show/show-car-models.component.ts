@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../../admin.service';
 import { SearchCarType, CarTypeArrayAPI, CarTypeAPI, CarModelAPI, CarModelArrayAPI, SearchCarModel } from '@models/car';
@@ -11,9 +10,6 @@ import { SearchCarType, CarTypeArrayAPI, CarTypeAPI, CarModelAPI, CarModelArrayA
   styleUrls: ['./show-car-models.component.scss']
 })
 export class ShowCarModelsComponent implements OnInit, OnDestroy {
-
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
 
   carModels: CarModelAPI[] = [];
   carTypes: CarTypeAPI[] = [];
@@ -45,10 +41,7 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
   }
 
   searchCarModel(event: Event) {
-    console.log(event);
-    // if(event == null || event.target?.value == null) return;
     let carTypeId = Number(((event.target) as HTMLInputElement).value);
-    // let formObj = this.searchCarModelForm.value;
     this.searchConditions = { carTypeId };
 
     this.getCarModels(this.searchConditions);
@@ -116,7 +109,6 @@ export class ShowCarModelsComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchCarModel;
     this.p = pageNumber;
     this.getCarModels(this.searchConditions);
-    // console.log(pageNumber);
   }
 
 }

@@ -83,7 +83,6 @@ export class SearchCarsComponent {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('customerID')?.value;
       this.internalSelectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -94,16 +93,12 @@ export class SearchCarsComponent {
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    // event.preventDefault();
-    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelCustomerInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedCustomer = undefined;
     this.formCont('customerID').setValue('');
     this.selectedCustomer.emit(this.internalSelectedCustomer);

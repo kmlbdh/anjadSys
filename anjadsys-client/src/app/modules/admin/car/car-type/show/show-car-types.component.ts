@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { AdminService } from '../../../admin.service';
 import { SearchCarType, CarTypeArrayAPI, CarTypeAPI } from '@models/car';
 import { Subject, takeUntil } from 'rxjs';
@@ -13,9 +12,6 @@ import { Subject, takeUntil } from 'rxjs';
 export class ShowCarTypesComponent implements OnInit, OnDestroy {
 
   carTypes: CarTypeAPI[] = [];
-
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
 
   private unsubscribe$ = new Subject<void>();
   p: number = 1;

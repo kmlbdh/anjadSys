@@ -1,74 +1,16 @@
 <div id="main-container">
-  <div id="search-container" class="card search-accident-container" [ngClass]="{'open': showTop}">
-    <form [ngClass]="{'open': showBottom}" [formGroup]="searchAccountForm" #form="ngForm" (ngSubmit)="searchAccount(form)">
-      <div class="form-sec1">
 
-        <div class="form-control-group">
-          <label for="accountId">رقم الحركة المالية</label>
-          <input id="accountId" type="text"
-           name="accountId" formControlName="accountId"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="insurancePolicyId">رقم البوليصة</label>
-          <input id="insurancePolicyId" type="text"
-           name="insurancePolicyId" formControlName="insurancePolicyId"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="customerID">الزبون:</label>
-          <div class="input" *ngIf="selectedCustomer">
-            {{selectedCustomer.username}}
-            <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
-            </span>
-          </div>
-          <div class="input-with-spinner">
-            <input [ngClass]="{'hide': selectedCustomer}" id="customerID" type="text" (keyup)="searchCustomer($event)"
-             list="customerList" name="customerID" formControlName="customerID" autocomplete="off"/>
-            <span *ngIf="spinner.customer" class="spinner"></span>
-          </div>
-          <datalist id="customerList">
-            <option *ngFor="let customer of customers;" [value]="customer.id">
-                {{customer.username}}
-            </option>
-          </datalist>
-        </div>
-
-        <div class="form-control-group">
-          <label for="startDate">من تاريخ</label>
-          <input id="startDate" type="date" name="startDate" formControlName="startDate"/>
-        </div>
-
-        <div class="form-control-group">
-          <label for="endDate">الى تاريخ</label>
-          <input id="endDate" type="date" name="endDate" formControlName="endDate">
-        </div>
-
-      </div>
-
-
-      <div class="form-sec2">
-
-        <div class="btn-container">
-          <button type="submit">
-            <span>بحث</span>
-          </button>
-        </div>
-
-      </div>
-    </form>
-    <a class="open-search clickable" [ngClass]="{'flexRight': !showBottom}" (click)="showSearch()">
-      <ng-container *ngIf="!showBottom">
-        فتح البحث
-      </ng-container>
-      <ng-container *ngIf="showBottom">
-        اغلاق البحث
-      </ng-container>
-
-    </a>
-
-  </div>
+  <app-search-accounts
+    [isAgentActive]="false"
+    [isSupplierActive]="false"
+    [isCustomerActive]="true"
+    (searchCustomerEvent)="searchCustomer($event)"
+    [customers]="customers"
+    (selectedCustomer)="getSelectedCustomer($event)"
+    [spinnerCustomer]="spinnerCustomer$"
+    (submittedSearch)="searchAccount($event)"
+    >
+  </app-search-accounts>
 
   <div class="page-content card dont-print">
     <ul class="responsive-table">

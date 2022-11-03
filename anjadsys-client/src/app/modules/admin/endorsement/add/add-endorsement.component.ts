@@ -97,7 +97,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
             setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
             this.resetEndrosementForm(ngform);
           }
-          // console.log(response);
         },
         error: (err: any) => {
           console.error(err.error);
@@ -107,12 +106,9 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(formObj);
-    // console.log(this.addServicePolicyForm.value);
   };
 
   selectCar(event: Event, ngform: FormGroupDirective) {
-    console.log(ngform);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('carId')?.value;
       this.selectedCar = this.mouseEventOnSearch(event, this.cars!, controlValue) as CarAPI;
@@ -121,7 +117,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
   }
 
   selectInsurancePolicy(event: Event) {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.formCont('insurancePolicyId')?.value;
       this.selectedInsurancePolicy = this.mouseEventOnSearch(event, this.insurancePolicies!, controlValue) as InsurancePolicyAPI;
@@ -130,7 +125,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
     if (!(event instanceof KeyboardEvent)) {
       const controlValue = this.customerElement.nativeElement.value;
       this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
@@ -200,7 +194,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
             this.formCont('carId').enable();
           }
           this.spinner.car = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.car = false;
@@ -226,7 +219,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
             this.formCont('insurancePolicyId').enable();
           }
           this.spinner.insurancePolicy = false;
-          // console.log(response);
         },
         error: (err: any) => {
           this.spinner.insurancePolicy = false;
@@ -264,7 +256,6 @@ export class AddEndorsementComponent implements OnInit, OnDestroy {
   acceptNumbers(event: Event): Boolean {
     if (event instanceof KeyboardEvent) {
       const code = event.key;
-      // console.log(code);
       if (Number.isNaN(+code)) {
         if (!this.keys.includes(code.toLowerCase())) { return false; }
       }

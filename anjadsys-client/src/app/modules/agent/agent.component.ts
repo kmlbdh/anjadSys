@@ -9,7 +9,6 @@ import { NavInput } from '@shared/components/nav/nav.component';
 export class AgentComponent {
 
   miniNavBar = false;
-  state: 'small' | 'large' = 'large';
 
   navData: NavInput[] = [
     {
@@ -163,5 +162,9 @@ export class AgentComponent {
   ];
 
   constructor() { }
+
+  toggleSidebar(event: any) {
+    this.miniNavBar = event;
+  }
 
 }

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first, Subject, takeUntil } from 'rxjs';
 import { AdminService } from '../../admin.service';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { AgentLimitsAPI, SearchAgentLimits } from '@models/agentlimits';
 
 @Component({
@@ -14,7 +13,7 @@ export class ShowAgentLimitsComponent implements OnInit, OnDestroy {
 
   agentLimits: AgentLimitsAPI[] = [];
   private unsubscribe$ = new Subject<void>();
-  trashIcon = faTrashAlt;
+
   selectedAgentName: string | undefined;
   currency: string = 'شيكل';
 

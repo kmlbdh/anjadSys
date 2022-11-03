@@ -13,8 +13,6 @@
 
 @mixin card(){
   border-radius: 5px;
-  // -webkit-box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
-  // box-shadow: 0 1px 20px 0 rgb(69 90 100 / 8%);
   @include box-shadow(0 1px 20px 0 rgb(69 90 100 / 8%));
   border: none;
   margin-bottom: 20px;

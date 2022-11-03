@@ -71,7 +71,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
         this.searchConditions['role'] = data['role'];
         if (!data['role']) {
           this.roleExist = true;
-          // this.searchUserForm.addControl('role', new FormControl(''));
         }
         this.getUsers(this.searchConditions);
         this.getRegions();
@@ -201,7 +200,6 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
       return  `with: ${ reason }`;
     }
   }
-
 
   trackById(index: number, el: any) {
     return el.id;

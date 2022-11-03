@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { EndorsementAPI } from '../../../core/model/endorsement';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,25 +7,13 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './endorsement-modal.component.html',
   styleUrls: ['./endorsement-modal.component.scss']
 })
-export class EndorsementModalComponent implements OnInit {
+export class EndorsementModalComponent {
 
   currency = 'شيكل';
-
-  // tax = 0.16;
-  // taxOnCost!: number;
-  // totalWithTaxes!: number;
-
   endorsementTypeArray = ['نقل ملكية'];
-
   modalEndorsement: EndorsementAPI = {} as EndorsementAPI;
 
   constructor(public activeModal: NgbActiveModal) { }
-
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
-  ngOnInit(): void {
-    // this.taxOnCost = Math.round(Number(this.modalEndorsement.totalPrice) * this.tax);
-    // this.totalWithTaxes =  Number(this.modalEndorsement.totalPrice) + this.taxOnCost;
-  }
 
   printPage(): void {
     window.print();

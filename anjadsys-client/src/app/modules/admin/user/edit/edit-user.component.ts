@@ -135,11 +135,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
         next: response => {
           if (response.data)
           { this.successMsg = response.message; }
-          // this.user = response.data;
           setTimeout(() => this.successMsg = undefined, this.TIMEOUTMILISEC);
-
-          // this.buildForm();
-          console.log(response);
         },
         error: err => {
           console.error(err.error);
@@ -149,8 +145,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
           }
         }
       });
-
-    // console.log(formObj);
   };
 
   buildForm():void {
@@ -178,14 +172,11 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
   changeForm(roleFormControl: any) {
     const role = Number(roleFormControl.value);
-    console.log('role', role);
-    if (role)
-    { this.rebuildFormShared(role); }
+    if (role) { this.rebuildFormShared(role); }
   }
 
   rebuildFormShared(roleId: number) {
     const roleString = this.rolesAPI.filter(roleAPI => Number(roleAPI.id) === roleId)[0]?.name;
-    console.log('role', roleId, roleString);
     if (!roleString) { return; }
 
     this.removePassword = !(roleString === 'supplier' || roleString === 'customer');
@@ -213,7 +204,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
   acceptNumbers(event: Event): Boolean {
     if (event instanceof KeyboardEvent) {
       const code = event.key;
-      console.log(code);
       if (Number.isNaN(+code))
       { if (!this.keys.includes(code.toLowerCase()))
       { return false; } }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, HostListener, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 export interface userLocalStorage {
@@ -17,24 +17,19 @@ export interface userLocalStorage {
 })
 export class HeaderComponent {
 
-  @Input() miniNavBar!: boolean;
-  @Output() miniNavBarChange: EventEmitter<boolean> = new EventEmitter();
-
-  @Input() navBarState!: 'small' | 'large';
-  @Output() navBarStateChange: EventEmitter<'small' | 'large'> = new EventEmitter();
-
-  @Input() routeLinker!: string;
+  @HostListener('document:click', ['$event.target'])
+  onClick(target: HTMLElement) {
+    let elementNativeHTML = (this.elementRef.nativeElement as HTMLElement);
+    if (!elementNativeHTML.contains(target) && !elementNativeHTML.contains(target.parentElement)) {
+      this.openDropdownMenu = false;
+    }
+  }
 
   openDropdownMenu = false;
   user: userLocalStorage = {} as userLocalStorage;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private elementRef: ElementRef) {
     this.getUsename();
-  }
-
-  minimizeNavBar() {
-    this.miniNavBarChange.emit(!this.miniNavBar);
-    this.navBarStateChange.emit(this.miniNavBar ? 'large': 'small');
   }
 
   logout() {

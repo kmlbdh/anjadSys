@@ -74,11 +74,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
 
   searchSupplierAccount = (searchConditions: SearchSupplierAccount) => {
     let lastSearchConditions = { ...this.searchConditions, ...searchConditions };
-    // let supplierID = this.searchConditions.supplierID;
-    //  console.log('formObj 2', formObj)
-    //  console.log('searchConditions 1', this.searchConditions)
-    // this.searchConditions = { ...formObj, supplierID };
-    //  console.log('searchConditions 2', this.searchConditions)
     this.searchConditions = lastSearchConditions;
     this.listSupplierAccountAPI();
   };
@@ -94,7 +89,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
               sum+=(Number(account.cost)! * (Number(account.supplierPercentage) || 1) || 0), 0);
             this.accountBalance = Math.round(this.accountBalance);
           }
-        // console.log(response.data);
         },
         error: (err: any) => console.log(err)
       });
@@ -108,7 +102,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
     this.searchConditions = { ...this.searchConditions, skip: skip } as SearchSupplierAccount;
     this.p = pageNumber;
     this.listSupplierAccountAPI();
-    // console.log(pageNumber);
   }
 
   trackById(index: number, el: any): string {
@@ -116,7 +109,6 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
   }
 
   printPage(): void {
-    // let accounts:SupplierAccountAPI[] = [];
     this.searchConditions = { ...this.searchConditions, limit: 999999999999999, skip: undefined } as SearchSupplierAccount;
     this.listSupplierAccounts()
       .subscribe({
@@ -251,7 +243,7 @@ export class SupplierAccountComponent implements OnInit, OnDestroy {
         .page-content ul.responsive-table .col-custom-5.control button {
           display: none;
         }
-        .page-content ul.responsive-table .col-custom-5.control button fa-icon {
+        .page-content ul.responsive-table .col-custom-5.control button i {
           display: none;
         }
         .page-content ul.responsive-table .col-custom-5.control button.btn-error {

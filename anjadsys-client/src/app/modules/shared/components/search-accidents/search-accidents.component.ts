@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroupDirective, FormControl } from '@angular/forms';
 import { SearchAccident } from '@models/accident';
 import { UserAPI } from '@models/user';
 import { BehaviorSubject } from 'rxjs';
@@ -43,17 +43,23 @@ import { BehaviorSubject } from 'rxjs';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchAccidentsComponent {
+export class SearchAccidentsComponent implements OnInit {
 
   @Output() submittedSearch = new EventEmitter<SearchAccident>();
+
   @Output() searchCustomerEvent = new EventEmitter<Event>();
   @Output() searchAgentEvent = new EventEmitter<Event>();
+
   @Output() selectedCustomer = new EventEmitter<UserAPI | undefined>();
   @Output() selectedAgent = new EventEmitter<UserAPI | undefined>();
+
   @Input() customers: UserAPI[] = [];
   @Input() agents: UserAPI[] = [];
+
   @Input() spinnerCustomer = new BehaviorSubject<boolean>(false);
   @Input() spinnerAgent = new BehaviorSubject<boolean>(false);
+
+  @Input() isAgentActive: boolean = false;
 
   internalSelectedCustomer: UserAPI | undefined = undefined;
   internalSelectedAgent: UserAPI | undefined = undefined;
@@ -68,11 +74,13 @@ export class SearchAccidentsComponent {
     driverIdentity: [''],
     regionID: [''],
     customerID: [''],
-    agentID: [''],
     carID: [''],
   });
 
   constructor(private fb: FormBuilder) { }
+  ngOnInit(): void {
+    if (this.isAgentActive) { this.searchAccidentForm.addControl('agentID', new FormControl('')); }
+  }
 
   showSearch() {
     this.isOpen = !this.isOpen;
@@ -118,25 +126,19 @@ export class SearchAccidentsComponent {
   }
 
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    // event.preventDefault();
-    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelCustomerInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedCustomer = undefined;
     this.formCont('customerID').setValue('');
-    this.formCont('agentID').enable();
+    if (this.isAgentActive) { this.formCont('agentID').enable(); }
     this.selectedCustomer.emit(this.internalSelectedCustomer);
   }
 
   cancelAgentInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedAgent = undefined;
     this.formCont('agentID').setValue('');
     this.formCont('customerID')?.enable();

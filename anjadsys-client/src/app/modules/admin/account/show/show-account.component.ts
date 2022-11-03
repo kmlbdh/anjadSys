@@ -145,8 +145,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   }
 
   searchAgent(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchAgentText$.next(typeTxt);
@@ -154,8 +152,6 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
   }
 
   searchSupplier(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchSupplierText$.next(typeTxt);
@@ -164,7 +160,7 @@ export class ShowAccountComponent implements OnInit, OnDestroy {
 
   searchAccount(searchConditions: SearchAccount) {
     let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
-    // this.searchConditions = lastSearchConditions;
+    this.searchConditions = lastSearchConditions;
     this.getAccount(lastSearchConditions);
   }
 

@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroupDirective } from '@angular/forms';
 import { SearchAccount } from '@models/account';
 import { UserAPI } from '@models/user';
 import { BehaviorSubject } from 'rxjs';
@@ -43,37 +43,55 @@ import { BehaviorSubject } from 'rxjs';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchAccountsComponent {
+export class SearchAccountsComponent implements OnInit {
 
   @Output() submittedSearch = new EventEmitter<SearchAccount>();
+
+  @Output() searchCustomerEvent = new EventEmitter<Event>();
   @Output() searchSupplierEvent = new EventEmitter<Event>();
   @Output() searchAgentEvent = new EventEmitter<Event>();
+
   @Output() selectedSupplier = new EventEmitter<UserAPI | undefined>();
   @Output() selectedAgent = new EventEmitter<UserAPI | undefined>();
+  @Output() selectedCustomer = new EventEmitter<UserAPI | undefined>();
+
   @Input() suppliers: UserAPI[] = [];
   @Input() agents: UserAPI[] = [];
+  @Input() customers: UserAPI[] = [];
+
+  @Input() spinnerCustomer = new BehaviorSubject<boolean>(false);
   @Input() spinnerSupplier = new BehaviorSubject<boolean>(false);
   @Input() spinnerAgent = new BehaviorSubject<boolean>(false);
 
+  @Input() isSupplierActive:boolean = false;
+  @Input() isAgentActive:boolean = false;
+  @Input() isCustomerActive:boolean = false;
+
   internalSelectedSupplier: UserAPI | undefined = undefined;
   internalSelectedAgent: UserAPI | undefined = undefined;
+  internalSelectedCustomer: UserAPI | undefined = undefined;
+
   isOpen = false;
 
   private currentDate = new Date();
 
-  firstDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-  lastDayOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+  firstDayOfMonth = (new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1)).toISOString().substring(0, 10);
+  lastDayOfMonth = (new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1)).toISOString().substring(0, 10);
 
   searchAccountForm = this.fb.group({
     accountId: [''],
     insurancePolicyId: [''],
-    agentID: [''],
-    supplierID: [''],
-    startDate: [this.firstDayOfMonth.toISOString().substring(0, 10)],
-    endDate: [this.lastDayOfMonth.toISOString().substring(0, 10)],
+    startDate: [this.firstDayOfMonth],
+    endDate: [this.lastDayOfMonth],
   });
 
   constructor(private fb: FormBuilder) { }
+
+  ngOnInit(): void {
+    if (this.isAgentActive) { this.searchAccountForm.addControl('agentID', new FormControl('')); }
+    if (this.isSupplierActive) { this.searchAccountForm.addControl('supplierID', new FormControl('')); }
+    if (this.isCustomerActive) { this.searchAccountForm.addControl('customerID', new FormControl('')); }
+  }
 
   showSearch() {
     this.isOpen = !this.isOpen;
@@ -85,14 +103,16 @@ export class SearchAccountsComponent {
 
   searchAccount(form: FormGroupDirective) {
     if (form.invalid) { return; }
+
     let keys = Object.keys(form.value);
     let searchConditions: SearchAccount = {};
+
     keys.forEach(key => {
       searchConditions[key] = this.searchAccountForm.get(key)?.value;
       if (!searchConditions[key] || searchConditions[key] === '')
       { delete searchConditions[key]; }
     });
-    // console.log('searchConditions', searchConditions);
+    console.log('searchConditions', searchConditions);
     this.submittedSearch.emit(searchConditions);
   }
 
@@ -114,36 +134,47 @@ export class SearchAccountsComponent {
     this.searchSupplierEvent.emit(event);
   }
 
+  searchCustomer(event: Event): void {
+    if (!(event instanceof KeyboardEvent)) {
+      const controlValue = this.formCont('customerID')?.value;
+      this.internalSelectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
+      return;
+    }
+    this.searchCustomerEvent.emit(event);
+  }
+
   mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    // event.preventDefault();
-    // event.stopPropagation();
     let selectedOne: UserAPI;
     selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
     return selectedOne;
   }
 
   cancelAgentInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedAgent = undefined;
     this.formCont('agentID').setValue('');
     this.selectedAgent.emit(this.internalSelectedAgent);
   }
 
   cancelSupplierInput(event: Event): void {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     this.internalSelectedSupplier = undefined;
     this.formCont('supplierID').setValue('');
     this.selectedSupplier.emit(this.internalSelectedSupplier);
   }
 
+  cancelCustomerInput(event: Event): void {
+    this.internalSelectedCustomer = undefined;
+    this.formCont('customerID').setValue('');
+    this.selectedCustomer.emit(this.internalSelectedCustomer);
+  }
+
   fillFieldsByCustomer(event: Event) {
     if (event instanceof KeyboardEvent) { return; }
 
-    setTimeout(() => {
-      this.searchAccountForm.get('agentID')?.setValue(this.internalSelectedAgent?.id);
-    }, 0);
+    if (this.isAgentActive && this.isCustomerActive) {
+      setTimeout(() => {
+        this.searchAccountForm.get('agentID')?.setValue(this.internalSelectedAgent?.id);
+      }, 0);
+    }
   }
 
 }

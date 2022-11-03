@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { faPlus, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -26,9 +25,6 @@ import { AgentService } from '../../agent.service';
 })
 export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
 
-  cancelInput = faTimes;
-  trashIcon = faTrashAlt;
-  addServiceBtnIcon = faPlus;
   errorMsg: string | undefined;
   successMsg: string | undefined;
   days = 'يوم';
@@ -119,8 +115,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
           }
         }
       });
-    // console.log(formObj);
-    // console.log(this.addServicePolicyForm.value);
   };
 
   addServicePolicy = (ngform: FormGroupDirective) => {
@@ -141,7 +135,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     this.services.map(service => {
       let existService = this.servicesPolicy.some(servicePolicy =>
         Number(servicePolicy.serviceId) === Number(service.id));
-      // console.log(service.id, existService);
       service['propertiesUI'] = { hide: existService };
       return service;
     });
@@ -152,7 +145,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       service.id === Number(serviceId))[0].coverageDays);
     let serviceDays = Number(this.servicesPolicy.filter(service =>
       service.serviceId === serviceId)[0].additionalDays);
-    // console.log('totalCoverageDays');
     return serviceDefualtDays + serviceDays;
   }
 
@@ -219,7 +211,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$),
         debounceTime(500),
-        // distinctUntilChanged(),
         mergeMap(text => forkJoin([
           of(this.selectedCustomer?.id!),
           of(text)
@@ -307,7 +298,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   }
 
   totalCostPerServicePolicy(event: Event) {
-    // if(!(event instanceof KeyboardEvent)) return;
     let additionalDays = Number((event.target as HTMLInputElement)?.value);
     this.sharedTotalCostPerServicePolicy(additionalDays);
   }
@@ -315,7 +305,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
   sharedTotalCostPerServicePolicy(additionalDays: number) {
     let cost = Number(this.selectedService?.cost);
     let coverageDays = this.selectedService?.coverageDays;
-    // console.log(additionalDays, cost, coverageDays, !(additionalDays >= 0));
     if (!(additionalDays >= 0) || cost == null || coverageDays == null) { return; }
     let perDayCost = 0;
 
@@ -325,7 +314,6 @@ export class AddInsurancePolicyComponent implements OnInit, OnDestroy {
     perDayCost = coverageDays === 0 ? 1 : Number((cost / coverageDays).toFixed(2));
 
     let total = Math.round(cost + (perDayCost * (additionalDays * 0.25)));
-    // console.log(perDayCost, additionalDays, perDayCost * (additionalDays * 0.25));
     this.addServicePolicyForm.get('cost')?.setValue(total);
   }
 

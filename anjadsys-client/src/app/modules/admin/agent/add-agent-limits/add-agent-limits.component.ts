@@ -12,7 +12,6 @@ import {
 } from 'rxjs';
 import { AdminService } from '../../admin.service';
 import { UserAPI } from '@models/user';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-agent-limits',
@@ -20,8 +19,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./add-agent-limits.component.scss']
 })
 export class AddAgentLimitsComponent implements OnInit, OnDestroy {
-
-  cancelInput = faTimes;
 
   errorMsg: string | undefined;
   successMsg: string | undefined;

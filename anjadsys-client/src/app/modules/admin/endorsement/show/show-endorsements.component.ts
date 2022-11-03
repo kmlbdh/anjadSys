@@ -54,7 +54,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   endorsementTypeArray = ['نقل ملكية'];
 
   spinnerCustomer$ = new BehaviorSubject<boolean>(false);
-  // spinnerAgent$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private adminService: AdminService,
@@ -85,7 +84,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
           const insurancePolicyId = params.get('insurancePolicyId');
           if (insurancePolicyId != null && insurancePolicyId != '' && Number(insurancePolicyId)) {
             this.searchConditions.insurancePolicyId = Number(insurancePolicyId);
-            // this.formCont('insurancePolicyId').setValue(insurancePolicyId);
           }
         },
         complete: () => this.getEndorsements(this.searchConditions)
@@ -120,8 +118,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
   }
 
   searchCustomer(event: Event): void {
-    // console.log(event);
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
       this.searchCustomerText$.next(typeTxt);
@@ -130,7 +126,6 @@ export class ShowEndorsementsComponent implements OnInit, OnDestroy {
 
   searchEndorsement(searchConditions: SearchEndorsement) {
     let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
-    // console.log('searchConditions', lastSearchConditions);
     this.getEndorsements(lastSearchConditions);
   }
 

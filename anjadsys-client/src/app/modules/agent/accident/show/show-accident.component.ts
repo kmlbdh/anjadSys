@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { faEdit, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AccidentAPI, AccidentsAPI, SearchAccident } from '@models/accident';
 import { SearchUser, UserAPI } from '@models/user';
 import { AgentService } from '../../agent.service';
 import { NgbModalOptions, ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroupDirective } from '@angular/forms';
 import {
   AccidentModalComponent
 } from '@shared/components/accident-modal/accident-modal.component';
@@ -22,10 +19,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
   accidents: AccidentAPI[] = [];
   selectedCustomer: UserAPI | undefined;
   customers: UserAPI[] = [];
-
-  trashIcon = faTrashAlt;
-  carEditIcon = faEdit;
-  cancelInput = faTimes;
 
   closeResult!: string;
   modalOptions: NgbModalOptions = {
@@ -48,28 +41,12 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
   };
 
-  spinner = {
-    customer: false,
-  };
-
   private searchCustomerText$ = new Subject<string>();
 
-  searchAccidentForm = this.fb.group({
-    accidentID: [''],
-    accidentPlace: [''],
-    accidentDate: [''],
-    registerAccidentDate: [''],
-    driverName: [''],
-    driverIdentity: [''],
-    regionID: [''],
-    customerID: [''],
-    carID: [''],
-  });
+  spinnerCustomer$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private fb: FormBuilder,
     private agentService: AgentService,
-    private router: Router,
     private modalService: NgbModal
   ) {
     this.agentName = this.agentName.companyName;
@@ -85,6 +62,9 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getSelectedCustomer(event: UserAPI | undefined) {
+    if (event) { this.selectedCustomer = event; }
+  }
   searchCustomerAPI() {
     let callback = (val: string) => this.agentService.UsersAPI.lightList(
       { username: val, skipLoadingInterceptor: true } as SearchUser);
@@ -95,62 +75,33 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
         debounceTime(500),
         distinctUntilChanged(),
         filter(txt => txt !== ''),
+        tap(() =>  this.spinnerCustomer$.next(true)),
         switchMap(callback)
       ).subscribe({
         next: (response: any) => {
           if (response.data) {
             this.customers = response.data;
           }
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
           console.log(response);
         },
         error: (err: any) => {
           console.log(err);
-          this.spinner.customer = false;
+          this.spinnerCustomer$.next(false);
         }
       });
   }
 
   searchCustomer(event: Event): void {
-    console.log(event);
-    if (!(event instanceof KeyboardEvent)) {
-      const controlValue = this.formCont('customerID')?.value;
-      this.selectedCustomer = this.mouseEventOnSearch(event, this.customers!, controlValue) as UserAPI;
-      return;
-    }
-
     let typeTxt = ((event.target as HTMLInputElement).value)?.trim();
     if (typeTxt && typeTxt !== '') {
-      this.spinner.customer = true;
       this.searchCustomerText$.next(typeTxt);
     }
   }
 
-  mouseEventOnSearch(event: Event, array: any[], controlValue: any): UserAPI {
-    event.preventDefault();
-    event.stopPropagation();
-    let selectedOne: UserAPI;
-    selectedOne = array.filter((unit: any) => unit.id == controlValue)[0];
-    return selectedOne;
-  }
-
-  cancelCustomerInput(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.selectedCustomer = undefined;
-    this.formCont('customerId').setValue('');
-  }
-
-  searchAccident(form: FormGroupDirective) {
-    if (form.invalid) { return; }
-    let keys = Object.keys(form.value);
-    let searchConditions: SearchAccident = {};
-    keys.forEach(key => {
-      searchConditions[key] = this.searchAccidentForm.get(key)?.value;
-      if (!searchConditions[key] || searchConditions[key] === '') { delete searchConditions[key]; }
-    });
-    console.log('searchConditions', searchConditions);
-    this.getAccidents(searchConditions);
+  searchAccident(searchConditions: SearchAccident) {
+    let lastSearchConditions = { ...searchConditions, ...this.searchConditions };
+    this.getAccidents(lastSearchConditions);
   }
 
   open(accidentId: number) {
@@ -209,9 +160,6 @@ export class ShowAccidentComponent implements OnInit, OnDestroy {
       });
   }
 
-  formCont(controlName: string) {
-    return this.searchAccidentForm.controls[controlName];
-  }
 
   trackById(index: number, el: any) {
     return el.id;

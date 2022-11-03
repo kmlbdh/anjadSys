@@ -52,10 +52,6 @@
             </ng-template>
           </div>
           <div class="col-custom col-custom-5" data-label="تاريخ الحركة">{{account.createdAt | date: 'dd-MM-yyyy'}}</div>
-          <!-- <div class="col-custom col-custom-6 control" data-label="Control">
-             <fa-icon [icon]="trashIcon" style="color:#fe5d70" (click)=" deletePart(part)"></fa-icon>
-              <fa-icon [icon]="userEditIcon" (click)="goToUserEdit(account.id)"></fa-icon>
-          </div> -->
         </li>
         <li class="table-row" *ngIf="accounts.length > 0 && searchConditions.flag==='policy'">
           <div class="col-custom col-custom-total-label" data-label="المجموع">المجموع</div>

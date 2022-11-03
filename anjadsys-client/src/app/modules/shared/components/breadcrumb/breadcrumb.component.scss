@@ -17,8 +17,6 @@
   }
   a:hover,
   span:hover {
-    // color: lightgray;
-    // text-decoration: none;
     cursor: default;
   }
   li {
@@ -26,11 +24,6 @@
     float: left;
     margin: 5px;
   }
-  // li:last-child {
-  //   span{
-  //     font-weight: 600;
-  //   }
-  // }
   li::after {
     content: ">";
     color: #fff;

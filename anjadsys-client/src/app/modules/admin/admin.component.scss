@@ -1,30 +1,88 @@
 @import 'shared';
 
-#main-container{
-  width: 100%;
-  height: 100%;
-
-  #main-content{
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    align-content: stretch;
-    justify-content: center;
-    flex-direction: row;
-    margin:0;
-    padding: 56px 0 0 0;
+main {
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  grid-template-rows: repeat(2 , 1fr);
+  align-items: stretch;
+  min-height: 100%;
+  
+  app-nav{
+    grid-area: 1 / 1 / span 2 / span 6;
   }
 
-  #page-container{
-    flex-basis: 80%;
-    position: relative;
-    flex-grow: 0;
-    flex-shrink: 0;
+  article {
+    grid-area: 1 / 7 / span 2 / span 30;
     background-color: #f3f3f3;
-    &.mini {
-      flex-basis: 92.65%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-self: stretch;
+
+    section {
+      flex: 1;
+      position: relative;
+      margin:0;
+      padding:0;
+    }
+  }
+
+  &.small{
+    app-nav{
+      grid-area: 1 / 1 / span 2 / span 3;
+    }
+    article{
+      grid-area: 1 / 4 / span 2 / span 30;
     }
   }
 }
+
+// @media only screen and (max-width: 600px) {
+//   main {
+//     app-nav{
+//       grid-area: 1 / 1 / span 2 / span 30;
+//     }
+//     article {
+//       grid-area: 2 / 1 / span 2 / span 30;
+//     }
+//   }
+// }
+
+// @media only screen and (min-width: 600px) {
+//   main {
+//     app-nav{
+//       grid-area: 1 / 1 / span 2 / span 30;
+//     }
+//     article {
+//       grid-area: 2 / 1 / span 2 / span 30;
+//     }
+//   }
+// }
+
+// @media only screen and (min-width: 768px) {
+//   main {
+//     app-nav{
+//       grid-area: 1 / 1 / span 2 / span 9;
+//     }
+//     article {
+//       grid-area: 1 / 10 / span 2 / span 30;
+//     }
+//   }
+// }
+
+// @media only screen and (min-width: 992px) {
+//   app-nav{
+//     grid-area: 1 / 1 / span 2 / span 6;
+//   }
+//   article {
+//     grid-area: 1 / 7 / span 2 / span 30;
+//   }
+// }
+
+// @media only screen and (min-width: 1200px) {
+//   app-nav{
+//     grid-area: 1 / 1 / span 2 / span 5;
+//   }
+//   article {
+//     grid-area: 1 / 6 / span 2 / span 30;
+//   }
+// }

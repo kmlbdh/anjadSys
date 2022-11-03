@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NavComponent } from './components/nav/nav.component';
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from './components/loader/loader.component';
@@ -49,12 +48,11 @@ import { StatisticsItemComponent } from './components/statistics-item/statistics
     SearchEndorsementComponent,
     SearchAccountsComponent,
     SearchSuppAccountComponent,
-    StatisticsItemComponent
+    StatisticsItemComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
-    FontAwesomeModule,
     ReactiveFormsModule,
   ],
   exports: [
@@ -70,7 +68,7 @@ import { StatisticsItemComponent } from './components/statistics-item/statistics
     SearchEndorsementComponent,
     SearchAccountsComponent,
     SearchSuppAccountComponent,
-    StatisticsItemComponent
+    StatisticsItemComponent,
   ]
 })
 export class SharedModule { }

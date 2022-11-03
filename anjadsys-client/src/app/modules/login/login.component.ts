@@ -47,7 +47,6 @@ export class LoginComponent implements OnDestroy {
             const route = response.data?.role || '';
             this.router.navigate([route]);
           }
-          // console.log(response);
         },
         error: err => {
           console.error(err);

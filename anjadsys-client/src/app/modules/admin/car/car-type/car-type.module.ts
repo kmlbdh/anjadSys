@@ -6,7 +6,6 @@ import { ShowCarTypesComponent } from './show/show-car-types.component';
 import { EditCarTypeComponent } from './edit/edit-car-type.component';
 import { AddCarTypeComponent } from './add/add-car-type.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -20,7 +19,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CommonModule,
     NgxPaginationModule,
     ReactiveFormsModule,
-    FontAwesomeModule,
     CarTypeRoutingModule
   ]
 })

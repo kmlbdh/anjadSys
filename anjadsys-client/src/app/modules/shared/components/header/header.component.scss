@@ -1,149 +1,101 @@
 @import 'shared';
 
+$dropDownWidth: 10rem;
+$headerHeight: 3.5rem;
+$headerLeftPosition: 1rem;
+
 nav#header{
-  position: fixed;
   z-index: 1098;
   background: #fff;
-  // color: rgb(0, 76, 153);
   color: $mainBlueColor;
-  height: 56px;
-  // box-shadow: 0px 0px 8px -1px #aaa;
-  @include box-shadow( 0 0 11px rgb(0 0 0 / 13%));
-  width:100%;
+  height: $headerHeight;
+  @include box-shadow( 0 1px 5px rgb(0 0 0 / 27%));
+  position: relative;
 
-  .nav-wrapper{
+  .header-wrapper{
     height: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: flex-end;
 
-    .navbar-logo{
+    .custom-dropdown-menu{
+      position: absolute;
+      top: $headerHeight;
+      left: $headerLeftPosition;
+      color: #fff;
+      width: 0;
       background-color: $mainBlueColor;
-      // flex-basis: 256px;
-      width: 20%;
-      flex-grow: 0;
-      flex-shrink: 0;
-      padding: 5px;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: nowrap;
-      &.mini-logo {
-        // flex-basis: 94px;
-        width: 7.5%
+      /* z-index: 9999999; */
+      border-color: $mainBlueColor;
+      border-style: solid;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border-top-color: lightgray;
+      border-width: 0;
+      max-height: 0;
+      overflow-y: hidden;
+      @include prefix(transition, moz webkit o, max-height 0.3s ease-in-out);
+      &.open {
+        max-height: 5rem;
+        width: $dropDownWidth;
+        border-width: 1px;
       }
-      a{
-        &:first-child{
-          flex-grow: 11;
-        }
-        &.menu-bar-container{
-          flex-grow: 1;
+
+      > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li{
+          padding: 10px;
+          font-size: 14px;
           text-align: center;
-          i {
-            width: 100%;
-            color: #fff;
-            font-size: 1.6rem;
-            margin: 0 8px;
-          }
+          color: #fff;
         }
       }
     }
-    .navbar-container{
-      flex-grow: 11;
-      flex-basis: 0;
+
+    .profile-section{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      flex-wrap: nowrap;
+      align-items: center;
+      cursor: pointer;
+
       height: 100%;
-      padding: 0;
-      position: relative;
+      width: $dropDownWidth;
+      padding: 0.3rem 0.6rem;
+      margin-left: $headerLeftPosition;
 
-      .custom-dropdown-menu{
-        position: absolute;
-        top: 56px;
-        left: 10px;
-        color: #fff;
-        width: 0;
+      &.open-profile{
         background-color: $mainBlueColor;
-        /* z-index: 9999999; */
-        border-color: $mainBlueColor;
-        border-style: solid;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        border-top-color: lightgray;
-        border-width: 0;
-        max-height: 0;
-        overflow-y: hidden;
-        @include prefix(transition, moz webkit o, max-height 0.3s ease-in-out);
-        &.open {
-          max-height: 70px;
-          width: 170px;
-          border-width: 1px;
+        color: #fff;
+        p, i{
+          color: #fff;
         }
+      }
+      img{
+        border-radius: 20%;
+        height: 40px;
+        width: 40px;
+        margin-left: 10px;
+      }
 
-        > ul {
-          margin: 0;
-          padding: 0;
-          list-style: none;
-
-          li{
-            padding: 10px;
-            font-size: 14px;
-            text-align: center;
-            color: #fff;
-          }
+      p{
+        margin:0;
+        padding:0;
+        color: #000;
+        &.username{
+          font-size: .875em;
         }
       }
 
-      .nav-profile-section{
-        flex-grow: 11;
-        flex-basis: 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-
-        .profile-section{
-          display: flex;
-          flex-direction: row;
-          justify-content: space-evenly;
-          flex-wrap: nowrap;
-          align-items: center;
-
-          height: 100%;
-          width: 170px;
-          padding: 5px 10px;
-          margin-left: 10px;
-
-          &.open-profile{
-            background-color: $mainBlueColor;
-            color: #fff;
-            p, i{
-              color: #fff;
-            }
-          }
-          img{
-            border-radius: 20%;
-            height: 40px;
-            width: 40px;
-            margin-left: 10px;
-          }
-
-          p{
-            margin:0;
-            padding:0;
-            color: #000;
-            &.username{
-              font-size: .875em;
-            }
-          }
-
-          i {
-            color: #000;
-            font-size: .875em;
-            margin-right: -4%;
-          }
-        }
+      i {
+        color: #000;
+        font-size: .875em;
+        margin-right: -4%;
       }
     }
   }

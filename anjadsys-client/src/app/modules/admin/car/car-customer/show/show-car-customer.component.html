@@ -1,7 +1,13 @@
 <div id="main-container" class="d-print-none">
 
-<app-search-cars (searchCustomerEvent)="searchCustomer($event)" (submittedSearch)="searchCar($event)" [customers]="customers"
-[spinner]="spinnerCustomer$" (selectedCustomer)="getSelectedCustomer($event)"></app-search-cars>
+  <app-search-cars 
+  (searchCustomerEvent)="searchCustomer($event)" 
+  (submittedSearch)="searchCar($event)" 
+  [customers]="customers"
+  [spinner]="spinnerCustomer$" 
+  (selectedCustomer)="getSelectedCustomer($event)"
+  >
+  </app-search-cars>
 
   <div class="page-content card">
     <ul class="responsive-table">

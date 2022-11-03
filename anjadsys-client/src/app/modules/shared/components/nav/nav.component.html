@@ -1,6 +1,23 @@
-<div id="nav">
-  <ul class="first-nav">
+<nav>
+  <div class="navbar-logo" [ngClass]="{'mini-logo': miniNavBar}">
+    <div class="logo-link clickable">
+      <a [routerLink]="'/'+routeLinker" *ngIf="!miniNavBar">
+        <img src="../../../../../assets/logo-injad.png" alt="logo">
+      </a>
+    </div>
+
+    <div class="list-link clickable">
+      <a (click)="minimizeNavBar()">
+        <i>
+          <svg style="width: 1.4rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path>
+          </svg>
+        </i>
+      </a>
+    </div>
+  </div>
+  <ul class="first-nav" [class.small]="miniNavBar">
     <app-nav-item [navItem]="nav" [miniNavBar]="miniNavBar"
       *ngFor="let nav of navData; trackBy: trackById"></app-nav-item>
   </ul>
-</div>
+</nav>

@@ -1,24 +1,57 @@
 @import 'shared';
 
-:host[data-state='large'] {
-  flex-grow: 1;
-  flex-basis: 189px;
-}
-:host[data-state='small'] {
-  flex-basis: 94px;
-  flex-shrink: 1;
-  flex-grow: 0;
-}
-#nav{
+$logoHieght: 3.2rem;
+
+nav {
   background-color: $mainBlueColor;
-  padding: 5px 0;
+  padding: 0;
   height: 100%;
   width: 100%;
+
+  .navbar-logo{
+    height: 3.5rem;
+    background-color: $mainBlueColor;
+    padding: 0.4rem 0.2rem 0.2rem 0.2rem;
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+    @include box-shadow( 0 1px 5px rgb(0 0 0 / 27%));
+    &.mini-logo {
+      justify-content: center;
+      .logo-link {
+        flex-basis: 0;
+      }
+    }
+
+    .logo-link {
+      flex-basis: 70%;
+      max-height: $logoHieght;
+      height: $logoHieght;
+      a {
+        width: auto;
+        max-height: 100%;
+        img {
+          max-height: 100%;
+          width: auto;
+        }
+      }
+    }
+
+    .list-link {
+      i {
+        width: 100%;
+        color: #fff;
+        font-size: 1.6rem;
+        margin: 0 8px;
+      }
+    }
+  }
 
   ul.first-nav {
     padding:0 0 0 0;
     margin:0;
     list-style: none;
-    height: 100%;
   }
 }

@@ -5,8 +5,8 @@ import { EndorsementRoutingModule } from './endorsement-routing.module';
 import { ShowEndorsementsComponent } from './show-endorsements/show-endorsements.component';
 import { AddEndorsementComponent } from './add-endorsement/add-endorsement.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -18,8 +18,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CommonModule,
     NgxPaginationModule,
     ReactiveFormsModule,
-    FontAwesomeModule,
-    EndorsementRoutingModule
+    EndorsementRoutingModule,
+    SharedModule
   ]
 })
 export class EndorsementModule { }

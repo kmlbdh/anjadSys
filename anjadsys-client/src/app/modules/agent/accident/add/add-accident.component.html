@@ -8,7 +8,11 @@
           <div class="input" *ngIf="selectedCustomer">
             {{selectedCustomer.username}}
             <span (click)="cancelCustomerInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
             </span>
           </div>
           <div class="input-with-spinner">
@@ -35,7 +39,11 @@
           <div class="input" *ngIf="selectedCar">
             {{selectedCar.carNumber}}
             <span (click)="cancelCarInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
             </span>
           </div>
           <div class="input-with-spinner">
@@ -56,11 +64,15 @@
         </div>
 
         <div class="form-control-group">
-          <label for="carId">رقم بوليصة التأمين :</label>
+          <label for="insurancePolicyId">رقم بوليصة التأمين :</label>
           <div class="input" *ngIf="selectedInsurancePolicy">
             {{selectedInsurancePolicy.id}}
             <span (click)="cancelInsurancePolicyInput($event)">
-              <fa-icon [icon]="cancelInput"></fa-icon>
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                  <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                </svg>
+              </i>
             </span>
           </div>
           <div class="input-with-spinner">
@@ -224,7 +236,7 @@
   <div class="page-content card">
     <form [formGroup]="addServiceAccidentForm" #formS="ngForm" (ngSubmit)="addServiceAccident(formS)">
       <div *ngIf="!selectedInsurancePolicy" class="alert alert-danger" style="width:100%">
-        <div style="font-weight:600">يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
+        <div>يجب اختيار بوليصة التأمين لاظهار بيانات الخدمات</div>
       </div>
       <div class="form-sec0 custom-row">
 
@@ -289,13 +301,18 @@
         </div>
 
         <div class="btn-container center">
-          <button class="mg-top39" type="submit"
+          <button class="mg-top1rem" type="submit"
             [disabled]="formS.invalid
             || formContS('coverageDays').disabled
             || formContS('supplierId').disabled
             || formContS('serviceId').disabled
             ">
-            <span><fa-icon [icon]="addServiceBtnIcon"></fa-icon></span>
+            <span>
+              <i>
+                <svg style="width: 0.8rem" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path>
+                </svg>
+              </i>
+            </span>
           </button>
         </div>
       </div>
@@ -318,13 +335,17 @@
       <ng-template [ngIf]="servicesAccident.length > 0">
         <li *ngFor="let serviceAccident of servicesAccident; let i = index; trackBy: trackByServiceId" class="table-row">
           <div class="col-custom col-custom-1" data-label="id">{{ i + 1 }}</div>
-          <div class="col-custom col-custom-2" data-label="Service Name">{{serviceAccident['Service'].name}}</div>
+          <div class="col-custom col-custom-2" data-label="Service Name">{{serviceAccident['Service']?.name || ''}}</div>
           <!-- <div class="col-custom col-custom-3" data-label="Cost">{{serviceAccident.cost}} {{currency}}</div> -->
           <div class="col-custom col-custom-4" data-label="Total Coverage Days">{{ serviceAccident.coverageDays }} {{days}}</div>
-          <div class="col-custom col-custom-5" data-label="Supplier Name">{{ serviceAccident['Service'].supplierText }}</div>
+          <div class="col-custom col-custom-5" data-label="Supplier Name">{{ serviceAccident['Service']?.supplierText || ''}}</div>
           <div class="col-custom col-custom-6 control" data-label="Control">
             <button class="btn-error" title="حذف الخدمة" (click)="deleteAccidentService(i)">
-              <fa-icon [icon]="trashIcon"></fa-icon>
+              <i>
+                <svg style="width: 1.2rem;" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path>
+                </svg>
+              </i>
             </button>
           </div>
         </li>

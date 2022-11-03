@@ -83,7 +83,6 @@ export class AddCarModelComponent implements OnInit, OnDestroy {
         next: (response: CarTypeArrayAPI) => {
           if (response.data) {
             this.carTypes = response.data;
-          // this.pagination.total = response.total;
           }
         },
         error: error => console.log(error)
