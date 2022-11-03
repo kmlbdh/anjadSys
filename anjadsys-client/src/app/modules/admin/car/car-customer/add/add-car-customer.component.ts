@@ -46,7 +46,6 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   ];
 
   spinner = {
-    carType: false,
     carModel: false,
     customer: false,
   };
@@ -71,8 +70,8 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
     private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.searchCustomerAPI();
     this.getCarTypes();
+    this.searchCustomerAPI();
   }
 
   ngOnDestroy(): void {
@@ -130,18 +129,15 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   getCarTypes() {
-    this.spinner.carType = true;
-    this.adminService.CarTypesAPIs.list({ skipLoadingInterceptor: true, limit: 999999999999 })
+    this.adminService.CarTypesAPIs.list({ limit: 999999999999 })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {
           if (response.data && response.data.length) {
             this.carTypes = response.data;
           }
-          this.spinner.carType = false;
         },
         error: (err: any) => {
-          this.spinner.carType = false;
           console.log(err);
         }
       });

@@ -152,15 +152,15 @@
             <label for="carTypeId">نوع السيارة :</label>
             <select id="carTypeId" type="text" name="carTypeId" formControlName="carTypeId"
             (change)="toggleModel($event)" required>
-            <ng-template [ngIf]="carTypes.length > 0">
-              <option>اختر نوع السيارة من القائمة</option>
-              <ng-container *ngFor="let carType of carTypes">
-                <option [value]="carType.id">
-                    {{ carType.name }}
-                </option>
-              </ng-container>
-            </ng-template>
-          </select>
+              <ng-template [ngIf]="carTypes.length > 0">
+                <option>اختر نوع السيارة من القائمة</option>
+                <ng-container *ngFor="let carType of carTypes">
+                  <option [value]="carType.id">
+                      {{ carType.name }}
+                  </option>
+                </ng-container>
+              </ng-template>
+            </select>
 
             <div *ngIf="(form.submitted || formCont('carTypeId')?.touched) &&
               formCont('carTypeId')?.invalid" class="alert alert-danger">
