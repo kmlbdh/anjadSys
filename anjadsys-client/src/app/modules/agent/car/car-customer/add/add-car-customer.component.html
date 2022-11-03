@@ -152,7 +152,7 @@
             <label for="carTypeId">نوع السيارة :</label>
             <select id="carTypeId" type="text" name="carTypeId" formControlName="carTypeId"
             (change)="toggleModel()" required>
-            <ng-template [ngIf]="carTypes">
+            <ng-template [ngIf]="carTypes && carTypes?.length">
               <option>اختر نوع السيارة من القائمة</option>
               <ng-container *ngFor="let carType of carTypes">
                 <option [value]="carType.id">

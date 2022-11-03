@@ -42,7 +42,6 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   ];
 
   spinner = {
-    carType: false,
     carModel: false,
     customer: false,
   };
@@ -126,18 +125,15 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   getCarTypes() {
-    this.spinner.carType = true;
-    this.agentService.CarTypesAPIs.list({ skipLoadingInterceptor: true, limit: 999999999999999 })
+    this.agentService.CarTypesAPIs.list({ limit: 999999999999999 })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {
           if (response.data && response.data.length) {
             this.carTypes = response.data;
           }
-          this.spinner.carType = false;
         },
         error: (err: any) => {
-          this.spinner.carType = false;
           console.log(err);
         }
       });
