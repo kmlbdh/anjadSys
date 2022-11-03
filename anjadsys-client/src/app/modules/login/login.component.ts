@@ -25,8 +25,7 @@ export class LoginComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private router: Router,
-    private cd: ChangeDetectorRef) {}
+    private router: Router) {}
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
