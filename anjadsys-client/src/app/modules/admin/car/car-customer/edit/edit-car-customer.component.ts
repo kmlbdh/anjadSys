@@ -9,7 +9,7 @@ import {
   forkJoin,
   takeUntil
 } from 'rxjs';
-import { CarModelAPI, CarTypeAPI, CarsAPI, updateCar, CarAPI, CarTypeArrayAPI } from '@models/car';
+import { CarModelAPI, CarTypeAPI, CarsAPI, updateCar, CarAPI, CarTypeArrayAPI, SearchCarModel } from '@models/car';
 import { UserAPI } from '@models/user';
 import { AdminService } from '../../../admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -144,7 +144,13 @@ export class EditCarCustomerComponent implements OnInit, OnDestroy {
 
   searchCarModelAPI(triggerBuildForm: boolean = false) {
     let carTypeId = this.selectedCarType?.id || this.selectedCarTypeId;
-    this.adminService.CarModelsAPIs.list({ carTypeId: Number(carTypeId), skipLoadingInterceptor: true })
+    const searchConditions: SearchCarModel = {
+      carTypeId: Number(carTypeId),
+      limit: 999999999999999,
+      skipLoadingInterceptor: true
+    };
+
+    this.adminService.CarModelsAPIs.list(searchConditions)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { CarModelAPI } from '@models/car';
+import { CarModelAPI, SearchCarModel } from '@models/car';
 import { UserAPI } from '@models/user';
 import { AgentService } from '../../../agent.service';
 
@@ -140,10 +140,13 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCarModelAPI() {
-    this.agentService.CarModelsAPIs.list({
+    const searchCondition: SearchCarModel = {
       carTypeId: Number(this.selectedCarTypeId),
+      limit: 999999999999999,
       skipLoadingInterceptor: true
-    })
+    };
+
+    this.agentService.CarModelsAPIs.list(searchCondition)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {

@@ -9,9 +9,8 @@ import {
   tap
 } from 'rxjs';
 import { AdminService } from '../../../admin.service';
-import { CarModelAPI } from '@models/car';
+import { CarModelAPI, SearchCarModel } from '@models/car';
 import { UserAPI } from '@models/user';
-
 @Component({
   selector: 'app-add-car-customer',
   templateUrl: './add-car-customer.component.html',
@@ -144,10 +143,13 @@ export class AddCarCustomerComponent implements OnInit, OnDestroy {
   }
 
   searchCarModelAPI() {
-    this.adminService.CarModelsAPIs.list({
+    const searchCondition: SearchCarModel = {
       carTypeId: Number(this.selectedCarTypeId),
+      limit: 999999999999999,
       skipLoadingInterceptor: true
-    })
+    };
+
+    this.adminService.CarModelsAPIs.list(searchCondition)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: response => {

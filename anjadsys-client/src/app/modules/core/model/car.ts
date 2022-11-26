@@ -124,6 +124,8 @@ export interface SearchCarModel {
   carModelId?: number,
   name?: string;
   carTypeId?: number,
+  limit?: number,
+  skip?: number,
   skipLoadingInterceptor?: boolean,
 }
 
