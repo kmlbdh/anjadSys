@@ -26,12 +26,12 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "express": "^4.17.2",
+    "express": "^4.21.2",
     "joi": "^17.5.0",
-    "jsonwebtoken": "^8.5.1",
-    "mysql2": "^2.3.3",
+    "jsonwebtoken": "^9.0.0",
+    "mysql2": "^3.9.8",
     "request": "^2.88.2",
-    "sequelize": "^6.13.0",
+    "sequelize": "^6.29.0",
     "xss": "^1.0.10"
   },
   "devDependencies": {
@@ -41,9 +41,9 @@
     "dotenv-webpack": "^7.1.0",
     "file-loader": "^6.2.0",
     "jasmine": "^3.10.0",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.22",
     "sequelize-cli": "^6.4.1",
-    "webpack": "^5.73.0",
+    "webpack": "^5.101.3",
     "webpack-cli": "^4.9.2",
     "webpack-node-externals": "^3.0.0"
   }
